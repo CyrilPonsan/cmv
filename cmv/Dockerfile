@@ -1,0 +1,23 @@
+# Vue Frontend
+FROM node:20 as build-stage
+
+WORKDIR /frontend
+COPY cmv_front/ .
+RUN npm install
+RUN npm run build
+
+FROM python:3.12
+
+WORKDIR /app
+
+COPY cmv_auth/requirements.txt /app/requirements.txt
+
+RUN apt-get update \
+    && apt-get install gcc -y \
+    && apt-get clean
+
+RUN pip install -r /app/requirements.txt \
+    && rm -rf /root/.cache/pip
+COPY cmv_auth/. /app/
+
+COPY --from=build-stage /frontend/dist app/dist
