@@ -16,9 +16,11 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@primevue/themes": "^4.0.4",
     "axios": "^1.6.8",
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
+    "primevue": "^4.0.4",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
@@ -35,7 +37,6 @@
     "@vue/tsconfig": "^0.5.1",
     "autoprefixer": "^10.4.19",
     "cypress": "^13.7.2",
-    "daisyui": "^4.10.2",
     "eslint": "^8.57.0",
     "eslint-plugin-cypress": "^2.15.1",
     "eslint-plugin-vue": "^9.23.0",

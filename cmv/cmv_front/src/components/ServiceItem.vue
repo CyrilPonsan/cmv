@@ -1,7 +1,7 @@
 <template>
   <span class="w-full">
     <h2 class="text-xl font-bold">{{ service.nom }}</h2>
-    <div class="divider" />
+    <Divider />
     <div class="flex flex-wrap gap-4">
       <span v-for="chambre in service.chambres" v-bind:key="chambre.id">
         <ChambreItem v-bind:chambre="chambre" />
@@ -13,6 +13,7 @@
 <script setup lang="ts">
 import type Chambre from '@/models/chambre'
 import ChambreItem from './ChambreItem.vue'
+import Divider from 'primevue/divider'
 
 interface Props {
   service: {
