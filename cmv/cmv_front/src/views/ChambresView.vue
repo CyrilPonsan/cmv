@@ -10,7 +10,7 @@
       />
     </div>
     <div class="flex flex-col gap-y-24 mt-4">
-      <div class="text-xs" v-for="service in services" v-bind:key="service.id">
+      <div v-for="service in services" v-bind:key="service.id">
         <ServiceItem v-bind:service="service" />
       </div>
     </div>

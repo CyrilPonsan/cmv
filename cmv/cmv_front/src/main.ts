@@ -9,12 +9,8 @@ import router from './router'
 import progressBar from './includes/progress-bar'
 import 'nprogress/nprogress.css'
 import PrimeVue from 'primevue/config'
+import 'primeicons/primeicons.css'
 import Aura from '@primevue/themes/aura'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Password from 'primevue/password'
-import Card from 'primevue/card'
-import Divider from 'primevue/divider'
 
 progressBar(router)
 
@@ -24,16 +20,11 @@ app.use(PrimeVue, {
     preset: Aura,
     options: {
       prefix: 'p',
-      darkModeSelector: 'light',
+      darkModeSelector: '.my-app-dark',
       cssLayer: false
     }
   }
 })
-app.component('Button', Button)
-app.component('InputText', InputText)
-app.component('Password', Password)
-app.component('Card', Card)
-app.component('Divider', Divider)
 
 app.use(createPinia())
 

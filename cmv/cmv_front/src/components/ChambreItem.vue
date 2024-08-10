@@ -1,8 +1,10 @@
 <!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <template>
-  <Card style="width: 25rem; overflow: hidden">
+  <Card class="w-96" style="overflow: hidden">
     <template #header>
-      <img alt="user header" src="../assets//images/witch.jpg" />
+      <div
+        class="w-full h-48 bg-[url('../assets/images/witch.jpg')] bg-center-top bg-no-repeat bg-cover"
+      ></div>
     </template>
     <template #title>Advanced Card</template>
     <template #subtitle>Card subtitle</template>
@@ -24,6 +26,7 @@
 
 <script setup lang="ts">
 import type Chambre from '@/models/chambre'
+import Button from 'primevue/button'
 import Card from 'primevue/card'
 import { computed } from 'vue'
 
