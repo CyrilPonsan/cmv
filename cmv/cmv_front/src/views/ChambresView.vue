@@ -1,6 +1,6 @@
 <template>
-  <main class="min-h-screen flex flex-col gap-y-4 p-2">
-    <div class="flex items-center gap-x-4">
+  <main class="flex flex-col gap-y-4">
+    <div class="flex gap-x-4">
       <h1 class="text-2xl font-bold">Liste des chambres</h1>
       <ButtonWithLoader
         :label="'Refresh'"
@@ -10,7 +10,7 @@
       />
     </div>
     <div class="flex flex-col gap-y-24 mt-4">
-      <div class="text-xs" v-for="service in services" v-bind:key="service.id">
+      <div v-for="service in services" v-bind:key="service.id">
         <ServiceItem v-bind:service="service" />
       </div>
     </div>

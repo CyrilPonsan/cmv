@@ -11,6 +11,14 @@ export const useUserStore = defineStore('user', () => {
   const refresh_token = ref('')
   const role = ref('')
 
+  const toggleColorScheme = () => {
+    const element = document.querySelector('html')
+
+    if (element) element.classList.toggle('my-app-dark')
+
+    console.log(element?.classList)
+  }
+
   const handshake = () => {
     access_token.value = localStorage.getItem('access_token') ?? ''
     refresh_token.value = localStorage.getItem('refresh_token') ?? ''
@@ -35,5 +43,5 @@ export const useUserStore = defineStore('user', () => {
     router.push('/')
   }
 
-  return { access_token, refresh_token, role, handshake, logout, setTokens }
+  return { access_token, refresh_token, role, handshake, logout, setTokens, toggleColorScheme }
 })
