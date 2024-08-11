@@ -11,15 +11,39 @@ export const useUserStore = defineStore('user', () => {
   const refresh_token = ref('')
   const role = ref('')
 
+  /**
+   * alterne ente le mode clair et le mode sombre
+   */
   const toggleColorScheme = () => {
     const element = document.querySelector('html')
 
-    if (element) element.classList.toggle('my-app-dark')
-
-    console.log(element?.classList)
+    if (element) {
+      element.classList.toggle('my-app-dark')
+      if (element.classList.value === 'my-app-dark')
+        //  si on passe au mode sombrer on enregistre le changement dans le session storage
+        localStorage.setItem('color-scheme', 'my-app-dark')
+      //  si on revient au mode lumineux on retire l'entrée du storage
+      else localStorage.removeItem('color-scheme')
+    }
   }
 
+  //  au démarrage de l'application on vérifie le mode d'affichage à utiliser
+  const updateColorScheme = () => {
+    //  récupération de la valeur du mode d'affichage stocké dans le storage
+    const colorScheme = localStorage.getItem('color-scheme')
+    //  si une valeur est trouvée on switch sur le mode sombre
+    if (colorScheme && colorScheme === 'my-app-dark') {
+      const element = document.querySelector('html')
+      if (element) element.classList.toggle('my-app-dark')
+    }
+  }
+
+  /**
+   * met à jour le mode d'affichage en fonction des préférences de l'utilisateur qui sont sotckées dans le storage
+   * vérification de la validité des jetons de session stockés dans le storage en effectuant une requête auprès de l'api
+   */
   const handshake = () => {
+    updateColorScheme()
     access_token.value = localStorage.getItem('access_token') ?? ''
     refresh_token.value = localStorage.getItem('refresh_token') ?? ''
     const applyData = (data: any) => {
@@ -28,6 +52,10 @@ export const useUserStore = defineStore('user', () => {
     http.sendRequest({ path: '/users/me' }, applyData)
   }
 
+  /**
+   * met à jour les valeurs des jetons de sessions en mémoire et dans le storage
+   * @param value { access_token: string; refresh_token: string }
+   */
   const setTokens = (value: { access_token: string; refresh_token: string }) => {
     access_token.value = value.access_token
     refresh_token.value = value.refresh_token
