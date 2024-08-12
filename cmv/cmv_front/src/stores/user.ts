@@ -42,6 +42,8 @@ export const useUserStore = defineStore('user', () => {
       mode.value = 'dark'
       const element = document.querySelector('html')
       if (element) element.classList.toggle('my-app-dark')
+    } else {
+      mode.value = 'light'
     }
   }
 
@@ -53,6 +55,13 @@ export const useUserStore = defineStore('user', () => {
     updateColorScheme()
     access_token.value = localStorage.getItem('access_token') ?? ''
     refresh_token.value = localStorage.getItem('refresh_token') ?? ''
+    getUserInfos()
+  }
+
+  /**
+   * envoie une requête à l'api pour récupérer le role de l'utilisateur
+   */
+  const getUserInfos = () => {
     const applyData = (data: any) => {
       role.value = data.role
     }
@@ -83,6 +92,7 @@ export const useUserStore = defineStore('user', () => {
     mode,
     refresh_token,
     role,
+    getUserInfos,
     handshake,
     logout,
     setTokens,

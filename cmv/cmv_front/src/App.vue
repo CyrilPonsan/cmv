@@ -21,25 +21,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onBeforeMount, watch } from 'vue'
+import { computed, onBeforeMount, watch } from 'vue'
 import { useUserStore } from './stores/user'
 import { useRoute, useRouter } from 'vue-router'
 import Button from 'primevue/button'
 
 const router = useRouter()
 const route = useRoute()
-
 const userStore = useUserStore()
 
 const colorSchemeIcon = computed(() => `pi pi-${userStore.mode === 'dark' ? 'moon' : 'sun'}`)
-const isLoggedIn = ref(false)
 
-watch(
-  () => userStore.access_token,
-  (access_token) => {
-    isLoggedIn.value = access_token.length > 0
-  }
-)
+const isLoggedIn = computed(() => userStore.role.length > 0)
 
 watch(
   () => userStore.role,
