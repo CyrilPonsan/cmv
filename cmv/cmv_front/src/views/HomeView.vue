@@ -24,8 +24,7 @@ const submitForm = async () => {
   try {
     const response = await axios.post(`${AUTH}/auth/login`, formData)
     userStore.setTokens(response.data)
-
-    userStore.handshake()
+    userStore.getUserInfos()
     loading.value = false
   } catch (error: any) {
     console.error(error)

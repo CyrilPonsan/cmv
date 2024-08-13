@@ -25,12 +25,10 @@
 </template>
 
 <script setup lang="ts">
-import type Chambre from '@/models/chambre'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
-import { computed } from 'vue'
 
-interface Props {
+/* interface Props {
   chambre: Chambre
 }
 
@@ -45,5 +43,5 @@ const style = computed(() => {
     default:
       return baseStyle + ' bg-secondary'
   }
-})
+}) */
 </script>
