@@ -27,9 +27,9 @@ const useHttp = (): UseHttp => {
   const axiosInstance = axios.create()
   axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${userStore.access_token}`
 
-  const sendRequest = async (
+  const sendRequest = async <T>(
     req: HttpRequestOptions,
-    applyData?: (data: any) => void
+    applyData?: (data: T) => void
   ): Promise<any> => {
     isLoading.value = true
     error.value = ''
