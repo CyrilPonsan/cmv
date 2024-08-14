@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import useHttp from '@/hooks/use-http'
+import useHttp from '@/hooks/use-http2'
 import { useRouter } from 'vue-router'
 
 export const useUserStore = defineStore('user', () => {

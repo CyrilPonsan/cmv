@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import ButtonWithLoader from '@/components/ButtonWithLoader.vue'
 import ServiceItem from '@/components/ServiceItem.vue'
-import useHttp from '@/hooks/use-http'
+import useHttp from '@/hooks/use-http2'
 import type Service from '@/models/service'
 import { onBeforeMount, ref } from 'vue'
 
@@ -31,10 +31,10 @@ const http = useHttp()
  * retourne la liste des services et des chambres associées
  */
 const getChambres = async () => {
-  const applyData = (dataValue: Service[]) => {
-    services.value = dataValue
+  const applyData = (data: Service[]) => {
+    services.value = data
   }
-  http.sendRequest(
+  http.sendRequest<Service[]>(
     {
       path: '/home/services'
     },
