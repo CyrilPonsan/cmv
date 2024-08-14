@@ -15,8 +15,6 @@ const value = ref('')
 const loading = ref(false)
 
 const submitForm = async () => {
-  console.log('submitting')
-
   loading.value = true
   const formData = new FormData()
   formData.append('username', username.value)

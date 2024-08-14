@@ -1,11 +1,12 @@
 <template>
   <main class="flex flex-col gap-y-4">
-    <div class="flex gap-x-4">
+    <div class="flex gap-x-4 items-center">
       <h1 class="text-2xl font-bold">Liste des chambres</h1>
-      <ButtonWithLoader
-        :label="'Refresh'"
-        :loadingLabel="'Loading'"
+      <Button
+        icon="pi pi-refresh"
+        text
         :loading="http.isLoading.value"
+        :disabled="http.isLoading.value"
         @:click="getChambres"
       />
     </div>
@@ -18,10 +19,10 @@
 </template>
 
 <script setup lang="ts">
-import ButtonWithLoader from '@/components/ButtonWithLoader.vue'
 import ServiceItem from '@/components/ServiceItem.vue'
-import useHttp from '@/hooks/use-http'
+import useHttp from '@/composables/use-http'
 import type Service from '@/models/service'
+import Button from 'primevue/button'
 import { onBeforeMount, ref } from 'vue'
 
 const services = ref<Service[]>([])
