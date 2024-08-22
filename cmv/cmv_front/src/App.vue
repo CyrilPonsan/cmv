@@ -1,5 +1,5 @@
 <template>
-  <header class="flex justify-end p-2">
+  <header class="flex justify-end p-2 bg-surface-900">
     <nav>
       <ul class="flex gap-x-2 items-center">
         <li>
