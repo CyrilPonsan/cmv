@@ -1,12 +1,12 @@
 from datetime import timedelta
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.orm import Session
 
-from app.dependancies.auth import authenticate_user
+from app.dependancies.auth import authenticate_user, create_or_renew_session
 from app.dependancies.db_session import get_db
 from app.dependancies.jwt import create_token, get_current_active_user
 from app.schemas.schemas import Tokens
@@ -23,26 +23,14 @@ router = APIRouter(
 )
 
 
-# vérification des identifiants de l'utilisateur et génération de tokens
-@router.post(
-    "/login",
-    dependencies=[Depends(RateLimiter(times=5, seconds=60))],
-    response_model=Tokens,
-)
-async def login_for_access_token(
-    request: Request,
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    db: Session = Depends(get_db),
-):
-    user = authenticate_user(db, form_data.username, form_data.password)
+@router.post("/login")
+def login(response: Response, username: str, password: str, db: Session = Depends(get_db)):
+    user = authenticate_user(db, username, password)
     if not user:
-        LOGGER("Echec de la tentative de connexion", request)
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Identifiants incorrects",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    return get_tokens(user.id)
+        raise HTTPException(status_code=401, detail="Incorrect username or password")
+    session_id = create_or_renew_session(db, user.id)
+    response.set_cookie(key="session_id", value=session_id, httponly=True)
+    return {"message": "Logged in successfully"}
 
 
 # vérification de la validité du refresh token et génération de nouveaux tokens
