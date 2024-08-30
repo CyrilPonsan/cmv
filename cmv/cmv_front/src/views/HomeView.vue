@@ -10,18 +10,17 @@ import { ref } from 'vue'
 const userStore = useUserStore()
 
 const username = ref('')
-const value = ref('')
+const password = ref('')
 
 const loading = ref(false)
 
 const submitForm = async () => {
   loading.value = true
-  const formData = new FormData()
-  formData.append('username', username.value)
-  formData.append('password', value.value)
   try {
-    const response = await axios.post(`${AUTH}/auth/login`, formData)
-    userStore.setTokens(response.data)
+    const response = await axios.post(`${AUTH}/auth/login`, {
+      username: username.value,
+      password: password.value
+    })
     userStore.getUserInfos()
     loading.value = false
   } catch (error: any) {
@@ -40,7 +39,7 @@ const submitForm = async () => {
       </div>
       <div class="flex flex-col gap-y-2">
         <label for="email">Mot de passe</label>
-        <Password v-model="value" :feedback="false" toggleMask />
+        <Password v-model="password" :feedback="false" toggleMask />
       </div>
       <div class="flex justify-end mt-2">
         <Button type="submit" label="Se Connecter" :disabled="loading" :loading="loading" />

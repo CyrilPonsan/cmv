@@ -1,5 +1,5 @@
 # Vue Frontend
-FROM node:20 as build-stage
+FROM node:20 AS build-stage
 
 WORKDIR /frontend
 COPY cmv_front/ .
@@ -16,8 +16,7 @@ RUN apt-get update \
     && apt-get install gcc -y \
     && apt-get clean
 
-RUN pip install -r /app/requirements.txt \
-    && rm -rf /root/.cache/pip
+RUN pip install -r /app/requirements.txt
 COPY cmv_auth/. /app/
 
 COPY --from=build-stage /frontend/dist app/dist

@@ -56,3 +56,8 @@ class AccountInfos(User):
 class RegisterUser(BaseModel):
     user: UserCreate
     role: str
+
+
+class LoginUser(BaseModel):
+    username: str
+    password: str
