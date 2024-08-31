@@ -6,12 +6,12 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 
-from app.config import SECRET_KEY, ALGORITHM
+from app.utils.config import SECRET_KEY, ALGORITHM
 from app.dependancies.db_session import get_db
 from app.schemas.user import User
 from app.sql.crud import get_user_by_id
 from ..crud.auth_crud import check_permission
-from ..logging_setup import LoggerSetup
+from ..utils.logging_setup import LoggerSetup
 
 logger_setup = LoggerSetup()
 LOGGER = logger_setup.write_log

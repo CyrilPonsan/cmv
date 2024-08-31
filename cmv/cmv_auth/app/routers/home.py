@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from ..config import HOME_SERVICE
+from ..utils.config import HOME_SERVICE
 from ..schemas.user import User
 from ..dependancies.jwt import get_current_active_user
 

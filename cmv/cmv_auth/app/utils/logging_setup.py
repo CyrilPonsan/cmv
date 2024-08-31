@@ -1,7 +1,9 @@
 import logging
 import logging.handlers
 
-from fastapi import Request
+from fastapi import Request, HTTPException
+
+from ..schemas.user import Role
 
 
 class LoggerSetup:
@@ -23,13 +25,36 @@ class LoggerSetup:
         )
         return client_ip or request.client.host
 
+    def write_custom(self, message: str, request: Request):
+        client_ip = self.get_client_ip(request)
+        self.logger.info(f"{message} FROM {client_ip}")
+
+    def write_debug(self, error: str):
+        self.logger.debug(str(error))
+
+    def write_info(
+        self,
+        request: Request,
+        roles: list[Role] | None = None,
+        error: HTTPException | None = None,
+    ):
+        print("informing")
+        client_ip = self.get_client_ip(request=request)
+        self.logger.info(
+            f"{roles[0].label if roles else ''} - {error.status_code if error else ''} - {error.detail if error else ''} - {request.method} - ON {request.url.path} FROM: {client_ip}"
+        )
+
     def write_log(self, msg: str, request: Request):
         client_ip = self.get_client_ip(request=request)
         self.logger.warning(f"{msg} FROM: {client_ip}")
 
+    def write_valid(self, request: Request, exc: Exception):
+        client_ip = self.get_client_ip(request=request)
+        self.logger.warning(f"{exc} FROM: {client_ip}")
+
     def setup_logging(self):
         # Logger name
-        logger_name = "CMV"  # Change this to your desired logger name
+        logger_name = "AFFRANCHISSEMENT"  # Change this to your desired logger name
         self.logger = logging.getLogger(logger_name)
 
         # Log format
@@ -50,4 +75,4 @@ class LoggerSetup:
         # Add handlers
         self.logger.addHandler(console_handler)
         self.logger.addHandler(file_handler)
-        self.logger.setLevel(logging.INFO)
+        self.logger.setLevel(logging.DEBUG)

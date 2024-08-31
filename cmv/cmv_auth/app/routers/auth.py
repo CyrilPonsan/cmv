@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response, Body
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
-from app.sql.models import UserSession
+from app.settings.models import UserSession
 
 from ..dependancies.auth import (
     authenticate_user,
@@ -14,7 +14,7 @@ from ..dependancies.auth import (
 )
 from app.dependancies.db_session import get_db
 from app.schemas.user import LoginUser, User
-from ..logging_setup import LoggerSetup
+from ..utils.logging_setup import LoggerSetup
 
 # Configuration de l'authentifications
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -72,4 +72,4 @@ def logout(
 
 @router.get("/users/me")
 def read_users_me(current_user: User = Depends(get_current_user)):
-    return {"username": current_user.username}
+    return {"role": current_user.role.name}
