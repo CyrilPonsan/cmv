@@ -1,20 +1,27 @@
+from fastapi.exception_handlers import (
+    http_exception_handler,
+    request_validation_exception_handler,
+)
 from fastapi_limiter import FastAPILimiter
 import redis.asyncio as redis
 from contextlib import asynccontextmanager
 from pathlib import Path
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.dependancies.db_session import get_db
-from app.routers import api
-from app.sql import models
-from app.sql.database import engine
-from app.dependancies.rate_limiter import custom_callback, service_name_identifier
+from .dependancies.db_session import get_db
+from .routers import api
+
+from .dependancies.rate_limiter import custom_callback, service_name_identifier
+from .utils.logging_setup import LoggerSetup
 from .services.fixtures import create_fixtures
-from .logging_setup import LoggerSetup
+from .settings.database import engine
+from .settings import models
 
 REDIS_URL = "redis://redis:6379"
 
@@ -25,6 +32,8 @@ logger_setup = LoggerSetup()
 LOGGER = logger_setup.logger
 
 models.Base.metadata.create_all(bind=engine)
+
+logger = LoggerSetup()
 
 
 @asynccontextmanager
@@ -54,6 +63,33 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def restrict_ip_middleware(request: Request, call_next):
+    client_ip = request.client.host
+    if request.url.path.startswith("/mas") and client_ip != "127.0.0.1":
+        raise HTTPException(status_code=403, detail="Forbidden")
+    response = await call_next(request)
+    return response
+
+
+# handle app raised http exceptions
+@app.exception_handler(StarletteHTTPException)
+async def custom_http_exception_handler(request, exc):
+    print(f"OMG an HTTP error! {repr(exc)}")
+    if exc.status_code != 429:
+        logger.write_log(exc.detail, request)
+    return await http_exception_handler(request, exc)
+
+
+# handle validation exceptions
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    print(f"OMG! The client sent invalid data!: {exc}")
+    logger.write_valid(request, exc)
+    return await request_validation_exception_handler(request, exc)
+
 
 """ @app.on_event("startup")
 async def startup():

@@ -2,7 +2,7 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from faker import Faker
 
-from app.sql import models
+from app.settings import models
 
 # cuisines : 20
 # entretien : 30
@@ -227,10 +227,10 @@ objects = [
     {"first_name": "marc", "last_name": "hunter"},
 ]
 
-emails: list[str] = []
+usernames: list[str] = []
 for object in objects:
-    email = object["first_name"] + "." + object["last_name"] + "@cmv.fr"
-    emails.append(email)
+    username = object["first_name"] + "." + object["last_name"] + "@cmv.fr"
+    usernames.append(username)
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -259,7 +259,7 @@ def create_fixtures(db: Session):
     db.commit()
 
     user = models.User(
-        email="toto@toto.fr",
+        username="toto@toto.fr",
         password=hashed_password,
         first_name="jacques",
         last_name="durand",
@@ -268,7 +268,7 @@ def create_fixtures(db: Session):
     )
 
     nurse = models.User(
-        email="tata@toto.fr",
+        username="tata@toto.fr",
         password=hashed_password,
         first_name="jacqueline",
         last_name="dupond",
@@ -306,7 +306,7 @@ def create_users(db, idx, qty, role):
     db_users: list[models.User] = []
     for i in range(0, qty):
         user = models.User(
-            email=emails[idx],
+            username=usernames[idx],
             password=hashed_password,
             first_name=objects[idx]["first_name"],
             last_name=objects[idx]["last_name"],

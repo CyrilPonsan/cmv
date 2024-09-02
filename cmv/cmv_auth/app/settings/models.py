@@ -3,13 +3,14 @@ from datetime import datetime
 from sqlalchemy import (
     ForeignKey,
     String,
+    Integer,
     DateTime,
     Boolean,
     func,
 )
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
-from .database import Base
+from ..settings.database import Base
 
 
 class Permission(Base):
@@ -40,7 +41,7 @@ class User(Base):
     __tablename__ = "user"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    email: Mapped[str] = mapped_column(String, unique=True)
+    username: Mapped[str] = mapped_column(String, unique=True, index=True)
     password: Mapped[str] = mapped_column(String)
     first_name: Mapped[str] = mapped_column(String)
     last_name: Mapped[str] = mapped_column(String)
@@ -55,6 +56,17 @@ class User(Base):
     role_id: Mapped[int] = mapped_column(ForeignKey("role.id"))
     role: Mapped["Role"] = relationship("Role", back_populates="users")
 
+    # Modèle de session
+
+
+class UserSession(Base):
+    __tablename__ = "user_session"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(Integer, index=True)
+    session_id: Mapped[int] = mapped_column(String, unique=True, index=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime)
+
 
 """ class Role(Base):
     __tablename__ = "role"
@@ -65,7 +77,6 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now())
     users = relationship("User", back_populates="role") """
-
 
 """ class User(Base):
     __tablename__ = "user"

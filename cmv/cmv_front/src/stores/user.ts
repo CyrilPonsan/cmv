@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import useHttp from '@/composables/use-http2'
+import useHttp from '@/composables/use-http'
 import { useRouter } from 'vue-router'
 
 export const useUserStore = defineStore('user', () => {
@@ -53,8 +53,6 @@ export const useUserStore = defineStore('user', () => {
    */
   const handshake = () => {
     updateColorScheme()
-    access_token.value = localStorage.getItem('access_token') ?? ''
-    refresh_token.value = localStorage.getItem('refresh_token') ?? ''
     getUserInfos()
   }
 
@@ -65,23 +63,10 @@ export const useUserStore = defineStore('user', () => {
     const applyData = (data: any) => {
       role.value = data.role
     }
-    http.sendRequest({ path: '/users/me' }, applyData)
-  }
-
-  /**
-   * met à jour les valeurs des jetons de sessions en mémoire et dans le storage
-   * @param value { access_token: string; refresh_token: string }
-   */
-  const setTokens = (value: { access_token: string; refresh_token: string }) => {
-    access_token.value = value.access_token
-    refresh_token.value = value.refresh_token
-    localStorage.setItem('access_token', value.access_token)
-    localStorage.setItem('refresh_token', value.refresh_token)
+    http.sendRequest({ path: '/auth/users/me' }, applyData)
   }
 
   const logout = () => {
-    localStorage.setItem('access_token', '')
-    localStorage.setItem('refresh_token', '')
     role.value = ''
     console.log('disconnected!')
     router.push('/')
@@ -95,7 +80,6 @@ export const useUserStore = defineStore('user', () => {
     getUserInfos,
     handshake,
     logout,
-    setTokens,
     toggleColorScheme
   }
 })

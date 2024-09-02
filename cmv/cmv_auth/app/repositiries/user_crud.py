@@ -3,7 +3,7 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from starlette import status
 
-from . import models
+from ..settings import models
 from ..schemas.user import RegisterUser
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

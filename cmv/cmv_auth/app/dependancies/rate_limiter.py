@@ -1,7 +1,7 @@
 from math import ceil
 from fastapi import HTTPException, Request, Response, status
 
-from ..logging_setup import LoggerSetup
+from ..utils.logging_setup import LoggerSetup
 
 logger_setup = LoggerSetup()
 
