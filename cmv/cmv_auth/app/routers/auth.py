@@ -51,7 +51,7 @@ def login(
     user = authenticate_user(db, credentials.username, credentials.password)
     if not user:
         raise HTTPException(status_code=401, detail="Incorrect username or password")
-    session_id = create_or_renew_session(db, user.id)
+    session_id = create_or_renew_session(user.id)
     response.set_cookie(key="session_id", value=session_id, httponly=True)
     return {"message": "Logged in successfully"}
 
@@ -71,5 +71,5 @@ def logout(
 
 
 @router.get("/users/me")
-def read_users_me(current_user: User = Depends(get_current_user)):
+async def read_users_me(current_user: User = Depends(get_current_user)):
     return {"role": current_user.role.name}

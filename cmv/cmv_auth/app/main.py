@@ -35,6 +35,8 @@ models.Base.metadata.create_all(bind=engine)
 
 logger = LoggerSetup()
 
+redis_client = redis.StrictRedis(host="redis", port=6379, db=0, decode_responses=True)
+
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
