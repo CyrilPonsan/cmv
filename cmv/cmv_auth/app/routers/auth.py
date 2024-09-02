@@ -43,7 +43,7 @@ def register(username: str, password: str, db: Session = Depends(get_db)):
 
 
 @router.post("/login")
-def login(
+async def login(
     response: Response,
     credentials: Annotated[LoginUser, Body()],
     db: Session = Depends(get_db),
@@ -51,7 +51,7 @@ def login(
     user = authenticate_user(db, credentials.username, credentials.password)
     if not user:
         raise HTTPException(status_code=401, detail="Incorrect username or password")
-    session_id = create_or_renew_session(user.id)
+    session_id = await create_or_renew_session(user.id)
     response.set_cookie(key="session_id", value=session_id, httponly=True)
     return {"message": "Logged in successfully"}
 
@@ -59,8 +59,8 @@ def login(
 @router.get("/logout")
 def logout(
     response: Response,
+    user: Annotated[User, Depends(get_current_user)],
     db: Session = Depends(get_db),
-    user: User = Depends(get_current_user),
 ):
     session = db.query(UserSession).filter(UserSession.user_id == user.id).first()
     if session:
@@ -71,5 +71,5 @@ def logout(
 
 
 @router.get("/users/me")
-async def read_users_me(current_user: User = Depends(get_current_user)):
+async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
     return {"role": current_user.role.name}
