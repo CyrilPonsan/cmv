@@ -6,10 +6,10 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 
-from app.utils.config import SECRET_KEY, ALGORITHM
+from ..settings.config import SECRET_KEY, ALGORITHM
 from app.dependancies.db_session import get_db
 from app.schemas.user import User
-from app.sql.crud import get_user_by_id
+from app.repositiries.user_crud import get_user_by_id
 from ..crud.auth_crud import check_permission
 from ..utils.logging_setup import LoggerSetup
 

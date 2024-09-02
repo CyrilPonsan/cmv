@@ -10,7 +10,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
-from ..sql.database import Base
+from ..settings.database import Base
 
 
 class Permission(Base):

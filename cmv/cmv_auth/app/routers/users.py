@@ -7,7 +7,7 @@ from starlette import status
 from app.dependancies.db_session import get_db
 from app.dependancies.jwt import get_current_active_user
 from app.schemas.user import RegisterUser, User
-from app.sql.crud import create_user
+from app.repositiries.user_crud import create_user
 
 router = APIRouter(
     prefix="/users",
