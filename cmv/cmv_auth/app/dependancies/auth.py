@@ -1,6 +1,6 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 import secrets
-import redis
+
 from fastapi import HTTPException, status, Request, Depends
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
@@ -42,52 +42,85 @@ def authenticate_user(db: Session, username: str, password: str):
 async def create_or_renew_session(user_id: int):
     session_id = secrets.token_urlsafe(32)
     session_key = f"session:{session_id}"
-    session_data = {
-        "user_id": str(user_id),
-        "expires_at": (datetime.now() + timedelta(hours=1)).isoformat(),
-    }
 
-    # Use hset to set multiple fields in the hash
-    await redis_client.hset(session_key, mapping=session_data)
+    LOGGER(f"Création/renouvellement de session pour user_id: {user_id}", None)
+    LOGGER(f"Clé de session: {session_key}", None)
 
-    # Set the expiration for the session
+    # Stocker la session dans Redis avec une expiration de 1 heure
+    await redis_client.hmset(session_key, {"user_id": str(user_id)})
     await redis_client.expire(session_key, timedelta(hours=1))
+
+    # Vérification immédiate
+    session_data = await redis_client.hgetall(session_key)
+    LOGGER(f"Données de session après création: {session_data}", None)
 
     return session_id
 
 
 # Dépendance pour vérifier la session
-async def get_current_user(request: Request, db: Session = Depends(get_db)):
+async def get_current_user(request: Request, db=Depends(get_db)):
     session_id = request.cookies.get("session_id")
+    LOGGER(f"Session ID récupéré : {session_id}", request)
+
     if not session_id:
+        LOGGER("Aucun session_id trouvé dans les cookies", request)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Session non valide ou expirée.",
+            detail="toto Session non valide ou expirée.",
         )
 
     session_key = f"session:{session_id}"
+    LOGGER(f"Clé de session : {session_key}", request)
+
+    # Récupération des données de session de Redis
     session_data = await redis_client.hgetall(session_key)
+    LOGGER(f"Données de session récupérées : {session_data}", request)
 
-    # Convert the session_data values to strings, if they are in bytes
-    session_data = {
-        k: v.decode("utf-8") if isinstance(v, bytes) else v
-        for k, v in session_data.items()
-    }
-
-    # Verify if session_data contains the user_id
-    if not session_data or "user_id" not in session_data:
+    if not session_data:
+        LOGGER("Aucune donnée de session trouvée dans Redis", request)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Session non valide ou expirée.",
+            detail="tata Session non valide ou expirée. (Aucune donnée)",
         )
 
-    user_id = session_data["user_id"]
+    if "user_id" not in session_data:
+        LOGGER("user_id non trouvé dans les données de session", request)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="tata Session non valide ou expirée. (Pas de user_id)",
+        )
 
-    # Further code to retrieve the user from the database, etc.
+    user_id = session_data.get("user_id")
+    LOGGER(f"User ID récupéré : {user_id}", request)
+
+    # Retrieve the user from the database
     user = db.query(User).filter(User.id == user_id).first()
-    if not user:
+    if not user or not user.is_active:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Utilisateur non trouvé.",
+            detail="Utilisateur inactif ou non trouvé.",
         )
+
+    # Renew the session expiration
+    await redis_client.expire(session_key, timedelta(hours=1))
+
+    # Check permissions
+    resource = request.url.path.split("/")[3]
+    authorization = check_permission(
+        db=db,
+        role=user.role.name,
+        action=request.method.lower(),
+        resource=resource,
+    )
+
+    if request.url.path not in basic_authorizations and not authorization:
+        LOGGER(
+            f"verboten to {request.method.lower()} on {resource} for {user.role.name}",
+            request,
+        )
+        raise HTTPException(
+            status_code=403,
+            detail="Vous n'êtes pas autorisé à effectuer cette action sur cette ressource.",
+        )
+
     return user

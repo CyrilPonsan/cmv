@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Response, Body
+from fastapi import APIRouter, Depends, HTTPException, Response, Body, Request
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
@@ -45,6 +45,7 @@ def register(username: str, password: str, db: Session = Depends(get_db)):
 @router.post("/login")
 async def login(
     response: Response,
+    request: Request,
     credentials: Annotated[LoginUser, Body()],
     db: Session = Depends(get_db),
 ):
@@ -52,6 +53,7 @@ async def login(
     if not user:
         raise HTTPException(status_code=401, detail="Incorrect username or password")
     session_id = await create_or_renew_session(user.id)
+    LOGGER(f"Nouvelle session créée: {session_id}", request)
     response.set_cookie(key="session_id", value=session_id, httponly=True)
     return {"message": "Logged in successfully"}
 
