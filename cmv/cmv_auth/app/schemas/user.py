@@ -37,8 +37,17 @@ class UserCreate(UserBase):
         return v
 
 
+class Role(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True
+
+
 class User(UserBase):
     id: int
+    role: Role
 
     class Config:
         from_attributes = True
@@ -60,11 +69,3 @@ class RegisterUser(BaseModel):
 class LoginUser(BaseModel):
     username: str
     password: str
-
-
-class Role(BaseModel):
-    id: int
-    name: str
-
-    class Config:
-        from_attributes = True

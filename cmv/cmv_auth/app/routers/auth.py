@@ -1,9 +1,11 @@
+from datetime import timedelta
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Response, Body, Request
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
+from app.settings.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from app.settings.models import UserSession
 
 from ..dependancies.auth import (
@@ -52,10 +54,14 @@ async def login(
 ):
     user = authenticate_user(db, credentials.username, credentials.password)
     if not user:
-        raise HTTPException(status_code=401, detail="Incorrect username or password")
-    session_id = create_session(user.id)
-    access_token = create_access_token(data={"sub": user.id, "session_id": session_id})
-    return {"access_token": access_token, "token_type": "bearer"}
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    access_token_expires = timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
+    access_token = create_access_token(
+        data={"sub": str(user.id), "session_id": create_session(user.id)},
+        expires_delta=access_token_expires,
+    )
+    response.set_cookie(key="access_token", value=access_token, httponly=True)
+    return {"message": "all good bro!"}
 
 
 @router.get("/logout")
