@@ -7,7 +7,10 @@ from starlette import status
 from app.dependancies.db_session import get_db
 from app.dependancies.jwt import get_current_active_user
 from app.schemas.user import RegisterUser, User
+from ..settings import models
 from app.repositiries.user_crud import create_user
+from ..services.redis.users import cache_data
+from ..repositiries.user_crud import get_all_users
 
 router = APIRouter(
     prefix="/users",
@@ -15,11 +18,13 @@ router = APIRouter(
 )
 
 
-@router.get("/me")
-async def read_users_me(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-):
-    return {"role": current_user.role.name}
+@router.get("/")
+async def read_all_users(db=Depends(get_db)):
+    @cache_data(expire_time=5 * 3600, key="all_users")
+    def cached_users():
+        return get_all_users(db)
+
+    return await cached_users()
 
 
 @router.post("/user/register")

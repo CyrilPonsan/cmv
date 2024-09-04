@@ -20,6 +20,9 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
+    first_name: str
+    last_name: str
+    service: str
     password: str
 
     @validator("password")

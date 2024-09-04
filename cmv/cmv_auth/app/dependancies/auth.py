@@ -11,8 +11,7 @@ from jose import jwt, JWTError
 from ..utils.logging_setup import LoggerSetup
 from .redis import redis_client
 from ..settings.models import User
-from ..schemas.user import User as CurrentUser
-from ..settings.config import SECRET_KEY, ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM
+from ..settings.config import SECRET_KEY, ALGORITHM
 from .db_session import get_db
 
 redis = redis_client
