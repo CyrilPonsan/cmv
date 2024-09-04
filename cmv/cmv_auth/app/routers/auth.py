@@ -8,7 +8,8 @@ from app.settings.models import UserSession
 
 from ..dependancies.auth import (
     authenticate_user,
-    create_or_renew_session,
+    create_access_token,
+    create_session,
     get_current_user,
     get_user,
 )
@@ -52,10 +53,9 @@ async def login(
     user = authenticate_user(db, credentials.username, credentials.password)
     if not user:
         raise HTTPException(status_code=401, detail="Incorrect username or password")
-    session_id = await create_or_renew_session(user.id)
-    LOGGER(f"Nouvelle session créée: {session_id}", request)
-    response.set_cookie(key="session_id", value=session_id, httponly=True)
-    return {"message": "Logged in successfully"}
+    session_id = create_session(user.id)
+    access_token = create_access_token(data={"sub": user.id, "session_id": session_id})
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.get("/logout")
