@@ -22,6 +22,7 @@ async def read_chambres(
 ):
     # construction de l'url
     url = f"{HOME_SERVICE}/{path}/"
+    print(f"URL : {current_user}")
 
     # Récupération des cookies de la session
     cookies = request.cookies
