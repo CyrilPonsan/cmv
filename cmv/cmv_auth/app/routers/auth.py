@@ -6,7 +6,6 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from app.settings.config import ACCESS_TOKEN_EXPIRE_MINUTES
-from app.settings.models import UserSession
 
 from ..dependancies.auth import (
     authenticate_user,
@@ -14,6 +13,7 @@ from ..dependancies.auth import (
     create_session,
     get_current_user,
     get_user,
+    signout_current_user,
 )
 from app.dependancies.db_session import get_db
 from app.schemas.user import LoginUser, User
@@ -48,7 +48,6 @@ def register(username: str, password: str, db: Session = Depends(get_db)):
 @router.post("/login")
 async def login(
     response: Response,
-    request: Request,
     credentials: Annotated[LoginUser, Body()],
     db: Session = Depends(get_db),
 ):
@@ -64,18 +63,11 @@ async def login(
     return {"message": "all good bro!"}
 
 
-@router.get("/logout")
-def logout(
-    response: Response,
-    user: Annotated[User, Depends(get_current_user)],
-    db: Session = Depends(get_db),
+@router.post("/logout")
+async def logout(
+    response: Response, request: Request, current_user: User = Depends(get_current_user)
 ):
-    session = db.query(UserSession).filter(UserSession.user_id == user.id).first()
-    if session:
-        db.delete(session)
-        db.commit()
-    response.delete_cookie("session_id")
-    return {"message": "Logged out successfully"}
+    return signout_current_user(request, response)
 
 
 @router.get("/users/me")

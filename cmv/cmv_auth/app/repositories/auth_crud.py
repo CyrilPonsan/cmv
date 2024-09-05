@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from ..settings.models import Permission
+from ..sql.models import Permission
 
 
 # retourne la permission si elle existe, dans le cas contraire cela signifie que l'utilisateur ne peut pas effectuer l'action requise sur cette ressource

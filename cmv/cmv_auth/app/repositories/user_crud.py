@@ -3,41 +3,38 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from starlette import status
 
-from ..settings import models
+from ..sql.models import User, Role
 from ..schemas.user import RegisterUser
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 # retourne un utilisateur grâce à son identifiant
-def get_user_by_id(db: Session, user_id: int):
-    user = db.query(models.User).filter(models.User.id == user_id).first()
-    return user
+def get_user_with_id(db: Session, user_id: int):
+    return db.query(User).filter(User.id == user_id).first()
 
 
-# username est le nom donné au champ email dans la bdd
-def get_user_by_email(db: Session, email: str):
-    return db.query(models.User).filter(models.User.email == email).first()
+# retourne un utilisateur d'après son identifiant
+def get_user(db: Session, username: str):
+    return db.query(User).filter(User.username == username).first()
 
 
 def create_user(db: Session, data: RegisterUser):
     user = data.user
-    existing_user = (
-        db.query(models.User).filter(models.User.username == user.username).first()
-    )
+    existing_user = db.query(User).filter(User.username == user.username).first()
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Un compte avec cette adresse exise déjà",
         )
-    existing_role = db.query(models.Role).filter(models.Role.name == data.role).first()
+    existing_role = db.query(Role).filter(Role.name == data.role).first()
     if not existing_role:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Le rôle n'existe pas."
         )
 
     hashed_password = pwd_context.hash(user.password)
-    new_user = models.User(
+    new_user = User(
         username=user.username,
         password=hashed_password,
         role=existing_role,
@@ -57,7 +54,7 @@ def get_offset(page: int, limit: int):
 
 def get_all_users(db: Session):
     print("not from cache")
-    result = db.query(models.User).all()
+    result = db.query(User).all()
 
     users = []
 

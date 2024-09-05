@@ -1,16 +1,11 @@
-from typing import Annotated
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from starlette import status
 
 from app.dependancies.db_session import get_db
-from app.dependancies.jwt import get_current_active_user
-from app.schemas.user import RegisterUser, User
-from ..settings import models
-from app.repositiries.user_crud import create_user
-from ..services.redis.users import cache_data
-from ..repositiries.user_crud import get_all_users
+from app.repositories.user_crud import create_user, get_all_users
+from app.schemas.user import RegisterUser
+from ..services.redis_cached_data import cache_data
 
 router = APIRouter(
     prefix="/users",
@@ -18,6 +13,7 @@ router = APIRouter(
 )
 
 
+# retourne la liste de tous les utilisateurs depuis le cache si elle y est présente, sinon met la liste de tous les uitlisateurs dans le cache redis
 @router.get("/")
 async def read_all_users(db=Depends(get_db)):
     @cache_data(expire_time=5 * 3600, key="all_users")

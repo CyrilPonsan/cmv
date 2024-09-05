@@ -7,7 +7,7 @@ from alembic import context
 import os
 import sys
 from dotenv import load_dotenv
-from app.settings import models
+from app.sql import models
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

@@ -21,7 +21,7 @@ from .dependancies.rate_limiter import custom_callback, service_name_identifier
 from .utils.logging_setup import LoggerSetup
 from .services.fixtures import create_fixtures
 from .settings.database import engine
-from .settings import models
+from .sql import models
 
 REDIS_URL = "redis://redis:6379"
 

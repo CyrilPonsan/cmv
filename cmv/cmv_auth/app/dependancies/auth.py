@@ -2,15 +2,16 @@ from datetime import datetime, timedelta
 import uuid
 from typing import Optional
 
-from fastapi import HTTPException, status, Depends, Request
+from fastapi import HTTPException, status, Depends, Request, Response
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 
+from app.repositories.user_crud import get_user, get_user_with_id
+
 from ..utils.logging_setup import LoggerSetup
 from .redis import redis_client
-from ..settings.models import User
 from ..settings.config import SECRET_KEY, ALGORITHM
 from .db_session import get_db
 
@@ -31,14 +32,6 @@ basic_authorizations = [
 # Fonctions d'authentification
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_user(db: Session, username: str):
-    return db.query(User).filter(User.username == username).first()
-
-
-def get_user_with_id(db: Session, user_id: int):
-    return db.query(User).filter(User.id == user_id).first()
 
 
 def authenticate_user(db: Session, username: str, password: str):
@@ -100,9 +93,30 @@ async def get_current_user(
     if not redis_client.exists(f"session:{session_id}"):
         raise credentials_exception
 
-    user = get_user_with_id(
-        db, user_id
-    )  # Implémentez cette fonction pour récupérer l'utilisateur
+    user = get_user_with_id(db, user_id)
     if user is None:
         raise credentials_exception
     return user
+
+
+async def signout_current_user(request: Request, response: Response):
+    # Récupérer le token du cookie
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(status_code=400, detail="Aucun token trouvé")
+
+    # Décoder le token pour obtenir le session_id
+    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    session_id = payload.get("session_id")
+
+    if session_id:
+        # Supprimer la session de Redis
+        redis_client.delete(f"session:{session_id}")
+
+    # Ajouter le token à une liste noire (optionnel, pour une sécurité accrue)
+    redis_client.setex(f"blacklist:{token}", 3600, "true")  # expire après 1 heure
+
+    # Supprimer le cookie côté client
+    response.delete_cookie(key="access_token", path="/", domain=None)
+
+    return {"message": "Déconnexion réussie"}
