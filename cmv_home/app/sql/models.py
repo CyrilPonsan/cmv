@@ -25,24 +25,15 @@ class Chambre(Base):
     last_cleanup: Mapped[str] = mapped_column(DateTime, nullable=True)
     service_id: Mapped[int] = mapped_column(ForeignKey("service.id"))
     service: Mapped["Service"] = relationship("Service", back_populates="chambres")
-    patient: Mapped["Patient"] = relationship("Patient", back_populates="chambre")
 
 
 class Patient(Base):
     __tablename__ = "patient"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    civilite: Mapped[str] = mapped_column(String)
+    civilite: Mapped[str] = mapped_column(String, nullable=True)
     nom: Mapped[str] = mapped_column(String)
     prenom: Mapped[str] = mapped_column(String)
-    date_naissance: Mapped[str] = mapped_column(DateTime)
-    admission: Mapped[str] = mapped_column(DateTime)
-    sorti_le: Mapped[str] = mapped_column(DateTime, nullable=True)
-    sortie_prevue_le: Mapped[str] = mapped_column(DateTime, nullable=True)
-    service_id: Mapped[int] = mapped_column(ForeignKey("service.id"))
-    service: Mapped["Service"] = relationship("Service", back_populates="patients")
-    chambre_id: Mapped[int] = mapped_column(ForeignKey("chambre.id"), nullable=True)
-    chambre: Mapped["Chambre"] = relationship("Chambre", back_populates="patient")
 
 
 class Service(Base):
@@ -52,7 +43,4 @@ class Service(Base):
     nom: Mapped[str] = mapped_column(String, unique=True)
     chambres: Mapped[list["Chambre"]] = relationship(
         "Chambre", back_populates="service"
-    )
-    patients: Mapped[list["Patient"]] = relationship(
-        "Patient", back_populates="service"
     )

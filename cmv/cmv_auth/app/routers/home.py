@@ -5,9 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 
 from ..settings.config import HOME_SERVICE
 from ..schemas.user import User
-from ..dependancies.auth import (
-    get_current_user,
-)  # Remplacez avec votre dépendance d'authentification par session
+from ..dependancies.auth import get_current_user
 
 router = APIRouter(
     prefix="/home",
@@ -24,6 +22,7 @@ async def read_chambres(
 ):
     # construction de l'url
     url = f"{HOME_SERVICE}/{path}/"
+    print(f"URL : {current_user}")
 
     # Récupération des cookies de la session
     cookies = request.cookies

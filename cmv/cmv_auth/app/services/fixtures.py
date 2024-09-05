@@ -2,7 +2,7 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from faker import Faker
 
-from app.settings import models
+from app.sql import models
 
 # cuisines : 20
 # entretien : 30

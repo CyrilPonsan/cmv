@@ -263,4 +263,14 @@ def create_fixtures(db: Session):
         index += 100
     db.add_all(rooms)
     db.commit()
+
+    patients: list[models.Patient] = []
+
+    for o in objects:
+        patient = models.Patient(prenom=o["first_name"], nom=o["last_name"])
+        patients.append(patient)
+
+    db.add_all(patients)
+    db.commit()
+
     return "done"

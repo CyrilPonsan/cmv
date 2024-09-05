@@ -20,10 +20,10 @@ class LoggerSetup:
         """
         Fonction utilitaire pour récupérer l'adresse IP du client à partir de l'objet Request.
         """
-        client_ip = request.headers.get("X-Real-IP") or request.headers.get(
+        """client_ip = request.headers.get("X-Real-IP") or request.headers.get(
             "X-Forwarded-For"
-        )
-        return client_ip or request.client.host
+        )"""
+        return "127.0.0.1"
 
     def write_custom(self, message: str, request: Request):
         client_ip = self.get_client_ip(request)
