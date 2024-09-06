@@ -8,7 +8,6 @@ from ..dependancies.auth import get_current_user
 
 router = APIRouter(prefix="/services", tags=["services"])
 
-
 # retourne la liste des services et des chambres qui leur sont associées
 @router.get("/", response_model=list[Service])
 async def read_services(
