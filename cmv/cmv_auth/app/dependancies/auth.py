@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import uuid
-from typing import Optional
+from typing import Optional, Annotated
 
 from fastapi import HTTPException, status, Depends, Request, Response
 from fastapi.security import OAuth2PasswordBearer
@@ -8,7 +8,9 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 
+from app.repositories.permissions import check_permission
 from app.repositories.user_crud import get_user, get_user_with_id
+from app.schemas.user import User
 
 from ..utils.logging_setup import LoggerSetup
 from .redis import redis_client
@@ -120,3 +122,28 @@ async def signout_current_user(request: Request, response: Response):
     response.delete_cookie(key="access_token", path="/", domain=None)
 
     return {"message": "Déconnexion réussie"}
+
+
+def get_dynamic_permissions(action: str, resource: str):
+    async def get_permissions(
+        current_user: Annotated[User, Depends(get_current_user)],
+        db=Depends(get_db),
+    ):
+        return await check_permissions(db, current_user.role.name, action, resource)
+
+    return get_permissions
+
+
+async def check_permissions(
+    db: Session,
+    role: str,
+    action: str,
+    resource: str,
+):
+    authorized = check_permission(db, role, action, resource)
+    print(f"authorized = {authorized}")
+    if not authorized:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Vous n'êtes pas autorisé à accéder à cette ressource.",
+        )

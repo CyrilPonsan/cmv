@@ -23,7 +23,7 @@ from .services.fixtures import create_fixtures
 from .settings.database import engine
 from .sql import models
 
-REDIS_URL = "redis://redis:6379"
+
 
 # setup root logger
 logger_setup = LoggerSetup()
@@ -35,22 +35,12 @@ models.Base.metadata.create_all(bind=engine)
 
 logger = LoggerSetup()
 
-redis_client = redis.StrictRedis(host="redis", port=6379, db=0, decode_responses=True)
 
 
-@asynccontextmanager
-async def lifespan(_: FastAPI):
-    redis_connection = redis.from_url(REDIS_URL, encoding="utf8")
-    await FastAPILimiter.init(
-        redis=redis_connection,
-        identifier=service_name_identifier,
-        http_callback=custom_callback,
-    )
-    yield
-    await FastAPILimiter.close()
 
 
-app = FastAPI(lifespan=lifespan)
+
+app = FastAPI()
 
 
 app.include_router(api.router)
