@@ -23,7 +23,6 @@ def get_rooms_with_pagination(db: Session, page: int, limit: int):
     if page < 1:
         page = 1
 
-    offset = (page - 1) * limit
 
     # Requête principale
     query = db.query(Chambre, Service.nom.label("service_nom")).join(
@@ -36,6 +35,13 @@ def get_rooms_with_pagination(db: Session, page: int, limit: int):
     total_rooms = db.query(Chambre).count()
     total_pages = (total_rooms + limit - 1) // limit
 
+    if page > total_pages:
+        page = 1
+        total_rooms = db.query(Chambre).count()
+        total_pages = (total_rooms + limit - 1) // limit
+
+
+    offset = (page - 1) * limit
     paginated_rooms = query.offset(offset).limit(limit).all()
 
     for room in paginated_rooms:
