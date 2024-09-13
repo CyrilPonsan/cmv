@@ -2,9 +2,6 @@ from fastapi.exception_handlers import (
     http_exception_handler,
     request_validation_exception_handler,
 )
-from fastapi_limiter import FastAPILimiter
-import redis.asyncio as redis
-from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import Depends, FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,27 +14,15 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from .dependancies.db_session import get_db
 from .routers import api
 
-from .dependancies.rate_limiter import custom_callback, service_name_identifier
 from .utils.logging_setup import LoggerSetup
 from .services.fixtures import create_fixtures
 from .settings.database import engine
 from .sql import models
 
 
-
-# setup root logger
-logger_setup = LoggerSetup()
-
-# get logger for module
-LOGGER = logger_setup.logger
-
 models.Base.metadata.create_all(bind=engine)
 
 logger = LoggerSetup()
-
-
-
-
 
 
 app = FastAPI()

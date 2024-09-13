@@ -55,9 +55,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-def create_session(user_id: str):
+async def create_session(user_id: str):
     session_id = str(uuid.uuid4())
-    redis.setex(f"session:{session_id}", 3600, user_id)  # expire après 1 heure
+    await redis.setex(f"session:{session_id}", 3600, user_id)  # expire après 1 heure
     return session_id
 
 
@@ -81,6 +81,8 @@ async def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
+        if not token:
+            raise credentials_exception
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: str = payload.get("sub")
         if not user_id:
@@ -92,8 +94,11 @@ async def get_current_user(
         raise credentials_exception
 
     # Vérifier si la session est toujours valide dans Redis
-    if not redis_client.exists(f"session:{session_id}"):
-        raise credentials_exception
+    session_exists = await redis_client.exists(f"session:{session_id}")
+    if not session_exists:
+        raise HTTPException(
+            status_code=status.HTTP_418_IM_A_TEAPOT, detail="dans le cul lulu"
+        )
 
     user = get_user_with_id(db, user_id)
     if user is None:

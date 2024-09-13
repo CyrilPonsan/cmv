@@ -18,40 +18,42 @@ def get_chambre_detail(db: Session, chambre_id: int):
     return chambre
 
 
-# retourne la liste des chambres avec pagination
+# Retourne la liste des chambres avec pagination
 def get_rooms_with_pagination(db: Session, page: int, limit: int):
+    # Vérifie que le numéro de page est valide
     if page < 1:
         page = 1
 
+    # Vérifie que la limite d'éléments à afficher est valide
+    if limit < 1:
+        limit = 10
 
     # Requête principale
-    query = db.query(Chambre, Service.nom.label("service_nom")).join(
-        Service, Chambre.service_id == Service.id
-    )
+    query = db.query(Chambre, Service).join(Service, Chambre.service_id == Service.id)
 
     # Appliquer le tri
     query = query.order_by(Service.nom.asc(), Chambre.numero.asc())
 
+    # Retourne le nombre total de chambres et calcule le nombre total de pages
     total_rooms = db.query(Chambre).count()
     total_pages = (total_rooms + limit - 1) // limit
 
+    # Vérifie que le numéro de page envoyée par le frontend n'est pas supérieur au nombre total de page
     if page > total_pages:
         page = 1
         total_rooms = db.query(Chambre).count()
         total_pages = (total_rooms + limit - 1) // limit
 
-
+    # Calcule l'offset pour la pagination et retourne le résultat final de la requête
     offset = (page - 1) * limit
     paginated_rooms = query.offset(offset).limit(limit).all()
 
-    for room in paginated_rooms:
-        print(f"chambre : {room.Chambre.numero} - {room.service_nom}")
-
+    # Sérialisation du résultat de la requête
     rooms = [
         {
             "id": room.Chambre.id,
             "numero": room.Chambre.numero,
-            "service": room.service_nom,
+            "service": room.Service,
         }
         for room in paginated_rooms
     ]

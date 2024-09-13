@@ -5,26 +5,34 @@ from pydantic import BaseModel, Field, field_validator
 from .regular_expression import generic_pattern
 
 
+class Service(BaseModel):
+    id: int
+    nom: str
+
+
 class Chambre(BaseModel):
     id: int
     numero: str
     status: str
+    service: Service
 
     class Config:
         from_attributes = True
 
 
+"""
 class Service(BaseModel):
     nom: str
     chambres: list[Chambre]
 
     class Config:
         from_attributes = True
+"""
 
 
-class Tokens(BaseModel):
-    access_token: str
-    refresh_token: str
+class PaginatedRooms(BaseModel):
+    total_pages: int
+    rooms: list[Chambre]
 
 
 class PatientBase(BaseModel):

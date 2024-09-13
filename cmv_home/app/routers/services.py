@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, status, Depends
 
 from ..dependancies.db_session import get_db
-from ..schemas.schemas import Service
+from ..schemas.schemas import PaginatedRooms, Service
 from ..crud.service_crud import get_services
 from ..crud.chambre_crud import get_rooms_with_pagination
 from ..dependancies.auth import get_current_user
@@ -26,6 +26,6 @@ async def read_services(
         )
 
 
-@router.get("/rooms")
+@router.get("/rooms", response_model=PaginatedRooms)
 async def get_paginated_rooms(page: int = 1, limit: int = 10, db=Depends(get_db)):
     return get_rooms_with_pagination(db, page, limit)

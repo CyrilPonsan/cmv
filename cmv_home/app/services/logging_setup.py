@@ -3,6 +3,8 @@ import logging.handlers
 
 from fastapi import Request, HTTPException
 
+from ..schemas.user_schema import User, Role
+
 
 class LoggerSetup:
     _instance = None
@@ -18,10 +20,10 @@ class LoggerSetup:
         """
         Fonction utilitaire pour récupérer l'adresse IP du client à partir de l'objet Request.
         """
-        """client_ip = request.headers.get("X-Real-IP") or request.headers.get(
+        client_ip = request.headers.get("X-Real-IP") or request.headers.get(
             "X-Forwarded-For"
-        )"""
-        return "127.0.0.1"
+        )
+        return client_ip or request.client.host
 
     def write_custom(self, message: str, request: Request):
         client_ip = self.get_client_ip(request)
@@ -33,13 +35,13 @@ class LoggerSetup:
     def write_info(
         self,
         request: Request,
-        role: str | None = None,
+        roles: list[Role] | None = None,
         error: HTTPException | None = None,
     ):
         print("informing")
         client_ip = self.get_client_ip(request=request)
         self.logger.info(
-            f"{role if role else ''} - {error.status_code if error else ''} - {error.detail if error else ''} - {request.method} - ON {request.url.path} FROM: {client_ip}"
+            f"{roles[0].label if roles else ''} - {error.status_code if error else ''} - {error.detail if error else ''} - {request.method} - ON {request.url.path} FROM: {client_ip}"
         )
 
     def write_log(self, msg: str, request: Request):

@@ -22,8 +22,7 @@ from ..utils.logging_setup import LoggerSetup
 # Configuration de l'authentifications
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-logger_setup = LoggerSetup()
-LOGGER = logger_setup.write_log
+logger = LoggerSetup()
 
 router = APIRouter(
     prefix="/auth",
@@ -47,6 +46,7 @@ def register(username: str, password: str, db: Session = Depends(get_db)):
 
 @router.post("/login")
 async def login(
+    request: Request,
     response: Response,
     credentials: Annotated[LoginUser, Body()],
     db: Session = Depends(get_db),
@@ -56,10 +56,11 @@ async def login(
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     access_token_expires = timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
     access_token = create_access_token(
-        data={"sub": str(user.id), "session_id": create_session(user.id)},
+        data={"sub": str(user.id), "session_id": await create_session(user.id)},
         expires_delta=access_token_expires,
     )
     response.set_cookie(key="access_token", value=access_token, httponly=True)
+    logger.write_log(f"{user.role.name} connection ", request)
     return {"message": "all good bro!"}
 
 
