@@ -3,7 +3,7 @@ import logging.handlers
 
 from fastapi import Request, HTTPException
 
-from ..schemas.user_schema import User, Role
+# from ..schemas.user_schema import User, Role
 
 
 class LoggerSetup:
@@ -35,13 +35,13 @@ class LoggerSetup:
     def write_info(
         self,
         request: Request,
-        roles: list[Role] | None = None,
+        role: str | None = None,
         error: HTTPException | None = None,
     ):
         print("informing")
         client_ip = self.get_client_ip(request=request)
         self.logger.info(
-            f"{roles[0].label if roles else ''} - {error.status_code if error else ''} - {error.detail if error else ''} - {request.method} - ON {request.url.path} FROM: {client_ip}"
+            f"{role if role else ''} - {error.status_code if error else ''} - {error.detail if error else ''} - {request.method} - ON {request.url.path} FROM: {client_ip}"
         )
 
     def write_log(self, msg: str, request: Request):
@@ -54,7 +54,7 @@ class LoggerSetup:
 
     def setup_logging(self):
         # Logger name
-        logger_name = "AFFRANCHISSEMENT"  # Change this to your desired logger name
+        logger_name = "CMV"  # Change this to your desired logger name
         self.logger = logging.getLogger(logger_name)
 
         # Log format
