@@ -100,13 +100,3 @@ services:
       HOME_DATABASE_URL: ${HOME_DATABASE_URL}
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
-  nginx:
-    image: nginx:latest
-    networks:
-      - cmv
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./nginx_config.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - api_auth
