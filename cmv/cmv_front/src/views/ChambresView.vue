@@ -5,6 +5,7 @@
       <Button
         icon="pi pi-refresh"
         text
+        aria-label="rafraîchir la liste des chambres"
         :loading="http.isLoading.value"
         :disabled="http.isLoading.value"
         @:click="getChambres"
