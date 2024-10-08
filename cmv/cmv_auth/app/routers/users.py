@@ -7,7 +7,7 @@ from starlette import status
 from app.dependancies.db_session import get_db
 from app.repositories.user_crud import create_user, get_all_users
 from app.schemas.user import RegisterUser
-from ..services.redis_cached_data import cache_data
+from ..utils.redis_cached_data import cache_data
 
 router = APIRouter(
     prefix="/users",

@@ -7,9 +7,9 @@ volumes:
     driver: local
   db_auth:
     driver: local
-  cmv_home:
+  cmv_patients:
     driver: local
-  db_home:
+  db_patients:
     driver: local
   logs:
     driver: local
@@ -60,7 +60,7 @@ services:
       AUTH_DATABASE_URL: ${AUTH_DATABASE_URL}
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
-      HOME_SERVICE: ${HOME_SERVICE}
+      PATIENTS_SERVICE: ${PATIENTS_SERVICE}
       ACCESS_MAX_AGE: ${ACCESS_MAX_AGE}
       REFRESH_MAX_AGE: ${REFRESH_MAX_AGE}
     command: >
@@ -71,42 +71,42 @@ services:
         - path: ./cmv
           action: rebuild
 
-  db_home:
+  db_patients:
     image: postgres:latest
     restart: always
-    container_name: db_home
+    container_name: db_patients
     volumes:
-      - db_home:/var/lib/postgresql/data
+      - db_patients:/var/lib/postgresql/data
     networks:
       - cmv
     ports:
       - "6002:5432"
     environment:
-      POSTGRES_USER: ${HOME_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${HOME_POSTGRES_PASSWORD}
-      POSTGRES_DB: ${HOME_POSTGRES_DB}
+      POSTGRES_USER: ${PATIENTS_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${PATIENTS_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${PATIENTS_POSTGRES_DB}
 
-  api_home:
+  api_patients:
     build:
-      context: ./cmv_home
+      context: ./cmv_patients
     restart: always
     networks:
       - cmv
-    container_name: cmv_home
+    container_name: cmv_patients
     ports:
       - "8002:8000"
     depends_on:
-      - db_home
+      - db_patients
     environment:
-      HOME_DATABASE_URL: ${HOME_DATABASE_URL}
+      PATIENTS_DATABASE_URL: ${PATIENTS_DATABASE_URL}
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
     command: >
-      bash -c 'while !</dev/tcp/db_home/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+      bash -c 'while !</dev/tcp/db_PATIENTS/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
 
     develop:
       watch:
-        - path: ./cmv_home
+        - path: ./cmv_patients
           action: rebuild
 
   nginx:

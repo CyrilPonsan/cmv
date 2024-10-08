@@ -23,6 +23,7 @@
     "primeicons": "^7.0.0",
     "primevue": "^4.0.4",
     "tailwindcss-primeui": "^0.3.4",
+    "vite-plugin-compression": "^0.5.1",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },

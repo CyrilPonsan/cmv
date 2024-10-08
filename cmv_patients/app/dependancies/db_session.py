@@ -1,4 +1,4 @@
-from ..utils.database import SessionLocal
+from app.utils.database import SessionLocal
 
 
 # Base de données

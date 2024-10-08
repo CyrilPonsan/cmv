@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response, Body, Request
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
-from app.settings.config import ACCESS_TOKEN_EXPIRE_MINUTES
+from app.utils.config import ACCESS_TOKEN_EXPIRE_MINUTES
 
 from ..dependancies.auth import (
     authenticate_user,
@@ -28,20 +28,6 @@ router = APIRouter(
     prefix="/auth",
     tags=["auth"],
 )
-
-
-# Routes d'authentification
-@router.post("/register")
-def register(username: str, password: str, db: Session = Depends(get_db)):
-    db_user = get_user(db, username)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Username already registered")
-    hashed_password = pwd_context.hash(password)
-    new_user = User(username=username, hashed_password=hashed_password)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return {"message": "User created successfully"}
 
 
 @router.post("/login")
@@ -74,3 +60,19 @@ async def logout(
 @router.get("/users/me")
 async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
     return {"role": current_user.role.name}
+
+
+"""
+# Routes d'authentification
+@router.post("/register")
+def register(username: str, password: str, db: Session = Depends(get_db)):
+    db_user = get_user(db, username)
+    if db_user:
+        raise HTTPException(status_code=400, detail="Username already registered")
+    hashed_password = pwd_context.hash(password)
+    new_user = User(username=username, hashed_password=hashed_password)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return {"message": "User created successfully"}
+"""

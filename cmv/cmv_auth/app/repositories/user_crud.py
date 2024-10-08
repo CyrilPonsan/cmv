@@ -1,14 +1,34 @@
-from fastapi import HTTPException
+from abc import ABC, abstractmethod
+
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-from starlette import status
 
-from ..sql.models import User, Role
-from ..schemas.user import RegisterUser
+from ..sql.models import User
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
+class UserRead(ABC):
+    @abstractmethod
+    def login(self, db: Session, username: str) -> User:
+        pass
+
+
+class UserRepository(UserRead):
+    pass
+
+
+class PostgresAuthRepository(UserRepository):
+    pwd_context = CryptContext
+
+    def get_user(db: Session, username: str) -> User:
+        return db.query(User).filter(User.username == username).first()
+
+    def get_user_with_id(db: Session, user_id: int) -> User:
+        return db.query(User).filter(User.id_user == user_id).first()
+
+
+"""
 # retourne un utilisateur grâce à son identifiant
 def get_user_with_id(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
@@ -62,3 +82,4 @@ def get_all_users(db: Session):
         user = {"id": r.id, "username": r.username, "role": r.role.name}
         users.append(user)
     return users
+"""
