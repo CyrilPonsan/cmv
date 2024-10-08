@@ -1,25 +1,25 @@
-from typing import Annotated
+from fastapi import APIRouter
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from starlette import status
-
-from app.dependancies.db_session import get_db
-from app.dependancies.jwt import get_current_active_user
-from app.schemas.user import RegisterUser, User
-from app.sql.crud import create_user
 
 router = APIRouter(
     prefix="/users",
     tags=["users"],
 )
 
-
-@router.get("/me")
-async def read_users_me(
-    current_user: Annotated[User, Depends(get_current_active_user)],
+"""
+# retourne la liste de tous les utilisateurs depuis le cache si elle y est présente, sinon met la liste de tous les uitlisateurs dans le cache redis
+@router.get("/")
+async def read_all_users(
+    _: Annotated[
+        bool, Depends(get_dynamic_permissions(action="get", resource="services"))
+    ],
+    db=Depends(get_db),
 ):
-    return {"role": current_user.role.name}
+    @cache_data(expire_time=5 * 60, key="all_users")
+    def cached_users():
+        return get_all_users(db)
+
+    return await cached_users()
 
 
 @router.post("/user/register")
@@ -31,3 +31,4 @@ def register_user(data: RegisterUser, db: Session = Depends(get_db)):
             detail="Un compte enregistré avec cette adresse existe déjà",
         )
     return {"message": "Compte créé avec succès"}
+"""

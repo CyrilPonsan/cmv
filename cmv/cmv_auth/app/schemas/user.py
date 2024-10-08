@@ -1,4 +1,3 @@
-from typing import Optional
 from pydantic import BaseModel, EmailStr, validator
 
 regex_text = r"[\w\sÀ-ÿ«»’',.\-:;!?()–—“”'\"]+"
@@ -17,10 +16,13 @@ class ApiInfos(BaseModel):
 
 
 class UserBase(BaseModel):
-    email: EmailStr
+    username: EmailStr
 
 
 class UserCreate(UserBase):
+    first_name: str
+    last_name: str
+    service: str
     password: str
 
     @validator("password")
@@ -38,8 +40,17 @@ class UserCreate(UserBase):
         return v
 
 
-class User(UserBase):
+class Role(BaseModel):
     id: int
+    name: str
+
+    class Config:
+        from_attributes = True
+
+
+class User(UserBase):
+    id_user: int
+    role: Role
 
     class Config:
         from_attributes = True
@@ -56,3 +67,8 @@ class AccountInfos(User):
 class RegisterUser(BaseModel):
     user: UserCreate
     role: str
+
+
+class LoginUser(BaseModel):
+    username: str
+    password: str

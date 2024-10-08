@@ -9,22 +9,13 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
-from .database import Base
-
-
-class Permission(Base):
-    __tablename__ = "permission"
-
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    role: Mapped[str] = mapped_column(String)
-    action: Mapped[str] = mapped_column(String)
-    resource: Mapped[str] = mapped_column(String)
+from ..utils.database import Base
 
 
 class Role(Base):
     __tablename__ = "role"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id_role: Mapped[int] = mapped_column(primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String, unique=True)
     label: Mapped[str] = mapped_column(String, unique=True)
     created_at: Mapped[datetime] = mapped_column(
@@ -35,15 +26,30 @@ class Role(Base):
     )
     users: Mapped[list["User"]] = relationship("User", back_populates="role")
 
+    permissions: Mapped[list["Permission"]] = relationship(
+        "Permission", back_populates="role"
+    )
+
+
+class Permission(Base):
+    __tablename__ = "permission"
+
+    id_permission: Mapped[int] = mapped_column(primary_key=True, index=True)
+    action: Mapped[str] = mapped_column(String, nullable=False)
+    resource: Mapped[str] = mapped_column(String, nullable=False)
+
+    role_id: Mapped[int] = mapped_column(ForeignKey("role.id_role", ondelete="CASCADE"))
+    role: Mapped[Role] = relationship("Role", back_populates="permissions")
+
 
 class User(Base):
     __tablename__ = "user"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    email: Mapped[str] = mapped_column(String, unique=True)
+    id_user: Mapped[int] = mapped_column(primary_key=True, index=True)
+    username: Mapped[str] = mapped_column(String, unique=True, index=True)
     password: Mapped[str] = mapped_column(String)
-    first_name: Mapped[str] = mapped_column(String)
-    last_name: Mapped[str] = mapped_column(String)
+    prenom: Mapped[str] = mapped_column(String)
+    nom: Mapped[str] = mapped_column(String)
     is_active: Mapped[bool] = mapped_column(Boolean, default=False)
     service: Mapped[str] = mapped_column(String)
     created_at: Mapped[datetime] = mapped_column(
@@ -52,32 +58,6 @@ class User(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
-    role_id: Mapped[int] = mapped_column(ForeignKey("role.id"))
+
+    role_id: Mapped[int] = mapped_column(ForeignKey("role.id_role"))
     role: Mapped["Role"] = relationship("Role", back_populates="users")
-
-
-""" class Role(Base):
-    __tablename__ = "role"
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(255), unique=True, nullable=False)
-    label = Column(String(255), unique=True, nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now())
-    users = relationship("User", back_populates="role") """
-
-
-""" class User(Base):
-    __tablename__ = "user"
-
-    id = Column(Integer, primary_key=True)
-    email = Column(String(255), unique=True, nullable=False)
-    password = Column(String(255), nullable=False)
-    first_name = Column(String, nullable=False)
-    last_name = Column(String, nullable=False)
-    is_active = Column(Boolean, default=False, nullable=False)
-    service = Column(String, nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now())
-    role_id = Column(Integer, ForeignKey("role.id"))
-    role = relationship("Role", back_populates="users") """

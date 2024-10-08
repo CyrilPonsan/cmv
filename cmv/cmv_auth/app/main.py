@@ -1,45 +1,30 @@
-from fastapi_limiter import FastAPILimiter
-import redis.asyncio as redis
-from contextlib import asynccontextmanager
+from fastapi.exception_handlers import (
+    http_exception_handler,
+    request_validation_exception_handler,
+)
 from pathlib import Path
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.dependancies.db_session import get_db
-from app.routers import api
-from app.sql import models
-from app.sql.database import engine
-from app.dependancies.rate_limiter import custom_callback, service_name_identifier
-from .services.fixtures import create_fixtures
-from .logging_setup import LoggerSetup
+from .dependancies.db_session import get_db
+from .routers import api
 
-REDIS_URL = "redis://redis:6379"
+from .utils.logging_setup import LoggerSetup
+from .utils.fixtures import create_fixtures
+from .utils.database import engine
+from .sql import models
 
-# setup root logger
-logger_setup = LoggerSetup()
-
-# get logger for module
-LOGGER = logger_setup.logger
 
 models.Base.metadata.create_all(bind=engine)
 
+logger = LoggerSetup()
 
-@asynccontextmanager
-async def lifespan(_: FastAPI):
-    redis_connection = redis.from_url(REDIS_URL, encoding="utf8")
-    await FastAPILimiter.init(
-        redis=redis_connection,
-        identifier=service_name_identifier,
-        http_callback=custom_callback,
-    )
-    yield
-    await FastAPILimiter.close()
-
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 
 app.include_router(api.router)
@@ -55,18 +40,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-""" @app.on_event("startup")
-async def startup():
-    LOGGER.info("--- Start up App ---")
 
-@app.on_event("shutdown")
-async def shutdown():
-    LOGGER.info("--- shutdown App ---") """
+# handle app raised http exceptions
+@app.exception_handler(StarletteHTTPException)
+async def custom_http_exception_handler(request, exc):
+    print(f"OMG an HTTP error! {repr(exc)}")
+    if exc.status_code != 429:
+        logger.write_log(exc.detail, request)
+    return await http_exception_handler(request, exc)
+
+
+# handle validation exceptions
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    print(f"OMG! The client sent invalid data!: {exc}")
+    logger.write_valid(request, exc)
+    return await request_validation_exception_handler(request, exc)
 
 
 @app.get("/fixtures")
 def fixtures(db: Session = Depends(get_db)):
-    print("fixturing all night long")
     return create_fixtures(db)
 
 
@@ -75,9 +68,6 @@ try:
     # Directory where Vue app build output is located
     build_dir = Path(__file__).resolve().parent / "dist"
     index_path = build_dir / "index.html"
-
-    print(f"build dir : {build_dir}")
-    print(f"index {index_path}")
 
     # Serve assets files from the build directory
     app.mount("/assets", StaticFiles(directory=build_dir / "assets"), name="assets")
