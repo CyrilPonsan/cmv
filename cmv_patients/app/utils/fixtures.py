@@ -240,34 +240,18 @@ services = [
 
 
 def create_fixtures(db: Session):
-    db_services: list[models.Service] = []
-
-    for service in services:
-        db_services.append(models.Service(nom=service))
-    db.add_all(db_services)
-    db.commit()
-
-    rooms: list[models.Chambre] = []
-    index = 100
-    for item in db_services:
-        for i in range(1, 6):
-            room = models.Chambre(
-                numero=i + index,
-                status="libre",
-                last_occuped=datetime.now(),
-                last_freed=datetime.now(),
-                last_cleanup=datetime.now(),
-            )
-            room.service = item
-            rooms.append(room)
-        index += 100
-    db.add_all(rooms)
-    db.commit()
-
     patients: list[models.Patient] = []
 
     for o in objects:
-        patient = models.Patient(prenom=o["first_name"], nom=o["last_name"])
+        patient = models.Patient(
+            prenom=o["first_name"],
+            nom=o["last_name"],
+            adresse="2 rue truc muche",
+            code_postal="64000",
+            ville="gelos",
+            telephone="06.66.69.96.99",
+            date_de_naissance=datetime(year=1969, month=7, day=21),
+        )
         patients.append(patient)
 
     db.add_all(patients)

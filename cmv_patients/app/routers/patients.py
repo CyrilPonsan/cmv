@@ -4,14 +4,15 @@ from fastapi import APIRouter, Depends, HTTPException, status, Body
 from sqlalchemy.orm import Session
 
 from ..dependancies.db_session import get_db
-from ..schemas.schemas import PatientBase
+from ..schemas.schemas import Patient
+from ..controller.patients import Patients
 
 
 router = APIRouter(prefix="/patient", tags=["patient"])
 
 
 @router.post("/")
-def create_patient(data: Annotated[PatientBase, Body()], db: Session = Depends(get_db)):
+def create_patient(data: Annotated[Patient, Body()], db: Session = Depends(get_db)):
     try:
         return data
     except Exception:
@@ -19,3 +20,8 @@ def create_patient(data: Annotated[PatientBase, Body()], db: Session = Depends(g
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="oops",
         )
+
+
+@router.get("/")
+async def read_patients(db=Depends(get_db)):
+    return await Patients.read_patients(db)

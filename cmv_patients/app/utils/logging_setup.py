@@ -3,8 +3,6 @@ import logging.handlers
 
 from fastapi import Request, HTTPException
 
-# from ..schemas.user_schema import User, Role
-
 
 class LoggerSetup:
     _instance = None
@@ -23,7 +21,7 @@ class LoggerSetup:
         client_ip = request.headers.get("X-Real-IP") or request.headers.get(
             "X-Forwarded-For"
         )
-        return client_ip or request.client.host
+        return client_ip
 
     def write_custom(self, message: str, request: Request):
         client_ip = self.get_client_ip(request)
@@ -54,7 +52,7 @@ class LoggerSetup:
 
     def setup_logging(self):
         # Logger name
-        logger_name = "CMV"  # Change this to your desired logger name
+        logger_name = "AFFRANCHISSEMENT"  # Change this to your desired logger name
         self.logger = logging.getLogger(logger_name)
 
         # Log format

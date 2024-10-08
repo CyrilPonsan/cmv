@@ -1,4 +1,5 @@
 from datetime import datetime
+import enum
 
 from sqlalchemy import (
     Boolean,
@@ -13,13 +14,14 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
-from .database import Base
+from ..utils.database import Base
 
 
-class Civilite(Enum):
+class Civilite(enum.Enum):
     MONSIEUR = "Monsieur"
     MADAME = "Madame"
     AUTRE = "Autre"
+    ROBERTO = "Roberto"
 
 
 class Admission(Base):
@@ -38,7 +40,7 @@ class Patient(Base):
 
     id_patient: Mapped[int] = mapped_column(primary_key=True, index=True)
     civilite: Mapped[Civilite] = mapped_column(
-        Civilite, default=Civilite.AUTRE, nullable=True
+        Enum(Civilite), default=Civilite.AUTRE, nullable=True
     )
     nom: Mapped[str] = mapped_column(String)
     prenom: Mapped[str] = mapped_column(String)
@@ -53,7 +55,7 @@ class Patient(Base):
 
     # relation many to one avec l'entité "Document"
     documents: Mapped[list["Document"]] = relationship(
-        "Document", back_populates="Patient"
+        "Document", back_populates="patient"
     )
 
 

@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response, Body, Request
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
-from app.settings.config import ACCESS_TOKEN_EXPIRE_MINUTES
+from app.utils.config import ACCESS_TOKEN_EXPIRE_MINUTES
 
 from ..dependancies.auth import (
     authenticate_user,

@@ -14,7 +14,7 @@ from app.schemas.user import User
 
 from ..utils.logging_setup import LoggerSetup
 from .redis import redis_client
-from ..settings.config import SECRET_KEY, ALGORITHM
+from ..utils.config import SECRET_KEY, ALGORITHM
 from .db_session import get_db
 
 redis = redis_client

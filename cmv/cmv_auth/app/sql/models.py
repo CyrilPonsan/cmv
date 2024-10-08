@@ -10,7 +10,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
-from ..settings.database import Base
+from ..utils.database import Base
 
 
 class Role(Base):
@@ -59,5 +59,6 @@ class User(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
-    role_id: Mapped[int] = mapped_column(ForeignKey("role.id"))
+
+    role_id: Mapped[int] = mapped_column(ForeignKey("role.id_role"))
     role: Mapped["Role"] = relationship("Role", back_populates="users")

@@ -6,7 +6,7 @@ from jose import jwt, JWTError
 
 # from ..utils.logging_setup import LoggerSetup
 from .redis import redis_client
-from ..config import SECRET_KEY, ALGORITHM
+from ..utils.config import SECRET_KEY, ALGORITHM
 from .db_session import get_db
 
 redis = redis_client
