@@ -98,6 +98,6 @@ services:
     depends_on:
       - db_patients
     environment:
-      HOME_DATABASE_URL: ${PATIENTS_DATABASE_URL}
+      PATIENTS_DATABASE_URL: ${PATIENTS_DATABASE_URL}
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
