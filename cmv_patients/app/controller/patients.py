@@ -8,4 +8,4 @@ class Patients:
 
     @staticmethod
     async def read_patients(db: Session):
-        return db.query(Patient).all()
+        return db.query(Patient).limit(10).all()

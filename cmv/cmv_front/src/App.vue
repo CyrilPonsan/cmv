@@ -41,8 +41,8 @@ watch(
       router.push(route.redirectedFrom?.fullPath)
     } else if (role.length > 0)
       switch (role) {
-        case 'nurses':
-          router.push({ name: 'chambres' })
+        case 'home':
+          router.push({ name: 'accueil' })
           break
         default:
           break

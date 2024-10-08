@@ -8,7 +8,7 @@ from ..schemas.schemas import Patient
 from ..controller.patients import Patients
 
 
-router = APIRouter(prefix="/patient", tags=["patient"])
+router = APIRouter(prefix="/patients", tags=["patients"])
 
 
 @router.post("/")
@@ -24,4 +24,5 @@ def create_patient(data: Annotated[Patient, Body()], db: Session = Depends(get_d
 
 @router.get("/")
 async def read_patients(db=Depends(get_db)):
+    print("coucou les patients")
     return await Patients.read_patients(db)

@@ -17,23 +17,19 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/home',
-      name: 'home',
-      component: () => import('../views/HomeServiceLayout.vue'),
-      beforeEnter: async (to, from, next) => {
+      path: '/accueil',
+      name: 'accueil',
+      component: () => import('../views/AccueilLayout.vue'),
+      beforeEnter: async (_to, _from, next) => {
         const { userStore } = await setup()
-        if (userStore.role === 'nurses') {
-          next()
-        } else {
-          next('/')
-        }
+        if (userStore.role === 'home') next()
+        else next('/')
       },
       children: [
-        { path: '', name: 'chambres', component: () => import('../views/ChambresView.vue') },
         {
-          path: ':chambreId',
-          name: 'chambre',
-          component: () => import('../views/ChambreDetailView.vue')
+          path: '',
+          name: 'patients',
+          component: () => import('../views/AccueilView.vue')
         }
       ]
     }

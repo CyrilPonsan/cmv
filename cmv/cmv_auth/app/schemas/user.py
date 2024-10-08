@@ -49,7 +49,7 @@ class Role(BaseModel):
 
 
 class User(UserBase):
-    id: int
+    id_user: int
     role: Role
 
     class Config:
