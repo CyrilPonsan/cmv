@@ -1,23 +1,21 @@
 <template>
-  <p>coucou les gens de l'accueil !</p>
-  <ListPatients :patientsList="patients" />
+  <div class="flex flex-col gap-y-2">
+    <p>coucou les gens de l'accueil !</p>
+
+    {{ patientsList.length }}
+
+    <ListPatients :columns="columns" :patientsList="patientsList" />
+  </div>
 </template>
 
 <script setup lang="ts">
 import ListPatients from '@/components/ListPatients.vue'
-import useHttp from '@/composables/use-http'
-import type PatientsListItem from '@/models/patients-list-item'
-import { onBeforeMount, ref } from 'vue'
+import usePatientList from '@/composables/use-patients-list'
+import { onMounted } from 'vue'
 
-const http = useHttp()
-const patients = ref<PatientsListItem[]>([])
+const { columns, patientsList, getPatientsList } = usePatientList()
 
-const getPatients = async () => {
-  const applyData = (data: any[]) => {
-    patients.value = data
-  }
-  http.sendRequest({ path: '/patients/patients' }, applyData)
-}
-
-onBeforeMount(() => getPatients())
+onMounted(() => {
+  getPatientsList()
+})
 </script>

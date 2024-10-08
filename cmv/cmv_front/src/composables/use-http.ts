@@ -13,7 +13,7 @@ interface HttpRequestOptions extends AxiosRequestConfig {
   method?: HttpMethod
 }
 
-interface UseHttp {
+export interface UseHttp {
   isLoading: Ref<boolean>
   error: Ref<string | null>
   sendRequest: <T>(req: HttpRequestOptions, applyData?: (data: T) => void) => Promise<T | undefined>

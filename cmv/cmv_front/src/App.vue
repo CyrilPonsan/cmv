@@ -1,5 +1,5 @@
 <template>
-  <header class="flex justify-end p-2 bg-surface-900">
+  <header class="flex justify-end items-center p-2 bg-surface-900 h-[4rem]">
     <nav>
       <ul class="flex gap-x-2 items-center">
         <li>
@@ -42,7 +42,7 @@ watch(
     } else if (role.length > 0)
       switch (role) {
         case 'home':
-          router.push({ name: 'accueil' })
+          router.push({ name: 'patients' })
           break
         default:
           break
