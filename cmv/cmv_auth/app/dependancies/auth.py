@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 
 from app.repositories.permissions import check_permission
-from app.repositories.user_crud import get_user, get_user_with_id
+from app.repositories.user_crud import PostgresAuthRepository
 from app.schemas.user import User
 
 from ..utils.logging_setup import LoggerSetup
@@ -36,14 +36,18 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def authenticate_user(db: Session, username: str, password: str):
-    user = get_user(db, username)
+async def authenticate_user(db: Session, username: str, password: str) -> User:
+    user = await PostgresAuthRepository.get_user(db, username)
     if not user or not verify_password(password, user.password) or not user.is_active:
-        return False
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+        )
+    print(f"user id : {user.id_user}")
     return user
 
 
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+async def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now() + expires_delta
@@ -100,8 +104,8 @@ async def get_current_user(
             status_code=status.HTTP_418_IM_A_TEAPOT, detail="dans le cul lulu"
         )
 
-    user = get_user_with_id(db, user_id)
-    if user is None:
+    user = await PostgresAuthRepository.get_user_with_id(db, user_id)
+    if user is None or user.is_active is False:
         raise credentials_exception
     return user
 
@@ -111,17 +115,17 @@ async def signout_current_user(request: Request, response: Response):
     token = request.cookies.get("access_token")
     if not token:
         raise HTTPException(status_code=400, detail="Aucun token trouvé")
-
+    print(f"token {token}")
     # Décoder le token pour obtenir le session_id
     payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     session_id = payload.get("session_id")
 
     if session_id:
         # Supprimer la session de Redis
-        redis_client.delete(f"session:{session_id}")
-
+        await redis_client.delete(f"session:{session_id}")
+    print(f"session {session_id}")
     # Ajouter le token à une liste noire (optionnel, pour une sécurité accrue)
-    redis_client.setex(f"blacklist:{token}", 3600, "true")  # expire après 1 heure
+    await redis_client.setex(f"blacklist:{token}", 3600, "true")  # expire après 1 heure
 
     # Supprimer le cookie côté client
     response.delete_cookie(key="access_token", path="/", domain=None)
@@ -129,12 +133,13 @@ async def signout_current_user(request: Request, response: Response):
     return {"message": "Déconnexion réussie"}
 
 
-def get_dynamic_permissions(action: str, resource: str):
+def get_dynamic_permissions(action: str, resource: str) -> User:
     async def get_permissions(
         current_user: Annotated[User, Depends(get_current_user)],
         db=Depends(get_db),
     ):
-        return await check_permissions(db, current_user.role.name, action, resource)
+        if await check_permissions(db, current_user.role.name, action, resource):
+            return current_user
 
     return get_permissions
 
@@ -144,11 +149,11 @@ async def check_permissions(
     role: str,
     action: str,
     resource: str,
-):
+) -> bool:
     authorized = check_permission(db, role, action, resource)
-    print(f"authorized = {authorized}")
     if not authorized:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Vous n'êtes pas autorisé à accéder à cette ressource.",
         )
+    return True

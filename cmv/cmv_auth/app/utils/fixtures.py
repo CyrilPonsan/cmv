@@ -251,9 +251,20 @@ def create_fixtures(db: Session):
     db.add_all(db_roles)
     db.commit()
 
+    admin_role = db.query(models.Role).filter(models.Role.name == "it").first()
+    nurse_role = db.query(models.Role).filter(models.Role.name == "nurses").first()
+    home_role = db.query(models.Role).filter(models.Role.name == "home").first()
+
     db_perms: models.Permission = []
-    db_perms.append(models.Permission(role="nurses", action="get", resource="chambres"))
-    db_perms.append(models.Permission(role="nurses", action="get", resource="services"))
+    db_perms.append(
+        models.Permission(role=nurse_role, action="get", resource="chambres")
+    )
+    db_perms.append(
+        models.Permission(role=nurse_role, action="get", resource="services")
+    )
+    db_perms.append(
+        models.Permission(role=home_role, action="get", resource="patients")
+    )
 
     db.add_all(db_perms)
     db.commit()
@@ -261,27 +272,26 @@ def create_fixtures(db: Session):
     user = models.User(
         username="toto@toto.fr",
         password=hashed_password,
-        first_name="jacques",
-        last_name="durand",
+        prenom="jacques",
+        nom="durand",
         is_active=True,
         service="it",
     )
 
-    nurse = models.User(
+    home = models.User(
         username="tata@toto.fr",
         password=hashed_password,
-        first_name="jacqueline",
-        last_name="dupond",
+        prenom="jacqueline",
+        nom="dupond",
         is_active=True,
-        service="nurses",
+        service="patients",
     )
 
-    admin_role = db.query(models.Role).filter(models.Role.name == "it").first()
-    nurse_role = db.query(models.Role).filter(models.Role.name == "nurses").first()
     user.role = admin_role
-    nurse.role = nurse_role
+    home.role = home_role
+    home.role
     db.add(user)
-    db.add(nurse)
+    db.add(home)
     db.commit()
 
     users_type = [
@@ -308,8 +318,8 @@ def create_users(db, idx, qty, role):
         user = models.User(
             username=usernames[idx],
             password=hashed_password,
-            first_name=objects[idx]["first_name"],
-            last_name=objects[idx]["last_name"],
+            prenom=objects[idx]["first_name"],
+            nom=objects[idx]["last_name"],
             service=role.name,
         )
         user.role = role

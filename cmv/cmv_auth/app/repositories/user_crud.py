@@ -21,10 +21,12 @@ class UserRepository(UserRead):
 class PostgresAuthRepository(UserRepository):
     pwd_context = CryptContext
 
-    def get_user(db: Session, username: str) -> User:
+    @staticmethod
+    async def get_user(db: Session, username: str) -> User:
         return db.query(User).filter(User.username == username).first()
 
-    def get_user_with_id(db: Session, user_id: int) -> User:
+    @staticmethod
+    async def get_user_with_id(db: Session, user_id: int) -> User:
         return db.query(User).filter(User.id_user == user_id).first()
 
 

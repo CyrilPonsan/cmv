@@ -12,7 +12,6 @@ from ..dependancies.auth import (
     create_access_token,
     create_session,
     get_current_user,
-    get_user,
     signout_current_user,
 )
 from app.dependancies.db_session import get_db
@@ -37,12 +36,15 @@ async def login(
     credentials: Annotated[LoginUser, Body()],
     db: Session = Depends(get_db),
 ):
-    user = authenticate_user(db, credentials.username, credentials.password)
+    user = await authenticate_user(db, credentials.username, credentials.password)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     access_token_expires = timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
-    access_token = create_access_token(
-        data={"sub": str(user.id), "session_id": await create_session(user.id)},
+    access_token = await create_access_token(
+        data={
+            "sub": str(user.id_user),
+            "session_id": await create_session(user.id_user),
+        },
         expires_delta=access_token_expires,
     )
     response.set_cookie(key="access_token", value=access_token, httponly=True)
@@ -50,19 +52,27 @@ async def login(
     return {"message": "all good bro!"}
 
 
-@router.post("/logout")
-async def logout(
-    response: Response, request: Request, current_user: User = Depends(get_current_user)
-):
-    return signout_current_user(request, response)
-
-
-@router.get("/users/me")
+@router.get("/users/me", response_model=dict)
 async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
     return {"role": current_user.role.name}
 
 
+@router.post("/logout")
+async def logout(
+    response: Response, request: Request, current_user: User = Depends(get_current_user)
+):
+    print("disconnecting...")
+    return await signout_current_user(request, response)
+
+
 """
+
+
+
+
+
+
+
 # Routes d'authentification
 @router.post("/register")
 def register(username: str, password: str, db: Session = Depends(get_db)):

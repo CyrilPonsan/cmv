@@ -5,29 +5,30 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 
 from ..utils.config import PATIENTS_SERVICE
 from ..schemas.user import User
-from ..dependancies.auth import get_current_user
+from ..dependancies.auth import get_dynamic_permissions
 
 router = APIRouter(
-    prefix="/home",
-    tags=["home"],
+    prefix="/patients",
+    tags=["patients"],
 )
 
 
 # requêtes utilisant la méthode 'GET' à destination de l'API Home
 @router.get("/{path:path}")
-async def read_chambres(
+async def read_patients(
     path: str,
-    current_user: Annotated[User, Depends(get_current_user)],  # Session-based user auth
+    current_user: Annotated[
+        User, Depends(get_dynamic_permissions("get", "patients"))
+    ],  # Session-based user auth
     request: Request,  # Ajout de l'objet Request pour accéder aux cookies
 ):
     # Construction de l'url
     url = f"{PATIENTS_SERVICE}/{path}/"
-    print(f"URL : {current_user}")
 
     # Récupération des cookies de la session
     cookies = request.cookies
 
-    return Patients().read_patients(url, cookies)
+    return await Patients().read_patients(url, cookies)
 
 
 class Patients:

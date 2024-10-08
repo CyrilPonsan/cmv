@@ -17,7 +17,7 @@ const loading = ref(false)
 const submitForm = async () => {
   loading.value = true
   try {
-    const response = await axios.post(`${AUTH}/auth/login`, {
+    await axios.post(`${AUTH}/auth/login`, {
       username: username.value,
       password: password.value
     })

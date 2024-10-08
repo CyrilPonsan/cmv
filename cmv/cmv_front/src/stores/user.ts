@@ -69,6 +69,7 @@ export const useUserStore = defineStore('user', () => {
   const logout = () => {
     role.value = ''
     console.log('disconnected!')
+    http.sendRequest({ path: '/auth/logout', method: 'post' })
     router.push('/')
   }
 

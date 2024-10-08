@@ -3,7 +3,6 @@ from datetime import datetime
 from sqlalchemy import (
     ForeignKey,
     String,
-    Integer,
     DateTime,
     Boolean,
     func,
@@ -49,8 +48,8 @@ class User(Base):
     id_user: Mapped[int] = mapped_column(primary_key=True, index=True)
     username: Mapped[str] = mapped_column(String, unique=True, index=True)
     password: Mapped[str] = mapped_column(String)
-    first_name: Mapped[str] = mapped_column(String)
-    last_name: Mapped[str] = mapped_column(String)
+    prenom: Mapped[str] = mapped_column(String)
+    nom: Mapped[str] = mapped_column(String)
     is_active: Mapped[bool] = mapped_column(Boolean, default=False)
     service: Mapped[str] = mapped_column(String)
     created_at: Mapped[datetime] = mapped_column(
