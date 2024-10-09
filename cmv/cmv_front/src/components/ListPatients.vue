@@ -32,8 +32,7 @@
     ></Column>
   </DataTable>
 
-  {{ selectedPatients.length }}
-  {{ selectedPatients }}
+  <div v-if="selectedPatients.length > 0">{{ selectedPatients.length }} {{ selectedPatients }}</div>
 </template>
 
 <script setup lang="ts">
