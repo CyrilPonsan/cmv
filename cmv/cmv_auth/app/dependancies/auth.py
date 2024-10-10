@@ -41,7 +41,7 @@ async def authenticate_user(db: Session, username: str, password: str) -> User:
     if not user or not verify_password(password, user.password) or not user.is_active:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated",
+            detail="Adresse email ou mot de passe incorrect",
         )
     print(f"user id : {user.id_user}")
     return user
