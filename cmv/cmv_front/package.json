@@ -16,6 +16,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@pinia/testing": "^0.1.6",
     "@primevue/themes": "^4.0.4",
     "@vee-validate/zod": "^4.13.2",
     "axios": "^1.7.4",
