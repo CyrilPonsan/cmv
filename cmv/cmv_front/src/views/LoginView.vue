@@ -10,17 +10,8 @@ import Message from 'primevue/message'
 import useLogin from '@/composables/use-login'
 
 // ce composable gère la logique de validation et de connexion de l'utilisateur
-const {
-  apiError,
-  errors,
-  loading,
-  password,
-  passwordAttrs,
-  passwordUpdate,
-  username,
-  usernameAttrs,
-  onSubmit
-} = useLogin()
+const { apiError, errors, loading, password, passwordAttrs, username, usernameAttrs, onSubmit } =
+  useLogin()
 </script>
 
 <template>
@@ -93,7 +84,6 @@ const {
         <div>
           <Message class="text-xs" severity="error" v-show="apiError">{{ apiError }}</Message>
         </div>
-        <pre>{{ passwordUpdate }}</pre>
       </article>
     </section>
   </main>
