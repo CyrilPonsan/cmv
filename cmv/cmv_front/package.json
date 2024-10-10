@@ -17,16 +17,17 @@
   },
   "dependencies": {
     "@primevue/themes": "^4.0.4",
+    "@vee-validate/zod": "^4.13.2",
     "axios": "^1.7.4",
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
     "primeicons": "^7.0.0",
     "primevue": "^4.0.4",
     "tailwindcss-primeui": "^0.3.4",
+    "vee-validate": "^4.13.2",
     "vite-plugin-compression": "^0.5.1",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0",
-    "zod": "^3.23.8"
+    "vue-router": "^4.3.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",

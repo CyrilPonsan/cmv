@@ -1,89 +1,58 @@
 <script setup lang="ts">
-import { AUTH } from '@/libs/urls'
-import { useUserStore } from '@/stores/user'
-import axios from 'axios'
+/**
+ * formulaire de connexion utilisateur
+ * la logique est déplacée dans le composable "useLogin"
+ */
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
-import { reactive, ref } from 'vue'
-import { boolean, string, z } from 'zod'
-import { regexPassword } from '@/libs/regex'
 import Message from 'primevue/message'
-import type ValidationError from '@/models/validation-error'
+import useLogin from '@/composables/use-login'
 
-const userStore = useUserStore()
-
-/**
- * schema de validation utilisé pour le formulaire de connexion
- *
- */
-const loginFormSchema = z.object({
-  username: z.string({ required_error: 'no_email' }).email({ message: 'not_valid_email' }),
-  password: z
-    .string({ required_error: 'no_password' })
-    .regex(regexPassword, { message: 'not_valid_password' })
-})
-
-const validationErrors: ValidationError[] = []
-
-const loginFormValues = reactive({
-  username: '',
-  password: '',
-  usernameIsValid: true,
-  passwordIsValid: true
-})
-
-/*
-const username = ref('')
-const password = ref('')
-const mailIsValid = ref(true)
-const passwordIsValid = ref(true)
-*/
-
-const loading = ref(false)
-
-const submitForm = async () => {
-  loading.value = true
-  try {
-    await axios.post(`${AUTH}/auth/login`, {
-      username: loginFormValues.username,
-      password: loginFormValues.password
-    })
-    userStore.getUserInfos()
-    loading.value = false
-  } catch (error: any) {
-    console.error(error)
-    loading.value = false
-  }
-}
-const handleEmailChange = (event: Event) => {
-  console.log((event.target as HTMLInputElement).value)
-}
+// ce composable gère la logique de validation et de connexion de l'utilisateur
+const { errors, loading, password, passwordAttrs, username, usernameAttrs, onSubmit } = useLogin()
 </script>
 
 <template>
   <main class="flex justify-center items-center">
-    <form class="flex flex-col gap-y-2" v-on:submit.prevent="submitForm">
+    <form class="flex flex-col gap-y-2" @submit.prevent="onSubmit">
+      <!-- champs email -->
       <div class="flex flex-col gap-y-2">
-        <label for="email">Email</label>
-        <span class="flex items-center gap-x-2">
-          <InputText
-            type="email"
-            placeholder="jean.dupont@email.fr"
-            v-model="loginFormValues.username"
-            @change="handleEmailChange"
-          />
-          <Message
-            v-show="!loginFormValues.usernameIsValid"
-            severity="error"
-            icon="pi pi-times-circle"
-          />
+        <label for="username">Email</label>
+        <!-- message d'erreur de validation du champs email -->
+        <span class="flex items-center gap-x-2" v-show="errors.username">
+          <Message severity="error" icon="pi pi-times-circle" aria-label="erreur adresse email" />
+          <Message class="text-xs" severity="error">{{ errors.username }}</Message>
         </span>
+        <InputText
+          id="username"
+          type="email"
+          name="username"
+          placeholder="jean.dupont@email.fr"
+          v-model="username"
+          v-bind="usernameAttrs"
+          aria-label="adresse email"
+        />
       </div>
+      <!-- champs mot de passe -->
       <div class="flex flex-col gap-y-2">
-        <label for="email">Mot de passe</label>
-        <Password v-model="loginFormValues.password" :feedback="false" toggleMask />
+        <label for="password">Mot de passe</label>
+        <!-- message d'erreur de validation du champs mot de passe -->
+        <span class="flex items-center gap-x-2" v-show="errors.password">
+          <Message severity="error" icon="pi pi-times-circle" aria-label="erreur mot de passe" />
+          <Message class="text-xs text-error" severity="error">{{ errors.password }}</Message>
+        </span>
+        <Password
+          v-model="password"
+          v-bind="passwordAttrs"
+          id="password"
+          name="password"
+          :feedback="false"
+          toggleMask
+          aria-label="mot de passe"
+        />
       </div>
+      <!-- bouton pour soumettre le formulaire-->
       <div class="flex justify-end mt-2">
         <Button type="submit" label="Se Connecter" :disabled="loading" :loading="loading" />
       </div>
