@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-y-2">
+  <div class="flex flex-col gap-y-2 text-xs">
     <ListPatients :columns="columns" :patientsList="patientsList" />
   </div>
 </template>

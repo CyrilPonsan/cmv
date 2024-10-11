@@ -13,11 +13,11 @@
   ],
   "compilerOptions": {
     "module": "NodeNext",
-    "types": ["vitest/globals"]
-  },
-  "paths": {
-    "@/*": ["./src/*"],
-    "@components/*": ["./src/components/*"],
-    "@stores/*": ["./src/stores/*"]
+    "types": ["vitest/globals"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@stores/*": ["./src/stores/*"]
+    }
   }
 }

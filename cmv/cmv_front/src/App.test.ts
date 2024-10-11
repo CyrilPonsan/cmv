@@ -1,29 +1,44 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, VueWrapper } from '@vue/test-utils'
+import { createTestingPinia } from '@pinia/testing'
 import { createRouter, createWebHistory, type Router } from 'vue-router'
 import App from './App.vue'
 import { useUserStore } from './stores/user'
-import { createTestingPinia } from '@pinia/testing'
 
 // Mock des composants
 vi.mock('primevue/button', () => ({
   default: {
     name: 'Button',
-    render: () => null
+    template: '<button><slot /></button>'
   }
 }))
 
 vi.mock('primevue/toast', () => ({
   default: {
     name: 'Toast',
-    render: () => null
+    template: '<div></div>'
   }
 }))
 
 // Mock du router
 const router: Router = createRouter({
   history: createWebHistory(),
-  routes: [{ path: '/', component: { template: '<div>Home</div>' } }]
+  routes: [
+    {
+      path: '/',
+      component: { template: '<div>Home</div>' }
+    },
+    {
+      path: '/accueil',
+      children: [
+        {
+          path: '',
+          name: 'patients',
+          component: { template: '<div>Patients</div>' }
+        }
+      ]
+    }
+  ]
 })
 
 describe('App', () => {
@@ -35,7 +50,10 @@ describe('App', () => {
       global: {
         plugins: [
           createTestingPinia({
-            createSpy: vi.fn
+            createSpy: vi.fn,
+            initialState: {
+              user: { role: '', mode: 'light' }
+            }
           }),
           router
         ],
@@ -51,7 +69,8 @@ describe('App', () => {
   })
 
   it('toggles color scheme when button is clicked', async () => {
-    const toggleButton = wrapper.find('button[aria-label="mode d\'affichage"]')
+    const toggleButton = wrapper.find('button[aria-label="theme"]')
+    expect(toggleButton.exists()).toBe(true)
     await toggleButton.trigger('click')
     expect(userStore.toggleColorScheme).toHaveBeenCalledTimes(1)
   })
@@ -78,6 +97,4 @@ describe('App', () => {
     await wrapper.vm.$nextTick()
     expect(routerPushSpy).toHaveBeenCalledWith({ name: 'patients' })
   })
-
-  // Ajoutez d'autres tests pour couvrir les différents scénarios de redirection, etc.
 })

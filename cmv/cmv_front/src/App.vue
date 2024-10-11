@@ -6,7 +6,7 @@
         <li>
           <Button
             :icon="colorSchemeIcon"
-            aria-label="mode d'affichage"
+            aria-label="theme"
             text
             @click="userStore.toggleColorScheme()"
           />
