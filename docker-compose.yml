@@ -1,19 +1,19 @@
-# Set the version of docker compose to use
-version: "3,8"
-
 networks:
   cmv:
     external: true
+
 volumes:
-  cmv_auth:
+  cmv_gateway:
     driver: local
-  db_auth:
+  db_gateway:
     driver: local
   cmv_patients:
     driver: local
   db_patients:
     driver: local
   logs:
+    driver: local
+  redis:
     driver: local
 
 # The containers that compose the project
@@ -27,20 +27,21 @@ services:
     ports:
       - "6379:6379"
 
-  db_auth:
+  db_gateway:
     image: postgres:latest
     restart: always
-    container_name: db_auth
+    container_name: db_gateway
     volumes:
-      - db_auth:/var/lib/postgresql/data
+      - db_gateway:/var/lib/postgresql/data
     networks:
       - cmv
     ports:
       - "6001:5432"
     environment:
-      POSTGRES_USER: ${AUTH_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${AUTH_POSTGRES_PASSWORD}
-      POSTGRES_DB: ${AUTH_POSTGRES_DB}
+      POSTGRES_USER: ${GATEWAY_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${GATEWAY_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${GATEWAY_POSTGRES_DB}
+
   api_auth:
     image: firizgoude/cmv_auth:latest
     pull_policy: always
@@ -49,22 +50,21 @@ services:
       - cmv
     volumes:
       - logs:/app/app/logs
-    container_name: cmv_auth
+    container_name: cmv_gateway
     ports:
       - "8001:8000"
-    links:
-      - db_auth
-    command: >
-      bash -c 'while !</dev/tcp/db_auth/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
     depends_on:
-      - db_auth
+      - db_gateway
     environment:
-      AUTH_DATABASE_URL: ${AUTH_DATABASE_URL}
+      GATEWAY_DATABASE_URL: ${GATEWAY_POSTGRES_URL}
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
       PATIENTS_SERVICE: ${PATIENTS_SERVICE}
       ACCESS_MAX_AGE: ${ACCESS_MAX_AGE}
       REFRESH_MAX_AGE: ${REFRESH_MAX_AGE}
+    command: >
+      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+
   db_patients:
     image: postgres:latest
     restart: always
