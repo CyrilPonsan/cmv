@@ -63,7 +63,7 @@ export const useUserStore = defineStore('user', () => {
     const applyData = (data: any) => {
       role.value = data.role
     }
-    http.sendRequest({ path: '/auth/users/me' }, applyData)
+    http.sendRequest<{ role: string }>({ path: '/auth/users/me' }, applyData)
   }
 
   const logout = () => {

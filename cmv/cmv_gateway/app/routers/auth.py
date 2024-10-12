@@ -47,7 +47,7 @@ async def login(
         },
         expires_delta=access_token_expires,
     )
-    response.set_cookie(key="access_token", value=access_token, httponly=True)
+    response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True)
     logger.write_log(f"{user.role.name} connection ", request)
     return {"message": "all good bro!"}
 

@@ -68,6 +68,7 @@ async def create_session(user_id: str):
 def get_token_from_cookie(request: Request):
     token = request.cookies.get("access_token")
     if not token:
+        print("no cookie for you Kevin...")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not authenticated",
@@ -86,6 +87,7 @@ async def get_current_user(
     )
     try:
         if not token:
+            print("no token")
             raise credentials_exception
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: str = payload.get("sub")

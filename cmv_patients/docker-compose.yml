@@ -1,22 +1,19 @@
-# Set the version of docker compose to use
-version: "4"
-
 volumes:
-  pg-dev:
+  pg-patients-dev:
     driver: local
 
 # The containers that compose the project
 services:
-  db:
+  db_patients:
     image: postgres:latest
     restart: always
-    container_name: dev_pg-cmv_home
+    container_name: dev_pg-cmv_patients
     volumes:
-      - pg-dev:/var/lib/postgresql/data
+      - pg-patients-dev:/var/lib/postgresql/data
 
     ports:
       - "6002:5432"
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${PATIENTS_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${PATIENTS_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${PATIENTS_POSTGRES_DB}
