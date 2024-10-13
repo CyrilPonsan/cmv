@@ -7,7 +7,7 @@ pipeline {
     
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
-        IMAGE_GATEWAY = "firizgoude-dockerhub/cmv_gateway"
+        IMAGE_GATEWAY = "firizgoude/cmv_gateway"
         IMAGE_TAG = "gateway-${env.BUILD_NUMBER}"
         NPM_CACHE_DIR = "tmp/npm-cache"
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
