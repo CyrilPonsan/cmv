@@ -10,13 +10,13 @@ FROM python:3.12
 
 WORKDIR /app
 
-COPY cmv_gateway/requirements.txt /app/requirements.txt
+COPY cmv_back/requirements.txt /app/requirements.txt
 
 RUN apt-get update \
     && apt-get install gcc -y \
     && apt-get clean
 
 RUN pip install -r /app/requirements.txt
-COPY cmv_gateway/. /app/
+COPY cmv_back/. /app/
 
 COPY --from=build-stage /frontend/dist app/dist
