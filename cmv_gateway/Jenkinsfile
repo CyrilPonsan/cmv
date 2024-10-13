@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Git Checkout') {
             steps {
-                git branch: 'cmv', credentialsId: 'Git CMV Personal Access Token', url: 'https://github.com/CyrilPonsan/cmv.git'
+                git branch: 'cmv_gateway', credentialsId: 'Git CMV Personal Access Token', url: 'https://github.com/CyrilPonsan/cmv.git'
             }
         }
 
