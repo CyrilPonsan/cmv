@@ -10,18 +10,22 @@ pipeline {
         IMAGE_GATEWAY = "firizgoude-dockerhub/cmv_gateway"
         IMAGE_TAG = "gateway-${env.BUILD_NUMBER}"
         NPM_CACHE_DIR = "tmp/npm-cache"
+        BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
     }
     
     stages {
         stage("Checkout") {
             steps {
                 checkout scm
+                script {
+                    echo "Current branch is ${BRANCH_NAME}"
+                }
             }
         }
         
-        stage("Build and Test") {
+        stage("API Gateway Operations") {
             when {
-                branch "cmv_gateway"
+                expression { BRANCH_NAME == 'cmv_gateway' }
             }
             stages {
                 stage('Install Dependencies') {
@@ -42,14 +46,6 @@ pipeline {
                         }
                     }
                 }
-            }
-        }
-        
-        stage('Docker Operations') {
-            when {
-                branch "cmv_gateway"
-            }
-            stages {
                 stage('Build Image') {
                     steps {
                         dir('cmv_gateway') {
@@ -75,7 +71,7 @@ pipeline {
         
         stage("cmv_patients") {
             when {
-                branch "cmv_patients"
+                expression { BRANCH_NAME == 'cmv_patients' }
             }
             steps {
                 sh '''
