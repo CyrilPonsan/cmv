@@ -1,7 +1,7 @@
 pipeline {
     agent any
 
-    envrionment {
+    environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         IMAGE_GATEWAY = "firizgoude-dockerhub/cmv_gateway"
         IMAGE_TAG = "gateway-${env.BUILD_NUMBER}"
