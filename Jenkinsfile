@@ -1,31 +1,28 @@
 pipeline {
     agent any
-
-   tools {
+    
+    tools {
         nodejs 'nodejs'
     }
-
+    
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         IMAGE_GATEWAY = "firizgoude-dockerhub/cmv_gateway"
-        IMAGE_TAG = "gateway-${env.BUILD_NUMBER}"
+        IMAGE_GATEWAY_TAG = "gateway-${env.BUILD_NUMBER}"
         NPM_CACHE_DIR = "tmp/npm-cache"
     }
-
+    
     stages {
-        stage("Hello") {
-            steps {
-                echo "hello"
-            }
-        }
-
-        stage('Checkout') {
+        stage("Checkout") {
             steps {
                 checkout scm
             }
         }
-
+        
         stage("API Gateway") {
+            when {
+                branch "cmv_gateway"
+            }
             stages {
                 stage('Install Dependencies') {
                     steps {
@@ -48,23 +45,26 @@ pipeline {
                 stage('Build Image') {
                     steps {
                         script {
-                            docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                            dir('cmv_gateway') {
+                                sh "echo 'Starting Docker build...'"
+                                sh "docker --version"
+                                sh "pwd"
+                                sh "ls -la"
+                                def dockerImage = docker.build("${IMAGE_GATEWAY}:${IMAGE_TAG}", "-f Dockerfile .")
+                                sh "echo 'Docker build completed.'"
+                            }
                         }
                     }
                 }
                 stage('Push to DockerHub') {
                     steps {
                         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                        sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
+                        sh "docker push ${IMAGE_GATEWAY}:${IMAGE_TAG}"
                     }
                 }
             }
         }
-
-
-
-
-
+        
         stage("cmv_patients") {
             when {
                 branch "cmv_patients"
@@ -74,6 +74,18 @@ pipeline {
                     echo "working on API Patients..."
                 '''
             }
+        }
+    }
+    
+    post {
+        always {
+            sh 'docker logout'
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Please check the logs.'
         }
     }
 }
