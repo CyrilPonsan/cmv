@@ -11,6 +11,7 @@ import 'nprogress/nprogress.css'
 import PrimeVue from 'primevue/config'
 import 'primeicons/primeicons.css'
 import Aura from '@primevue/themes/aura'
+import ToastService from 'primevue/toastservice'
 
 progressBar(router)
 
@@ -25,6 +26,8 @@ app.use(PrimeVue, {
     }
   }
 })
+
+app.use(ToastService)
 
 app.use(createPinia())
 

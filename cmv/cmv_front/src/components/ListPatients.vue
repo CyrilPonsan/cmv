@@ -1,10 +1,37 @@
+<script setup lang="ts">
+/**
+ * Ce composant affiche la liste des dossiers administratifs des patients
+ * La liste est téléchargée en lazy loading et un système de pagination est
+ * disponible
+ */
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import type PatientsListItem from '@/models/patients-list-item'
+import type ColumnItem from '@/models/column-item'
+import { useToast } from 'primevue/usetoast'
+import PageHeader from './PageHeader.vue'
+
+const props = defineProps<{ columns: ColumnItem[]; patientsList: PatientsListItem[] }>()
+
+const toast = useToast()
+
+const onTrash = () => {
+  toast.add({
+    severity: 'warn',
+    life: 5000,
+    summary: 'Suppression du patient',
+    detail: 'Coming soon...',
+    closable: false
+  })
+}
+</script>
+
 <template>
-  <h1>Liste Patients</h1>
+  <PageHeader :title="'Espace administratif'" :description="'Liste des patients'" />
   <DataTable
-    class="rounded-lg shadow-md"
+    class="rounded-md shadow-md"
     sortField="nom"
     :sortOrder="1"
-    v-model:selection="selectedPatients"
     dataKey="id_patient"
     stripedRows="true"
     :value="props.patientsList"
@@ -14,35 +41,28 @@
     tableStyle="min-width: 50rem"
     paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
     currentPageReportTemplate="{first} à {last} de {totalRecords}"
-    ><template #paginatorstart>
+  >
+    <template #paginatorstart>
       <span class="flex items-center gap-x-2 font-bold"
         >{{ patientsList.length }}
         <p class="font-normal">patients</p></span
       >
     </template>
-    <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
     <Column
       :class="col.field !== 'email' ? 'capitalize' : ''"
-      :headerStyle="'bg-blue-500/20'"
       v-for="col of columns"
       :key="col.field"
       :field="col.field"
       :header="col.header"
       :sortable="col.sortable"
     ></Column>
+    <Column header="Actions">
+      <template #body>
+        <i
+          class="mx-auto pi pi-trash cursor-pointer"
+          style="color: red"
+          @click="onTrash"
+        /> </template
+    ></Column>
   </DataTable>
-
-  {{ selectedPatients.length }}
-  {{ selectedPatients }}
 </template>
-
-<script setup lang="ts">
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import type PatientsListItem from '@/models/patients-list-item'
-import { ref } from 'vue'
-import type ColumnItem from '@/models/column-item'
-
-const props = defineProps<{ columns: ColumnItem[]; patientsList: PatientsListItem[] }>()
-const selectedPatients = ref([])
-</script>

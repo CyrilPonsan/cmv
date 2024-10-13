@@ -1,11 +1,12 @@
 <template>
+  <Toast />
   <header class="flex justify-end items-center p-2 bg-surface-900 h-[4rem]">
     <nav>
       <ul class="flex gap-x-2 items-center">
         <li>
           <Button
             :icon="colorSchemeIcon"
-            aria-label="mode d'affichage"
+            aria-label="theme"
             text
             @click="userStore.toggleColorScheme()"
           />
@@ -25,6 +26,7 @@ import { computed, onBeforeMount, watch } from 'vue'
 import { useUserStore } from './stores/user'
 import { useRoute, useRouter } from 'vue-router'
 import Button from 'primevue/button'
+import Toast from 'primevue/toast'
 
 const router = useRouter()
 const route = useRoute()

@@ -1,9 +1,5 @@
 <template>
-  <div class="flex flex-col gap-y-2">
-    <p>coucou les gens de l'accueil !</p>
-
-    {{ patientsList.length }}
-
+  <div class="flex flex-col gap-y-2 text-xs">
     <ListPatients :columns="columns" :patientsList="patientsList" />
   </div>
 </template>
