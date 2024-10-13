@@ -83,9 +83,6 @@ pipeline {
                                 # Pull de la nouvelle image
                                 docker pull ${IMAGE_GATEWAY}:${IMAGE_TAG}
 
-                                # Arrêt des containers
-                                docker compose down
-
                                 # Redémarrage des containers
                                 docker compose up -d
 
