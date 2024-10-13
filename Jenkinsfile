@@ -13,7 +13,7 @@ pipeline {
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
         EC2_SERVER = credentials("cmv_host")
         EC2_USER = credentials("cmv_username")
-        SSH_CREDENTIALS = credentials('ec2-ssh-key')
+        SSH_CREDENTIALS = credentials('cmv-ssh-key')
     }
     
     stages {
