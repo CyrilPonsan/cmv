@@ -94,8 +94,18 @@ pipeline {
                             """
 
                             // Exécution des commandes sur le serveur EC2
-                            sshagent(['cmv-ssh-key']) {
-                                sh "ssh -o StrictHostKeyChecking=no ${EC2_SERVER} '${remoteCommands}'"
+                            sshagent(credentials: ['ec2-ssh-key']) {
+                                sh """
+                                    ssh -o StrictHostKeyChecking=no \
+                                        -o UserKnownHostsFile=/dev/null \
+                                        -o LogLevel=ERROR \
+                                        ${EC2_USER}@${EC2_HOST} << EOF
+                                    
+                                    IMAGE_NAME=${IMAGE_GATEWAY}
+                                    IMAGE_TAG=${env.BUILD_NUMBER}
+                                    ${remoteCommands}
+EOF
+                                """
                             }
                         }
                     }
