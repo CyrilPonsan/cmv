@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+   tools {
+        nodejs 'nodejs20'
+    }
+
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         IMAGE_GATEWAY = "firizgoude-dockerhub/cmv_gateway"
