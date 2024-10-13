@@ -43,7 +43,7 @@ services:
       POSTGRES_DB: ${GATEWAY_POSTGRES_DB}
 
   api_gateway:
-    image: firizgoude/cmv_auth:latest
+    image: firizgoude/cmv_gateway:latest
     pull_policy: always
     restart: always
     networks:
