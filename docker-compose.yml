@@ -42,7 +42,7 @@ services:
       POSTGRES_PASSWORD: ${GATEWAY_POSTGRES_PASSWORD}
       POSTGRES_DB: ${GATEWAY_POSTGRES_DB}
 
-  api_auth:
+  api_gateway:
     image: firizgoude/cmv_auth:latest
     pull_policy: always
     restart: always
