@@ -99,7 +99,7 @@ pipeline {
                                     ssh -o StrictHostKeyChecking=no \
                                         -o UserKnownHostsFile=/dev/null \
                                         -o LogLevel=ERROR \
-                                        ${EC2_USER}@${EC2_HOST} << EOF
+                                        ${EC2_USER}@${EC2_SERVER} << EOF
                                     
                                     IMAGE_NAME=${IMAGE_GATEWAY}
                                     IMAGE_TAG=${env.BUILD_NUMBER}
