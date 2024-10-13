@@ -11,6 +11,9 @@ pipeline {
         IMAGE_TAG = "gateway-${env.BUILD_NUMBER}"
         NPM_CACHE_DIR = "tmp/npm-cache"
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
+        EC2_SERVER = credentials("cmv_host")
+        EC2_USER = credentials("cmv_username")
+        SSH_CREDENTIALS = credentials('ec2-ssh-key')
     }
     
     stages {
@@ -64,6 +67,37 @@ pipeline {
                     steps {
                         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
                         sh "docker push ${IMAGE_GATEWAY}:${IMAGE_TAG}"
+                    }
+                }
+                stage('Deploy to EC2') {
+                    steps {
+                        script {
+                            def remoteCommands = """
+                                # Arrêt et suppression de l'ancien container
+                                docker stop cmv_gateway_container || true
+                                docker rm cmv_gateway_container || true
+
+                                # Suppression de l'ancienne image
+                                docker rmi ${IMAGE_GATEWAY}:latest || true
+
+                                # Pull de la nouvelle image
+                                docker pull ${IMAGE_GATEWAY}:${IMAGE_TAG}
+
+                                # Arrêt des containers
+                                docker compose down
+
+                                # Redémarrage des containers
+                                docker compose up -d
+
+                                # Nettoyage des images non utilisées
+                                docker image prune -f
+                            """
+
+                            // Exécution des commandes sur le serveur EC2
+                            sshagent(['cmv-ssh-key']) {
+                                sh "ssh -o StrictHostKeyChecking=no ${EC2_SERVER} '${remoteCommands}'"
+                            }
+                        }
                     }
                 }
             }
