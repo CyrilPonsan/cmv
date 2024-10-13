@@ -94,7 +94,7 @@ pipeline {
                             """
 
                             // Exécution des commandes sur le serveur EC2
-                            sshagent(credentials: ['ec2-ssh-key']) {
+                            sshagent(credentials: ['cmv-ssh-key']) {
                                 sh """
                                     ssh -o StrictHostKeyChecking=no \
                                         -o UserKnownHostsFile=/dev/null \
