@@ -8,7 +8,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         IMAGE_GATEWAY = "firizgoude-dockerhub/cmv_gateway"
-        IMAGE_GATEWAY_TAG = "gateway-${env.BUILD_NUMBER}"
+        IMAGE_TAG = "gateway-${env.BUILD_NUMBER}"
         NPM_CACHE_DIR = "tmp/npm-cache"
     }
     
@@ -19,7 +19,7 @@ pipeline {
             }
         }
         
-        stage("API Gateway") {
+        stage("Build and Test") {
             when {
                 branch "cmv_gateway"
             }
@@ -42,10 +42,18 @@ pipeline {
                         }
                     }
                 }
+            }
+        }
+        
+        stage('Docker Operations') {
+            when {
+                branch "cmv_gateway"
+            }
+            stages {
                 stage('Build Image') {
                     steps {
-                        script {
-                            dir('cmv_gateway') {
+                        dir('cmv_gateway') {
+                            script {
                                 sh "echo 'Starting Docker build...'"
                                 sh "docker --version"
                                 sh "pwd"
