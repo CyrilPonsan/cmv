@@ -121,7 +121,7 @@ EOF
             }
         }
 
-        stage("cmv_patients") {
+        stage("dev") {
             when {
                 expression { BRANCH_NAME == 'dev' }
             }
