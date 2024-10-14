@@ -12,3 +12,5 @@ httpx
 fastapi_limiter
 email-validator
 faker
+pytest 
+pytest-asyncio
