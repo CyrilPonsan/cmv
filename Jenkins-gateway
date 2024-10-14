@@ -54,7 +54,7 @@ pipeline {
                                 sh "docker --version"
                                 sh "pwd"
                                 sh "ls -la"
-                                def dockerImage = docker.build("${IMAGE_GATEWAY}:${IMAGE_TAG}", "-f Dockerfile .")
+                                def dockerImage = docker.build("${IMAGE_GATEWAY}:${IMAGE_GATEWAY_TAG}", "-f Dockerfile .")
                                 sh "echo 'Docker build completed.'"
                             }
                         }
@@ -63,7 +63,7 @@ pipeline {
                 stage('Push to DockerHub') {
                     steps {
                         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                        sh "docker push ${IMAGE_GATEWAY}:${IMAGE_TAG}"
+                        sh "docker push ${IMAGE_GATEWAY}:${IMAGE_GATEWAY_TAG}"
                     }
                 }
                 stage('Deploy to EC2') {
