@@ -77,9 +77,6 @@ pipeline {
                                 # Suppression de l'ancienne image
                                 docker rmi ${IMAGE_GATEWAY}:latest || true
 
-                                # Pull de la nouvelle image
-                                docker pull ${IMAGE_GATEWAY}:${IMAGE_GATEWAY_TAG}
-
                                 # Redémarrage des containers
                                 docker compose up -d
 
