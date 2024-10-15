@@ -13,5 +13,6 @@ fastapi_limiter
 email-validator
 faker
 pytest 
+pytest-asyncio 
 pytest-asyncio
 fakeredis
