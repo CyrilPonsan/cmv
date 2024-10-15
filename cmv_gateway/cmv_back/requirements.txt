@@ -14,3 +14,4 @@ email-validator
 faker
 pytest 
 pytest-asyncio
+fakeredis
