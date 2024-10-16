@@ -10,3 +10,8 @@ services:
     depends_on:
       - redis
     command: pytest app/tests/
+
+    develop:
+      watch:
+        - path: .
+          action: rebuild
