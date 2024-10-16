@@ -24,5 +24,4 @@ def create_patient(data: Annotated[Patient, Body()], db: Session = Depends(get_d
 
 @router.get("/")
 async def read_patients(db=Depends(get_db)):
-    print("coucou les patients")
     return await Patients.read_patients(db)

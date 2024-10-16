@@ -68,7 +68,7 @@ services:
 
     develop:
       watch:
-        - path: ./cmv
+        - path: ./cmv_gateway
           action: rebuild
 
   db_patients:
