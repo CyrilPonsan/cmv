@@ -26,8 +26,8 @@ logger = LoggerSetup()
 
 app = FastAPI()
 
-
 app.include_router(api.router)
+
 origins = [
     "http://localhost:5173",
 ]

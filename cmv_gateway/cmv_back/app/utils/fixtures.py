@@ -309,7 +309,7 @@ def create_fixtures(db: Session):
         role = db.query(models.Role).filter(models.Role.name == item["role"]).first()
         index = create_users(db, index, item["qty"], role)
 
-    return "done"
+    return {"message": "done"}
 
 
 def create_users(db, idx, qty, role):

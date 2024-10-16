@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 from .config import DATABASE_URL
 
-print(f"gataway db url : {DATABASE_URL}")
+print(f"getaway db url : {DATABASE_URL}")
 
 if DATABASE_URL:
     engine = create_engine(DATABASE_URL)
