@@ -40,10 +40,10 @@ def test_login_wrong_username_type(client, user):
     assert response.status_code == 422
 
 
-def test_login_wrong_username_password(client, user):
+def test_login_wrong_password_type(client, user):
     print(f"USER : {user.prenom}")
     response = client.post(
         "/api/auth/login",
         json={"username": "test.user@test.fr", "password": "@1234"},
     )
-    assert response.status_code == 422
+    assert response.status_code == 401
