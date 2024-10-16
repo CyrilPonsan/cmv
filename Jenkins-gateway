@@ -70,6 +70,9 @@ pipeline {
                     steps {
                         script {
                             def remoteCommands = """
+                                # Se connecter à Docker Hub
+                                echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
+
                                 # Arrêt et suppression de l'ancien container
                                 docker stop cmv_gateway || true
                                 docker rm cmv_gateway || true
