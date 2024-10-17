@@ -43,12 +43,7 @@ class AuthService:
         username: str,
         password: str,
     ) -> User:
-        user = await authenticate_user(db, username, password)
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Incorrect username or password",
-            )
+        user = await authenticate_user(db, username, password, request)
         access_token_expires = timedelta(minutes=self.access_token_expire_minutes)
         access_token = await create_access_token(
             data={
@@ -86,4 +81,7 @@ class AuthService:
                 self.logger.write_log(f"{user_id} déconnection ", request)
             return {"message": "Déconnexion réussie"}
         except jwt.JWTError:
-            raise HTTPException(status_code=400, detail="Token invalide")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token invalide",
+            )

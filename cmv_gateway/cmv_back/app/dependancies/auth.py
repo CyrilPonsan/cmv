@@ -17,8 +17,7 @@ from ..utils.config import SECRET_KEY, ALGORITHM
 from .db_session import get_db
 
 redis = redis_client
-logger_setup = LoggerSetup()
-LOGGER = logger_setup.write_log
+logger = LoggerSetup()
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -29,20 +28,32 @@ basic_authorizations = [
     "/api/auth/users/me",
 ]
 
+credentials_exception = HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="Adresse email ou mot de passe incorrect",
+    headers={"WWW-Authenticate": "Bearer"},
+)
+
 
 # Fonctions d'authentification
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-async def authenticate_user(db: Session, username: str, password: str) -> User:
+async def authenticate_user(
+    db: Session, username: str, password: str, request: Request
+) -> User:
     user = await PgUserRepository.get_user(db, username)
-    if not user or not verify_password(password, user.password) or not user.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Adresse email ou mot de passe incorrect",
+    if not user:
+        logger.write_log(
+            f"Failed connection attempt using : {username}", request=request
         )
-    print(f"user id : {user.id_user}")
+        raise credentials_exception
+    if not verify_password(password, user.password) or not user.is_active:
+        logger.write_log(
+            f"Failed connection attempt from : {user.id_user}", request=request
+        )
+        raise credentials_exception
     return user
 
 
@@ -68,22 +79,13 @@ def get_token_from_cookie(request: Request):
     token = request.cookies.get("access_token")
     if not token:
         print("no cookie for you Kevin...")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise credentials_exception
     return token
 
 
 async def get_current_user(
     db=Depends(get_db), token: str = Depends(get_token_from_cookie)
 ):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
     try:
         if not token:
             print("no token")
