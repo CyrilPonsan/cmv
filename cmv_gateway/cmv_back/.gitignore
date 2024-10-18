@@ -9,3 +9,4 @@ alembic/*/__pycache__
 app/dist
 app/logs
 :memory
+.pytest_cache

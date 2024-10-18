@@ -1,48 +1,22 @@
-from pydantic import BaseModel, EmailStr, validator
+import re
+from pydantic import BaseModel, EmailStr, field_validator
+from fastapi import HTTPException, status
 
-regex_text = r"[\w\sÀ-ÿ«»’',.\-:;!?()–—“”'\"]+"
-
-
-def escape_special_chars(value):
-    value = value.replace("<", "&lt;")
-    value = value.replace(">", "&gt;")
-    value = value.replace('"', "&quot;")
-    return value
-
-
-class ApiInfos(BaseModel):
-    code: str
-    token: str
+from .regular_expression import password_pattern
 
 
 class UserBase(BaseModel):
     username: EmailStr
-
-
-class UserCreate(UserBase):
-    first_name: str
-    last_name: str
-    service: str
     password: str
-
-    @validator("password")
-    def check_password(cls, v: str) -> str:
-        if len(v) < 8 or len(v) > 50:
-            raise ValueError("Password length must be between 8 and 50 characters")
-        if not any(c.islower() for c in v):
-            raise ValueError("Password must contain at least one lowercase letter")
-        if not any(c.isupper() for c in v):
-            raise ValueError("Password must contain at least one uppercase letter")
-        if not any(c.isdigit() for c in v):
-            raise ValueError("Password must contain at least one digit")
-        if not any(not c.isalnum() for c in v):
-            raise ValueError("Password must contain at least one special character")
-        return v
+    prenom: str
+    nom: str
+    service: str
 
 
 class Role(BaseModel):
     id: int
     name: str
+    label: str
 
     class Config:
         from_attributes = True
@@ -56,19 +30,16 @@ class User(UserBase):
         from_attributes = True
 
 
-class AccountInfos(User):
-    access_token: str
-    refresh_token: str
-
-    class Config:
-        from_attributes = True
-
-
-class RegisterUser(BaseModel):
-    user: UserCreate
-    role: str
-
-
-class LoginUser(BaseModel):
+# Ce schéma valide les identifiants envoyés par l'utilisateur via le formulaire de connexion
+class Credentials(BaseModel):
     username: EmailStr
     password: str
+
+    @field_validator("password")
+    def validate_password(cls, value):
+        if not re.match(password_pattern, value):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Identifiants incorrects.",
+            )
+        return value

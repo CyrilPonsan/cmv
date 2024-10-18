@@ -11,9 +11,9 @@ from sqlalchemy.orm import Session
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from app.middleware.exceptions import ExceptionHandlerMiddleware
 from .dependancies.db_session import get_db
 from .routers import api
-
 from .utils.logging_setup import LoggerSetup
 from .utils.fixtures import create_fixtures
 from .utils.database import engine
@@ -39,6 +39,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# handle global exceptions like network or db errors, uncomment the following line for production
+app.add_middleware(ExceptionHandlerMiddleware)
 
 
 # handle app raised http exceptions

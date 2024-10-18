@@ -18,7 +18,7 @@ class UserRepository(UserRead):
     pass
 
 
-class PostgresAuthRepository(UserRepository):
+class PgUserRepository(UserRepository):
     pwd_context = CryptContext
 
     @staticmethod

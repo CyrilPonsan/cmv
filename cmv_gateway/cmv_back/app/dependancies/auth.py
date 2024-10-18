@@ -2,24 +2,22 @@ from datetime import datetime, timedelta
 import uuid
 from typing import Optional, Annotated
 
-from fastapi import HTTPException, status, Depends, Request, Response
+from fastapi import HTTPException, status, Depends, Request
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 
-from app.repositories.permissions import check_permission
-from app.repositories.user_crud import PostgresAuthRepository
+from app.repositories.permissions_crud import PgPermissionRepository
+from app.repositories.user_crud import PgUserRepository
 from app.schemas.user import User
-
 from ..utils.logging_setup import LoggerSetup
 from .redis import redis_client
 from ..utils.config import SECRET_KEY, ALGORITHM
 from .db_session import get_db
 
 redis = redis_client
-logger_setup = LoggerSetup()
-LOGGER = logger_setup.write_log
+logger = LoggerSetup()
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -30,20 +28,32 @@ basic_authorizations = [
     "/api/auth/users/me",
 ]
 
+credentials_exception = HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="Adresse email ou mot de passe incorrect",
+    headers={"WWW-Authenticate": "Bearer"},
+)
+
 
 # Fonctions d'authentification
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-async def authenticate_user(db: Session, username: str, password: str) -> User:
-    user = await PostgresAuthRepository.get_user(db, username)
-    if not user or not verify_password(password, user.password) or not user.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Adresse email ou mot de passe incorrect",
+async def authenticate_user(
+    db: Session, username: str, password: str, request: Request
+) -> User:
+    user = await PgUserRepository.get_user(db, username)
+    if not user:
+        logger.write_log(
+            f"Failed connection attempt using : {username}", request=request
         )
-    print(f"user id : {user.id_user}")
+        raise credentials_exception
+    if not verify_password(password, user.password) or not user.is_active:
+        logger.write_log(
+            f"Failed connection attempt from : {user.id_user}", request=request
+        )
+        raise credentials_exception
     return user
 
 
@@ -69,22 +79,13 @@ def get_token_from_cookie(request: Request):
     token = request.cookies.get("access_token")
     if not token:
         print("no cookie for you Kevin...")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise credentials_exception
     return token
 
 
 async def get_current_user(
     db=Depends(get_db), token: str = Depends(get_token_from_cookie)
 ):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
     try:
         if not token:
             print("no token")
@@ -106,33 +107,10 @@ async def get_current_user(
             status_code=status.HTTP_418_IM_A_TEAPOT, detail="dans le cul lulu"
         )
 
-    user = await PostgresAuthRepository.get_user_with_id(db, user_id)
+    user = await PgUserRepository.get_user_with_id(db, user_id)
     if user is None or user.is_active is False:
         raise credentials_exception
     return user
-
-
-async def signout_current_user(request: Request, response: Response):
-    # Récupérer le token du cookie
-    token = request.cookies.get("access_token")
-    if not token:
-        raise HTTPException(status_code=400, detail="Aucun token trouvé")
-    print(f"token {token}")
-    # Décoder le token pour obtenir le session_id
-    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-    session_id = payload.get("session_id")
-
-    if session_id:
-        # Supprimer la session de Redis
-        await redis_client.delete(f"session:{session_id}")
-    print(f"session {session_id}")
-    # Ajouter le token à une liste noire (optionnel, pour une sécurité accrue)
-    await redis_client.setex(f"blacklist:{token}", 3600, "true")  # expire après 1 heure
-
-    # Supprimer le cookie côté client
-    response.delete_cookie(key="access_token", path="/", domain=None)
-
-    return {"message": "Déconnexion réussie"}
 
 
 def get_dynamic_permissions(action: str, resource: str) -> User:
@@ -152,7 +130,9 @@ async def check_permissions(
     action: str,
     resource: str,
 ) -> bool:
-    authorized = check_permission(db, role, action, resource)
+    authorized = await PgPermissionRepository.check_permission(
+        db, role, action, resource
+    )
     if not authorized:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
