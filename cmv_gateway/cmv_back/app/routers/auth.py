@@ -14,13 +14,13 @@ from app.services.auth import get_auth_service
 # Configuration de l'authentifications
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-
 router = APIRouter(
     prefix="/auth",
     tags=["auth"],
 )
 
 
+# Permet à un utilisateur enregistré de se connecter à l'application
 @router.post("/login", response_model=dict)
 async def login(
     request: Request,
@@ -39,11 +39,14 @@ async def login(
     return {"message": "all good bro!"}
 
 
+# Retourne le rôle d'un utilisateur authentifié
 @router.get("/users/me", response_model=dict)
 async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
     return {"role": current_user.role.name}
 
 
+# Déconnecte un utilisateur authentifié de l'application
+# Supprime le cookie, la session et blacklist le token dans le service de stockage en mémoire
 @router.post("/logout")
 async def logout(
     response: Response,

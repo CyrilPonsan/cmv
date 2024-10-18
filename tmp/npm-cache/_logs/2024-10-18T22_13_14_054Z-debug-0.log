@@ -1,0 +1,16 @@
+0 verbose cli /Users/cyrilponsan/.nvm/versions/node/v20.17.0/bin/node /Users/cyrilponsan/.nvm/versions/node/v20.17.0/bin/npm
+1 info using npm@10.9.0
+2 info using node@v20.17.0
+3 silly config load:file:/Users/cyrilponsan/.nvm/versions/node/v20.17.0/lib/node_modules/npm/npmrc
+4 silly config load:file:/Users/cyrilponsan/.npmrc
+5 silly config load:file:/Users/cyrilponsan/.nvm/versions/node/v20.17.0/etc/npmrc
+6 verbose title npm root
+7 verbose argv "root" "--global"
+8 verbose logfile logs-max:10 dir:/Users/cyrilponsan/projets/cmv/tmp/npm-cache/_logs/2024-10-18T22_13_14_054Z-
+9 verbose logfile /Users/cyrilponsan/projets/cmv/tmp/npm-cache/_logs/2024-10-18T22_13_14_054Z-debug-0.log
+10 verbose cwd /Users/cyrilponsan/projets/cmv
+11 verbose os Darwin 24.0.0
+12 verbose node v20.17.0
+13 verbose npm  v10.9.0
+14 verbose exit 0
+15 info ok
