@@ -74,6 +74,8 @@ pipeline {
                         # Suppression de l'ancienne image
                         docker image rm ${IMAGE_GATEWAY}:latest || true
 
+                        docker compose up -d
+
 
                     """
 
