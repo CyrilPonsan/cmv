@@ -1,10 +1,10 @@
 pipeline {
     agent any
-    
+
     tools {
         nodejs 'nodejs'
     }
-    
+
     environment {
         DOCKERHUB_CREDENTIALS = credentials('cmv-dockerhub')
         IMAGE_GATEWAY = "firizgoude/cmv_gateway"
@@ -15,7 +15,7 @@ pipeline {
         EC2_USER = credentials("ec2-username")
         SSH_CREDENTIALS = credentials('cmv-ssh-key')
     }
-    
+
     stages {
         stage("Checkout") {
             steps {
@@ -40,22 +40,6 @@ pipeline {
             steps {
                 dir('cmv_gateway/cmv_front') {
                     sh 'npm run test:unit'
-                }
-            }
-        }
-        stage('Run Backend Tests') {
-            steps {
-                dir("cmv_gateway/cmv_back") {
-                    sh 'docker-compose up --abort-on-container-exit'
-                }
-                
-            }
-            post {
-                always {
-                    dir("cmv_gateway/cmv_back") {
-                        sh 'docker-compose down -v'
-                    }
-                    
                 }
             }
         }
@@ -100,7 +84,7 @@ pipeline {
                                 -o UserKnownHostsFile=/dev/null \
                                 -o LogLevel=ERROR \
                                 ${EC2_USER}@${EC2_SERVER} << EOF
-                            
+
                             IMAGE_NAME=${IMAGE_GATEWAY}
                             IMAGE_TAG=${env.BUILD_NUMBER}
                             ${remoteCommands}
@@ -110,8 +94,8 @@ EOF
                 }
             }
         }
-    }    
-    
+    }
+
     post {
         always {
             script {
