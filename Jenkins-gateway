@@ -9,8 +9,8 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         IMAGE_GATEWAY = "firizgoude/cmv_gateway"
         IMAGE_GATEWAY_TAG = "gateway-${env.BUILD_NUMBER}"
-        NPM_CACHE_DIR = "tmp/npm-cache"
-        BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
+        NPM_CACHE_DIR = "${WORKSPACE}/tmp/npm-cache"
+        BRANCH_NAME = "${env.GIT_BRANCH?.split('/').last()}"
         EC2_SERVER = credentials("cmv_host")
         EC2_USER = credentials("cmv_username")
         SSH_CREDENTIALS = credentials('cmv-ssh-key')
@@ -48,12 +48,12 @@ pipeline {
                 dir('cmv_gateway/cmv_back') {
                     sh 'docker-compose up --abort-on-container-exit'
                 }
-                
             }
             post {
                 always {
                     dir('cmv_gateway/cmv_back') {
                         sh 'docker-compose down -v'    
+                    }
                 }
             }
         }
@@ -88,6 +88,10 @@ pipeline {
                         # Suppression de l'ancienne image
                         docker rmi ${IMAGE_GATEWAY}:latest || true
 
+                        # Déploiement de la nouvelle image
+                        docker pull ${IMAGE_GATEWAY}:${env.BUILD_NUMBER}
+                        docker tag ${IMAGE_GATEWAY}:${env.BUILD_NUMBER} ${IMAGE_GATEWAY}:latest
+
                         # Redémarrage des containers
                         docker compose up -d
 
@@ -95,7 +99,6 @@ pipeline {
                         docker image prune -f
                     """
 
-                    // Exécution des commandes sur le serveur EC2
                     sshagent(credentials: ['cmv-ssh-key']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no \
