@@ -11,8 +11,8 @@ pipeline {
         IMAGE_GATEWAY_TAG = "gateway-${env.BUILD_NUMBER}"
         NPM_CACHE_DIR = "tmp/npm-cache"
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
-        EC2_SERVER = credentials("cmv_host")
-        EC2_USER = credentials("cmv_username")
+        EC2_SERVER = credentials("ec2-host")
+        EC2_USER = credentials("ec2-username")
         SSH_CREDENTIALS = credentials('cmv-ssh-key')
     }
     
