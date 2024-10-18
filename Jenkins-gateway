@@ -45,12 +45,15 @@ pipeline {
         }
         stage('Run Backend Tests') {
             steps {
-                sh 'cd cmv_gateway/cmv_back/ && docker-compose build'
-                sh 'docker-compose up --abort-on-container-exit'
+                dir('cmv_gateway/cmv_back') {
+                    sh 'docker-compose up --abort-on-container-exit'
+                }
+                
             }
             post {
                 always {
-                    sh 'docker-compose down -v'
+                    dir('cmv_gateway/cmv_back') {
+                        sh 'docker-compose down -v'    
                 }
             }
         }
