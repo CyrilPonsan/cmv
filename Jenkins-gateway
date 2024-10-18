@@ -72,7 +72,7 @@ pipeline {
                         docker rm cmv_gateway || true
 
                         # Suppression de l'ancienne image
-                        docker image rm ${IMAGE_GATEWAY}:latest || true
+                        docker image rm ${IMAGE_GATEWAY}:${IMAGE_GATEWAY_TAG} || true
 
                         docker compose up -d
 
