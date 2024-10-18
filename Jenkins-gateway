@@ -51,7 +51,7 @@ pipeline {
                         sh "docker --version"
                         sh "pwd"
                         sh "ls -la"
-                        def dockerImage = docker.build("${IMAGE_GATEWAY}:${IMAGE_GATEWAY_TAG}", "-f Dockerfile .")
+                        def dockerImage = docker.build("${IMAGE_GATEWAY}:latest", "-f Dockerfile .")
                         sh "echo 'Docker build completed.'"
                     }
                 }
@@ -72,7 +72,7 @@ pipeline {
                         docker rm cmv_gateway || true
 
                         # Suppression de l'ancienne image
-                        docker image rm ${IMAGE_GATEWAY}:${IMAGE_GATEWAY_TAG} || true
+                        docker image rm ${IMAGE_GATEWAY}:latest || true
 
                         docker compose up -d
 
