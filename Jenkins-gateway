@@ -51,7 +51,7 @@ pipeline {
                         sh "docker --version"
                         sh "pwd"
                         sh "ls -la"
-                        def dockerImage = docker.build("${IMAGE_GATEWAY}:latest", "-f Dockerfile .")
+                        sh 'docker build --platform linux/amd64 -t "${IMAGE_GATEWAY}:latest" .'
                         sh "echo 'Docker build completed.'"
                     }
                 }
