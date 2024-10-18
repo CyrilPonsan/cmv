@@ -6,7 +6,7 @@ pipeline {
     }
     
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
+        DOCKERHUB_CREDENTIALS = credentials('cmv-dockerhub')
         IMAGE_GATEWAY = "firizgoude/cmv_gateway"
         IMAGE_GATEWAY_TAG = "gateway-${env.BUILD_NUMBER}"
         NPM_CACHE_DIR = "${WORKSPACE}/tmp/npm-cache"
