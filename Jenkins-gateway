@@ -43,7 +43,22 @@ pipeline {
                 }
             }
         }
-
+        stage('Run Backend Tests') {
+            steps {
+                dir("cmv_gateway/cmv_back") {
+                    sh 'docker-compose up --abort-on-container-exit'
+                }
+                
+            }
+            post {
+                always {
+                    dir("cmv_gateway/cmv_back") {
+                        sh 'docker-compose down -v'
+                    }
+                    
+                }
+            }
+        }
         stage('Build Image') {
             steps {
                 dir('cmv_gateway') {
