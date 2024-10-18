@@ -43,7 +43,22 @@ pipeline {
                 }
             }
         }
-
+        stage('Run Backend Tests') {
+            steps {
+                dir("cmv_gateway/cmv_back") {
+                    sh 'docker-compose up --abort-on-container-exit'
+                }
+                
+            }
+            post {
+                always {
+                    dir("cmv_gateway/cmv_back") {
+                        sh 'docker-compose down -v'
+                    }
+                    
+                }
+            }
+        }
         stage('Build Image') {
             steps {
                 dir('cmv_gateway') {
@@ -73,13 +88,9 @@ pipeline {
                         docker rm cmv_gateway || true
 
                         # Suppression de l'ancienne image
-                        docker rmi ${IMAGE_GATEWAY}:latest || true
+                        docker image rm ${IMAGE_GATEWAY}:latest || true
 
-                        # Redémarrage des containers
-                        docker compose up -d
 
-                        # Nettoyage des images non utilisées
-                        docker image prune -f
                     """
 
                     // Exécution des commandes sur le serveur EC2
