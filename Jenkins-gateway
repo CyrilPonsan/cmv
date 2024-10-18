@@ -6,7 +6,7 @@ pipeline {
     }
     
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
+        DOCKERHUB_CREDENTIALS = credentials('cmv-dockerhub')
         IMAGE_GATEWAY = "firizgoude/cmv_gateway"
         IMAGE_GATEWAY_TAG = "gateway-${env.BUILD_NUMBER}"
         NPM_CACHE_DIR = "tmp/npm-cache"
@@ -43,7 +43,22 @@ pipeline {
                 }
             }
         }
-
+        stage('Run Backend Tests') {
+            steps {
+                dir("cmv_gateway/cmv_back") {
+                    sh 'docker-compose up --abort-on-container-exit'
+                }
+                
+            }
+            post {
+                always {
+                    dir("cmv_gateway/cmv_back") {
+                        sh 'docker-compose down -v'
+                    }
+                    
+                }
+            }
+        }
         stage('Build Image') {
             steps {
                 dir('cmv_gateway') {
