@@ -9,7 +9,7 @@ services:
       context: .
     depends_on:
       - redis
-    command: pytest app/tests/
+    command: pytest -s app/tests/
 
     develop:
       watch:

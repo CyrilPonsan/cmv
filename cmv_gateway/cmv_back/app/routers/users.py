@@ -1,10 +1,22 @@
-from fastapi import APIRouter
+from typing import Annotated
+
+from fastapi import APIRouter, Depends
+
+from app.dependancies.auth import get_current_user
+from app.schemas.user import User
 
 
 router = APIRouter(
     prefix="/users",
     tags=["users"],
 )
+
+
+# Retourne le rôle d'un utilisateur authentifié
+@router.get("/me", response_model=dict)
+async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
+    return {"role": current_user.role.name}
+
 
 """
 # retourne la liste de tous les utilisateurs depuis le cache si elle y est présente, sinon met la liste de tous les uitlisateurs dans le cache redis
