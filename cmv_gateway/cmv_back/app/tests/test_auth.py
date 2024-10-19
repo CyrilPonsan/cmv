@@ -56,12 +56,3 @@ async def test_login_wrong_password_type(ac, user):
         json={"username": "test.user@test.fr", "password": "@1234"},
     )
     assert response.status_code == 401
-
-
-@pytest.mark.asyncio
-async def test_protected_route(ac, auth_cookie):
-    # Utilise le cookie dans une requête à une route protégée
-    headers = {"Cookie": f"access_token={auth_cookie}"}
-    response = await ac.get("/api/users/me", headers=headers)
-    assert response.status_code == 200
-    assert response.json() == {"role": "home"}

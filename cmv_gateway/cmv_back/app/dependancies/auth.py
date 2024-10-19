@@ -34,6 +34,11 @@ credentials_exception = HTTPException(
     headers={"WWW-Authenticate": "Bearer"},
 )
 
+not_authenticated_exception = HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="not_authenticated",
+)
+
 
 # Fonctions d'authentification
 def verify_password(plain_password, hashed_password):
@@ -78,7 +83,7 @@ async def create_session(user_id: str):
 def get_token_from_cookie(request: Request):
     token = request.cookies.get("access_token")
     if not token:
-        raise credentials_exception
+        raise not_authenticated_exception
     return token
 
 
@@ -87,24 +92,21 @@ async def get_current_user(
 ):
     try:
         if not token:
-            raise credentials_exception
+            raise not_authenticated_exception
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: str = payload.get("sub")
         if not user_id:
             raise credentials_exception
         session_id: str = payload.get("session_id")
         if not session_id:
-            raise credentials_exception
+            raise not_authenticated_exception
     except JWTError:
         raise credentials_exception
 
     # Vérifier si la session est toujours valide dans Redis
     session_exists = await redis_client.exists(f"session:{session_id}")
     if not session_exists:
-        raise HTTPException(
-            status_code=status.HTTP_418_IM_A_TEAPOT, detail="dans le cul lulu"
-        )
-
+        raise not_authenticated_exception
     user = await PgUserRepository.get_user_with_id(db, user_id)
     if user is None or user.is_active is False:
         raise credentials_exception

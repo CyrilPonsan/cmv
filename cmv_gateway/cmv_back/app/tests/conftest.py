@@ -1,5 +1,7 @@
 import asyncio
+from unittest.mock import AsyncMock
 import pytest
+import pytest_asyncio
 from redis.asyncio import Redis
 from httpx import AsyncClient
 from sqlalchemy import create_engine
@@ -8,6 +10,7 @@ from sqlalchemy.pool import StaticPool
 from passlib.context import CryptContext
 
 from app.dependancies.db_session import get_db
+from app.routers.patients import Patients
 from app.sql.models import Base, Role, User
 from app.main import app
 
@@ -55,6 +58,7 @@ async def ac():
         yield client
 
 
+# Créé un utilisateur test dans la bdd
 @pytest.fixture(scope="function")
 def user(db_session):
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -79,6 +83,7 @@ def user(db_session):
     return user
 
 
+# Retourne un cookie avec un jeton d'accès qui sera utilisé pour tester les routes protégées
 @pytest.fixture
 async def auth_cookie(ac, user):
     response = await ac.post(
@@ -100,3 +105,20 @@ def override_dependency(db_session):
     app.dependency_overrides[get_db] = override_get_db
     yield
     del app.dependency_overrides[get_db]
+
+
+# Mocker la dépendance pour get_dynamic_permissions
+@pytest_asyncio.fixture
+def mock_dynamic_permissions(mocker):
+    return mocker.patch(
+        "app.dependancies.auth.get_dynamic_permissions",
+        return_value="mocked_permissions",
+    )
+
+
+@pytest_asyncio.fixture
+async def mock_httpx_client(mocker):
+    # Mocker le client httpx
+    mock_client = AsyncMock(spec=AsyncClient)
+    mocker.patch.object(Patients, "read_patients", return_value={"data": "mocked_data"})
+    return mock_client
