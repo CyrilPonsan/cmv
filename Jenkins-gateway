@@ -43,6 +43,21 @@ pipeline {
                 }
             }
         }
+        stage('Run Backend Tests') {
+            steps {
+                dir('cmv_gateway/cmv_back') {
+                    script {
+                        sh '''
+                        # Monter les services avec docker-compose
+                        docker-compose -f docker-compose.yml up --build -d
+
+                        # Arrêter et supprimer les services après les tests
+                        docker-compose -f docker-compose.test.yml down
+                        '''
+                    }
+                }
+            }
+        }
         stage('Build Image') {
             steps {
                 dir('cmv_gateway') {
