@@ -8,7 +8,7 @@ from sqlalchemy.pool import StaticPool
 from passlib.context import CryptContext
 
 from app.dependancies.db_session import get_db
-from app.services.patients import PatientsService
+from app.services.patients import PatientsService, get_patients_service
 from app.sql.models import Base, Permission, Role, User
 from app.main import app
 
@@ -96,19 +96,24 @@ async def auth_cookie(ac, user):
     return response.cookies.get("access_token")
 
 
+@pytest.fixture
+def mock_patients_service():
+    return PatientsService(url_api_patients="http://mock-patients-service")
+
+
 @pytest.fixture(autouse=True)
-def override_dependency(db_session):
+def override_dependency(db_session, mock_patients_service):
     def override_get_db():
         try:
             yield db_session
         finally:
             db_session.close()
 
+    def override_get_patients_service():
+        return mock_patients_service
+
     app.dependency_overrides[get_db] = override_get_db
+    app.dependency_overrides[get_patients_service] = override_get_patients_service
     yield
     del app.dependency_overrides[get_db]
-
-
-@pytest.fixture
-def mock_patients_service():
-    return PatientsService(url_api_patients="http://localhost:8002")
+    del app.dependency_overrides[get_patients_service]

@@ -26,7 +26,6 @@ class PatientsService:
         cookie: dict,
         client: httpx.AsyncClient,
     ):
-        print(f"Cookie : {cookie}")
         url = f"{self.url_api_patients}/{path}/"
         response = await client.get(
             url,
