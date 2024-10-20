@@ -1,25 +1,28 @@
-from fastapi import Request
-import pytest
+from unittest.mock import AsyncMock
 
-from app.routers.patients import read_patients
+import pytest
 
 
 @pytest.mark.asyncio
-async def test_read_patients(mock_httpx_client, mock_dynamic_permissions, mocker):
-    # Simuler l'objet Request avec des cookies
-    mock_request = mocker.Mock(spec=Request)
-    mock_request.cookies = {"session": "mocked_cookie_value"}
+async def test_read_patients(ac, auth_cookie, mock_dynamic_permissions, mocker):
+    # Créer un mock pour httpx.AsyncClient
+    mock_httpx_client = AsyncMock()
 
-    # Appeler la fonction qui gère l'endpoint
-    path = "test-path"
-    result = await read_patients(
-        path=path, current_user="mocked_user", request=mock_request
+    # Mock la réponse du service pour la méthode get
+    mock_httpx_client.get.return_value.json.return_value = {"data": "mocked_data"}
+    mock_httpx_client.get.return_value.status_code = 200
+
+    # Patch la dépendance get_http_client pour renvoyer le mock
+    mocker.patch(
+        "app.dependancies.httpx_client.get_http_client", return_value=mock_httpx_client
     )
 
-    # Vérifier que le mock de read_patients a été appelé avec l'URL correcte et les cookies
-    mock_httpx_client.read_patients.assert_called_once_with(
-        f"http://your_patient_service_url/{path}/", {"session": "mocked_cookie_value"}
-    )
+    # Préparer les en-têtes avec le cookie d'authentification
+    headers = {"Cookie": f"access_token={auth_cookie}"}
 
-    # Vérifier le résultat
-    assert result == {"data": "mocked_data"}
+    # Appeler le point de terminaison API
+    response = await ac.get("/api/patients/foo", headers=headers)
+
+    # Vérifie que la réponse est correcte
+    assert response.status_code == 200
+    assert response.json() == {"data": "mocked_data"}

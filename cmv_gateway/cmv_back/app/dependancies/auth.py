@@ -92,6 +92,7 @@ async def get_current_user(
 ):
     try:
         if not token:
+            print("#### no token ####")
             raise not_authenticated_exception
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: str = payload.get("sub")

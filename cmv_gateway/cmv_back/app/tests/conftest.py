@@ -1,5 +1,6 @@
 import asyncio
 from unittest.mock import AsyncMock
+from fastapi.testclient import TestClient
 import pytest
 import pytest_asyncio
 from redis.asyncio import Redis
@@ -10,8 +11,9 @@ from sqlalchemy.pool import StaticPool
 from passlib.context import CryptContext
 
 from app.dependancies.db_session import get_db
-from app.routers.patients import Patients
-from app.sql.models import Base, Role, User
+from app.dependancies.httpx_client import get_http_client
+from app.services.patients import PatientsService
+from app.sql.models import Base, Permission, Role, User
 from app.main import app
 
 DATABASE_URL = "sqlite:///:memory:"
@@ -64,8 +66,12 @@ def user(db_session):
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     hashed_password = pwd_context.hash("Toto@1234")
 
-    role = Role(name="home", label="accueil")
+    role = Role(name="home", label="Service Accueil")
     db_session.add(role)
+    db_session.commit()
+
+    permission = Permission(role=role, action="get", resource="patients")
+    db_session.add(permission)
     db_session.commit()
 
     user = User(
@@ -109,16 +115,26 @@ def override_dependency(db_session):
 
 # Mocker la dépendance pour get_dynamic_permissions
 @pytest_asyncio.fixture
-def mock_dynamic_permissions(mocker):
-    return mocker.patch(
-        "app.dependancies.auth.get_dynamic_permissions",
-        return_value="mocked_permissions",
-    )
+def mock_dynamic_permissions(user):
+    return user
 
 
 @pytest_asyncio.fixture
 async def mock_httpx_client(mocker):
-    # Mocker le client httpx
+    # Créer un mock pour PatientsService
+    mock_service = mocker.Mock(spec=PatientsService)
+    # Simuler la méthode get_patients
+    mock_service.get_patients = AsyncMock(return_value={"data": "mocked_data"})
+    return mock_service
+
+
+@pytest.fixture
+def mock_http_client():
     mock_client = AsyncMock(spec=AsyncClient)
-    mocker.patch.object(Patients, "read_patients", return_value={"data": "mocked_data"})
     return mock_client
+
+
+@pytest.fixture
+def client(mock_http_client):
+    app.dependency_overrides[get_http_client] = lambda: mock_http_client
+    return TestClient(app)
