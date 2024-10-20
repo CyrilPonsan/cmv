@@ -15,4 +15,5 @@ faker
 pytest 
 pytest-asyncio 
 pytest-mock
+pytest-httpx
 fakeredis

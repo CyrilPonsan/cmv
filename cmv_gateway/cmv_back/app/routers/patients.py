@@ -2,6 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request
 
+from app.dependancies.httpx_client import get_http_client
 from app.services.patients import get_patients_service
 from ..schemas.user import User
 from ..dependancies.auth import get_dynamic_permissions
@@ -19,5 +20,8 @@ async def read_patients(
     request: Request,
     current_user: Annotated[User, Depends(get_dynamic_permissions("get", "patients"))],
     patients_service=Depends(get_patients_service),
+    client=Depends(get_http_client),
 ):
-    return await patients_service.get_patients(path=path, cookie=request.cookies)
+    return await patients_service.get_patients(
+        path=path, cookie=request.cookies, client=client
+    )

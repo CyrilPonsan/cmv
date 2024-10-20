@@ -1,8 +1,5 @@
 import asyncio
-from unittest.mock import AsyncMock
-from fastapi.testclient import TestClient
 import pytest
-import pytest_asyncio
 from redis.asyncio import Redis
 from httpx import AsyncClient
 from sqlalchemy import create_engine
@@ -11,7 +8,6 @@ from sqlalchemy.pool import StaticPool
 from passlib.context import CryptContext
 
 from app.dependancies.db_session import get_db
-from app.dependancies.httpx_client import get_http_client
 from app.services.patients import PatientsService
 from app.sql.models import Base, Permission, Role, User
 from app.main import app
@@ -113,28 +109,6 @@ def override_dependency(db_session):
     del app.dependency_overrides[get_db]
 
 
-# Mocker la dépendance pour get_dynamic_permissions
-@pytest_asyncio.fixture
-def mock_dynamic_permissions(user):
-    return user
-
-
-@pytest_asyncio.fixture
-async def mock_httpx_client(mocker):
-    # Créer un mock pour PatientsService
-    mock_service = mocker.Mock(spec=PatientsService)
-    # Simuler la méthode get_patients
-    mock_service.get_patients = AsyncMock(return_value={"data": "mocked_data"})
-    return mock_service
-
-
 @pytest.fixture
-def mock_http_client():
-    mock_client = AsyncMock(spec=AsyncClient)
-    return mock_client
-
-
-@pytest.fixture
-def client(mock_http_client):
-    app.dependency_overrides[get_http_client] = lambda: mock_http_client
-    return TestClient(app)
+def mock_patients_service():
+    return PatientsService(url_api_patients="http://localhost:8002")

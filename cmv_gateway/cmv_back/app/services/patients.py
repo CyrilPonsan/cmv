@@ -1,8 +1,7 @@
 import httpx
 
-from fastapi import Depends, HTTPException
+from fastapi import HTTPException
 
-from app.dependancies.httpx_client import get_http_client
 from app.utils.config import PATIENTS_SERVICE
 from app.utils.logging_setup import LoggerSetup
 
@@ -25,8 +24,9 @@ class PatientsService:
         self,
         path: str,
         cookie: dict,
-        client: httpx.AsyncClient = Depends(get_http_client),
+        client: httpx.AsyncClient,
     ):
+        print(f"Cookie : {cookie}")
         url = f"{self.url_api_patients}/{path}/"
         response = await client.get(
             url,

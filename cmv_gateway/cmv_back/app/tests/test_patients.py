@@ -1,28 +1,29 @@
-from unittest.mock import AsyncMock
-
+from httpx import AsyncClient
 import pytest
+from pytest_httpx import HTTPXMock
+
+from app.services.patients import PatientsService
 
 
 @pytest.mark.asyncio
-async def test_read_patients(ac, auth_cookie, mock_dynamic_permissions, mocker):
-    # Créer un mock pour httpx.AsyncClient
-    mock_httpx_client = AsyncMock()
-
-    # Mock la réponse du service pour la méthode get
-    mock_httpx_client.get.return_value.json.return_value = {"data": "mocked_data"}
-    mock_httpx_client.get.return_value.status_code = 200
-
-    # Patch la dépendance get_http_client pour renvoyer le mock
-    mocker.patch(
-        "app.dependancies.httpx_client.get_http_client", return_value=mock_httpx_client
+async def test_get_patients(
+    ac, auth_cookie, mock_patients_service: PatientsService, httpx_mock: HTTPXMock
+):
+    # Mock the external service call
+    httpx_mock.add_response(
+        url="http://localhost:8002",
+        json={"message": "Test réussi !"},
+        status_code=200,
     )
 
-    # Préparer les en-têtes avec le cookie d'authentification
     headers = {"Cookie": f"access_token={auth_cookie}"}
-
-    # Appeler le point de terminaison API
     response = await ac.get("/api/patients/foo", headers=headers)
 
-    # Vérifie que la réponse est correcte
     assert response.status_code == 200
-    assert response.json() == {"data": "mocked_data"}
+    assert response.json() == {"message": "Test réussi !"}
+
+    # Verify that the mock was called
+    request = httpx_mock.get_request()
+    assert request.url == "http://mock-patients-service/foo/"
+    assert "Cookie" in request.headers
+    assert f"access_token={auth_cookie}" in request.headers["Cookie"]
