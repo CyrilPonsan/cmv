@@ -1,3 +1,4 @@
+from ast import If
 from datetime import datetime, timedelta
 import uuid
 from typing import Optional, Annotated
@@ -70,7 +71,7 @@ async def create_access_token(data: dict, expires_delta: Optional[timedelta] = N
         expire = datetime.now() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     to_encode["sub"] = str(to_encode["sub"])
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY or "", algorithm=ALGORITHM or"")
     return encoded_jwt
 
 
@@ -94,11 +95,11 @@ async def get_current_user(
         if not token:
             print("#### no token ####")
             raise not_authenticated_exception
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: str = payload.get("sub")
+        payload = jwt.decode(token, SECRET_KEY or "", algorithms=[ALGORITHM or ""])
+        user_id: str | None= payload.get("sub")
         if not user_id:
             raise credentials_exception
-        session_id: str = payload.get("session_id")
+        session_id: str | None = payload.get("session_id")
         if not session_id:
             raise not_authenticated_exception
     except JWTError:
@@ -118,11 +119,23 @@ def get_dynamic_permissions(action: str, resource: str) -> User:
     async def get_permissions(
         current_user: Annotated[User, Depends(get_current_user)],
         db=Depends(get_db),
-    ):
+    )->str:
         if await check_permissions(db, current_user.role.name, action, resource):
-            return current_user
+            internal_payload = {
+                "user_id": current_user.id_user,
+                "roles": current_user.role.nom,
+                "exp": datetime.utcnow() + timedelta(seconds=15),  # Durée de vie courte
+                "source": "api_gateway"
+            }
+            return jwt.encode(internal_payload, SECRET_KEY or "", algorithm=ALGORITHM or "")
+        else:
+            return ""
 
-    return get_permissions
+
+
+
+
+
 
 
 async def check_permissions(
