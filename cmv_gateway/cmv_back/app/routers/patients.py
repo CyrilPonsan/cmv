@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, Request
 
 from app.dependancies.httpx_client import get_http_client
 from app.services.patients import get_patients_service
-from ..schemas.user import User
-from ..dependancies.auth import get_dynamic_permissions
+from app.schemas.user import User
+from app.dependancies.auth import get_current_user, get_dynamic_permissions
 
 router = APIRouter(
     prefix="/patients",
@@ -18,10 +18,15 @@ router = APIRouter(
 async def read_patients(
     path: str,
     request: Request,
-    current_user: Annotated[User, Depends(get_dynamic_permissions("get", "patients"))],
+    internal_token: Annotated[str, Depends(get_dynamic_permissions("get", "patients"))],
+    current_user: Annotated[User, Depends(get_current_user)],
     patients_service=Depends(get_patients_service),
     client=Depends(get_http_client),
 ):
     return await patients_service.get_patients(
-        path=path, cookie=request.cookies, client=client
+        current_user=current_user,
+        path=path,
+        internal_token=internal_token,
+        client=client,
+        request=request,
     )
