@@ -1,4 +1,6 @@
 import re
+from datetime import datetime
+
 from pydantic import BaseModel, EmailStr, field_validator
 from fastapi import HTTPException, status
 
@@ -43,3 +45,10 @@ class Credentials(BaseModel):
                 detail="Identifiants incorrects.",
             )
         return value
+
+
+class InternalPayload(BaseModel):
+    user_id: int
+    role: str
+    exp: datetime
+    source: str

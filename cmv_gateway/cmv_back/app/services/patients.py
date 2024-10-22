@@ -1,7 +1,8 @@
 import httpx
 
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
 
+from app.schemas.user import User
 from app.utils.config import PATIENTS_SERVICE
 from app.utils.logging_setup import LoggerSetup
 
@@ -22,15 +23,21 @@ class PatientsService:
 
     async def get_patients(
         self,
+        current_user: User,
         path: str,
-        cookie: dict,
+        internal_token: str,
         client: httpx.AsyncClient,
+        request: Request,
     ):
         url = f"{self.url_api_patients}/{path}/"
         response = await client.get(
             url,
-            cookies=cookie,
+            headers={"Authorization": f"Bearer {internal_token}"},
             follow_redirects=True,
+        )
+        self.logger.write_log(
+            f"{current_user.role.name} - {current_user.id_user} - {request.method} - {path}",
+            request=request,
         )
         if response.status_code == 200:
             return response.json()
