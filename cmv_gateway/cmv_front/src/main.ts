@@ -12,10 +12,12 @@ import PrimeVue from 'primevue/config'
 import 'primeicons/primeicons.css'
 import Aura from '@primevue/themes/aura'
 import ToastService from 'primevue/toastservice'
+import i18n from './i18n'
 
 progressBar(router)
 
 const app = createApp(App)
+app.use(i18n)
 app.use(PrimeVue, {
   theme: {
     preset: Aura,
