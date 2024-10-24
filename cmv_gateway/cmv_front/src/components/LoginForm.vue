@@ -8,6 +8,9 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Message from 'primevue/message'
 import useLogin from '@/composables/use-login'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 // ce composable gère la logique de validation et de connexion de l'utilisateur
 const { apiError, errors, loading, password, passwordAttrs, username, usernameAttrs, onSubmit } =
@@ -18,7 +21,7 @@ const { apiError, errors, loading, password, passwordAttrs, username, usernameAt
   <form class="w-80 flex flex-col items-center gap-y-2" @submit.prevent="onSubmit">
     <!-- champs email -->
     <div class="w-full flex flex-col gap-y-2">
-      <label for="username">Email</label>
+      <label for="username">{{ t('login.labelEmail') }}</label>
       <!-- message d'erreur de validation du champs email -->
       <span class="flex items-center gap-x-2" v-show="errors.username">
         <Message severity="error" icon="pi pi-times-circle" aria-label="erreur adresse email" />
@@ -38,7 +41,7 @@ const { apiError, errors, loading, password, passwordAttrs, username, usernameAt
     </div>
     <!-- champs mot de passe -->
     <div class="w-full flex flex-col gap-y-2">
-      <label for="password">Mot de passe</label>
+      <label for="password">{{ t('login.labelPassword') }}</label>
       <!-- message d'erreur de validation du champs mot de passe -->
       <span class="flex items-center gap-x-2" v-show="errors.password">
         <Message severity="error" icon="pi pi-times-circle" aria-label="erreur mot de passe" />

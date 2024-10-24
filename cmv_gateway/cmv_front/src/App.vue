@@ -29,8 +29,7 @@
 
     <footer class="w-full h-[4rem] flex justify-center items-center bg-surface-900">
       <h3 class="text-xs text-primary-500">
-        Projet de formation : toute ressemblance avec une clinique déjà existente ne serait que pure
-        coïncidence.
+        {{ t('app.footer') }}
       </h3>
     </footer>
   </main>
@@ -38,11 +37,13 @@
 
 <script setup lang="ts">
 import { computed, onBeforeMount, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useUserStore } from './stores/user'
 import { useRoute, useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import Toast from 'primevue/toast'
 
+const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()

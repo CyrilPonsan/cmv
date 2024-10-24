@@ -1,0 +1,10 @@
+{
+  "app": {
+    "footer": "Projet de formation : toute ressemblance avec une clinique déjà existente ne serait que pure coïncidence."
+  },
+  "login": {
+    "h1": "Clinique Montvert",
+    "labelEmail": "Email",
+    "labelPassword": "Mot de passe"
+  }
+}
