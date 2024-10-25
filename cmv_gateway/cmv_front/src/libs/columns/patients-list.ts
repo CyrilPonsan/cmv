@@ -1,32 +1,32 @@
 export const patientsListColumns = [
   {
     field: 'civilite',
-    header: 'Civilité',
+    header: 'civilite',
     sortable: false
   },
   {
     field: 'nom',
-    header: 'Nom',
+    header: 'lastname',
     sortable: true
   },
   {
     field: 'prenom',
-    header: 'Prénom',
+    header: 'firstname',
     sortable: true
   },
   {
     field: 'date_de_naissance',
-    header: 'Date de naissance',
+    header: 'birth_date',
     sortable: true
   },
   {
     field: 'telephone',
-    header: 'Téléphone',
+    header: 'phone_number',
     sortable: false
   },
   {
     field: 'email',
-    header: 'Email',
+    header: 'email',
     sortable: true
   }
 ]
