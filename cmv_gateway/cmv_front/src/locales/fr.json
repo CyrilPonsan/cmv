@@ -6,5 +6,19 @@
     "h1": "Clinique Montvert",
     "labelEmail": "Email",
     "labelPassword": "Mot de passe"
+  },
+  "error": {
+    "error": "Erreur",
+    "no_email": "Une adresse email est requise",
+    "not_valid_email": "Adresse email non valide",
+    "no_password": "Un mot de passe est requis",
+    "not_valid_password": "Le mot de passe n'est pas au bon format",
+    "connection_failure": "La connexion a échoué...",
+    "credentials": "Identifiant ou mot de passe incorrect",
+    "network_issue": "Un problème est survenu, réessayez plus tard..."
+  },
+  "success": {
+    "connection_success": "Connexion réussie",
+    "connection_success_detail": "Bienvenue sur le système d'information de la clinique Montvert !"
   }
 }

@@ -30,7 +30,7 @@ basic_authorizations = [
 
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
-    detail="Adresse email ou mot de passe incorrect",
+    detail="credentials",
     headers={"WWW-Authenticate": "Bearer"},
 )
 

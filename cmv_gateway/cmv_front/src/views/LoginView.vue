@@ -17,6 +17,7 @@ const { t } = useI18n()
         alt="illustration page de connexion"
       />
       <article class="flex flex-col justify-center items-center gap-y-4">
+        <!-- formulaire de connexion -->
         <LoginForm />
       </article>
     </section>

@@ -11,8 +11,10 @@ import { useToast } from 'primevue/usetoast'
 import { useForm } from 'vee-validate'
 import { ref, watch, watchEffect } from 'vue'
 import { z } from 'zod'
+import { useI18n } from 'vue-i18n'
 
 const useLogin = () => {
+  const { t } = useI18n()
   const userStore = useUserStore()
   const toast = useToast()
   const apiError = ref('')
@@ -23,10 +25,12 @@ const useLogin = () => {
   // schema de validation utilisé pour le formulaire de connexion
   const loginFormSchema = toTypedSchema(
     z.object({
-      username: z.string({ required_error: 'no_email' }).email({ message: 'not_valid_email' }),
+      username: z
+        .string({ required_error: t('error.no_email') })
+        .email({ message: t('error.not_valid_email') }),
       password: z
-        .string({ required_error: 'no_password' })
-        .regex(regexPassword, { message: 'not_valid_password' })
+        .string({ required_error: t('error.no_password') })
+        .regex(regexPassword, { message: t('error.not_valid_password') })
     })
   )
 
@@ -78,20 +82,23 @@ const useLogin = () => {
       toast.add({
         severity: 'success',
         life: 5000,
-        summary: 'Connexion réussie',
-        detail: 'Bienvenue copain !',
-        contentStyleClass: 'color: red',
+        summary: t('success.connection_success'),
+        detail: t('success.connection_success_detail'),
         closable: false
       })
     } catch (error: any) {
-      apiError.value = error.response.data.detail ?? error.response.data
+      const errorDetail = error.response.data?.detail
+      if (errorDetail) {
+        apiError.value = t(`error.${errorDetail}`)
+      } else {
+        apiError.value = t(`error.network_issue`)
+      }
       // toast affichant un message d'erreur
       toast.add({
         severity: 'error',
         life: 5000,
-        summary: 'Error spotted',
-        detail: 'La connexion a échouée...',
-        contentStyleClass: 'color: red',
+        summary: t('error.error'),
+        detail: t('error.connection_failure'),
         closable: false
       })
     } finally {
@@ -106,7 +113,6 @@ const useLogin = () => {
 
   watchEffect(() => {
     if (errors.value.password) {
-      console.log('updating...')
       passwordUpdate.value = true
     }
   })
