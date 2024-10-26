@@ -5,7 +5,6 @@ from sqlalchemy.orm import sessionmaker
 from .config import DATABASE_URL
 
 if DATABASE_URL is None:
-    print("Testing")
     DATABASE_URL = "sqlite:///:memory:"
 
 print(f"Gateway db url : {DATABASE_URL}")

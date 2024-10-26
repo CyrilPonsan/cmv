@@ -2,12 +2,10 @@ FROM python:3.12
 
 WORKDIR /app
 
-COPY ./requirements.txt /app/requirements.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
 
-RUN apt-get update \
-    && apt-get install gcc -y \
-    && apt-get clean
+# Ajoutez d'autres dépendances si nécessaire
 
-RUN pip install -r /app/requirements.txt
-
-COPY . /app/
+CMD ["pytest"]
