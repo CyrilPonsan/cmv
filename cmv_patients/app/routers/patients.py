@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.dependancies.auth import check_authorization
 from app.dependancies.db_session import get_db
+from app.schemas.patients import ReadAllPatients
 from app.schemas.schemas import Patient
 from app.schemas.user import InternalPayload
 from app.services.patients import get_patients_service
@@ -23,7 +24,7 @@ def create_patient(data: Annotated[Patient, Body()], db: Session = Depends(get_d
         )
 
 
-@router.get("/")
+@router.get("/", response_model=ReadAllPatients)
 async def read_patients(
     request: Request,
     payload: Annotated[InternalPayload, Depends(check_authorization)],
