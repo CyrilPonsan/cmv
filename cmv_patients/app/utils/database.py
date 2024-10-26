@@ -4,7 +4,9 @@ from sqlalchemy.orm import sessionmaker
 
 from app.utils.config import DATABASE_URL
 
-print(f"DATABASE_URL : {DATABASE_URL}")
+
+if DATABASE_URL is None:
+    DATABASE_URL = "sqlite:///:memory:"
 
 engine = create_engine(DATABASE_URL)
 

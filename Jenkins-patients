@@ -1,21 +1,20 @@
 pipeline {
     agent any
-    
+
     tools {
         nodejs 'nodejs'
     }
-    
+
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
-        IMAGE_GATEWAY = "firizgoude/cmv_gateway"
-        IMAGE_TAG = "gateway-${env.BUILD_NUMBER}"
-        NPM_CACHE_DIR = "tmp/npm-cache"
+        DOCKERHUB_CREDENTIALS = credentials('cmv-dockerhub')
+        IMAGE_PATIENTS = "firizgoude/cmv_patients"
+        IMAGE_PATIENTS_TAG = "patients-${env.BUILD_NUMBER}"
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
-        EC2_SERVER = credentials("cmv_host")
-        EC2_USER = credentials("cmv_username")
+        EC2_SERVER = credentials("ec2-host")
+        EC2_USER = credentials("ec2-username")
         SSH_CREDENTIALS = credentials('cmv-ssh-key')
     }
-    
+
     stages {
         stage("Checkout") {
             steps {
@@ -25,17 +24,83 @@ pipeline {
                 }
             }
         }
-        
-        stage("API Patients") {
+        stage('Run Backend Tests') {
             steps {
-                echo "Working on Patients API"
+                dir('cmv_patients') {
+                    script {
+                        sh '''
+                        # Monter les services avec docker-compose
+                        docker-compose -f docker-compose.yml up --build -d
+
+                        # Arrêter et supprimer les services après les tests
+                        docker-compose -f docker-compose.yml down
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Build Image') {
+            steps {
+                dir('cmv_patients') {
+                    script {
+                        sh "echo 'Starting Docker build...'"
+                        sh "docker --version"
+                        sh "pwd"
+                        sh "ls -la"
+                        sh 'docker build --platform linux/amd64 -t "${IMAGE_GATEWAY}:latest" .'
+                        sh "echo 'Docker build completed.'"
+                    }
+                }
+            }
+        }
+        stage('Push to DockerHub') {
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                sh "docker push ${IMAGE_PATIENTS}:latest"
+            }
+        }
+        stage('Deploy to EC2') {
+            steps {
+                script {
+                    def remoteCommands = """
+                        # Arrêt et suppression de l'ancien container
+                        docker stop cmv_gateway || true
+                        docker rm cmv_gateway || true
+
+                        # Suppression de l'ancienne image
+                        docker image rm ${IMAGE_PATIENTS}:latest || true
+
+                        docker compose up -d
+
+
+                    """
+
+                    // Exécution des commandes sur le serveur EC2
+                    sshagent(credentials: ['cmv-ssh-key']) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no \
+                                -o UserKnownHostsFile=/dev/null \
+                                -o LogLevel=ERROR \
+                                ${EC2_USER}@${EC2_SERVER} << EOF
+
+                            IMAGE_NAME=${IMAGE_PATIENTS}
+                            IMAGE_TAG=${env.BUILD_NUMBER}
+                            ${remoteCommands}
+EOF
+                        """
+                    }
+                }
             }
         }
     }
-    
+
     post {
         always {
-            sh 'docker logout'
+            script {
+                node {
+                    sh 'docker logout'
+                }
+            }
         }
         success {
             echo 'Pipeline completed successfully!'

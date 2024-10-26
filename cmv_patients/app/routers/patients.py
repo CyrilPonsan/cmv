@@ -3,11 +3,11 @@ from typing import Annotated
 from fastapi import APIRouter, Body, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
-from ..dependancies.auth import check_authorization
-from ..dependancies.db_session import get_db
-from ..schemas.schemas import Patient
-from ..controller.patients import Patients
-from ..schemas.user import InternalPayload
+from app.dependancies.auth import check_authorization
+from app.dependancies.db_session import get_db
+from app.schemas.schemas import Patient
+from app.schemas.user import InternalPayload
+from app.services.patients import get_patients_service
 
 router = APIRouter(prefix="/patients", tags=["patients"])
 
@@ -24,6 +24,23 @@ def create_patient(data: Annotated[Patient, Body()], db: Session = Depends(get_d
 
 
 @router.get("/")
-async def read_patients(request: Request, payload: Annotated[InternalPayload, Depends(check_authorization)],
-                        db=Depends(get_db)):
-    return await Patients.read_patients(db, payload["user_id"], payload["role"], request)
+async def read_patients(
+    request: Request,
+    payload: Annotated[InternalPayload, Depends(check_authorization)],
+    page: int | None = 1,
+    limit: int | None = 10,
+    field: str | None = "nom",
+    order: str | None = "asc",
+    patients_service=Depends(get_patients_service),
+    db=Depends(get_db),
+):
+    return await patients_service.read_all_patients(
+        db=db,
+        page=page,
+        limit=limit,
+        field=field,
+        order=order,
+        request=request,
+        user_id=payload["user_id"],
+        role=payload["role"],
+    )
