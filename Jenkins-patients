@@ -47,7 +47,7 @@ pipeline {
                         sh "docker --version"
                         sh "pwd"
                         sh "ls -la"
-                        sh 'docker build --platform linux/amd64 -t "${IMAGE_GATEWAY}:latest" .'
+                        sh 'docker build --platform linux/amd64 -t "${IMAGE_PATIENTS}:latest" .'
                         sh "echo 'Docker build completed.'"
                     }
                 }
@@ -64,8 +64,8 @@ pipeline {
                 script {
                     def remoteCommands = """
                         # Arrêt et suppression de l'ancien container
-                        docker stop cmv_gateway || true
-                        docker rm cmv_gateway || true
+                        docker stop cmv_patients || true
+                        docker rm cmv_patients || true
 
                         # Suppression de l'ancienne image
                         docker image rm ${IMAGE_PATIENTS}:latest || true
