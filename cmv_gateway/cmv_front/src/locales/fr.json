@@ -2,9 +2,50 @@
   "app": {
     "footer": "Projet de formation : toute ressemblance avec une clinique déjà existente ne serait que pure coïncidence."
   },
+  "columns": {
+    "patientsList": {
+      "civilite": "Civilité",
+      "lastname": "Nom",
+      "firstname": "Prénom",
+      "birth_date": "Date de naissance",
+      "phone_number": "Numéro de téléphone",
+      "email": "Email"
+    }
+  },
+  "error": {
+    "error": "Erreur",
+    "no_email": "Une adresse email est requise",
+    "not_valid_email": "Adresse email non valide",
+    "no_password": "Un mot de passe est requis",
+    "not_valid_password": "Le mot de passe n'est pas au bon format",
+    "connection_failure": "La connexion a échoué...",
+    "credentials": "Identifiant ou mot de passe incorrect",
+    "network_issue": "Un problème est survenu, réessayez plus tard..."
+  },
   "login": {
     "h1": "Clinique Montvert",
     "labelEmail": "Email",
     "labelPassword": "Mot de passe"
+  },
+  "pagination": {
+    "to": "à",
+    "from": "de"
+  },
+  "patients": {
+    "home": {
+      "description": "Liste des patients",
+      "title": "Espace administratif",
+      "toasters": {
+        "delete": {
+          "summary": "Suppression du patient",
+          "detail": "Cette fonctionnalité n'est pas encore implémentée..."
+        }
+      },
+      "total_patients": "Aucun patient | Un patient | {n} patients"
+    }
+  },
+  "success": {
+    "connection_success": "Connexion réussie",
+    "connection_success_detail": "Bienvenue sur le système d'information de la clinique Montvert !"
   }
 }
