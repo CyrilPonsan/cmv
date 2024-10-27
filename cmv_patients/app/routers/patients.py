@@ -35,6 +35,7 @@ async def read_patients(
     patients_service=Depends(get_patients_service),
     db=Depends(get_db),
 ):
+    print(f"PAGE : {page}")
     return await patients_service.read_all_patients(
         db=db,
         page=page,

@@ -36,4 +36,3 @@ class PatientListItem(BaseModel):
 class ReadAllPatients(BaseModel):
     patients: list[PatientListItem]
     total: int
-    total_pages: int

@@ -1,67 +1,37 @@
 <script setup lang="ts">
-/**
- * Ce composant affiche la liste des dossiers administratifs des patients
- * La liste est téléchargée en lazy loading et un système de pagination est
- * disponible
- */
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import type PatientsListItem from '@/models/patients-list-item'
-import type ColumnItem from '@/models/column-item'
-import { useToast } from 'primevue/usetoast'
-import { useI18n } from 'vue-i18n'
+import usePatientsList from '@/composables/use-patients-list'
+import { onMounted } from 'vue'
+import PatientsTables from './PatientsTables.vue'
 
-const { t } = useI18n()
-const props = defineProps<{ columns: ColumnItem[]; patientsList: PatientsListItem[] }>()
-
-const toast = useToast()
-
-const onTrash = () => {
-  toast.add({
-    severity: 'warn',
-    life: 5000,
-    summary: t('patients.home.toasters.delete.summary'),
-    detail: t('patients.home.toasters.delete.detail'),
-    closable: false
-  })
+interface LazyLoadEvent {
+  first: number
+  rows: number
+  sortField: string
+  sortOrder: 1 | -1
 }
+
+const { columns, getPatientsList, loading, patientsList, totalPatients } = usePatientsList()
+
+const onLazyLoad = (event: LazyLoadEvent) => {
+  console.log('triggered')
+  getPatientsList(
+    event.first / event.rows + 1,
+    event.rows,
+    event.sortField,
+    event.sortOrder === 1 ? 'asc' : 'desc'
+  )
+}
+
+// Chargement initial
+onMounted(() => getPatientsList(1, 10, 'nom', 'asc'))
 </script>
 
 <template>
-  <DataTable
-    class="rounded-md shadow-md"
-    sortField="nom"
-    :sortOrder="1"
-    dataKey="id_patient"
-    stripedRows="true"
-    :value="props.patientsList"
-    paginator
-    :rows="10"
-    :rowsPerPageOptions="[5, 10, 20, 50]"
-    tableStyle="min-width: 50rem"
-    paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
-    :currentPageReportTemplate="`{first} ${t('pagination.to')} {last} ${t('pagination.from')} {totalRecords}`"
-  >
-    <template #paginatorstart>
-      <span class="flex items-center gap-x-2 font-bold"
-        >{{ t('patients.home.total_patients', patientsList.length) }}
-      </span>
-    </template>
-    <Column
-      :class="col.field !== 'email' ? 'capitalize' : ''"
-      v-for="col of columns"
-      :key="col.field"
-      :field="col.field"
-      :header="t(`columns.patientsList.${col.header}`)"
-      :sortable="col.sortable"
-    ></Column>
-    <Column header="Actions">
-      <template #body>
-        <i
-          class="mx-auto pi pi-trash cursor-pointer"
-          style="color: red"
-          @click="onTrash"
-        /> </template
-    ></Column>
-  </DataTable>
+  <PatientsTables
+    :columns="columns"
+    :patientsList="patientsList"
+    :loading="loading"
+    :totalRecords="totalPatients"
+    @lazy-load="onLazyLoad"
+  />
 </template>

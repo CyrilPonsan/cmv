@@ -67,4 +67,4 @@ class PgPatientsRepository(PatientsRepository):
             .all()
         )
 
-        return {"patients": result, "total": total, "total_pages": total_pages}
+        return {"patients": result, "total": total}
