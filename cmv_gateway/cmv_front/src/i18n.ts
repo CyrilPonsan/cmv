@@ -8,6 +8,15 @@ interface Messages {
 
 const i18n = createI18n<[Messages], 'fr'>({
   locale: 'fr',
+  datetimeFormats: {
+    fr: {
+      short: {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }
+    }
+  },
   fallbackLocale: 'fr',
   messages: {
     fr: fr as unknown as LocaleMessages<Messages>
