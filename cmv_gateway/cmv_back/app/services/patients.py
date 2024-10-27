@@ -29,7 +29,11 @@ class PatientsService:
         client: httpx.AsyncClient,
         request: Request,
     ):
-        url = f"{self.url_api_patients}/{path}/"
+        full_path = path
+        if request.query_params:
+            full_path = f"{path}?{request.query_params}"
+        url = f"{self.url_api_patients}/{full_path}"
+        print(f"URL : {url}")
         response = await client.get(
             url,
             headers={"Authorization": f"Bearer {internal_token}"},

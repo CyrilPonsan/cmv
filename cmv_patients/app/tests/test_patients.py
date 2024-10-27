@@ -28,7 +28,7 @@ async def test_pagination_limit(ac, internal_token, patients):
 
     assert response.status_code == 200
     assert result["total"] == 20
-    assert len(result["result"]) == 5
+    assert len(result["patients"]) == 5
 
 
 @pytest.mark.asyncio
@@ -40,8 +40,8 @@ async def test_pagination_offset(ac, internal_token, patients):
 
     assert response.status_code == 200
     assert result["total"] == 20
-    assert len(result["result"]) == 5
-    assert result["result"][0]["id_patient"] == 14
+    assert len(result["patients"]) == 5
+    assert result["patients"][0]["id_patient"] == 14
 
 
 @pytest.mark.asyncio
@@ -55,8 +55,8 @@ async def test_pagination_tri_prenom_desc(ac, internal_token, patients):
 
     assert response.status_code == 200
     assert result["total"] == 20
-    assert len(result["result"]) == 5
-    assert result["result"][0]["prenom"] == "prenom_test_4"
+    assert len(result["patients"]) == 5
+    assert result["patients"][0]["prenom"] == "prenom_test_4"
 
 
 @pytest.mark.asyncio

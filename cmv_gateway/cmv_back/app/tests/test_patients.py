@@ -8,7 +8,7 @@ async def test_get_patients(
 ):
     # Mock le micro service
     httpx_mock.add_response(
-        url="http://mock-patients-service/foo/",
+        url="http://mock-patients-service/foo",
         json={"message": "Test réussi !"},
         status_code=200,
     )
@@ -26,7 +26,7 @@ async def test_get_patients_not_found(
 ):
     # Mock le micro service
     httpx_mock.add_response(
-        url="http://mock-patients-service/foo/",
+        url="http://mock-patients-service/foo",
         json={"detail": "Not Found"},
         status_code=404,
     )
