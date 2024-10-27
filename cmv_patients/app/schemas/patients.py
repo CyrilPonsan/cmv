@@ -34,5 +34,5 @@ class PatientListItem(BaseModel):
 
 
 class ReadAllPatients(BaseModel):
-    patients: list[PatientListItem]
+    data: list[PatientListItem]
     total: int
