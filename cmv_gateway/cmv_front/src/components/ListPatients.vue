@@ -43,6 +43,7 @@ onMounted(() => getData())
 </script>
 
 <template>
+  <!-- Tableau -->
   <DataTable
     class="rounded-md shadow-md"
     :value="patientsList"
@@ -63,6 +64,7 @@ onMounted(() => getData())
     @page="onLazyLoad"
     @sort="onSort"
   >
+    <!-- Affichage du nombre total de patients enregistrés -->
     <template #paginatorstart>
       <span class="flex items-center gap-x-2 font-bold">
         {{ t('patients.home.total_patients', totalRecords) }}
@@ -75,10 +77,12 @@ onMounted(() => getData())
       :header="t(`columns.patientsList.${col.header}`)"
       :sortable="col.sortable"
     >
+      <!-- Formatage de la date de naissance -->
       <template #body="slotProps">
         <template v-if="col.field === 'date_de_naissance'">
           {{ d(new Date(slotProps.data[col.field]), 'short') }}
         </template>
+        <!-- Formatage des propriétés autres que l'adresse email -->
         <template v-else>
           <span :class="{ capitalize: col.field !== 'email' }">
             {{ slotProps.data[col.field] }}
@@ -86,6 +90,7 @@ onMounted(() => getData())
         </template>
       </template>
     </Column>
+    <!-- Actions -->
     <Column header="Actions">
       <template #body>
         <i class="mx-auto pi pi-trash cursor-pointer" style="color: red" @click="onTrash" />

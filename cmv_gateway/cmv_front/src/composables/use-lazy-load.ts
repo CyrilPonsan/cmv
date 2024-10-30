@@ -4,7 +4,7 @@
  * Les données sont chargées en lazy-loading.
  */
 
-import { ref, watch, type Ref, type UnwrapRef } from 'vue'
+import { computed, ref, watch, type Ref, type UnwrapRef } from 'vue'
 import useHttp from './use-http'
 import type LazyLoadEvent from '@/models/lazy-load-event'
 import type LazyState from '@/models/lazy-state'
@@ -55,6 +55,12 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     }
   }
 
+  //  Mise en cache du numéro de la page pour optoimiser les performances de rendu
+  const page = computed(() => lazyState.value.first / lazyState.value.rows + 1)
+
+  //  Mise en cache de l'ordre de tri pour optoimiser les performances de rendu
+  const direction = computed(() => (lazyState.value.sortOrder === 1 ? 'asc' : 'desc'))
+
   /**
    * Retourne la liste des dossiers administratifs des patients de la clinique
    * Montvert.
@@ -67,11 +73,7 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
 
     http.sendRequest<APIResponse<T>>(
       {
-        path: `${url}?page=${lazyState.value.first / lazyState.value.rows + 1}&limit=${
-          lazyState.value.rows
-        }&field=${lazyState.value.sortField}&order=${
-          lazyState.value.sortOrder === 1 ? 'asc' : 'desc'
-        }`
+        path: `${url}?page=${page.value}&limit=${lazyState.value.rows}&field=${lazyState.value.sortField}&order=${direction.value}`
       },
       applyData
     )

@@ -1,24 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { config, mount, VueWrapper } from '@vue/test-utils'
+import { mount, VueWrapper } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { createRouter, createWebHistory, type Router } from 'vue-router'
-import { createI18n } from 'vue-i18n'
-import fr from './locales/fr.json'
-import en from './locales/en.json'
-import App from './App.vue'
-import { useUserStore } from './stores/user'
-
-const i18n = createI18n({
-  legacy: false, // Composition API
-  locale: 'fr',
-  fallbackLocale: 'fr',
-  messages: {
-    fr,
-    en
-  }
-})
-
-config.global.plugins = [...(config.global.plugins || []), i18n]
+import App from '../App.vue'
+import { useUserStore } from '../stores/user'
+import { createI18nInstance } from '@/helpers/createI18nInstance'
+import fr from '../locales/fr.json'
+import en from '../locales/en.json'
 
 // Mock des composants
 vi.mock('primevue/button', () => ({
@@ -56,25 +44,10 @@ const router: Router = createRouter({
   ]
 })
 
-describe('App', () => {
-  let wrapper: VueWrapper<InstanceType<typeof App>>
-  let userStore: any
-
-  // Fonction utilitaire pour créer l'instance i18n avec la locale spécifiée
-  const createI18nInstance = (locale: 'fr' | 'en') => {
-    return createI18n({
-      legacy: false,
-      locale,
-      fallbackLocale: 'en',
-      messages: {
-        fr,
-        en
-      }
-    })
-  }
-
-  beforeEach(() => {
-    wrapper = mount(App, {
+const mountComponent = (locale = 'fr') => {
+  const i18n = createI18nInstance(locale)
+  return {
+    wrapper: mount(App, {
       global: {
         plugins: [
           createTestingPinia({
@@ -83,29 +56,28 @@ describe('App', () => {
               user: { role: '', mode: 'light' }
             }
           }),
+          i18n,
           router
         ],
         stubs: ['RouterView']
       }
     })
+  }
+}
+
+describe('App tests fr', () => {
+  let wrapper: VueWrapper<InstanceType<typeof App>>
+  let userStore: any
+
+  beforeEach(() => {
+    const mounted = mountComponent('fr')
+    wrapper = mounted.wrapper
     userStore = useUserStore()
   })
 
   it('displays footer in French when locale is fr', () => {
     const footer = wrapper.find('footer')
     expect(footer.text()).toBe(fr.app.footer)
-  })
-
-  it('displays footer in English when locale is en', () => {
-    const i18n = createI18nInstance('en')
-    const wrapper = mount(App, {
-      global: {
-        plugins: [i18n]
-      }
-    })
-
-    const footer = wrapper.find('footer h3')
-    expect(footer.text()).toBe(en.app.footer)
   })
 
   it('renders correctly', () => {
@@ -141,5 +113,19 @@ describe('App', () => {
     await userStore.$patch({ role: 'home' })
     await wrapper.vm.$nextTick()
     expect(routerPushSpy).toHaveBeenCalledWith({ name: 'patients' })
+  })
+})
+
+describe('App test en', () => {
+  let wrapper: VueWrapper<InstanceType<typeof App>>
+
+  beforeEach(() => {
+    const mounted = mountComponent('en')
+    wrapper = mounted.wrapper
+  })
+
+  it('displays footer in english when locale is en', () => {
+    const footer = wrapper.find('footer')
+    expect(footer.text()).toBe(en.app.footer)
   })
 })
