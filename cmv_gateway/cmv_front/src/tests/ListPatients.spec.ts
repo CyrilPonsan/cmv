@@ -59,19 +59,21 @@ vi.mock('primevue/usetoast', () => ({
   })
 }))
 
-// Mock du composable useLazyLoad
+// Créons un mock pour onSort
+const mockOnSort = vi.fn()
+
 vi.mock('@/composables/use-lazy-load', () => ({
   default: () => ({
     getData: vi.fn(),
     lazyState: {
       first: 0,
-      rows: 1,
-      sortField: 'nom',
-      sortOrder: 1
+      rows: 10,
+      sortField: null,
+      sortOrder: null
     },
     loading: false,
     onLazyLoad: vi.fn(),
-    onSort: vi.fn(),
+    onSort: mockOnSort,
     result: mockPatientsList,
     totalRecords: 2
   })
@@ -81,6 +83,9 @@ describe('ListPatients', () => {
   let wrapper: any
 
   beforeEach(() => {
+    // Réinitialiser le mock avant chaque test
+    mockOnSort.mockClear()
+
     // Création des stubs avec les données
     const DataTableStub = defineComponent({
       template: `
@@ -110,15 +115,17 @@ describe('ListPatients', () => {
       setup(props, { emit }) {
         const handlePageChange = () => {
           emit('page', {
-            page: 1,
             first: 10,
             rows: 10,
-            pageCount: Math.ceil((props.totalRecords || 0) / 10)
+            sortField: 'nom',
+            sortOrder: 1
           })
         }
 
         const handleSortData = () => {
           emit('sort', {
+            first: 10,
+            rows: 10,
             sortField: 'prenom',
             sortOrder: -1
           })
@@ -159,12 +166,7 @@ describe('ListPatients', () => {
         }
       },
       props: {
-        // Si votre composant attend des props, les ajouter ici
-      },
-      data() {
-        return {
-          patientsList: mockPatientsList
-        }
+        patientsList: mockPatientsList
       }
     })
   })
@@ -205,19 +207,20 @@ describe('ListPatients', () => {
 
     // Simuler l'événement page directement
     await datatable.vm.$emit('page', {
-      page: 1,
       first: 10,
       rows: 10,
-      pageCount: 1
+      sortField: 'nom',
+      sortOrder: 1
     })
 
     // Vérifier que la méthode onLazyLoad du composable a été appelée
     const useLazyLoadMock = vi.mocked(wrapper.vm.onLazyLoad)
     expect(useLazyLoadMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        page: 1,
         first: 10,
-        rows: 10
+        rows: 10,
+        sortField: 'nom',
+        sortOrder: 1
       })
     )
   })
@@ -225,20 +228,14 @@ describe('ListPatients', () => {
   it("gère correctement l'évènement de tri", async () => {
     const datatable = wrapper.findComponent('.p-datatable')
 
-    await datatable.vm.$emit('sort', {
-      page: 0,
+    const sortEvent = {
       sortField: 'prenom',
       sortOrder: -1
-    })
+    }
 
-    // Vérifier que la méthode onLazyLoad du composable a été appelée
-    const useLazyLoadMock = vi.mocked(wrapper.vm.onLazyLoad)
-    expect(useLazyLoadMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        page: 0,
-        sortField: 'prenom',
-        sortOrder: -1
-      })
-    )
+    await datatable.vm.$emit('sort', sortEvent)
+
+    // Vérifions que onSort a été appelé avec les bons paramètres
+    expect(mockOnSort).toHaveBeenCalledWith(sortEvent)
   })
 })
