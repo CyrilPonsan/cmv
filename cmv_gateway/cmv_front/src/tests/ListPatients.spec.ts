@@ -4,6 +4,7 @@ import ListPatients from '@/components/ListPatients.vue'
 import { createI18n } from 'vue-i18n'
 import fr from '../locales/fr.json'
 import en from '../locales/en.json'
+import { defineComponent } from 'vue'
 
 const i18n = createI18n({
   legacy: false, // Composition API
@@ -64,9 +65,9 @@ vi.mock('@/composables/use-lazy-load', () => ({
     getData: vi.fn(),
     lazyState: {
       first: 0,
-      rows: 10,
-      sortField: null,
-      sortOrder: null
+      rows: 1,
+      sortField: 'nom',
+      sortOrder: 1
     },
     loading: false,
     onLazyLoad: vi.fn(),
@@ -81,19 +82,54 @@ describe('ListPatients', () => {
 
   beforeEach(() => {
     // Création des stubs avec les données
-    const DataTableStub = {
+    const DataTableStub = defineComponent({
       template: `
-        <div class="p-datatable">
-          <div class="p-paginator">
-            <slot name="paginatorstart"></slot>
-          </div>
-          <div class="p-datatable-wrapper">
+    <div class="p-datatable">
+      <div class="p-paginator">
+        <button class="p-paginator-next" @click="handlePageChange"></button>
+        <slot name="paginatorstart"></slot>
+      </div>
+      <div class="p-datatable-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th class="p-sortable-column" @click="handleSortData">
+                <slot name="header"></slot>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
             <slot></slot>
-          </div>
-        </div>
-      `,
-      props: ['value', 'lazy', 'loading', 'totalRecords', 'rows']
-    }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `,
+      props: ['value', 'lazy', 'loading', 'totalRecords', 'rows'],
+      emits: ['page', 'sort'],
+      setup(props, { emit }) {
+        const handlePageChange = () => {
+          emit('page', {
+            page: 1,
+            first: 10,
+            rows: 10,
+            pageCount: Math.ceil((props.totalRecords || 0) / 10)
+          })
+        }
+
+        const handleSortData = () => {
+          emit('sort', {
+            sortField: 'prenom',
+            sortOrder: -1
+          })
+        }
+
+        return {
+          handlePageChange,
+          handleSortData
+        }
+      }
+    })
 
     const ColumnStub = {
       template: `
@@ -162,5 +198,47 @@ describe('ListPatients', () => {
     const trashIcon = lastColumn.find('.pi-trash')
     await trashIcon.trigger('click')
     // Ici vous pouvez ajouter la vérification que le toast a été appelé
+  })
+
+  it("gère correctement l'événement de pagination", async () => {
+    const datatable = wrapper.findComponent('.p-datatable')
+
+    // Simuler l'événement page directement
+    await datatable.vm.$emit('page', {
+      page: 1,
+      first: 10,
+      rows: 10,
+      pageCount: 1
+    })
+
+    // Vérifier que la méthode onLazyLoad du composable a été appelée
+    const useLazyLoadMock = vi.mocked(wrapper.vm.onLazyLoad)
+    expect(useLazyLoadMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        page: 1,
+        first: 10,
+        rows: 10
+      })
+    )
+  })
+
+  it("gère correctement l'évènement de tri", async () => {
+    const datatable = wrapper.findComponent('.p-datatable')
+
+    await datatable.vm.$emit('sort', {
+      page: 0,
+      sortField: 'prenom',
+      sortOrder: -1
+    })
+
+    // Vérifier que la méthode onLazyLoad du composable a été appelée
+    const useLazyLoadMock = vi.mocked(wrapper.vm.onLazyLoad)
+    expect(useLazyLoadMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        page: 0,
+        sortField: 'prenom',
+        sortOrder: -1
+      })
+    )
   })
 })
