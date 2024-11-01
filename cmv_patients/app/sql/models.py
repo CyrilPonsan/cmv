@@ -28,10 +28,10 @@ class Admission(Base):
     __tablename__ = "admission"
 
     id_admission: Mapped[int] = mapped_column(primary_key=True, index=True)
-    entree_le: Mapped[str] = mapped_column(DateTime)
+    entree_le: Mapped[datetime] = mapped_column(DateTime)
     ambulatoire: Mapped[bool] = mapped_column(Boolean, default=True)
-    sorti_le: Mapped[str] = mapped_column(DateTime, nullable=True)
-    sortie_prevue_le: Mapped[str] = mapped_column(DateTime, nullable=True)
+    sorti_le: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    sortie_prevue_le: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     ref_chambre: Mapped[int] = mapped_column(Integer, nullable=True)
 
 
@@ -42,16 +42,18 @@ class Patient(Base):
     civilite: Mapped[Civilite] = mapped_column(
         Enum(Civilite), default=Civilite.AUTRE, nullable=True
     )
-    nom: Mapped[str] = mapped_column(String)
-    prenom: Mapped[str] = mapped_column(String)
+    nom: Mapped[str] = mapped_column(String, index=True)
+    prenom: Mapped[str] = mapped_column(String, index=True)
     date_de_naissance: Mapped[datetime] = mapped_column(DateTime(), nullable=False)
     adresse: Mapped[str] = mapped_column(String, nullable=False)
     code_postal: Mapped[str] = mapped_column(String, nullable=False)
     ville: Mapped[str] = mapped_column(String, nullable=False)
     telephone: Mapped[str] = mapped_column(String, nullable=False)
     email: Mapped[str] = mapped_column(String, nullable=True, unique=True)
-    created_at: Mapped[DateTime] = mapped_column(DateTime(), server_default=func.now())
-    updated_at: Mapped[DateTime] = mapped_column(DateTime(), server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime(), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(), server_default=func.now(), onupdate=func.now()
+    )
 
     # relation many to one avec l'entité "Document"
     documents: Mapped[list["Document"]] = relationship(

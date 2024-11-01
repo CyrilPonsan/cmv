@@ -27,7 +27,7 @@ async def test_pagination_limit(ac, internal_token, patients):
     result = response.json()
 
     assert response.status_code == 200
-    assert result["total"] == 20
+    assert result["total"] == 21
     assert len(result["data"]) == 5
 
 
@@ -39,7 +39,7 @@ async def test_pagination_offset(ac, internal_token, patients):
     result = response.json()
 
     assert response.status_code == 200
-    assert result["total"] == 20
+    assert result["total"] == 21
     assert len(result["data"]) == 5
     assert result["data"][0]["id_patient"] == 14
 
@@ -54,7 +54,7 @@ async def test_pagination_tri_prenom_desc(ac, internal_token, patients):
     result = response.json()
 
     assert response.status_code == 200
-    assert result["total"] == 20
+    assert result["total"] == 21
     assert len(result["data"]) == 5
     assert result["data"][0]["prenom"] == "prenom_test_4"
 
@@ -77,3 +77,68 @@ async def test_pagination_bad_type_limit(ac, internal_token, patients):
     )
 
     assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_pagination_tri_nom_asc(ac, internal_token, patients):
+    headers = {"Authorization": f"Bearer {internal_token}"}
+    response = await ac.get(
+        "/api/patients/?limit=5&page=1&order=asc&field=nom", headers=headers
+    )
+
+    result = response.json()
+
+    assert response.status_code == 200
+    assert result["total"] == 21
+    assert len(result["data"]) == 5
+    assert result["data"][0]["nom"] == "nom_test_0"
+
+
+@pytest.mark.asyncio
+async def test_pagination_limit_extreme(ac, internal_token, patients):
+    headers = {"Authorization": f"Bearer {internal_token}"}
+    response = await ac.get("/api/patients/?limit=1000", headers=headers)
+
+    result = response.json()
+
+    assert response.status_code == 200
+    assert result["total"] == 21
+    assert len(result["data"]) == 21
+
+
+@pytest.mark.asyncio
+async def test_search_patients(ac, internal_token, patients):
+    headers = {"Authorization": f"Bearer {internal_token}"}
+    response = await ac.get("/api/patients/search?search=toto", headers=headers)
+
+    result = response.json()
+
+    assert response.status_code == 200
+    assert result["total"] == 1
+    assert result["data"][0]["nom"] == "toto"
+
+
+@pytest.mark.asyncio
+async def test_search_mass_patients(ac, internal_token, patients):
+    headers = {"Authorization": f"Bearer {internal_token}"}
+    response = await ac.get("/api/patients/search?search=test", headers=headers)
+
+    result = response.json()
+
+    assert response.status_code == 200
+    assert result["total"] == 20
+    assert len(result["data"]) == 10
+    assert result["data"][0]["nom"] == "nom_test_0"
+
+
+@pytest.mark.asyncio
+async def test_no_data_found_from_search(ac, internal_token, patients):
+    headers = {"Authorization": f"Bearer {internal_token}"}
+    response = await ac.get("/api/patients/search?search=blabla", headers=headers)
+
+    result = response.json()
+
+    assert response.status_code == 200
+    assert result["total"] == 0
+    assert len(result["data"]) == 0
+    assert result["data"] == []

@@ -3,6 +3,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 from app.sql.models import Patient
 from typing import List
+from fastapi import HTTPException, status
 
 
 class PatientsRead(ABC):
@@ -25,26 +26,46 @@ class PatientsRepository(PatientsRead):
 
 
 class PgPatientsRepository(PatientsRepository):
+    # Fonction de lecture de tous les patients avec pagination et tri
     async def read_all_patients(
+        self,
         db: Session,
         page: int,
         limit: int,
         field: str = "nom",
         order: str = "asc",
-    ):
-        # Validation des paramètres d'entrée
-        limit = min(max(1, limit), 50)  # Limite entre 1 et 50
-        page = max(1, page)  # Page minimum de 1
+    ) -> dict:
+        return self.paginate_and_order(db, Patient, page, limit, field, order)
 
-        # Vérification du champ de tri
-        allowed_fields = ["nom", "prenom", "date_de_naissance", "email"]
-        field = field if field in allowed_fields else "nom"
+    # Fonction de recherche de patients avec pagination et tri
+    async def search_patients(
+        self,
+        db: Session,
+        search: str,
+        page: int,
+        limit: int,
+        field: str = "nom",
+        order: str = "asc",
+    ) -> dict:
+        filters = [Patient.nom.ilike(f"%{search}%")]
+        return self.paginate_and_order(db, Patient, page, limit, field, order, filters)
+
+    # Fonction de pagination et de tri
+    def paginate_and_order(
+        self, db, model, page, limit, field, order, filters=None
+    ) -> dict:
+        # Validation des paramètres d'entrée
+        limit = min(max(1, limit), 50)
+        page = max(1, page)
 
         # Calcul de l'offset
         offset = (page - 1) * limit
 
         # Récupération du total
-        total = db.query(func.count(Patient.id_patient)).scalar()
+        query = db.query(func.count(model.id_patient))
+        if filters:
+            query = query.filter(*filters)
+        total = query.scalar()
 
         # Vérification que la page demandée existe
         total_pages = (total + limit - 1) // limit
@@ -53,18 +74,17 @@ class PgPatientsRepository(PatientsRepository):
             offset = 0
 
         # Construction de la clause ORDER BY
-        order_by_model = getattr(Patient, field)
+        order_by_model = getattr(model, field)
         order_by_clause = (
             order_by_model.desc() if order.lower() == "desc" else order_by_model.asc()
         )
 
         # Exécution de la requête
-        result = (
-            db.query(Patient)
-            .order_by(order_by_clause)
-            .offset(offset)
-            .limit(limit)
-            .all()
-        )
+        query = db.query(model)
+        if filters:
+            query = query.filter(*filters)
+
+        query = query.order_by(order_by_clause).offset(offset).limit(limit)
+        result = query.all()
 
         return {"data": result, "total": total}
