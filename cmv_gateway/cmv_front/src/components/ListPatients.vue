@@ -3,21 +3,32 @@
  * Tableau affichant la liste des dossiers administratifs des patients
  * de la clinique avec un système de pagination.
  * La pagination fonctionne en mode "lazy-loading".
- * La logique du "lazy-loading" est gérée dans le composable "useLazyLaod".
+ * La logique du "lazy-loading" est gérée dans le composable "useLazyLoad".
  */
+import { onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useToast } from 'primevue/usetoast'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-import type PatientsListItem from '@/models/patients-list-item'
-import { useToast } from 'primevue/usetoast'
-import { useI18n } from 'vue-i18n'
-import useLazyLoad from '@/composables/use-lazy-load'
+import InputText from 'primevue/inputtext'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
+
+import type { DataTableFilterMeta } from 'primevue/datatable'
 import { patientsListColumns } from '@/libs/columns/patients-list'
-import { onMounted } from 'vue'
+import useLazyLoad from '@/composables/use-lazy-load'
+import type PatientsListItem from '@/models/patients-list-item'
 
+// Définition des props et des types
 const columns = patientsListColumns
+const filters = ref<DataTableFilterMeta>({})
+const globalFilterValue = ref<string>('')
 
-const { d, t } = useI18n()
+// Composables
+const { t, d } = useI18n()
 const toast = useToast()
+
+// Utilisation du composable de lazy loading
 const {
   getData,
   lazyState,
@@ -28,6 +39,7 @@ const {
   totalRecords
 } = useLazyLoad<PatientsListItem>('/patients/patients')
 
+// Gestion du message de suppression
 const onTrash = () => {
   toast.add({
     severity: 'warn',
@@ -38,38 +50,68 @@ const onTrash = () => {
   })
 }
 
-// Chargement initial
+// Gestion du filtre global
+const onGlobalFilterChange = (e: Event) => {
+  const value = (e.target as HTMLInputElement).value
+  filters.value['global'] = { value, matchMode: 'contains' }
+  globalFilterValue.value = value
+}
+
+// Surveillance de la valeur du filtre global
+watch(globalFilterValue, (newValue) => {
+  console.log('Nouvelle valeur du filtre global:', newValue)
+})
+
+// Chargement initial des données
 onMounted(() => getData())
 </script>
 
 <template>
-  <!-- Tableau -->
   <DataTable
-    class="rounded-md shadow-md"
+    v-model:filters="filters"
     :value="patientsList"
     :lazy="true"
     :loading="loading"
-    :totalRecords="totalRecords"
-    :rowsPerPageOptions="[5, 10, 20, 50]"
+    :total-records="totalRecords"
+    :rows-per-page-options="[5, 10, 20, 50]"
     v-model:first="lazyState.first"
     v-model:rows="lazyState.rows"
-    v-model:sortField="lazyState.sortField"
-    v-model:sortOrder="lazyState.sortOrder"
-    dataKey="id_patient"
-    :stripedRows="true"
+    v-model:sort-field="lazyState.sortField"
+    v-model:sort-order="lazyState.sortOrder"
+    data-key="id_patient"
+    :striped-rows="true"
     :paginator="true"
-    tableStyle="min-width: 50rem"
-    paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
-    :currentPageReportTemplate="`${lazyState.first + 1} ${t('pagination.to')} ${lazyState.first + lazyState.rows} ${t('pagination.from')} ${totalRecords}`"
+    table-style="min-width: 50rem"
+    paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+    :current-page-report-template="`${lazyState.first + 1} ${t('pagination.to')} ${lazyState.first + lazyState.rows} ${t('pagination.from')} ${totalRecords}`"
+    class="rounded-md shadow-md"
     @page="onLazyLoad"
     @sort="onSort"
   >
-    <!-- Affichage du nombre total de patients enregistrés -->
+    <!-- En-tête avec barre de recherche -->
+    <template #header>
+      <div class="flex justify-end">
+        <IconField class="flex items-center gap-x-4">
+          <InputIcon>
+            <i class="pi pi-search opacity-20" />
+          </InputIcon>
+          <InputText
+            v-model="globalFilterValue"
+            placeholder="Recherche globale"
+            @input="onGlobalFilterChange"
+          />
+        </IconField>
+      </div>
+    </template>
+
+    <!-- Information sur le nombre total de patients -->
     <template #paginatorstart>
       <span class="flex items-center gap-x-2 font-bold">
         {{ t('patients.home.total_patients', totalRecords) }}
       </span>
     </template>
+
+    <!-- Colonnes dynamiques -->
     <Column
       v-for="col of columns"
       :key="col.field"
@@ -77,12 +119,10 @@ onMounted(() => getData())
       :header="t(`columns.patientsList.${col.header}`)"
       :sortable="col.sortable"
     >
-      <!-- Formatage de la date de naissance -->
       <template #body="slotProps">
         <template v-if="col.field === 'date_de_naissance'">
           {{ d(new Date(slotProps.data[col.field]), 'short') }}
         </template>
-        <!-- Formatage des propriétés autres que l'adresse email -->
         <template v-else>
           <span :class="{ capitalize: col.field !== 'email' }">
             {{ slotProps.data[col.field] }}
@@ -90,10 +130,17 @@ onMounted(() => getData())
         </template>
       </template>
     </Column>
-    <!-- Actions -->
-    <Column header="Actions">
+
+    <!-- Colonne d'actions -->
+    <Column header="Actions" :exportable="false">
       <template #body>
-        <i class="mx-auto pi pi-trash cursor-pointer" style="color: red" @click="onTrash" />
+        <button
+          class="p-2 hover:bg-red-100 rounded-full transition-colors"
+          @click="onTrash"
+          type="button"
+        >
+          <i class="pi pi-trash text-red-500" />
+        </button>
       </template>
     </Column>
   </DataTable>
