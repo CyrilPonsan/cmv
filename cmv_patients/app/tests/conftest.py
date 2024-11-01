@@ -103,6 +103,17 @@ def patients(db_session):
             date_de_naissance=datetime(year=1969, month=7, day=21),
         )
         patients.append(patient)
+    patient = models.Patient(
+        civilite="AUTRE",
+        nom="toto",
+        prenom=f"prenom_test_{i}",
+        adresse="2 rue truc muche",
+        code_postal="64000",
+        ville="gelos",
+        telephone="06.66.69.96.99",
+        date_de_naissance=datetime(year=1969, month=7, day=21),
+    )
+    patients.append(patient)
     db_session.add_all(patients)
     db_session.commit()
     return patients

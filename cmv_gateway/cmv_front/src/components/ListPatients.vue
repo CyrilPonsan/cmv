@@ -33,6 +33,7 @@ const {
   getData,
   lazyState,
   loading,
+  onFilterChange,
   onLazyLoad,
   onSort,
   result: patientsList,
@@ -48,13 +49,6 @@ const onTrash = () => {
     detail: t('patients.home.toasters.delete.detail'),
     closable: false
   })
-}
-
-// Gestion du filtre global
-const onGlobalFilterChange = (e: Event) => {
-  const value = (e.target as HTMLInputElement).value
-  filters.value['global'] = { value, matchMode: 'contains' }
-  globalFilterValue.value = value
 }
 
 // Surveillance de la valeur du filtre global
@@ -84,21 +78,22 @@ onMounted(() => getData())
     table-style="min-width: 50rem"
     paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
     :current-page-report-template="`${lazyState.first + 1} ${t('pagination.to')} ${lazyState.first + lazyState.rows} ${t('pagination.from')} ${totalRecords}`"
-    class="rounded-md shadow-md"
+    class="shadow-md"
     @page="onLazyLoad"
     @sort="onSort"
   >
     <!-- En-tête avec barre de recherche -->
     <template #header>
-      <div class="flex justify-end">
+      <div class="flex justify-end rounded-tl-lg rounded-tr-lg">
         <IconField class="flex items-center gap-x-4">
           <InputIcon>
             <i class="pi pi-search opacity-20" />
           </InputIcon>
           <InputText
+            type="search"
             v-model="globalFilterValue"
-            placeholder="Recherche globale"
-            @input="onGlobalFilterChange"
+            placeholder="Rechercher..."
+            @input="onFilterChange"
           />
         </IconField>
       </div>
@@ -143,5 +138,11 @@ onMounted(() => getData())
         </button>
       </template>
     </Column>
+    <template #empty>
+      <div class="text-center p-4">
+        <i class="pi pi-info-circle text-warn text-xl mb-2"></i>
+        <p>Aucune donnée n'a été trouvée</p>
+      </div>
+    </template>
   </DataTable>
 </template>

@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.dependancies.auth import check_authorization
 from app.dependancies.db_session import get_db
-from app.schemas.patients import ReadAllPatients
+from app.schemas.patients import ReadAllPatients, SearchPatientsParams
 from app.schemas.schemas import Patient
 from app.schemas.user import InternalPayload
 from app.services.patients import get_patients_service
@@ -35,13 +35,33 @@ async def read_patients(
     patients_service=Depends(get_patients_service),
     db=Depends(get_db),
 ):
-    print(f"PAGE : {page}")
     return await patients_service.read_all_patients(
         db=db,
         page=page,
         limit=limit,
         field=field,
         order=order,
+        request=request,
+        user_id=payload["user_id"],
+        role=payload["role"],
+    )
+
+
+@router.get("/search", response_model=ReadAllPatients)
+async def search_patients(
+    request: Request,
+    payload: Annotated[InternalPayload, Depends(check_authorization)],
+    params: Annotated[SearchPatientsParams, Depends()],
+    patients_service=Depends(get_patients_service),
+    db=Depends(get_db),
+):
+    return await patients_service.search_patients(
+        db=db,
+        search=params.search,
+        page=params.page,
+        limit=params.limit,
+        field=params.field,
+        order=params.order,
         request=request,
         user_id=payload["user_id"],
         role=payload["role"],

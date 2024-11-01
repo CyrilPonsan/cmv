@@ -18,6 +18,7 @@ type UseLazyLoad<T> = {
   getData: () => void
   lazyState: Ref<LazyState>
   loading: Ref<boolean>
+  onFilterChange: (event: Event) => void
   onLazyLoad: (event: LazyLoadEvent) => void
   onSort: (event: LazyLoadEvent) => void
   result: Ref<UnwrapRef<T>[]>
@@ -28,6 +29,8 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
   const http = useHttp()
   const result = ref<UnwrapRef<T>[]>([]) as Ref<UnwrapRef<T>[]>
   const totalRecords = ref<number>(0)
+  let timer: NodeJS.Timeout | null = null
+  const search = ref<string>('')
 
   // État de la pagination
   const lazyState = ref<LazyState>({
@@ -36,6 +39,21 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     sortField: 'nom',
     sortOrder: 1
   })
+
+  // Gestion de l'événement de filtre
+  const onFilterChange = (event: Event) => {
+    const element = event.target as HTMLInputElement
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      lazyState.value = {
+        ...lazyState.value,
+        first: 0
+      }
+      search.value = element.value
+    }, 1000)
+  }
 
   // Gestion de l'événement de lazy-loading
   const onLazyLoad = (event: LazyLoadEvent) => {
@@ -47,6 +65,7 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     }
   }
 
+  // Gestion de l'événement de tri des colonnes.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onSort = (_event: LazyLoadEvent) => {
     lazyState.value = {
@@ -70,7 +89,6 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
       result.value = data.data as UnwrapRef<T>[]
       totalRecords.value = data.total
     }
-
     http.sendRequest<APIResponse<T>>(
       {
         path: `${url}?page=${page.value}&limit=${lazyState.value.rows}&field=${lazyState.value.sortField}&order=${direction.value}`
@@ -79,10 +97,46 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     )
   }
 
-  //  Envoie une requête à l"API lorsque l'une des valeurs liées à la pagination est mise à jour
-  watch(lazyState, () => getData())
+  /**
+   * Filtre la liste des patients en fonction de la chaîne de caractères.
+   */
+  const searchData = (filter: string) => {
+    const applyData = (data: APIResponse<T>) => {
+      result.value = data.data as UnwrapRef<T>[]
+      totalRecords.value = data.total
+      if (timer) {
+        clearTimeout(timer)
+      }
+    }
+    http.sendRequest<APIResponse<T>>(
+      {
+        path: `${url}/search?page=${page.value}&limit=${lazyState.value.rows}&field=${lazyState.value.sortField}&order=${direction.value}&search=${filter}`
+      },
+      applyData
+    )
+  }
 
-  return { getData, lazyState, loading: http.isLoading, onLazyLoad, onSort, result, totalRecords }
+  //  Envoie une requête à l"API lorsque l'une des valeurs liées à la pagination est mise à jour
+  watch([lazyState, search], () => {
+    console.log('watching...')
+
+    if (search.value) {
+      searchData(search.value)
+    } else {
+      getData()
+    }
+  })
+
+  return {
+    getData,
+    lazyState,
+    loading: http.isLoading,
+    onFilterChange,
+    onLazyLoad,
+    onSort,
+    result,
+    totalRecords
+  }
 }
 
 export default useLazyLoad

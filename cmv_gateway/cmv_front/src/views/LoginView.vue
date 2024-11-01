@@ -6,7 +6,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <main class="w-screen h-[70vh] flex flex-col justify-center items-center gap-8">
+  <main class="w-screen h-[70vh] flex flex-col justify-center items-center gap-8 fade-in">
     <section>
       <h1 class="text-5xl font-bold">{{ t('login.h1') }}</h1>
     </section>
@@ -23,3 +23,19 @@ const { t } = useI18n()
     </section>
   </main>
 </template>
+
+<style scoped>
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 2s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+</style>
