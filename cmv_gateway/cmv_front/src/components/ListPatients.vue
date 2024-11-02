@@ -92,7 +92,7 @@ onMounted(() => getData())
           <InputText
             type="search"
             v-model="globalFilterValue"
-            placeholder="Rechercher..."
+            :placeholder="t('patients.home.placeholder.search')"
             @input="onFilterChange"
           />
         </IconField>
@@ -141,7 +141,7 @@ onMounted(() => getData())
     <template #empty>
       <div class="text-center p-4">
         <i class="pi pi-info-circle text-warn text-xl mb-2"></i>
-        <p>Aucune donnée n'a été trouvée</p>
+        <p>{{ t('patients.home.placeholder.empty') }}</p>
       </div>
     </template>
   </DataTable>

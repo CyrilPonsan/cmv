@@ -40,7 +40,7 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     sortOrder: 1
   })
 
-  // Gestion de l'événement de filtre
+  // Gestion de l'événement de filtre + debounce
   const onFilterChange = (event: Event) => {
     const element = event.target as HTMLInputElement
     if (timer) {
@@ -116,7 +116,7 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     )
   }
 
-  //  Envoie une requête à l"API lorsque l'une des valeurs liées à la pagination est mise à jour
+  //  Envoie une requête à l"API lorsque l'une des valeurs liées à la pagination ou au filtre est mise à jour
   watch([lazyState, search], () => {
     console.log('watching...')
 

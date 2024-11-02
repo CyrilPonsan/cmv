@@ -1,23 +1,21 @@
 import useLazyLoad from '@/composables/use-lazy-load'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { ref } from 'vue'
-import { createPinia, setActivePinia } from 'pinia' // Ajout import
+import { createPinia, setActivePinia } from 'pinia'
+
+// Mock useHttp
+vi.mock('@/composables/use-http', () => ({
+  default: () => ({
+    sendRequest: vi.fn(),
+    isLoading: ref(false)
+  })
+}))
 
 describe('useLazyLoad composable', () => {
   let composable: ReturnType<typeof useLazyLoad<any>>
-  let mockHttp: any
 
   beforeEach(() => {
-    // Configurer Pinia
     setActivePinia(createPinia())
-
-    mockHttp = {
-      sendRequest: vi.fn(),
-      isLoading: ref(false)
-    }
-    vi.mock('./use-http', () => ({
-      default: () => mockHttp
-    }))
     composable = useLazyLoad<any>('/api/patients')
   })
 

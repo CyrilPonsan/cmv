@@ -41,6 +41,10 @@
           "detail": "Cette fonctionnalité n'est pas encore implémentée..."
         }
       },
+      "placeholder": {
+        "search": "Rechercher un patient...",
+        "empty": "Aucun patient trouvé"
+      },
       "total_patients": "Aucun patient | Un patient | {n} patients"
     }
   },
