@@ -8,7 +8,7 @@ const { t } = useI18n()
 <template>
   <main class="w-screen h-[70vh] flex flex-col justify-center items-center gap-8 fade-in">
     <section>
-      <h1 class="text-5xl font-bold">{{ t('login.h1') }}</h1>
+      <h1 class="text-5xl text-primary-500 font-bold">{{ t('login.h1') }}</h1>
     </section>
     <section class="grid grid-cols-1 xl:grid-cols-2 gap-8">
       <img

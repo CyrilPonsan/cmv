@@ -67,21 +67,32 @@ export const useUserStore = defineStore('user', () => {
     http.sendRequest<{ role: string }>({ path: '/users/me' }, applyData)
   }
 
-  const logout = () => {
+  const signout = () => {
     role.value = ''
     console.log('disconnected!')
     http.sendRequest({ path: '/auth/logout', method: 'post' })
     if (route.name !== 'root') router.push('/')
   }
 
+  const logout = () => {
+    console.log('logging out')
+
+    role.value = ''
+    if (route.name !== 'root') {
+      console.log('redirecting to root')
+      router.push('/')
+    }
+  }
+
   return {
     access_token,
-    mode,
-    refresh_token,
-    role,
     getUserInfos,
     handshake,
     logout,
+    mode,
+    refresh_token,
+    role,
+    signout,
     toggleColorScheme
   }
 })

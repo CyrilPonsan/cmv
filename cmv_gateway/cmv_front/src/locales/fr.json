@@ -34,6 +34,10 @@
   "patients": {
     "home": {
       "description": "Liste des patients",
+      "placeholder": {
+        "search": "Rechercher un patient...",
+        "empty": "Aucun patient trouvé"
+      },
       "title": "Espace administratif",
       "toasters": {
         "delete": {
@@ -41,10 +45,7 @@
           "detail": "Cette fonctionnalité n'est pas encore implémentée..."
         }
       },
-      "placeholder": {
-        "search": "Rechercher un patient...",
-        "empty": "Aucun patient trouvé"
-      },
+
       "total_patients": "Aucun patient | Un patient | {n} patients"
     }
   },

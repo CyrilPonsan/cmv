@@ -53,7 +53,7 @@ const useHttp = (): UseHttp => {
     } catch (err: any) {
       error.value = err.response?.data.message ?? 'Erreur inconnue'
 
-      if (err.response?.status === 403) {
+      if (err.response?.status === 403 || err.response?.status === 401) {
         userStore.logout()
       }
     } finally {
