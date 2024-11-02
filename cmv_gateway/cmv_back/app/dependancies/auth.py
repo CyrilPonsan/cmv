@@ -102,7 +102,7 @@ async def get_current_user(
         if not session_id:
             raise not_authenticated_exception
     except JWTError:
-        raise credentials_exception
+        raise not_authenticated_exception
 
     # Vérifier si la session est toujours valide dans Redis
     session_exists = await redis_client.exists(f"session:{session_id}")

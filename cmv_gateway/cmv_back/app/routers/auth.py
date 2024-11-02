@@ -45,7 +45,7 @@ async def login(
 async def logout(
     response: Response,
     request: Request,
-    current_user: User = Depends(get_current_user),
+    # current_user: User = Depends(get_current_user),
     auth_service=Depends(get_auth_service),
 ):
     return await auth_service.signout(request, response)

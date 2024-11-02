@@ -18,7 +18,7 @@
                 icon="pi pi-sign-out"
                 aria-label="déconnexion"
                 text
-                @click="userStore.logout()"
+                @click="userStore.signout()"
               />
             </li>
           </ul>
