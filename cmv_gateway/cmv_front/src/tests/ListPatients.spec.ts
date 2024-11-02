@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { config, mount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import ListPatients from '@/components/ListPatients.vue'
 import { createI18n } from 'vue-i18n'
 import PrimeVue from 'primevue/config'
@@ -32,17 +32,6 @@ const i18n = createI18n({
     en
   }
 })
-
-config.global.plugins = [
-  i18n,
-  [
-    PrimeVue,
-    {
-      ripple: true,
-      inputStyle: 'filled'
-    }
-  ]
-]
 
 // Données de test
 const mockPatientsList = [
@@ -150,10 +139,8 @@ describe('ListPatients', () => {
   let wrapper: any
 
   beforeEach(() => {
-    // Réinitialiser le mock avant chaque test
     mockOnSort.mockClear()
 
-    // Création des stubs avec les données
     const ColumnStub = {
       template: `
         <div class="p-column">

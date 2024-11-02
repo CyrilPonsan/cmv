@@ -71,8 +71,6 @@ export const useUserStore = defineStore('user', () => {
     role.value = ''
     console.log('disconnected!')
     http.sendRequest({ path: '/auth/logout', method: 'post' })
-    console.log(route.name)
-
     if (route.name !== 'root') router.push('/')
   }
 
