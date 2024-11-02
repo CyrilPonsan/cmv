@@ -1,11 +1,12 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import useHttp from '@/composables/use-http'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 export const useUserStore = defineStore('user', () => {
   const http = useHttp()
   const router = useRouter()
+  const route = useRoute()
 
   const access_token = ref('')
   const refresh_token = ref('')
@@ -70,7 +71,9 @@ export const useUserStore = defineStore('user', () => {
     role.value = ''
     console.log('disconnected!')
     http.sendRequest({ path: '/auth/logout', method: 'post' })
-    router.push('/')
+    console.log(route.name)
+
+    if (route.name !== 'root') router.push('/')
   }
 
   return {
