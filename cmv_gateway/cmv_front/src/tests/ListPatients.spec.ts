@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { config, mount } from '@vue/test-utils'
 import ListPatients from '@/components/ListPatients.vue'
 import { createI18n } from 'vue-i18n'
+import PrimeVue from 'primevue/config'
 import fr from '../locales/fr.json'
 import en from '../locales/en.json'
 import { defineComponent } from 'vue'
@@ -32,7 +33,16 @@ const i18n = createI18n({
   }
 })
 
-config.global.plugins = [...(config.global.plugins || []), i18n]
+config.global.plugins = [
+  i18n,
+  [
+    PrimeVue,
+    {
+      ripple: true,
+      inputStyle: 'filled'
+    }
+  ]
+]
 
 // Données de test
 const mockPatientsList = [
@@ -79,16 +89,8 @@ vi.mock('@/composables/use-lazy-load', () => ({
   })
 }))
 
-describe('ListPatients', () => {
-  let wrapper: any
-
-  beforeEach(() => {
-    // Réinitialiser le mock avant chaque test
-    mockOnSort.mockClear()
-
-    // Création des stubs avec les données
-    const DataTableStub = defineComponent({
-      template: `
+const DataTableStub = defineComponent({
+  template: `
     <div class="p-datatable">
       <div class="p-paginator">
         <button class="p-paginator-next" @click="handlePageChange"></button>
@@ -110,34 +112,48 @@ describe('ListPatients', () => {
       </div>
     </div>
   `,
-      props: ['value', 'lazy', 'loading', 'totalRecords', 'rows'],
-      emits: ['page', 'sort'],
-      setup(props, { emit }) {
-        const handlePageChange = () => {
-          emit('page', {
-            first: 10,
-            rows: 10,
-            sortField: 'nom',
-            sortOrder: 1
-          })
-        }
+  props: ['value', 'lazy', 'loading', 'totalRecords', 'rows'],
+  emits: ['page', 'sort'],
+  setup(props, { emit }) {
+    const handlePageChange = () => {
+      emit('page', {
+        first: 10,
+        rows: 10,
+        sortField: 'nom',
+        sortOrder: 1
+      })
+    }
 
-        const handleSortData = () => {
-          emit('sort', {
-            first: 10,
-            rows: 10,
-            sortField: 'prenom',
-            sortOrder: -1
-          })
-        }
+    const handleSortData = () => {
+      emit('sort', {
+        first: 10,
+        rows: 10,
+        sortField: 'prenom',
+        sortOrder: -1
+      })
+    }
 
-        return {
-          handlePageChange,
-          handleSortData
-        }
-      }
-    })
+    return {
+      handlePageChange,
+      handleSortData
+    }
+  }
+})
 
+const InputTextStub = defineComponent({
+  template: '<input type="text" />',
+  props: ['modelValue'],
+  emits: ['update:modelValue']
+})
+
+describe('ListPatients', () => {
+  let wrapper: any
+
+  beforeEach(() => {
+    // Réinitialiser le mock avant chaque test
+    mockOnSort.mockClear()
+
+    // Création des stubs avec les données
     const ColumnStub = {
       template: `
         <div class="p-column">
@@ -159,8 +175,19 @@ describe('ListPatients', () => {
       global: {
         stubs: {
           DataTable: DataTableStub,
-          Column: ColumnStub
+          Column: ColumnStub,
+          InputText: InputTextStub
         },
+        plugins: [
+          i18n,
+          [
+            PrimeVue,
+            {
+              ripple: true,
+              inputStyle: 'filled'
+            }
+          ]
+        ],
         mocks: {
           d: (date: Date) => date.toLocaleDateString()
         }

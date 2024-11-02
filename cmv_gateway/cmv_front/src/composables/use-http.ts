@@ -24,7 +24,6 @@ const useHttp = (): UseHttp => {
   const isLoading = ref<boolean>(false)
   const error = ref<string | null>(null)
   const userStore = useUserStore()
-
   const axiosInstance = axios.create({
     withCredentials: true, // This ensures cookies are sent with every request
     baseURL: AUTH
@@ -54,7 +53,7 @@ const useHttp = (): UseHttp => {
     } catch (err: any) {
       error.value = err.response?.data.message ?? 'Erreur inconnue'
 
-      if (err.response?.status === 403) {
+      if (err.response?.status === 403 || err.response?.status === 401) {
         userStore.logout()
       }
     } finally {
