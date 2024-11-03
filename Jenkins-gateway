@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    environment {
-        PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"  // Add Docker path here
-    }
     tools {
         nodejs 'nodejs'
     }
@@ -16,6 +13,7 @@ pipeline {
         EC2_SERVER = credentials("ec2-host")
         EC2_USER = credentials("ec2-username")
         SSH_CREDENTIALS = credentials('cmv-ssh-key')
+        PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"  // Add Docker path here
     }
 
     stages {
