@@ -53,6 +53,7 @@ class AuthService:
         self.algorithm = algorithm
         self.secret_key = secret_key
 
+    # Méthode pour créer et configurer les tokens
     async def _create_and_set_tokens(
         self,
         user_id: str,

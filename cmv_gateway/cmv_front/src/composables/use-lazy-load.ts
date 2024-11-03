@@ -14,6 +14,7 @@ type APIResponse<T> = {
   total: number
 }
 
+// Interface exposée par le composable
 type UseLazyLoad<T> = {
   getData: () => void
   lazyState: Ref<LazyState>
@@ -25,6 +26,9 @@ type UseLazyLoad<T> = {
   totalRecords: Ref<number>
 }
 
+/**
+ * Composable pour gérer la logique de lazy-loading
+ */
 const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
   const http = useHttp()
   const result = ref<UnwrapRef<T>[]>([]) as Ref<UnwrapRef<T>[]>
@@ -74,10 +78,10 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     }
   }
 
-  //  Mise en cache du numéro de la page pour optoimiser les performances de rendu
+  //  Mise en cache du numéro de la page pour optimiser les performances de rendu
   const page = computed(() => lazyState.value.first / lazyState.value.rows + 1)
 
-  //  Mise en cache de l'ordre de tri pour optoimiser les performances de rendu
+  //  Mise en cache de l'ordre de tri pour optimiser les performances de rendu
   const direction = computed(() => (lazyState.value.sortOrder === 1 ? 'asc' : 'desc'))
 
   /**
@@ -97,9 +101,7 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     )
   }
 
-  /**
-   * Filtre la liste des patients en fonction de la chaîne de caractères.
-   */
+  // Retourne les données filtrées en fonction de la chaîne de caractères passée en paramètre
   const searchData = (filter: string) => {
     const applyData = (data: APIResponse<T>) => {
       result.value = data.data as UnwrapRef<T>[]
@@ -127,6 +129,7 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     }
   })
 
+  // Retourne l'interface publique du composable
   return {
     getData,
     lazyState,
