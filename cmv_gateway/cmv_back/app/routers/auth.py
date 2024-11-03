@@ -4,11 +4,9 @@ from fastapi import APIRouter, Body, Depends, Request, Response
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
-from app.dependancies.auth import (
-    get_current_user,
-)
 from app.dependancies.db_session import get_db
-from app.schemas.user import Credentials, User
+from app.schemas.schemas import Message
+from app.schemas.user import Credentials
 from app.services.auth import get_auth_service
 
 # Configuration de l'authentifications
@@ -51,17 +49,11 @@ async def logout(
     return await auth_service.signout(request, response)
 
 
-"""
-# Routes d'authentification
-@router.post("/register")
-def register(username: str, password: str, db: Session = Depends(get_db)):
-    db_user = get_user(db, username)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Username already registered")
-    hashed_password = pwd_context.hash(password)
-    new_user = User(username=username, hashed_password=hashed_password)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return {"message": "User created successfully"}
-"""
+# Route pour rafraîchir le token
+@router.get("/refresh", response_model=Message)
+async def refresh(
+    request: Request,
+    response: Response,
+    auth_service=Depends(get_auth_service),
+):
+    return await auth_service.refresh(request, response)
