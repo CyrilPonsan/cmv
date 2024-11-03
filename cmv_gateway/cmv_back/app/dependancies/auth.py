@@ -62,7 +62,7 @@ async def authenticate_user(
     return user
 
 
-async def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+async def create_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now() + expires_delta
@@ -93,6 +93,10 @@ async def get_current_user(
     try:
         if not token:
             print("#### no token ####")
+            raise not_authenticated_exception
+        # vérifie que le token ne soit pas blacklist
+        is_blacklisted = await redis_client.get(f"blacklist:{token}")
+        if is_blacklisted:
             raise not_authenticated_exception
         payload = jwt.decode(token, SECRET_KEY or "", algorithms=[ALGORITHM or ""])
         user_id: str | None = payload.get("sub")
