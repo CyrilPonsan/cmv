@@ -9,11 +9,24 @@ import { toTypedSchema } from '@vee-validate/zod'
 import axios from 'axios'
 import { useToast } from 'primevue/usetoast'
 import { useForm } from 'vee-validate'
-import { ref, watch, watchEffect } from 'vue'
+import { ref, watch, watchEffect, type Ref } from 'vue'
 import { z } from 'zod'
 import { useI18n } from 'vue-i18n'
 
-const useLogin = () => {
+type LoginReturn = {
+  loginFormSchema: any
+  apiError: Ref<string>
+  errors: any
+  loading: Ref<boolean>
+  password: any
+  passwordAttrs: any
+  passwordUpdate: Ref<boolean>
+  username: any
+  usernameAttrs: any
+  onSubmit: (e?: Event) => Promise<void>
+}
+
+const useLogin = (): LoginReturn => {
   const { t } = useI18n()
   const userStore = useUserStore()
   const toast = useToast()
@@ -124,6 +137,7 @@ const useLogin = () => {
   })
 
   return {
+    loginFormSchema,
     apiError,
     errors,
     loading,
