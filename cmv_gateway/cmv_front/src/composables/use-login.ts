@@ -2,93 +2,34 @@
  * Composable destiné à vérifier la validité des champs du formulaire.
  * Soumet les identifiants à l'API dans le but de connecter l'utilisateur.
  */
-import { regexPassword } from '@/libs/regex'
-import { AUTH } from '@/libs/urls'
-import { useUserStore } from '@/stores/user'
-import { toTypedSchema } from '@vee-validate/zod'
-import axios from 'axios'
-import { useToast } from 'primevue/usetoast'
-import { useForm } from 'vee-validate'
-import { ref, watch, watchEffect, type Ref } from 'vue'
-import { z } from 'zod'
+import { ref, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useToast } from 'primevue/usetoast'
+import { useUserStore } from '@/stores/user'
+import { AUTH } from '@/libs/urls'
+import axios from 'axios'
 
-type LoginReturn = {
-  loginFormSchema: any
+type LoginReturn<T> = {
   apiError: Ref<string>
-  errors: any
   loading: Ref<boolean>
-  password: any
-  passwordAttrs: any
-  passwordUpdate: Ref<boolean>
-  username: any
-  usernameAttrs: any
-  onSubmit: (e?: Event) => Promise<void>
+  onSubmit: (values: T) => Promise<void>
 }
 
-const useLogin = (): LoginReturn => {
+const useLogin = <T>(/* method: "post"|"put", path:string */): LoginReturn<T> => {
   const { t } = useI18n()
   const userStore = useUserStore()
   const toast = useToast()
   const apiError = ref('')
 
-  const usernameUpdate = ref(false)
-  const passwordUpdate = ref(false)
-
-  // schema de validation utilisé pour le formulaire de connexion
-  const loginFormSchema = toTypedSchema(
-    z.object({
-      username: z
-        .string({ required_error: t('error.no_email') })
-        .email({ message: t('error.not_valid_email') }),
-      password: z
-        .string({ required_error: t('error.no_password') })
-        .regex(regexPassword, { message: t('error.not_valid_password') })
-    })
-  )
-
-  // configuration de la validation du formulaire
-  const { values, errors, handleSubmit, defineField, validateField } = useForm({
-    validationSchema: loginFormSchema
-  })
-
-  // options pour le champs "email"
-  const [username, usernameAttrs] = defineField('username', {
-    validateOnModelUpdate: false
-  })
-
-  // options pour le champs "password"
-  const [password, passwordAttrs] = defineField('password', {
-    validateOnChange: passwordUpdate.value,
-    validateOnModelUpdate: passwordUpdate.value
-  })
-
-  // Surveille les changements de valeur de l'identifiant et force sa validation si une erreur a déjà été détecté
-  watch(username, async () => {
-    if (usernameUpdate.value) {
-      // valide manuellement le champ "password"
-      await validateField('username')
-    }
-  })
-
-  // Surveille les changements de valeur du mot de passe et force la validation du champ mot de passe si une erreur a déjà été détecté
-  watch(password, async () => {
-    if (passwordUpdate.value) {
-      // valide manuellement le champ "password"
-      await validateField('password')
-    }
-  })
-
   // état du loader
   const loading = ref(false)
 
-  // requête http pour connecter l'utilisateur
-  const submitForm = async () => {
+  // vérification de la validité des champs du formulaire
+  const onSubmit = async (values: T) => {
     loading.value = true
     try {
       await axios.post(`${AUTH}/auth/login`, {
-        username: values.username,
-        password: values.password
+        ...values
       })
       userStore.getUserInfos()
       // affiche un toast attestant du succès de la connexion
@@ -119,35 +60,7 @@ const useLogin = (): LoginReturn => {
     }
   }
 
-  // vérification de la validité des champs du formulaire
-  const onSubmit = handleSubmit(() => {
-    submitForm()
-  })
-
-  watchEffect(() => {
-    if (errors.value.password) {
-      passwordUpdate.value = true
-    }
-  })
-
-  watchEffect(() => {
-    if (errors.value.username) {
-      usernameUpdate.value = true
-    }
-  })
-
-  return {
-    loginFormSchema,
-    apiError,
-    errors,
-    loading,
-    password,
-    passwordAttrs,
-    passwordUpdate,
-    username,
-    usernameAttrs,
-    onSubmit
-  }
+  return { apiError, loading, onSubmit }
 }
 
 export default useLogin
