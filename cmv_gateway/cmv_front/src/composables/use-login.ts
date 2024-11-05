@@ -3,26 +3,48 @@
  * Soumet les identifiants à l'API dans le but de connecter l'utilisateur.
  */
 import { regexPassword } from '@/libs/regex'
-import { AUTH } from '@/libs/urls'
 import { useUserStore } from '@/stores/user'
 import { toTypedSchema } from '@vee-validate/zod'
-import axios from 'axios'
 import { useToast } from 'primevue/usetoast'
-import { useForm } from 'vee-validate'
-import { ref, watch, watchEffect } from 'vue'
+import { watch, type Ref } from 'vue'
 import { z } from 'zod'
 import { useI18n } from 'vue-i18n'
+import useHttp from './use-http'
 
-const useLogin = () => {
+// Types pour les identifiants et le retour de la fonction
+type Credentials = { username: string; password: string }
+
+type LoginReturn = {
+  error: Ref<string | null>
+  initialValues: Credentials
+  isLoading: Ref<boolean>
+  loginFormSchema: ReturnType<typeof toTypedSchema>
+  onSubmit: (values: Credentials) => void
+}
+
+/**
+ * Hook personnalisé pour gérer la logique de connexion
+ * @returns {LoginReturn} Objet contenant les fonctions et états nécessaires pour le formulaire de connexion
+ */
+const useLogin = (): LoginReturn => {
+  // Initialisation des hooks et stores nécessaires
   const { t } = useI18n()
   const userStore = useUserStore()
+  const { error, isLoading, sendRequest } = useHttp()
   const toast = useToast()
-  const apiError = ref('')
 
-  const usernameUpdate = ref(false)
-  const passwordUpdate = ref(false)
+  // Valeurs initiales du formulaire
+  const initialValues = {
+    username: '',
+    password: ''
+  }
 
-  // schema de validation utilisé pour le formulaire de connexion
+  /**
+   * Schéma de validation Zod pour le formulaire de connexion
+   * Vérifie que:
+   * - username est un email valide
+   * - password respecte le format requis (défini dans regexPassword)
+   */
   const loginFormSchema = toTypedSchema(
     z.object({
       username: z
@@ -34,66 +56,35 @@ const useLogin = () => {
     })
   )
 
-  // configuration de la validation du formulaire
-  const { values, errors, handleSubmit, defineField, validateField } = useForm({
-    validationSchema: loginFormSchema
-  })
-
-  // options pour le champs "email"
-  const [username, usernameAttrs] = defineField('username', {
-    validateOnModelUpdate: false
-  })
-
-  // options pour le champs "password"
-  const [password, passwordAttrs] = defineField('password', {
-    validateOnChange: passwordUpdate.value,
-    validateOnModelUpdate: passwordUpdate.value
-  })
-
-  // Surveille les changements de valeur de l'identifiant et force sa validation si une erreur a déjà été détecté
-  watch(username, async () => {
-    if (usernameUpdate.value) {
-      // valide manuellement le champ "password"
-      await validateField('username')
-    }
-  })
-
-  // Surveille les changements de valeur du mot de passe et force la validation du champ mot de passe si une erreur a déjà été détecté
-  watch(password, async () => {
-    if (passwordUpdate.value) {
-      // valide manuellement le champ "password"
-      await validateField('password')
-    }
-  })
-
-  // état du loader
-  const loading = ref(false)
-
-  // requête http pour connecter l'utilisateur
-  const submitForm = async () => {
-    loading.value = true
-    try {
-      await axios.post(`${AUTH}/auth/login`, {
-        username: values.username,
-        password: values.password
-      })
-      userStore.getUserInfos()
-      // affiche un toast attestant du succès de la connexion
-      toast.add({
-        severity: 'success',
-        life: 5000,
-        summary: t('success.connection_success'),
-        detail: t('success.connection_success_detail'),
-        closable: false
-      })
-    } catch (error: any) {
-      const errorDetail = error.response.data?.detail
-      if (errorDetail) {
-        apiError.value = t(`error.${errorDetail}`)
-      } else {
-        apiError.value = t(`error.network_issue`)
+  /**
+   * Gère la soumission du formulaire
+   * @param values - Les identifiants saisis par l'utilisateur
+   */
+  const onSubmit = (values: Credentials) => {
+    /**
+     * Callback appelé après une réponse réussie de l'API
+     * @param data - Réponse de l'API contenant le statut et le message
+     */
+    const applyData = (data: { success: boolean; message: string }) => {
+      if (data.success) {
+        // Affiche un toast de succès et récupère les infos utilisateur
+        toast.add({
+          severity: 'success',
+          life: 5000,
+          summary: t('success.connection_success'),
+          detail: t('success.connection_success_detail'),
+          closable: false
+        })
+        userStore.getUserInfos()
       }
-      // toast affichant un message d'erreur
+    }
+    // Envoie la requête de connexion
+    sendRequest({ path: '/auth/login', method: 'post', body: { ...values } }, applyData)
+  }
+
+  // Observe les erreurs pour afficher un toast en cas d'échec
+  watch(error, (value) => {
+    if (value && value.length > 0) {
       toast.add({
         severity: 'error',
         life: 5000,
@@ -101,37 +92,15 @@ const useLogin = () => {
         detail: t('error.connection_failure'),
         closable: false
       })
-    } finally {
-      loading.value = false
-    }
-  }
-
-  // vérification de la validité des champs du formulaire
-  const onSubmit = handleSubmit(() => {
-    submitForm()
-  })
-
-  watchEffect(() => {
-    if (errors.value.password) {
-      passwordUpdate.value = true
     }
   })
 
-  watchEffect(() => {
-    if (errors.value.username) {
-      usernameUpdate.value = true
-    }
-  })
-
+  // Retourne les fonctions et états nécessaires
   return {
-    apiError,
-    errors,
-    loading,
-    password,
-    passwordAttrs,
-    passwordUpdate,
-    username,
-    usernameAttrs,
+    error,
+    initialValues,
+    isLoading,
+    loginFormSchema,
     onSubmit
   }
 }

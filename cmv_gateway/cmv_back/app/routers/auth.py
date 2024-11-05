@@ -5,7 +5,7 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from app.dependancies.db_session import get_db
-from app.schemas.schemas import Message
+from app.schemas.schemas import Message, SuccessWithMessage
 from app.schemas.user import Credentials
 from app.services.auth import get_auth_service
 
@@ -19,7 +19,7 @@ router = APIRouter(
 
 
 # Permet à un utilisateur enregistré de se connecter à l'application
-@router.post("/login", response_model=dict)
+@router.post("/login", response_model=SuccessWithMessage)
 async def login(
     request: Request,
     response: Response,
@@ -34,7 +34,7 @@ async def login(
         username=credentials.username,
         password=credentials.password,
     )
-    return {"message": "all good bro!"}
+    return {"success": True, "message": "all good bro!"}
 
 
 # Déconnecte un utilisateur authentifié de l'application
