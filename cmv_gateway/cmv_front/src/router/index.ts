@@ -13,13 +13,25 @@ async function setup() {
   return { userStore }
 }
 
+export const getRoute = (role: string) => {
+  switch (role) {
+    case 'home':
+      return 'accueil'
+  }
+}
+
 const router = createRouter({
   history: createWebHistory('/'),
   routes: [
     {
       path: '/',
       name: 'root',
-      component: LoginView
+      component: LoginView,
+      beforeEnter: async (_to, _from, next) => {
+        const { userStore } = await setup()
+        if (userStore.role.length > 0) next(`/${getRoute(userStore.role)}`)
+        else next()
+      }
     },
     //  formulaire de connexion
     {
