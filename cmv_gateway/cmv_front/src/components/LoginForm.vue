@@ -5,33 +5,15 @@
  */
 import { Form, Field } from 'vee-validate'
 import { useI18n } from 'vue-i18n'
-import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
-import { toTypedSchema } from '@vee-validate/zod'
 import useLogin from '@/composables/use-login'
 import Password from 'primevue/password'
-import { z } from 'zod'
-import { regexPassword } from '@/libs/regex'
+import Button from 'primevue/button'
 
 const { t } = useI18n()
 
-// schema de validation utilisé pour le formulaire de connexion
-const loginFormSchema = z.object({
-  username: z
-    .string({ required_error: t('error.no_email') })
-    .email({ message: t('error.not_valid_email') }),
-  password: z
-    .string({ required_error: t('error.no_password') })
-    .regex(regexPassword, { message: t('error.not_valid_password') })
-})
-
-const initialValues = {
-  username: '',
-  password: ''
-}
-
-const { onSubmit } = useLogin()
+const { onSubmit, initialValues, loginFormSchema } = useLogin()
 
 const handleSubmit = (values: any) => {
   onSubmit(values)
@@ -40,7 +22,7 @@ const handleSubmit = (values: any) => {
 <template>
   <Form
     class="w-80 flex flex-col items-center gap-y-2"
-    :validation-schema="toTypedSchema(loginFormSchema)"
+    :validation-schema="loginFormSchema"
     :initial-values="initialValues"
     @submit="handleSubmit"
   >
