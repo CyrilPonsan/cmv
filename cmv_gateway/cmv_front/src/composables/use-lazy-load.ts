@@ -21,8 +21,10 @@ type UseLazyLoad<T> = {
   loading: Ref<boolean>
   onFilterChange: (event: Event) => void
   onLazyLoad: (event: LazyLoadEvent) => void
+  onResetFilter: () => void
   onSort: (event: LazyLoadEvent) => void
   result: Ref<UnwrapRef<T>[]>
+  search: Ref<string>
   totalRecords: Ref<number>
 }
 
@@ -56,7 +58,12 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
         first: 0
       }
       search.value = element.value
-    }, 1000)
+    }, 300)
+  }
+
+  // Réinitialise le filtre global
+  const onResetFilter = () => {
+    search.value = ''
   }
 
   // Gestion de l'événement de lazy-loading
@@ -136,8 +143,10 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     loading: http.isLoading,
     onFilterChange,
     onLazyLoad,
+    onResetFilter,
     onSort,
     result,
+    search,
     totalRecords
   }
 }
