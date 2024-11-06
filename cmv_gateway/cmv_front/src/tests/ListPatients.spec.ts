@@ -1,3 +1,4 @@
+/* eslint-disable vue/multi-word-component-names */
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import ListPatients from '@/components/ListPatients.vue'
@@ -51,11 +52,12 @@ const mockPatientsList = [
   }
 ]
 
-// Mock des dépendances
+const toastMock = {
+  add: vi.fn()
+}
+
 vi.mock('primevue/usetoast', () => ({
-  useToast: () => ({
-    add: vi.fn()
-  })
+  useToast: () => toastMock
 }))
 
 // Créons un mock pour onSort
@@ -135,6 +137,12 @@ const InputTextStub = defineComponent({
   emits: ['update:modelValue']
 })
 
+// Ajouter le stub de Toast
+const ToastStub = defineComponent({
+  name: 'Toast',
+  template: '<div class="p-toast"></div>'
+})
+
 describe('ListPatients', () => {
   let wrapper: any
 
@@ -163,7 +171,8 @@ describe('ListPatients', () => {
         stubs: {
           DataTable: DataTableStub,
           Column: ColumnStub,
-          InputText: InputTextStub
+          InputText: InputTextStub,
+          Toast: ToastStub // Ajouter le stub de Toast
         },
         plugins: [
           i18n,
@@ -213,7 +222,16 @@ describe('ListPatients', () => {
     const lastColumn = wrapper.findAll('.p-column').at(-1)
     const trashIcon = lastColumn.find('.pi-trash')
     await trashIcon.trigger('click')
-    // Ici vous pouvez ajouter la vérification que le toast a été appelé
+    // Vérifier que le toast a été appelé avec les bons paramètres
+    expect(toastMock.add).toHaveBeenCalledWith(
+      expect.objectContaining({
+        closable: false,
+        life: 5000,
+        severity: 'warn',
+        summary: fr.patients.home.toasters.delete.summary,
+        detail: fr.patients.home.toasters.delete.detail
+      })
+    )
   })
 
   it("gère correctement l'événement de pagination", async () => {

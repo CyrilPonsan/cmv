@@ -5,7 +5,7 @@
  * La pagination fonctionne en mode "lazy-loading".
  * La logique du "lazy-loading" est gérée dans le composable "useLazyLoad".
  */
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useToast } from 'primevue/usetoast'
 import DataTable from 'primevue/datatable'
@@ -41,24 +41,6 @@ const {
   result: patientsList,
   totalRecords
 } = useLazyLoad<PatientsListItem>('/patients/patients')
-
-// Ajout d'un état local pour la transition
-const isVisible = ref(true)
-
-// Observateur pour gérer la transition
-watch(
-  () => loading.value,
-  (newValue) => {
-    if (newValue) {
-      isVisible.value = false
-    } else {
-      // Petit délai pour laisser le temps aux données de se charger
-      setTimeout(() => {
-        isVisible.value = true
-      }, 100)
-    }
-  }
-)
 
 // Gestion du message de suppression
 const onTrash = () => {
@@ -112,8 +94,13 @@ onMounted(() => getData())
               @input="onFilterChange"
             />
             <InputIcon>
-              <i v-if="search" class="pi pi-times-circle cursor-pointer" @click="onResetFilter"
-            /></InputIcon>
+              <i
+                v-if="search && !loading"
+                class="pi pi-times-circle cursor-pointer"
+                @click="onResetFilter"
+              />
+              <i v-else-if="loading" class="pi pi-spinner animate-spin text-primary-500" />
+            </InputIcon>
           </IconField>
         </div>
       </div>
@@ -135,27 +122,16 @@ onMounted(() => getData())
       :sortable="col.sortable"
     >
       <template #body="slotProps">
-        <transition name="fade" mode="out-in">
-          <div v-show="isVisible" :key="slotProps.data.id_patient">
-            <template v-if="col.field === 'date_de_naissance'">
-              {{ d(new Date(slotProps.data[col.field]), 'short') }}
-            </template>
-            <template v-else>
-              <span :class="{ capitalize: col.field !== 'email' }">
-                {{ slotProps.data[col.field] }}
-              </span>
-            </template>
-          </div>
-        </transition>
-      </template>
-
-      <template #empty>
-        <Transition name="fade" mode="out-in">
-          <div v-show="loading" class="text-center p-4">
-            <i class="pi pi-info-circle text-warn text-xl mb-2"></i>
-            <p>{{ t('patients.home.placeholder.empty') }}</p>
-          </div>
-        </Transition>
+        <div :key="slotProps.data.id_patient">
+          <template v-if="col.field === 'date_de_naissance'">
+            {{ d(new Date(slotProps.data[col.field]), 'short') }}
+          </template>
+          <template v-else>
+            <span :class="{ capitalize: col.field !== 'email' }">
+              {{ slotProps.data[col.field] }}
+            </span>
+          </template>
+        </div>
       </template>
     </Column>
 
