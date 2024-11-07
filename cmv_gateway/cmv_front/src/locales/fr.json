@@ -49,7 +49,22 @@
       "total_patients": "Aucun patient | Un patient | {n} patients"
     },
     "detail": {
-      "description": "Dossier administratif"
+      "description": "Dossier administratif",
+      "button": {
+        "create_admission": "Créer une admission",
+        "edit": "Modifier"
+      },
+      "documents": {
+        "uploaded_documents": "Documents téléversés"
+      },
+      "h2": "Informations",
+      "panel": {
+        "fullname": "Nom complet",
+        "birth_date": "Date de naissance",
+        "address": "Adresse",
+        "contact": "Contacts",
+        "not_provided": "Non renseigné"
+      }
     }
   },
   "success": {
