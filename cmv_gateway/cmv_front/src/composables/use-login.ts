@@ -77,7 +77,7 @@ const useLogin = (): LoginReturn => {
       }
     }
     // Envoie la requête de connexion
-    sendRequest({ path: '/auth/logi', method: 'post', body: { ...values } }, applyData)
+    sendRequest({ path: '/auth/login', method: 'post', body: { ...values } }, applyData)
   }
 
   // Observe les erreurs pour afficher un toast en cas d'échec

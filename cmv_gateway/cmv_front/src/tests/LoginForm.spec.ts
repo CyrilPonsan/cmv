@@ -59,41 +59,59 @@ vi.mock('primevue/password', () => ({
   }
 }))
 
-// Mock de useLogin avec les valeurs et fonctions nécessaires
-vi.mock('@/composables/use-login', () => ({
-  default: () => ({
-    error: ref(null),
-    isLoading: ref(false),
-    initialValues: {
-      username: '',
-      password: ''
-    },
-    loginFormSchema: toTypedSchema(
-      z.object({
-        username: z
-          .string({ required_error: 'error.no_email' })
-          .email({ message: 'error.not_valid_email' }),
-        password: z
-          .string({ required_error: 'error.no_password' })
-          .regex(regexPassword, { message: 'error.not_valid_password' })
-      })
-    ),
-    onSubmit: vi.fn().mockImplementation(async () => {
-      toastMock.add({
-        severity: 'success',
-        summary: fr.success.connection_success,
-        detail: fr.success.connection_success_detail,
-        closable: false,
-        life: 5000
-      })
-      return true
-    }),
-    errors: ref({}), // Clear errors for success case
-    values: ref({
-      username: 'valid@email.com',
-      password: 'ValidPass123!'
+const successLoginMock = {
+  error: ref<string | null>(null),
+  isLoading: ref(false),
+  initialValues: {
+    username: '',
+    password: ''
+  },
+  loginFormSchema: toTypedSchema(
+    z.object({
+      username: z
+        .string({ required_error: 'error.no_email' })
+        .email({ message: 'error.not_valid_email' }),
+      password: z
+        .string({ required_error: 'error.no_password' })
+        .regex(regexPassword, { message: 'error.not_valid_password' })
     })
+  ),
+  onSubmit: vi.fn().mockImplementation(async () => {
+    toastMock.add({
+      severity: 'success',
+      summary: fr.success.connection_success,
+      detail: fr.success.connection_success_detail,
+      closable: false,
+      life: 5000
+    })
+    return true
+  }),
+  errors: ref({}),
+  values: ref({
+    username: 'valid@email.com',
+    password: 'ValidPass123!'
   })
+}
+
+const errorLoginMock = {
+  ...successLoginMock,
+  error: ref('ERROR'),
+  onSubmit: vi.fn().mockImplementation(async () => {
+    toastMock.add({
+      severity: 'error',
+      summary: fr.error.error,
+      detail: fr.error.connection_failure,
+      closable: false,
+      life: 5000
+    })
+    return true
+  })
+}
+
+let currentLoginMock = successLoginMock
+
+vi.mock('@/composables/use-login', () => ({
+  default: () => currentLoginMock
 }))
 
 // Update the toast mock setup
@@ -145,11 +163,7 @@ const router = createRouter({
 describe('LoginForm tests unitaires', () => {
   let wrapper: any
 
-  beforeEach(() => {
-    // Reset mocks
-    toastMock.add.mockReset()
-    useLogin.mockReset()
-
+  const mountWrapper = () => {
     wrapper = mount(LoginForm, {
       global: {
         plugins: [
@@ -165,6 +179,13 @@ describe('LoginForm tests unitaires', () => {
         ]
       }
     })
+  }
+
+  beforeEach(() => {
+    // Reset mocks
+    toastMock.add.mockReset()
+    currentLoginMock = successLoginMock
+    mountWrapper()
   })
 
   // Teste si le composant est rendu
@@ -214,6 +235,8 @@ describe('LoginForm tests unitaires', () => {
     const errorMessages = wrapper.findAll('.p-message)')
     expect(errorMessages.length).toBeGreaterThan(0)
     expect(errorMessages.length).toBe(2)
+    expect(errorMessages.at(0).text()).toBe('error.not_valid_email')
+    expect(errorMessages.at(1).text()).toBe('error.not_valid_password')
   })
 
   it('should render a success toast when login is successful', async () => {
@@ -241,46 +264,32 @@ describe('LoginForm tests unitaires', () => {
   })
 
   it('should render an error message if onSubmit return an error', async () => {
-    vi.mock('@/composables/use-login', () => ({
-      default: () => ({
-        error: ref(null),
-        isLoading: ref(false),
-        initialValues: {
-          username: '',
-          password: ''
-        },
-        loginFormSchema: toTypedSchema(
-          z.object({
-            username: z
-              .string({ required_error: 'error.no_email' })
-              .email({ message: 'error.not_valid_email' }),
-            password: z
-              .string({ required_error: 'error.no_password' })
-              .regex(regexPassword, { message: 'error.not_valid_password' })
-          })
-        ),
-        onSubmit: vi.fn().mockImplementation(async () => {
-          toastMock.add({
-            severity: 'success',
-            summary: fr.success.connection_success,
-            detail: fr.success.connection_success_detail,
-            closable: false,
-            life: 5000
-          })
-          return true
-        }),
-        errors: ref({}), // Clear errors for success case
-        values: ref({
-          username: 'valid@email.com',
-          password: 'ValidPass123!'
-        })
-      })
-    }))
-    // mock error from useLogin
+    // D'abord changer le mock
+    currentLoginMock = errorLoginMock
+    // Ensuite monter le composant
+    mountWrapper()
 
-    // Teste s'il y a quelquechose dans le p
+    // Vérifier le message d'erreur
     const p = wrapper.find('p')
     expect(p.exists()).toBe(true)
     expect(p.text()).toBe('ERROR')
+
+    // Déclencher l'action qui cause l'erreur
+    await errorLoginMock.onSubmit({
+      username: 'valid@email.com',
+      password: 'ValidPass123!'
+    })
+
+    await nextTick()
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
+    // Vérifier que le toast d'erreur a été appelé
+    expect(toastMock.add).toHaveBeenCalledWith({
+      severity: 'error',
+      summary: fr.error.error,
+      detail: fr.error.connection_failure,
+      closable: false,
+      life: 5000
+    })
   })
 })

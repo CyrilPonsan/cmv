@@ -1,6 +1,6 @@
 import { createI18n, type LocaleMessages } from 'vue-i18n'
-import fr from './locales/fr.json'
-import en from './locales/en.json'
+import fr from '@/locales/fr.json'
+import en from '@/locales/en.json'
 
 // Définir l'interface pour vos messages
 interface Messages {

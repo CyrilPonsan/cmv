@@ -47,6 +47,9 @@
       },
 
       "total_patients": "Aucun patient | Un patient | {n} patients"
+    },
+    "detail": {
+      "description": "Dossier administratif"
     }
   },
   "success": {

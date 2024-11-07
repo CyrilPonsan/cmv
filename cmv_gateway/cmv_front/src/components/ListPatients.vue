@@ -99,7 +99,10 @@ onMounted(() => getData())
                 class="pi pi-times-circle cursor-pointer"
                 @click="onResetFilter"
               />
-              <i v-else-if="loading" class="pi pi-spinner animate-spin text-primary-500" />
+              <i
+                v-else-if="loading && search"
+                class="pi pi-spinner animate-spin text-primary-500"
+              />
             </InputIcon>
           </IconField>
         </div>
@@ -137,14 +140,27 @@ onMounted(() => getData())
 
     <!-- Colonne d'actions -->
     <Column header="Actions" :exportable="false">
-      <template #body>
-        <button
-          class="p-2 hover:bg-red-100 rounded-full transition-colors"
-          @click="onTrash"
-          type="button"
-        >
-          <i class="pi pi-trash text-red-500" />
-        </button>
+      <template #body="slotProps">
+        <span class="flex items-center gap-x-4">
+          <Button
+            as="router-link"
+            :to="`/patient/${slotProps.data.id_patient}`"
+            icon="pi pi-pen-to-square"
+            rounded
+            variant="outlined"
+            text
+            aria-label="Editer"
+          />
+          <Button
+            icon="pi pi-trash"
+            severity="danger"
+            rounded
+            variant="outlined"
+            text
+            aria-label="Supprimer"
+            @click="onTrash"
+          />
+        </span>
       </template>
     </Column>
     <template #empty>

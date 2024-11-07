@@ -40,6 +40,16 @@ class PatientsService:
             db=db, page=page, limit=limit, field=field, order=order
         )
 
+    async def detail_patient(
+        self, db: Session, patient_id: int, user_id: int, role: str, request: Request
+    ):
+        self.logger.write_log(
+            f"{role} - {user_id} - {request.method} - read patients ", request
+        )
+        return await self.patients_repository.read_patient_by_id(
+            db=db, patient_id=patient_id
+        )
+
     async def search_patients(
         self,
         db: Session,
