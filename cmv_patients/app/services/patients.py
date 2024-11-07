@@ -16,10 +16,17 @@ def get_patients_service():
 
 
 class PatientsService:
+    """Service gérant les opérations liées aux patients"""
+
     logger = LoggerSetup()
     patients_repository: PgPatientsRepository
 
     def __init__(self, patients_repository: PgPatientsRepository):
+        """
+        Initialise le service avec un repository de patients
+        Args:
+            patients_repository: Repository pour accéder aux données des patients
+        """
         self.patients_repository = patients_repository
 
     async def read_all_patients(
@@ -33,6 +40,20 @@ class PatientsService:
         role: str,
         request: Request,
     ) -> dict:
+        """
+        Récupère la liste paginée de tous les patients
+        Args:
+            db: Session de base de données
+            page: Numéro de la page
+            limit: Nombre d'éléments par page
+            field: Champ sur lequel trier
+            order: Ordre de tri (asc/desc)
+            user_id: ID de l'utilisateur faisant la requête
+            role: Rôle de l'utilisateur
+            request: Requête HTTP
+        Returns:
+            dict: Dictionnaire contenant les patients et leur nombre total
+        """
         self.logger.write_log(
             f"{role} - {user_id} - {request.method} - read patients ", request
         )
@@ -43,6 +64,17 @@ class PatientsService:
     async def detail_patient(
         self, db: Session, patient_id: int, user_id: int, role: str, request: Request
     ):
+        """
+        Récupère les détails d'un patient spécifique
+        Args:
+            db: Session de base de données
+            patient_id: ID du patient à récupérer
+            user_id: ID de l'utilisateur faisant la requête
+            role: Rôle de l'utilisateur
+            request: Requête HTTP
+        Returns:
+            Patient: Les détails du patient demandé
+        """
         self.logger.write_log(
             f"{role} - {user_id} - {request.method} - read patients ", request
         )
@@ -62,6 +94,21 @@ class PatientsService:
         role: str,
         request: Request,
     ) -> dict:
+        """
+        Recherche des patients selon des critères
+        Args:
+            db: Session de base de données
+            search: Terme de recherche
+            page: Numéro de la page
+            limit: Nombre d'éléments par page
+            field: Champ sur lequel trier
+            order: Ordre de tri (asc/desc)
+            user_id: ID de l'utilisateur faisant la requête
+            role: Rôle de l'utilisateur
+            request: Requête HTTP
+        Returns:
+            dict: Dictionnaire contenant les patients trouvés et leur nombre total
+        """
         self.logger.write_log(
             f"{role} - {user_id} - {request.method} - search patients ", request
         )
