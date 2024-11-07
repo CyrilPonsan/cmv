@@ -145,7 +145,7 @@ onMounted(() => getData())
           <Button
             as="router-link"
             :to="`/patient/${slotProps.data.id_patient}`"
-            icon="pi pi-pen-to-square"
+            icon="pi pi-info-circle"
             rounded
             variant="outlined"
             text

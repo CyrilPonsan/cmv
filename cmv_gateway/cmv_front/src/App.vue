@@ -5,11 +5,21 @@
       <header class="flex justify-end items-center p-2 bg-surface-900 h-[4rem]">
         <nav>
           <ul class="flex gap-x-2 items-center">
+            <Button
+              as="router-link"
+              to="/"
+              icon="pi pi-home"
+              aria-label="redirection vers l'accueil"
+              size="small"
+              text
+              rounded
+            />
             <li>
               <Button
                 :icon="colorSchemeIcon"
                 aria-label="theme"
                 text
+                rounded
                 @click="userStore.toggleColorScheme()"
               />
             </li>
@@ -18,6 +28,7 @@
                 icon="pi pi-sign-out"
                 aria-label="déconnexion"
                 text
+                rounded
                 @click="userStore.signout()"
               />
             </li>
