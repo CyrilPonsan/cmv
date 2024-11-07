@@ -73,7 +73,7 @@ async def search_patients(
 
 
 # Retourne les informations d'un patient en fonction de son id
-@router.get("/{patient_id}", response_model=DetailPatient)
+@router.get("/detail/{patient_id}", response_model=DetailPatient)
 async def read_patient(
     request: Request,
     patient_id: int,

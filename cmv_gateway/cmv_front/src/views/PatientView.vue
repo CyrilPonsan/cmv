@@ -17,7 +17,7 @@ const applyData = (data: any) => {
 }
 
 onBeforeMount(() => {
-  http.sendRequest({ path: `/patients/patients/${route.params.id}` }, applyData)
+  http.sendRequest({ path: `/patients/patients/detail/${route.params.id}` }, applyData)
 })
 </script>
 
