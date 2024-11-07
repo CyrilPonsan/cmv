@@ -17,7 +17,7 @@
     "no_email": "Une adresse email est requise",
     "not_valid_email": "Adresse email non valide",
     "no_password": "Un mot de passe est requis",
-    "not_valid_password": "Le mot de passe n'est pas au bon format",
+    "not_valid_password": "Le mot de passe n'est pas valide",
     "connection_failure": "La connexion a échoué...",
     "credentials": "Identifiant ou mot de passe incorrect",
     "network_issue": "Un problème est survenu, réessayez plus tard..."
@@ -47,6 +47,9 @@
       },
 
       "total_patients": "Aucun patient | Un patient | {n} patients"
+    },
+    "detail": {
+      "description": "Dossier administratif"
     }
   },
   "success": {

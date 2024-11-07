@@ -13,19 +13,31 @@ async function setup() {
   return { userStore }
 }
 
+export const getRoute = (role: string) => {
+  switch (role) {
+    case 'home':
+      return 'accueil'
+  }
+}
+
 const router = createRouter({
   history: createWebHistory('/'),
   routes: [
     {
       path: '/',
       name: 'root',
-      component: LoginView
+      component: LoginView,
+      beforeEnter: async (_to, _from, next) => {
+        const { userStore } = await setup()
+        if (userStore.role.length > 0) next(`/${getRoute(userStore.role)}`)
+        else next()
+      }
     },
     //  formulaire de connexion
     {
       path: '/accueil',
       name: 'accueil',
-      component: () => import('../views/AccueilLayout.vue'),
+      component: () => import('@/views/AccueilLayout.vue'),
       //  protection de la route par le rôle de l'utilisateur
       beforeEnter: async (_to, _from, next) => {
         const { userStore } = await setup()
@@ -38,7 +50,13 @@ const router = createRouter({
         {
           path: '',
           name: 'patients',
-          component: () => import('../views/AccueilView.vue')
+          component: () => import('@/views/AccueilView.vue')
+        },
+        // Mise à jour d'un dossier administratif
+        {
+          path: '/patient/:id',
+          name: 'patient',
+          component: () => import('../views/PatientView.vue')
         }
       ]
     }

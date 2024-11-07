@@ -142,3 +142,44 @@ async def test_no_data_found_from_search(ac, internal_token, patients):
     assert result["total"] == 0
     assert len(result["data"]) == 0
     assert result["data"] == []
+
+
+@pytest.mark.asyncio
+async def test_get_patient_detail_no_cookie(ac, patients):
+    response = await ac.get("/api/patients/1")
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Not authenticated"}
+
+
+@pytest.mark.asyncio
+async def test_get_patient_detail_wrong_token(ac, wrong_internal_token, patients):
+    headers = {"Authorization": f"Bearer {wrong_internal_token}"}
+    response = await ac.get("/api/patients/1", headers=headers)
+    assert response.status_code == 401
+    assert response.json() == {"detail": "not_authorized"}
+
+
+@pytest.mark.asyncio
+async def test_get_patient_detail_not_found(ac, internal_token):
+    headers = {"Authorization": f"Bearer {internal_token}"}
+    response = await ac.get("/api/patients/999", headers=headers)
+    assert response.status_code == 404
+    assert response.json() == {"detail": "patient_not_found"}
+
+
+@pytest.mark.asyncio
+async def test_get_patient_detail_success(ac, internal_token, patients):
+    headers = {"Authorization": f"Bearer {internal_token}"}
+    response = await ac.get("/api/patients/1", headers=headers)
+    result = response.json()
+
+    assert response.status_code == 200
+    assert result["id_patient"] == 1
+    assert "nom" in result
+    assert "prenom" in result
+    assert "date_de_naissance" in result
+    assert "adresse" in result
+    assert "code_postal" in result
+    assert "ville" in result
+    assert "telephone" in result
+    assert "email" in result

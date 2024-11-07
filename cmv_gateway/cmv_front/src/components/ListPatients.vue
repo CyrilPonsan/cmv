@@ -5,7 +5,7 @@
  * La pagination fonctionne en mode "lazy-loading".
  * La logique du "lazy-loading" est gérée dans le composable "useLazyLoad".
  */
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useToast } from 'primevue/usetoast'
 import DataTable from 'primevue/datatable'
@@ -13,6 +13,7 @@ import Column from 'primevue/column'
 import InputText from 'primevue/inputtext'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
+import Button from 'primevue/button'
 
 import type { DataTableFilterMeta } from 'primevue/datatable'
 import { patientsListColumns } from '@/libs/columns/patients-list'
@@ -22,7 +23,6 @@ import type PatientsListItem from '@/models/patients-list-item'
 // Définition des props et des types
 const columns = patientsListColumns
 const filters = ref<DataTableFilterMeta>({})
-const globalFilterValue = ref<string>('')
 
 // Composables
 const { t, d } = useI18n()
@@ -34,8 +34,10 @@ const {
   lazyState,
   loading,
   onFilterChange,
+  onResetFilter,
   onLazyLoad,
   onSort,
+  search,
   result: patientsList,
   totalRecords
 } = useLazyLoad<PatientsListItem>('/patients/patients')
@@ -51,11 +53,6 @@ const onTrash = () => {
   })
 }
 
-// Surveillance de la valeur du filtre global
-watch(globalFilterValue, (newValue) => {
-  console.log('Nouvelle valeur du filtre global:', newValue)
-})
-
 // Chargement initial des données
 onMounted(() => getData())
 </script>
@@ -65,7 +62,6 @@ onMounted(() => getData())
     v-model:filters="filters"
     :value="patientsList"
     :lazy="true"
-    :loading="loading"
     :total-records="totalRecords"
     :rows-per-page-options="[5, 10, 20, 50]"
     v-model:first="lazyState.first"
@@ -84,18 +80,32 @@ onMounted(() => getData())
   >
     <!-- En-tête avec barre de recherche -->
     <template #header>
-      <div class="flex justify-end rounded-tl-lg rounded-tr-lg">
-        <IconField class="flex items-center gap-x-4">
-          <InputIcon>
-            <i class="pi pi-search opacity-20" />
-          </InputIcon>
-          <InputText
-            type="search"
-            v-model="globalFilterValue"
-            :placeholder="t('patients.home.placeholder.search')"
-            @input="onFilterChange"
-          />
-        </IconField>
+      <div class="flex items-center gap-x-4 rounded-tl-lg rounded-tr-lg">
+        <div class="w-full flex items-center justify-between gap-x-4">
+          <Button as="router-link" to="/" icon="pi pi-plus" label="Ajouter un patient" />
+          <IconField class="flex items-center gap-x-4">
+            <InputIcon>
+              <i class="pi pi-search opacity-20" />
+            </InputIcon>
+            <InputText
+              class="focus:!ring-0 focus:!ring-offset-0"
+              :value="search"
+              :placeholder="t('patients.home.placeholder.search')"
+              @input="onFilterChange"
+            />
+            <InputIcon>
+              <i
+                v-if="search && !loading"
+                class="pi pi-times-circle cursor-pointer"
+                @click="onResetFilter"
+              />
+              <i
+                v-else-if="loading && search"
+                class="pi pi-spinner animate-spin text-primary-500"
+              />
+            </InputIcon>
+          </IconField>
+        </div>
       </div>
     </template>
 
@@ -115,27 +125,42 @@ onMounted(() => getData())
       :sortable="col.sortable"
     >
       <template #body="slotProps">
-        <template v-if="col.field === 'date_de_naissance'">
-          {{ d(new Date(slotProps.data[col.field]), 'short') }}
-        </template>
-        <template v-else>
-          <span :class="{ capitalize: col.field !== 'email' }">
-            {{ slotProps.data[col.field] }}
-          </span>
-        </template>
+        <div :key="slotProps.data.id_patient">
+          <template v-if="col.field === 'date_de_naissance'">
+            {{ d(new Date(slotProps.data[col.field]), 'short') }}
+          </template>
+          <template v-else>
+            <span :class="{ capitalize: col.field !== 'email' }">
+              {{ slotProps.data[col.field] }}
+            </span>
+          </template>
+        </div>
       </template>
     </Column>
 
     <!-- Colonne d'actions -->
     <Column header="Actions" :exportable="false">
-      <template #body>
-        <button
-          class="p-2 hover:bg-red-100 rounded-full transition-colors"
-          @click="onTrash"
-          type="button"
-        >
-          <i class="pi pi-trash text-red-500" />
-        </button>
+      <template #body="slotProps">
+        <span class="flex items-center gap-x-4">
+          <Button
+            as="router-link"
+            :to="`/patient/${slotProps.data.id_patient}`"
+            icon="pi pi-pen-to-square"
+            rounded
+            variant="outlined"
+            text
+            aria-label="Editer"
+          />
+          <Button
+            icon="pi pi-trash"
+            severity="danger"
+            rounded
+            variant="outlined"
+            text
+            aria-label="Supprimer"
+            @click="onTrash"
+          />
+        </span>
       </template>
     </Column>
     <template #empty>

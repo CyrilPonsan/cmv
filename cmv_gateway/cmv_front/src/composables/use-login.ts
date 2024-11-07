@@ -10,9 +10,7 @@ import { watch, type Ref } from 'vue'
 import { z } from 'zod'
 import { useI18n } from 'vue-i18n'
 import useHttp from './use-http'
-
-// Types pour les identifiants et le retour de la fonction
-type Credentials = { username: string; password: string }
+import type { Credentials } from '@/models/credentials'
 
 type LoginReturn = {
   error: Ref<string | null>
@@ -84,6 +82,7 @@ const useLogin = (): LoginReturn => {
 
   // Observe les erreurs pour afficher un toast en cas d'échec
   watch(error, (value) => {
+    console.log('error', value)
     if (value && value.length > 0) {
       toast.add({
         severity: 'error',

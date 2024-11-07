@@ -50,6 +50,16 @@ class PgPatientsRepository(PatientsRepository):
         filters = [Patient.nom.ilike(f"%{search}%")]
         return self.paginate_and_order(db, Patient, page, limit, field, order, filters)
 
+    # Fonction de lecture d'un patient par son id
+    async def read_patient_by_id(self, db: Session, patient_id: int) -> Patient:
+        patient = db.query(Patient).filter(Patient.id_patient == patient_id).first()
+        if not patient:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="patient_not_found"
+            )
+        print(f"PATIENT : {patient.nom} {patient.prenom}")
+        return patient
+
     # Fonction de pagination et de tri
     def paginate_and_order(
         self, db, model, page, limit, field, order, filters=None

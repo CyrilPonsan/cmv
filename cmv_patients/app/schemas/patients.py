@@ -39,12 +39,25 @@ class ReadAllPatients(BaseModel):
     total: int
 
 
-class SearchPatientsParams(BaseModel):
-    search: str | None = Field(default=None)
-    page: int | None = Field(default=1, ge=1)
-    limit: int | None = Field(default=10, ge=1, le=50)
-    field: str | None = Field(default="nom")
-    order: str | None = Field(default="asc")
+# Modèle utilisé pour les paramètres de pagination et de tri
+class PatientsParams(BaseModel):
+    page: int = Field(default=1, ge=1)
+    limit: int = Field(default=10, ge=1)
+    field: str = Field(default="nom")
+    order: str = Field(default="asc")
+
+    @field_validator("field")
+    def validate_field(cls, value):
+        if value not in ["nom", "prenom", "date_de_naissance", "email"]:
+            raise ValueError(
+                "La propriété 'field' doit être 'nom', 'prenom', 'date_de_naissance' ou 'email'."
+            )
+        return value
+
+
+# Modèle utilisé pour les paramètres de recherche
+class SearchPatientsParams(PatientsParams):
+    search: str
 
     @field_validator("search")
     def validate_search(cls, value):
@@ -53,3 +66,30 @@ class SearchPatientsParams(BaseModel):
                 "La propriété 'search' contient des caractères non autorisés."
             )
         return value
+
+
+# Modèle utilisé pour retourner les informations d'un patient
+class DetailPatient(BaseModel):
+    id_patient: int
+    civilite: str
+    prenom: str
+    nom: str
+    date_de_naissance: datetime
+    adresse: str
+    code_postal: str
+    ville: str
+    telephone: str
+    email: EmailStr | None = Field(default=None)
+
+    @field_validator(
+        "civilite", "nom", "prenom", "telephone", "adresse", "code_postal", "ville"
+    )
+    def validate_generic_patterns(cls, value, field):
+        if not re.match(generic_pattern, value):
+            raise ValueError(
+                f"La propriété '{field.field_name}' contient des caractères non autorisés."
+            )
+        return value
+
+    class Config:
+        from_attributes = True

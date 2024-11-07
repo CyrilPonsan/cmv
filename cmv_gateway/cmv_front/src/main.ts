@@ -12,7 +12,7 @@ import PrimeVue from 'primevue/config'
 import 'primeicons/primeicons.css'
 import Aura from '@primevue/themes/aura'
 import ToastService from 'primevue/toastservice'
-import i18n from './i18n'
+import i18n from './includes/i18n'
 
 progressBar(router)
 

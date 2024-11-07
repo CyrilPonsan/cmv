@@ -1,3 +1,7 @@
+/**
+ * Série de tests pour la fonctionnalité de recherche de patients
+ */
+
 import useLazyLoad from '@/composables/use-lazy-load'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { ref } from 'vue'

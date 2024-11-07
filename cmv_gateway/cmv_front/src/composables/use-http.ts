@@ -113,9 +113,9 @@ const useHttp = (): UseHttp => {
       } else {
         return response.data
       }
-    } catch (error: any) {
-      error.value = error.response?.data.message ?? 'Erreur inconnue'
-      throw error // On propage l'erreur pour que l'intercepteur puisse la gérer
+    } catch (err: any) {
+      error.value = err.response?.data.message ?? 'Erreur inconnue'
+      throw err
     } finally {
       isLoading.value = false
     }

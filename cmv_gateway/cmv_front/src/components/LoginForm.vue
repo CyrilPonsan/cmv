@@ -3,25 +3,28 @@
  * formulaire de connexion utilisateur
  * la logique est déplacée dans le composable "useLogin"
  */
-import { Form, Field } from 'vee-validate'
+import { Form, Field, type SubmissionHandler, type GenericObject } from 'vee-validate'
 import { useI18n } from 'vue-i18n'
 import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
 import useLogin from '@/composables/use-login'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
+import type { Credentials } from '@/models/credentials'
 
 const { t } = useI18n()
 
-const { onSubmit, initialValues, loginFormSchema } = useLogin()
+const { error, initialValues, loginFormSchema, onSubmit } = useLogin()
 
-const handleSubmit = (values: any) => {
-  onSubmit(values)
+const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
+  onSubmit(values as unknown as Credentials)
 }
 </script>
+
 <template>
+  <p>{{ error }}</p>
   <Form
-    class="w-80 flex flex-col items-center gap-y-2"
+    class="w-80 flex flex-col items-start gap-y-2"
     :validation-schema="loginFormSchema"
     :initial-values="initialValues"
     @submit="handleSubmit"
@@ -31,10 +34,7 @@ const handleSubmit = (values: any) => {
       <label for="username">{{ t('login.labelEmail') }}</label>
       <!-- message d'erreur de validation du champs email -->
       <Field v-slot="{ field, errorMessage }" name="username">
-        <span class="flex items-center gap-x-2" v-show="errorMessage">
-          <Message severity="error" icon="pi pi-times-circle" aria-label="erreur adresse email" />
-          <Message class="text-xs" severity="error">{{ errorMessage }}</Message>
-        </span>
+        <Message class="text-xs" severity="error" v-show="errorMessage">{{ errorMessage }}</Message>
         <InputText
           fluid
           id="username"
@@ -51,10 +51,9 @@ const handleSubmit = (values: any) => {
       <label for="password">{{ t('login.labelPassword') }}</label>
       <!-- message d'erreur de validation du champs mot de passe -->
       <Field v-slot="{ field, errorMessage }" name="password">
-        <span class="flex items-center gap-x-2" v-show="errorMessage">
-          <Message severity="error" icon="pi pi-times-circle" aria-label="erreur mot de passe" />
-          <Message class="text-xs text-error" severity="error">{{ errorMessage }}</Message>
-        </span>
+        <Message class="text-xs text-error" severity="error" v-show="errorMessage">{{
+          errorMessage
+        }}</Message>
         <Password
           fluid
           :modelValue="field.value"
@@ -71,9 +70,11 @@ const handleSubmit = (values: any) => {
     </div>
 
     <!-- bouton pour soumettre le formulaire-->
-    <div class="flex justify-end mt-2">
+    <div class="w-full flex justify-end m-2">
       <Button type="submit" label="Se Connecter" />
     </div>
+    <Message v-if="error" :closable="true" :severity="'error'">{{
+      t('error.connection_failure')
+    }}</Message>
   </Form>
-  <div></div>
 </template>
