@@ -89,7 +89,7 @@ def run_migrations_online():
             context.run_migrations()
 
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("PATIENTS_DATABASE_URL")
 URL = str(DATABASE_URL)
 
 # print("url" + DATABASE_URL)

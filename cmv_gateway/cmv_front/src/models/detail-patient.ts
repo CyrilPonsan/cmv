@@ -1,3 +1,5 @@
+import type Document from './document'
+
 export default interface DetailPatient {
   id_patient: number
   prenom: string
@@ -9,4 +11,5 @@ export default interface DetailPatient {
   ville: string
   telephone: string
   email?: string
+  documents: Document[]
 }

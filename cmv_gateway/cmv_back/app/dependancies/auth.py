@@ -8,7 +8,7 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 
-from app.repositories.permissions_crud import PgPermissionRepository
+from app.repositories.permissions_crud import PermissionRepository
 from app.repositories.user_crud import PgUserRepository
 from app.schemas.user import User
 from ..utils.logging_setup import LoggerSetup
@@ -144,9 +144,7 @@ async def check_permissions(
     action: str,
     resource: str,
 ) -> bool:
-    authorized = await PgPermissionRepository.check_permission(
-        db, role, action, resource
-    )
+    authorized = await PermissionRepository.check_permission(db, role, action, resource)
     if not authorized:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
