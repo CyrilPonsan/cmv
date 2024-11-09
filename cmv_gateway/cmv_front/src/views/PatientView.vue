@@ -32,7 +32,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <main class="flex flex-col gap-y-8">
+  <main class="min-w-screen min-h-screen flex flex-col gap-y-8">
     <section>
       <PageHeader
         :title="t('patients.home.title')"
@@ -68,7 +68,7 @@ onBeforeMount(() => {
         </div>
         <div v-else class="w-full h-[75%] flex justify-start items-center gap-x-4">
           <i class="pi pi-exclamation-circle text-5xl" />
-          <p>Aucun document trouvé.</p>
+          <p>{{ t('patients.detail.documents.no_document') }}</p>
         </div>
       </article>
     </section>
