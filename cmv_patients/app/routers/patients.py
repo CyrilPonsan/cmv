@@ -14,8 +14,10 @@ from app.schemas.patients import (
 from app.schemas.schemas import Patient
 from app.schemas.user import InternalPayload
 from app.services.patients import get_patients_service
+from app.utils.logging_setup import LoggerSetup
 
 router = APIRouter(prefix="/patients", tags=["patients"])
+logger = LoggerSetup()
 
 
 @router.post("/")
@@ -44,9 +46,6 @@ async def read_patients(
         limit=params.limit,
         field=params.field,
         order=params.order,
-        request=request,
-        user_id=payload["user_id"],
-        role=payload["role"],
     )
 
 
@@ -59,6 +58,10 @@ async def search_patients(
     patients_service=Depends(get_patients_service),
     db=Depends(get_db),
 ):
+    logger.write_log(
+        f"{payload['role']} - {payload['user_id']} - {request.method} - search patients",
+        request,
+    )
     return await patients_service.search_patients(
         db=db,
         search=params.search,
@@ -66,9 +69,6 @@ async def search_patients(
         limit=params.limit,
         field=params.field,
         order=params.order,
-        request=request,
-        user_id=payload["user_id"],
-        role=payload["role"],
     )
 
 
@@ -81,10 +81,11 @@ async def read_patient(
     patients_service=Depends(get_patients_service),
     db: Session = Depends(get_db),
 ):
+    logger.write_log(
+        f"{payload['role']} - {payload['user_id']} - {request.method} - read patient {patient_id}",
+        request,
+    )
     return await patients_service.detail_patient(
         db=db,
         patient_id=patient_id,
-        user_id=payload["user_id"],
-        role=payload["role"],
-        request=request,
     )
