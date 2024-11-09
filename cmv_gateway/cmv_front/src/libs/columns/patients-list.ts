@@ -1,3 +1,9 @@
+/**
+ * @file patients-list.ts
+ * @description Columns for the patients list
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
+ */
+
 export const patientsListColumns = [
   {
     field: 'civilite',

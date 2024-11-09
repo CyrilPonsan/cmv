@@ -1,7 +1,8 @@
 <script setup lang="ts">
 /**
- * formulaire de connexion utilisateur
- * la logique est déplacée dans le composable "useLogin"
+ * @file LoginForm.vue
+ * @description Component for the login form
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 import { Form, Field, type SubmissionHandler, type GenericObject } from 'vee-validate'
 import { useI18n } from 'vue-i18n'

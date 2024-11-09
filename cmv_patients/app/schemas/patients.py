@@ -68,6 +68,13 @@ class SearchPatientsParams(PatientsParams):
         return value
 
 
+class DocumentsListItem(BaseModel):
+    id_document: int
+    nom_fichier: str
+    type_document: str
+    created_at: datetime
+
+
 # Modèle utilisé pour retourner les informations d'un patient
 class DetailPatient(BaseModel):
     id_patient: int
@@ -80,6 +87,7 @@ class DetailPatient(BaseModel):
     ville: str
     telephone: str
     email: EmailStr | None = Field(default=None)
+    documents: list[DocumentsListItem]
 
     @field_validator(
         "civilite", "nom", "prenom", "telephone", "adresse", "code_postal", "ville"

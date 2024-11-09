@@ -1,3 +1,9 @@
+/**
+ * @file user.ts
+ * @description User store
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
+ */
+
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import useHttp from '@/composables/use-http'

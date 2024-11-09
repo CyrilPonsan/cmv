@@ -55,7 +55,10 @@
         "edit": "Modifier"
       },
       "documents": {
-        "uploaded_documents": "Documents téléversés"
+        "uploaded_documents": "Documents téléversés",
+        "document": "Document",
+        "download": "Télécharger",
+        "delete": "Supprimer"
       },
       "h2": "Informations",
       "panel": {

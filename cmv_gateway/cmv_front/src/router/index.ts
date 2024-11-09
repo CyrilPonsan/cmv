@@ -1,5 +1,7 @@
 /**
- * définition du routing de la partie frontend de l'application
+ * @file router.ts
+ * @description Router setup
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 
 import { createRouter, createWebHistory } from 'vue-router'
@@ -37,7 +39,7 @@ const router = createRouter({
     {
       path: '/accueil',
       name: 'accueil',
-      component: () => import('@/views/AccueilLayout.vue'),
+      component: () => import('../views/AccueilLayout.vue'),
       //  protection de la route par le rôle de l'utilisateur
       beforeEnter: async (_to, _from, next) => {
         const { userStore } = await setup()
@@ -50,7 +52,7 @@ const router = createRouter({
         {
           path: '',
           name: 'patients',
-          component: () => import('@/views/AccueilView.vue')
+          component: () => import('../views/AccueilView.vue')
         },
         // Mise à jour d'un dossier administratif
         {

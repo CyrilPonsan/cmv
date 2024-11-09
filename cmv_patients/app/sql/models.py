@@ -24,6 +24,17 @@ class Civilite(enum.Enum):
     ROBERTO = "Roberto"
 
 
+class DocumentType(enum.Enum):
+    ATTESTATION_CARTE_VITALE = "Attestation de carte vitale"
+    AUTORISATION_DE_SOINS = "Autorisation de soins"
+    AUTORISATION_DE_TRAITEMENT = "Autorisation de traitement"
+    AUTORISATION_DE_VISITE = "Autorisation de visite"
+    AUTORISATION_DE_REMISE_A_NUIT = "Autorisation de remise à nuit"
+    AUTORISATION_DE_DEPART = "Autorisation de départ"
+    AUTORISATION_DE_DEBRANCHEMENT = "Autorisation de débranchement"
+    AUTRE = "Divers"
+
+
 class Admission(Base):
     __tablename__ = "admission"
 
@@ -35,12 +46,32 @@ class Admission(Base):
     ref_chambre: Mapped[int] = mapped_column(Integer, nullable=True)
 
 
+class Document(Base):
+    __tablename__ = "document"
+
+    id_document: Mapped[int] = mapped_column(primary_key=True, index=True)
+    nom_fichier: Mapped[str] = mapped_column(String, nullable=False, unique=True)
+    type_document: Mapped[DocumentType] = mapped_column(
+        Enum(DocumentType), default=DocumentType.AUTRE, nullable=False
+    )
+    created_at: Mapped[DateTime] = mapped_column(DateTime(), server_default=func.now())
+
+    # relation one to many avec l'entité "Patient"
+    patient_id: Mapped[int] = mapped_column(
+        ForeignKey(
+            "patient.id_patient",
+            ondelete="CASCADE",
+        )
+    )
+    patient: Mapped["Patient"] = relationship("Patient", back_populates="documents")
+
+
 class Patient(Base):
     __tablename__ = "patient"
 
     id_patient: Mapped[int] = mapped_column(primary_key=True, index=True)
     civilite: Mapped[Civilite] = mapped_column(
-        Enum(Civilite), default=Civilite.AUTRE, nullable=True
+        Enum(Civilite), default=Civilite.AUTRE, nullable=False
     )
     nom: Mapped[str] = mapped_column(String, index=True)
     prenom: Mapped[str] = mapped_column(String, index=True)
@@ -59,23 +90,6 @@ class Patient(Base):
     documents: Mapped[list["Document"]] = relationship(
         "Document", back_populates="patient"
     )
-
-
-class Document(Base):
-    __tablename__ = "document"
-
-    id_document: Mapped[int] = mapped_column(primary_key=True, index=True)
-    nom_fichier: Mapped[str] = mapped_column(String, nullable=False, unique=True)
-    created_at: Mapped[DateTime] = mapped_column(DateTime(), server_default=func.now())
-
-    # relation one to many avec l'entité "Patient"
-    patient_id: Mapped[int] = mapped_column(
-        ForeignKey(
-            "patient.id_patient",
-            ondelete="CASCADE",
-        )
-    )
-    patient: Mapped[Patient] = relationship("Patient", back_populates="documents")
 
 
 admission_patient = Table(

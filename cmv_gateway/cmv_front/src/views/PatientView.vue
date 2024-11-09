@@ -1,4 +1,10 @@
 <script setup lang="ts">
+/**
+ * @file PatientView.vue
+ * @description Patient view
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
+ */
+import DocumentPatient from '@/components/DocumentPatient.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import PatientDetail from '@/components/PatientDetail.vue'
 import useHttp from '@/composables/use-http'
@@ -14,11 +20,10 @@ const route = useRoute()
 
 const detailPatient = ref<DetailPatient | null>(null)
 
-const applyData = (data: DetailPatient) => {
-  detailPatient.value = data
-}
-
 onBeforeMount(() => {
+  const applyData = (data: DetailPatient) => {
+    detailPatient.value = data
+  }
   http.sendRequest<DetailPatient>(
     { path: `/patients/patients/detail/${route.params.id}` },
     applyData
@@ -45,8 +50,26 @@ onBeforeMount(() => {
         </div>
         <PatientDetail :detail-patient="detailPatient" />
       </article>
-      <article class="col-span-1 p-4 rounded-lg border border-surface-500/20">
-        <h2 class="text-lg font-bold">{{ t('patients.detail.documents.uploaded_documents') }}</h2>
+      <article class="col-span-1 p-4">
+        <span class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-bold">
+            {{ t('patients.detail.documents.uploaded_documents') }}
+          </h2>
+          <Button label="Ajouter un document" icon="pi pi-paperclip " outlined />
+        </span>
+        <div v-if="detailPatient && detailPatient.documents.length > 0">
+          <DocumentPatient
+            v-for="(document, documentIndex) of detailPatient.documents"
+            class="mb-4"
+            :key="document.id_document"
+            :documentIndex="documentIndex"
+            :document="document"
+          />
+        </div>
+        <div v-else class="w-full h-[75%] flex justify-start items-center gap-x-4">
+          <i class="pi pi-exclamation-circle text-5xl" />
+          <p>Aucun document trouvé.</p>
+        </div>
       </article>
     </section>
   </main>

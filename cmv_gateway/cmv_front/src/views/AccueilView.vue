@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /**
- * Landing page de l'interface dédiée aux employés du service
- * accueil.
- * Cette vue affiche la liste des dossiers administratifs des
- * patients de la clinique Montvert.
+ * @file AccueilView.vue
+ * @description Accueil view
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
+
 import ListPatients from '@/components/ListPatients.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import { useI18n } from 'vue-i18n'
