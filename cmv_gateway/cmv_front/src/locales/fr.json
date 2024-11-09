@@ -1,6 +1,11 @@
 {
   "app": {
-    "footer": "Projet de formation : toute ressemblance avec une clinique déjà existente ne serait que pure coïncidence."
+    "footer": "Projet de formation : toute ressemblance avec une clinique déjà existente ne serait que pure coïncidence.",
+    "tooltip": {
+      "home": "Accueil",
+      "change_mode": "Changer de mode",
+      "logout": "Déconnexion"
+    }
   },
   "columns": {
     "patientsList": {
@@ -45,7 +50,10 @@
           "detail": "Cette fonctionnalité n'est pas encore implémentée..."
         }
       },
-
+      "tooltip": {
+        "delete": "Supprimer",
+        "navigate": "Accéder au dossier administratif"
+      },
       "total_patients": "Aucun patient | Un patient | {n} patients"
     },
     "detail": {
@@ -58,7 +66,8 @@
         "uploaded_documents": "Documents téléversés",
         "document": "Document",
         "download": "Télécharger",
-        "delete": "Supprimer"
+        "delete": "Supprimer",
+        "no_document": "Aucun document trouvé."
       },
       "h2": "Informations",
       "panel": {

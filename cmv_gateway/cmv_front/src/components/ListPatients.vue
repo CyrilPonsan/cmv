@@ -148,7 +148,8 @@ onMounted(() => getData())
             rounded
             variant="outlined"
             text
-            aria-label="Editer"
+            aria-label="Détails du dossier administratif"
+            v-tooltip.bottom="t('patients.home.tooltip.navigate')"
           />
           <Button
             icon="pi pi-trash"
@@ -157,6 +158,7 @@ onMounted(() => getData())
             variant="outlined"
             text
             aria-label="Supprimer"
+            v-tooltip.bottom="t('patients.home.tooltip.delete')"
             @click="onTrash"
           />
         </span>

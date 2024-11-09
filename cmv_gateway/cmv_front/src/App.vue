@@ -1,51 +1,3 @@
-<template>
-  <Toast />
-  <main class="min-h-screen flex flex-col justify-between">
-    <span>
-      <header class="flex justify-end items-center p-2 bg-surface-900 h-[4rem]">
-        <nav>
-          <ul class="flex gap-x-2 items-center">
-            <Button
-              as="router-link"
-              to="/"
-              icon="pi pi-home"
-              aria-label="redirection vers l'accueil"
-              size="small"
-              text
-              rounded
-            />
-            <li>
-              <Button
-                :icon="colorSchemeIcon"
-                aria-label="theme"
-                text
-                rounded
-                @click="userStore.toggleColorScheme()"
-              />
-            </li>
-            <li v-if="isLoggedIn">
-              <Button
-                icon="pi pi-sign-out"
-                aria-label="déconnexion"
-                text
-                rounded
-                @click="userStore.signout()"
-              />
-            </li>
-          </ul>
-        </nav>
-      </header>
-      <RouterView />
-    </span>
-
-    <footer class="w-full h-[4rem] flex justify-center items-center bg-surface-900">
-      <h3 class="text-xs text-primary-500">
-        {{ t('app.footer') }}
-      </h3>
-    </footer>
-  </main>
-</template>
-
 <script setup lang="ts">
 import { computed, onBeforeMount, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -83,3 +35,54 @@ onBeforeMount(() => {
   userStore.handshake()
 })
 </script>
+
+<template>
+  <Toast />
+  <main class="min-h-screen flex flex-col justify-between">
+    <span>
+      <header class="flex justify-end items-center p-2 bg-surface-900 h-[4rem]">
+        <nav>
+          <ul class="flex gap-x-2 items-center">
+            <Button
+              as="router-link"
+              to="/"
+              icon="pi pi-home"
+              aria-label="redirection vers l'accueil"
+              size="small"
+              text
+              rounded
+              v-tooltip.left="t('app.tooltip.home')"
+            />
+            <li>
+              <Button
+                :icon="colorSchemeIcon"
+                aria-label="theme"
+                text
+                rounded
+                v-tooltip.left="t('app.tooltip.change_mode')"
+                @click="userStore.toggleColorScheme()"
+              />
+            </li>
+            <li v-if="isLoggedIn">
+              <Button
+                icon="pi pi-sign-out"
+                aria-label="déconnexion"
+                text
+                rounded
+                v-tooltip.left="t('app.tooltip.logout')"
+                @click="userStore.signout()"
+              />
+            </li>
+          </ul>
+        </nav>
+      </header>
+      <RouterView />
+    </span>
+
+    <footer class="w-full h-[4rem] flex justify-center items-center bg-surface-900">
+      <h3 class="text-xs text-primary-500">
+        {{ t('app.footer') }}
+      </h3>
+    </footer>
+  </main>
+</template>

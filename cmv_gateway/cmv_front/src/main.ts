@@ -13,6 +13,7 @@ import 'primeicons/primeicons.css'
 import Aura from '@primevue/themes/aura'
 import ToastService from 'primevue/toastservice'
 import i18n from './includes/i18n'
+import Tooltip from 'primevue/tooltip'
 
 progressBar(router)
 
@@ -28,11 +29,8 @@ app.use(PrimeVue, {
     }
   }
 })
-
+app.directive('tooltip', Tooltip)
 app.use(ToastService)
-
 app.use(createPinia())
-
 app.use(router)
-
 app.mount('#app')
