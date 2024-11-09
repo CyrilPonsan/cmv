@@ -1,3 +1,9 @@
+/**
+ * @file progress-bar.ts
+ * @description Progress bar setup
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
+ */
+
 import NProgress from 'nprogress'
 
 export default (router: any) => {

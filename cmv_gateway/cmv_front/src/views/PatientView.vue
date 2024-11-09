@@ -1,4 +1,9 @@
 <script setup lang="ts">
+/**
+ * @file PatientView.vue
+ * @description Patient view
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
+ */
 import DocumentPatient from '@/components/DocumentPatient.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import PatientDetail from '@/components/PatientDetail.vue'

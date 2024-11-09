@@ -1,10 +1,7 @@
 /**
- * Cette interface est utilisée pour la pagination
- * avec le composant graphique DataTable de PrimeVue.
- * Elle permet de typer l'évènement émis lorsque
- * l'utilisateur clique sur une colonne pour la trier
- * ou quand il change de page ou le nombre d'éléments
- * affichés par page.
+ * @file lazy-load-event.ts
+ * @description Lazy load event model
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 
 export default interface LazyLoadEvent {

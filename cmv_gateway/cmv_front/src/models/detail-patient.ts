@@ -1,3 +1,9 @@
+/**
+ * @file detail-patient.ts
+ * @description Detail patient model
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
+ */
+
 import type Document from './document'
 
 export default interface DetailPatient {

@@ -1,9 +1,8 @@
 <script setup lang="ts">
 /**
- * Tableau affichant la liste des dossiers administratifs des patients
- * de la clinique avec un système de pagination.
- * La pagination fonctionne en mode "lazy-loading".
- * La logique du "lazy-loading" est gérée dans le composable "useLazyLoad".
+ * @file ListPatients.vue
+ * @description Component for displaying the list of patients
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'

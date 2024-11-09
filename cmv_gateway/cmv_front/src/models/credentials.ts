@@ -1,4 +1,9 @@
-// Types pour les identifiants et le retour de la fonction
+/**
+ * @file credentials.ts
+ * @description Credentials model
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
+ */
+
 export interface Credentials {
   username: string
   password: string

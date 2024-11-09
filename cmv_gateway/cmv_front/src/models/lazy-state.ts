@@ -1,6 +1,7 @@
 /**
- * Interface pour type l'état des valeurs
- * de la pagination.
+ * @file lazy-state.ts
+ * @description Lazy state model
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 
 export default interface LazyState {

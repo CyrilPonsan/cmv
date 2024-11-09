@@ -1,4 +1,9 @@
 <script setup lang="ts">
+/**
+ * @file PatientDetail.vue
+ * @description Component for displaying patient details
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
+ */
 import type DetailPatient from '@/models/detail-patient'
 import Panel from 'primevue/panel'
 import { useI18n } from 'vue-i18n'
