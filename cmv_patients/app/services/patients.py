@@ -2,7 +2,6 @@ from fastapi import Request
 from sqlalchemy.orm import Session
 
 from app.repositories.patients_crud import PgPatientsRepository
-from app.utils.logging_setup import LoggerSetup
 
 
 # Retourne une instance de la classe PgPatientsRepository
@@ -18,7 +17,6 @@ def get_patients_service():
 class PatientsService:
     """Service gérant les opérations liées aux patients"""
 
-    logger = LoggerSetup()
     patients_repository: PgPatientsRepository
 
     def __init__(self, patients_repository: PgPatientsRepository):
@@ -36,9 +34,6 @@ class PatientsService:
         limit: int,
         field: str,
         order: str,
-        user_id: int,
-        role: str,
-        request: Request,
     ) -> dict:
         """
         Récupère la liste paginée de tous les patients
@@ -54,16 +49,11 @@ class PatientsService:
         Returns:
             dict: Dictionnaire contenant les patients et leur nombre total
         """
-        self.logger.write_log(
-            f"{role} - {user_id} - {request.method} - read patients ", request
-        )
         return await self.patients_repository.read_all_patients(
             db=db, page=page, limit=limit, field=field, order=order
         )
 
-    async def detail_patient(
-        self, db: Session, patient_id: int, user_id: int, role: str, request: Request
-    ):
+    async def detail_patient(self, db: Session, patient_id: int):
         """
         Récupère les détails d'un patient spécifique
         Args:
@@ -75,9 +65,7 @@ class PatientsService:
         Returns:
             Patient: Les détails du patient demandé
         """
-        self.logger.write_log(
-            f"{role} - {user_id} - {request.method} - read patients ", request
-        )
+
         return await self.patients_repository.read_patient_by_id(
             db=db, patient_id=patient_id
         )
@@ -90,9 +78,6 @@ class PatientsService:
         limit: int,
         field: str,
         order: str,
-        user_id: int,
-        role: str,
-        request: Request,
     ) -> dict:
         """
         Recherche des patients selon des critères
@@ -109,9 +94,6 @@ class PatientsService:
         Returns:
             dict: Dictionnaire contenant les patients trouvés et leur nombre total
         """
-        self.logger.write_log(
-            f"{role} - {user_id} - {request.method} - search patients ", request
-        )
 
         return await self.patients_repository.search_patients(
             db=db, search=search, page=page, limit=limit, field=field, order=order
