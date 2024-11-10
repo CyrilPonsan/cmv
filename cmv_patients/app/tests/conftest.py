@@ -116,4 +116,16 @@ def patients(db_session):
     patients.append(patient)
     db_session.add_all(patients)
     db_session.commit()
+    patient = (
+        db_session.query(models.Patient).filter(models.Patient.id_patient == 1).first()
+    )
+    documents: list[models.Document] = []
+    for i in range(0, 2):
+        document = models.Document(
+            nom_fichier=f"document_test_{i}", type_document="AUTRE"
+        )
+        documents.append(document)
+    patient.documents = documents
+    db_session.add(patient)
+    db_session.commit()
     return patients
