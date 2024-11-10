@@ -26,7 +26,4 @@ class DocumentsRepository(DocumentsRead):
 # Repository pour accéder aux données des documents
 class PgDocumentsRepository(DocumentsRepository):
     # Fonction de lecture de tous les documents d'un patient
-    async def read_all_patient_documents(
-        self, db: Session, patient_id: int
-    ) -> list[dict]:
-        return db.query(Document).filter(Document.patient_id == patient_id).all()
+    pass

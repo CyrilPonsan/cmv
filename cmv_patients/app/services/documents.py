@@ -21,11 +21,3 @@ class DocumentsService:
 
     def __init__(self, documents_repository: PgDocumentsRepository):
         self.documents_repository = documents_repository
-
-    # Récupère tous les documents d'un patient
-    async def read_all_patient_documents(
-        self, db: Session, patient_id: int, request: Request, payload: InternalPayload
-    ) -> list[dict]:
-        return await self.documents_repository.read_all_patient_documents(
-            db, patient_id
-        )
