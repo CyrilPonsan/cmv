@@ -1,7 +1,7 @@
 /**
- * Ce composable gère la logique de l'affichage de la liste des
- * dossiers administratifs de la clinique Montvert.
- * Les données sont chargées en lazy-loading.
+ * @file use-lazy-load.ts
+ * @description Composable for handling lazy-loading
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 
 import { computed, ref, watch, type Ref, type UnwrapRef } from 'vue'
@@ -9,6 +9,7 @@ import useHttp from './use-http'
 import type LazyLoadEvent from '@/models/lazy-load-event'
 import type LazyState from '@/models/lazy-state'
 
+// Type pour les réponses de l'API
 type APIResponse<T> = {
   data: T[]
   total: number
@@ -28,9 +29,6 @@ type UseLazyLoad<T> = {
   totalRecords: Ref<number>
 }
 
-/**
- * Composable pour gérer la logique de lazy-loading
- */
 const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
   const http = useHttp()
   const result = ref<UnwrapRef<T>[]>([]) as Ref<UnwrapRef<T>[]>

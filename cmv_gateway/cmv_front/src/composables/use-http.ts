@@ -1,3 +1,9 @@
+/**
+ * @file use-http.ts
+ * @description Composable for handling HTTP requests
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
+ */
+
 import { ref, type Ref, onUnmounted } from 'vue'
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios'
 
@@ -12,17 +18,13 @@ interface HttpRequestOptions extends AxiosRequestConfig {
 }
 
 // Interface exposée par le composable
-export interface UseHttp {
+export type UseHttp = {
   isLoading: Ref<boolean>
   error: Ref<string | null>
   sendRequest: <T>(req: HttpRequestOptions, applyData?: (data: T) => void) => Promise<T | undefined>
   axiosInstance: AxiosInstance
 }
 
-/**
- * Composable pour gérer les requêtes HTTP
- * Gère automatiquement le rafraîchissement des tokens et les erreurs d'authentification
- */
 const useHttp = (): UseHttp => {
   const isLoading = ref<boolean>(false)
   const error = ref<string | null>(null)

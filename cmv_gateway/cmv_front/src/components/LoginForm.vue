@@ -1,7 +1,8 @@
 <script setup lang="ts">
 /**
- * formulaire de connexion utilisateur
- * la logique est déplacée dans le composable "useLogin"
+ * @file LoginForm.vue
+ * @description Component for the login form
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 import { Form, Field, type SubmissionHandler, type GenericObject } from 'vee-validate'
 import { useI18n } from 'vue-i18n'
@@ -14,7 +15,7 @@ import type { Credentials } from '@/models/credentials'
 
 const { t } = useI18n()
 
-const { error, initialValues, loginFormSchema, onSubmit } = useLogin()
+const { error, initialValues, isLoading, loginFormSchema, onSubmit } = useLogin()
 
 const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
   onSubmit(values as unknown as Credentials)
@@ -71,7 +72,7 @@ const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
 
     <!-- bouton pour soumettre le formulaire-->
     <div class="w-full flex justify-end m-2">
-      <Button type="submit" label="Se Connecter" />
+      <Button type="submit" label="Se Connecter" :loading="isLoading" />
     </div>
     <Message v-if="error" :closable="true" :severity="'error'">{{
       t('error.connection_failure')

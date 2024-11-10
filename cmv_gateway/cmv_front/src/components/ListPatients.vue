@@ -1,9 +1,8 @@
 <script setup lang="ts">
 /**
- * Tableau affichant la liste des dossiers administratifs des patients
- * de la clinique avec un système de pagination.
- * La pagination fonctionne en mode "lazy-loading".
- * La logique du "lazy-loading" est gérée dans le composable "useLazyLoad".
+ * @file ListPatients.vue
+ * @description Component for displaying the list of patients
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -145,11 +144,12 @@ onMounted(() => getData())
           <Button
             as="router-link"
             :to="`/patient/${slotProps.data.id_patient}`"
-            icon="pi pi-pen-to-square"
+            icon="pi pi-info-circle"
             rounded
             variant="outlined"
             text
-            aria-label="Editer"
+            aria-label="Détails du dossier administratif"
+            v-tooltip.bottom="t('patients.home.tooltip.navigate')"
           />
           <Button
             icon="pi pi-trash"
@@ -158,6 +158,7 @@ onMounted(() => getData())
             variant="outlined"
             text
             aria-label="Supprimer"
+            v-tooltip.bottom="t('patients.home.tooltip.delete')"
             @click="onTrash"
           />
         </span>

@@ -2,7 +2,6 @@ from fastapi import Request
 from sqlalchemy.orm import Session
 
 from app.repositories.patients_crud import PgPatientsRepository
-from app.utils.logging_setup import LoggerSetup
 
 
 # Retourne une instance de la classe PgPatientsRepository
@@ -16,10 +15,16 @@ def get_patients_service():
 
 
 class PatientsService:
-    logger = LoggerSetup()
+    """Service gérant les opérations liées aux patients"""
+
     patients_repository: PgPatientsRepository
 
     def __init__(self, patients_repository: PgPatientsRepository):
+        """
+        Initialise le service avec un repository de patients
+        Args:
+            patients_repository: Repository pour accéder aux données des patients
+        """
         self.patients_repository = patients_repository
 
     async def read_all_patients(
@@ -29,23 +34,38 @@ class PatientsService:
         limit: int,
         field: str,
         order: str,
-        user_id: int,
-        role: str,
-        request: Request,
     ) -> dict:
-        self.logger.write_log(
-            f"{role} - {user_id} - {request.method} - read patients ", request
-        )
+        """
+        Récupère la liste paginée de tous les patients
+        Args:
+            db: Session de base de données
+            page: Numéro de la page
+            limit: Nombre d'éléments par page
+            field: Champ sur lequel trier
+            order: Ordre de tri (asc/desc)
+            user_id: ID de l'utilisateur faisant la requête
+            role: Rôle de l'utilisateur
+            request: Requête HTTP
+        Returns:
+            dict: Dictionnaire contenant les patients et leur nombre total
+        """
         return await self.patients_repository.read_all_patients(
             db=db, page=page, limit=limit, field=field, order=order
         )
 
-    async def detail_patient(
-        self, db: Session, patient_id: int, user_id: int, role: str, request: Request
-    ):
-        self.logger.write_log(
-            f"{role} - {user_id} - {request.method} - read patients ", request
-        )
+    async def detail_patient(self, db: Session, patient_id: int):
+        """
+        Récupère les détails d'un patient spécifique
+        Args:
+            db: Session de base de données
+            patient_id: ID du patient à récupérer
+            user_id: ID de l'utilisateur faisant la requête
+            role: Rôle de l'utilisateur
+            request: Requête HTTP
+        Returns:
+            Patient: Les détails du patient demandé
+        """
+
         return await self.patients_repository.read_patient_by_id(
             db=db, patient_id=patient_id
         )
@@ -58,13 +78,22 @@ class PatientsService:
         limit: int,
         field: str,
         order: str,
-        user_id: int,
-        role: str,
-        request: Request,
     ) -> dict:
-        self.logger.write_log(
-            f"{role} - {user_id} - {request.method} - search patients ", request
-        )
+        """
+        Recherche des patients selon des critères
+        Args:
+            db: Session de base de données
+            search: Terme de recherche
+            page: Numéro de la page
+            limit: Nombre d'éléments par page
+            field: Champ sur lequel trier
+            order: Ordre de tri (asc/desc)
+            user_id: ID de l'utilisateur faisant la requête
+            role: Rôle de l'utilisateur
+            request: Requête HTTP
+        Returns:
+            dict: Dictionnaire contenant les patients trouvés et leur nombre total
+        """
 
         return await self.patients_repository.search_patients(
             db=db, search=search, page=page, limit=limit, field=field, order=order

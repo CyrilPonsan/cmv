@@ -1,7 +1,9 @@
 /**
- * Composable destiné à vérifier la validité des champs du formulaire.
- * Soumet les identifiants à l'API dans le but de connecter l'utilisateur.
+ * @file use-login.ts
+ * @description Composable for handling login
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
+
 import { regexPassword } from '@/libs/regex'
 import { useUserStore } from '@/stores/user'
 import { toTypedSchema } from '@vee-validate/zod'
@@ -37,12 +39,6 @@ const useLogin = (): LoginReturn => {
     password: ''
   }
 
-  /**
-   * Schéma de validation Zod pour le formulaire de connexion
-   * Vérifie que:
-   * - username est un email valide
-   * - password respecte le format requis (défini dans regexPassword)
-   */
   const loginFormSchema = toTypedSchema(
     z.object({
       username: z

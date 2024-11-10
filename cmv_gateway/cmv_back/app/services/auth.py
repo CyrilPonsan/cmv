@@ -148,7 +148,7 @@ class AuthService:
                 detail="Token invalide",
             )
 
-    # Méthode le rafraîchissement du token
+    # Méthode de rafraîchissement du token
     async def refresh(self, request: Request, response: Response) -> dict:
         # On récupère le refresh token au lieu du access token
         refresh_token = request.cookies.get("refresh_token")

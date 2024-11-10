@@ -1,3 +1,9 @@
+/**
+ * @file create-i18n-instance.ts
+ * @description Helper function to create an i18n instance
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
+ */
+
 import { createI18n, type LocaleMessages } from 'vue-i18n'
 import fr from '../locales/fr.json'
 import en from '../locales/en.json'
