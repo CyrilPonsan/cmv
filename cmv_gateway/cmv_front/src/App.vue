@@ -38,7 +38,7 @@ onBeforeMount(() => {
 
 <template>
   <Toast />
-  <main class="min-h-screen flex flex-col justify-between">
+  <div class="min-h-screen flex flex-col justify-between">
     <span>
       <header class="flex justify-end items-center p-2 bg-surface-900 h-[4rem]">
         <nav>
@@ -51,7 +51,7 @@ onBeforeMount(() => {
               size="small"
               text
               rounded
-              v-tooltip.left="t('app.tooltip.home')"
+              v-tooltip.bottom="t('app.tooltip.home')"
             />
             <li>
               <Button
@@ -59,7 +59,7 @@ onBeforeMount(() => {
                 aria-label="theme"
                 text
                 rounded
-                v-tooltip.left="t('app.tooltip.change_mode')"
+                v-tooltip.bottom="t('app.tooltip.change_mode')"
                 @click="userStore.toggleColorScheme()"
               />
             </li>
@@ -84,5 +84,5 @@ onBeforeMount(() => {
         {{ t('app.footer') }}
       </h3>
     </footer>
-  </main>
+  </div>
 </template>

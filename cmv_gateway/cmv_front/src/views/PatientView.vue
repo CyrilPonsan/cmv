@@ -5,6 +5,7 @@
  * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 import DocumentPatient from '@/components/DocumentPatient.vue'
+import DocumentUpload from '@/components/DocumentUpload.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import PatientDetail from '@/components/PatientDetail.vue'
 import useHttp from '@/composables/use-http'
@@ -19,6 +20,20 @@ const http = useHttp()
 const route = useRoute()
 
 const detailPatient = ref<DetailPatient | null>(null)
+const visible = ref(false)
+
+const submitDocument = (formData: FormData) => {
+  // Log the entries of formData to see the actual content
+  for (const pair of formData.entries()) {
+    console.log(pair[0], pair[1])
+  }
+}
+
+const toggleVisible = () => {
+  console.log('toggling...')
+
+  visible.value = !visible.value
+}
 
 onBeforeMount(() => {
   const applyData = (data: DetailPatient) => {
@@ -32,7 +47,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <main class="min-w-screen min-h-screen flex flex-col gap-y-8">
+  <main class="min-w-screen min-h-[80vh] flex flex-col gap-y-8">
     <section>
       <PageHeader
         :title="t('patients.home.title')"
@@ -55,7 +70,12 @@ onBeforeMount(() => {
           <h2 class="text-lg font-bold">
             {{ t('patients.detail.documents.uploaded_documents') }}
           </h2>
-          <Button label="Ajouter un document" icon="pi pi-paperclip " outlined />
+          <Button
+            label="Ajouter un document"
+            icon="pi pi-paperclip "
+            outlined
+            @click="toggleVisible"
+          />
         </span>
         <div v-if="detailPatient && detailPatient.documents.length > 0">
           <DocumentPatient
@@ -73,4 +93,10 @@ onBeforeMount(() => {
       </article>
     </section>
   </main>
+  <DocumentUpload
+    :visible="visible"
+    :fullname="`${detailPatient?.prenom} ${detailPatient?.nom}`"
+    @update:visible="visible = $event"
+    @upload:submit="submitDocument"
+  />
 </template>
