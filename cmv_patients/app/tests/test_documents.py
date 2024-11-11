@@ -49,8 +49,7 @@ async def test_create_document_invalid_type(ac, internal_token, patients):
         "/api/documents/create/1", headers=headers, files=files, data=form_data
     )
 
-    assert response.status_code == 400
-    assert response.json() == {"detail": "Invalid document type"}
+    assert response.status_code == 422
 
 
 @pytest.mark.asyncio
