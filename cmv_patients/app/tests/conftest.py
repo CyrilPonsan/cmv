@@ -122,7 +122,8 @@ def patients(db_session):
     documents: list[models.Document] = []
     for i in range(0, 2):
         document = models.Document(
-            nom_fichier=f"document_test_{i}", type_document="AUTRE"
+            nom_fichier=f"document_test_{i}",
+            type_document="MISCELLANEOUS",
         )
         documents.append(document)
     patient.documents = documents

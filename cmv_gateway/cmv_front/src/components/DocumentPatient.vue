@@ -27,7 +27,9 @@ const { document, documentIndex } = defineProps<Props>()
     <template #subtitle>
       <p class="text-sm italic mb-2">{{ d(new Date(document.created_at), 'short') }}</p>
     </template>
-    <template #content>{{ document.type_document }}</template>
+    <template #content>{{
+      t(`patients.detail.documents.document_types.${document.type_document}`)
+    }}</template>
     <template #footer>
       <span class="flex gap-x-4 mt-1">
         <Button :label="t('patients.detail.documents.download')" icon="pi pi-download" />

@@ -25,14 +25,14 @@ class Civilite(enum.Enum):
 
 
 class DocumentType(enum.Enum):
-    ATTESTATION_CARTE_VITALE = "Attestation de carte vitale"
-    AUTORISATION_DE_SOINS = "Autorisation de soins"
-    AUTORISATION_DE_TRAITEMENT = "Autorisation de traitement"
-    AUTORISATION_DE_VISITE = "Autorisation de visite"
-    AUTORISATION_DE_REMISE_A_NUIT = "Autorisation de remise à nuit"
-    AUTORISATION_DE_DEPART = "Autorisation de départ"
-    AUTORISATION_DE_DEBRANCHEMENT = "Autorisation de débranchement"
-    AUTRE = "Divers"
+    HEALTH_INSURANCE_CARD_CERTIFICATE = "health_insurance_card_certificate"
+    AUTHORIZATION_FOR_CARE = "authorization_for_care"
+    AUTHORIZATION_FOR_TREATMENT = "authorization_for_treatment"
+    AUTHORIZATION_FOR_VISIT = "authorization_for_visit"
+    AUTHORIZATION_FOR_OVERNIGHT_STAY = "authorization_for_overnight_stay"
+    AUTHORIZATION_FOR_DEPARTURE = "authorization_for_departure"
+    AUTHORIZATION_FOR_DISCONNECTION = "authorization_for_disconnection"
+    MISCELLANEOUS = "miscellaneous"
 
 
 class Admission(Base):
@@ -52,7 +52,7 @@ class Document(Base):
     id_document: Mapped[int] = mapped_column(primary_key=True, index=True)
     nom_fichier: Mapped[str] = mapped_column(String, nullable=False, unique=True)
     type_document: Mapped[DocumentType] = mapped_column(
-        Enum(DocumentType), default=DocumentType.AUTRE, nullable=False
+        Enum(DocumentType), default=DocumentType.MISCELLANEOUS, nullable=False
     )
     created_at: Mapped[DateTime] = mapped_column(DateTime(), server_default=func.now())
 

@@ -27,21 +27,4 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
 import Card from 'primevue/card'
-
-/* interface Props {
-  chambre: Chambre
-}
-
-const props = defineProps<Props>()
-
-const style = computed(() => {
-  const baseStyle =
-    'text-xl font-bold p-4 rounded-tl-xl rounded-tr-xl flex justify-between text-neutral-content w-full'
-  switch (props.chambre.status) {
-    case 'occupée':
-      return baseStyle + ' bg-primary'
-    default:
-      return baseStyle + ' bg-secondary'
-  }
-}) */
 </script>

@@ -67,7 +67,17 @@
         "document": "Document",
         "download": "Télécharger",
         "delete": "Supprimer",
-        "no_document": "Aucun document trouvé."
+        "no_document": "Aucun document trouvé.",
+        "document_types": {
+          "health_insurance_card_certificate": "Attestation de carte vitale",
+          "authorization_for_care": "Autorisation de soins",
+          "authorization_for_treatment": "Autorisation de traitement",
+          "authorization_for_visit": "Autorisation de visite",
+          "authorization_for_overnight_stay": "Autorisation de remise à nuit",
+          "authorization_for_departure": "Autorisation de départ",
+          "authorization_for_disconnection": "Autorisation de débranchement",
+          "miscellaneous": "Divers"
+        }
       },
       "h2": "Informations",
       "panel": {

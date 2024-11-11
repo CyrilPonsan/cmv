@@ -13,7 +13,7 @@ import { useUserStore } from '@/stores/user'
 // Interface pour les options de requête HTTP étendant AxiosRequestConfig
 interface HttpRequestOptions extends AxiosRequestConfig {
   path: string
-  body?: any
+  body?: any | FormData
   headers?: Record<string, string>
 }
 
@@ -102,11 +102,18 @@ const useHttp = (): UseHttp => {
     error.value = null
 
     try {
-      const { method = 'get', path, body, ...config } = req
+      const { method = 'get', path, body, headers = {}, ...config } = req
+
+      // Si le body est une instance de FormData, on laisse axios définir automatiquement
+      // le Content-Type comme multipart/form-data
+      const requestHeaders =
+        body instanceof FormData ? headers : { 'Content-Type': 'application/json', ...headers }
+
       const response: AxiosResponse<T> = await axiosInstance.request({
         method,
         url: path,
         data: body,
+        headers: requestHeaders,
         ...config
       })
 
