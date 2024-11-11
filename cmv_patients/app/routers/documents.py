@@ -31,12 +31,9 @@ async def create_document(
     db=Depends(get_db),
 ):
     logger.write_log(
-        f"{payload['role']} - {payload['user_id']} - {request.method} - search patients",
+        f"{payload['role']} - {payload['user_id']} - {request.method} - upload - {patient_id}",
         request,
     )
-    print(f"FILENAME: {file.filename}")
-    print(f"DOCUMENT TYPE: {data}")
-
     contents = await file.read()
     with open(f"uploaded_{file.filename}", "wb") as f:
         f.write(contents)
