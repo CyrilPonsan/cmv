@@ -17,3 +17,5 @@ pytest-asyncio
 pytest-mock
 pytest-httpx
 fakeredis
+aiohttp
+python-multipart

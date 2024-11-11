@@ -18,7 +18,7 @@ def check_authorization(token: Annotated[str, Depends(oauth2_scheme)]) -> dict:
         payload: dict = jwt.decode(token, SECRET_KEY or "", algorithms=[ALGORITHM])
     except JWTError:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_418_IM_A_TEAPOT,
             detail="not_authorized",
             headers={"WWW-Authenticate": "Bearer"},
         )
