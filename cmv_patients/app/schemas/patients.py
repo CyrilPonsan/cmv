@@ -106,3 +106,7 @@ class DetailPatient(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class DocumentData(BaseModel):
+    type_document: DocumentType

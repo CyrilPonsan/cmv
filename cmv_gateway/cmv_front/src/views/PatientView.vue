@@ -23,10 +23,19 @@ const detailPatient = ref<DetailPatient | null>(null)
 const visible = ref(false)
 
 const submitDocument = (formData: FormData) => {
-  // Log the entries of formData to see the actual content
-  for (const pair of formData.entries()) {
-    console.log(pair[0], pair[1])
-  }
+  http.sendRequest<any>(
+    {
+      path: `/patients/upload/documents/create/${route.params.id}`,
+      method: 'POST',
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    },
+    (data: any) => {
+      console.log(data)
+    }
+  )
 }
 
 const toggleVisible = () => {
