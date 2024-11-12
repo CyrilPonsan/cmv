@@ -59,7 +59,10 @@ const mountComponent = (locale = 'fr') => {
           i18n,
           router
         ],
-        stubs: ['RouterView']
+        stubs: ['RouterView'],
+        mocks: {
+          t: (key: string) => key // Add this mock for t function
+        }
       }
     })
   }

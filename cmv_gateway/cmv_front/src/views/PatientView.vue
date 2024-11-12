@@ -4,7 +4,7 @@
  * @description Patient view
  * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
-import DocumentPatient from '@/components/DocumentPatient.vue'
+import DocumentsList from '@/components/DocumentsList.vue'
 import DocumentUpload from '@/components/DocumentUploadDialog.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import PatientDetail from '@/components/PatientDetail.vue'
@@ -76,13 +76,15 @@ onBeforeMount(() => getDocuments())
       />
     </section>
     <!-- Detail patient -->
-    <section class="grid grid-cols-3 gap-x-8">
+    <section class="grid grid-cols-4 2xl:grid-cols-3 gap-x-8">
       <article v-if="detailPatient" class="col-span-2 p-4 rounded-lg">
         <!-- Title -->
-        <div class="flex justify-between items-center mb-4">
+        <div
+          class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-y-2 mb-4"
+        >
           <h2 class="text-lg font-bold">{{ t('patients.detail.h2') }}</h2>
           <!-- Actions -->
-          <span class="flex gap-x-2 items-center">
+          <span class="flex gap-x-4 items-center">
             <Button :label="t('patients.detail.button.create_admission')" icon="pi pi-plus" />
             <Button :label="t('patients.detail.button.edit')" icon="pi pi-pencil" severity="info" />
           </span>
@@ -91,34 +93,8 @@ onBeforeMount(() => getDocuments())
         <PatientDetail :detail-patient="detailPatient" />
       </article>
       <!-- Uploaded documents -->
-      <article class="col-span-1 p-4">
-        <!-- Title -->
-        <span class="flex justify-between items-center mb-4">
-          <h2 class="text-lg font-bold">
-            {{ t('patients.detail.documents.uploaded_documents') }}
-          </h2>
-          <!-- Actions -->
-          <Button
-            label="Ajouter un document"
-            icon="pi pi-paperclip "
-            outlined
-            @click="toggleVisible"
-          />
-        </span>
-        <!-- Documents -->
-        <div v-if="detailPatient && detailPatient.documents.length > 0">
-          <DocumentPatient
-            v-for="(document, documentIndex) of detailPatient.documents"
-            class="mb-4"
-            :key="document.id_document"
-            :documentIndex="documentIndex"
-            :document="document"
-          />
-        </div>
-        <div v-else class="w-full h-[75%] flex justify-start items-center gap-x-4">
-          <i class="pi pi-exclamation-circle text-5xl" />
-          <p>{{ t('patients.detail.documents.no_document') }}</p>
-        </div>
+      <article v-if="detailPatient" class="col-span-2 2xl:col-span-1 p-4">
+        <DocumentsList :documents="detailPatient.documents" @toggle-visible="toggleVisible" />
       </article>
     </section>
   </main>

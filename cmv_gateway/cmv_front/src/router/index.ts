@@ -35,6 +35,12 @@ const router = createRouter({
         else next()
       }
     },
+    //  page de problème serveur
+    {
+      path: '/network-issue',
+      name: 'network-issue',
+      component: () => import('../views/NetworkIssue.vue')
+    },
     //  formulaire de connexion
     {
       path: '/accueil',
