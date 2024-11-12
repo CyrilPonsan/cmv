@@ -38,9 +38,10 @@ async def create_document(
     with open(f"uploaded_{file.filename}", "wb") as f:
         f.write(contents)
 
-    return await documents_service.create_document(
+    await documents_service.create_document(
         db=db,
         file_contents=contents,
         type_document=data,
         patient_id=patient_id,
     )
+    return {"success": True, "message": "Le document a été téléversé avec succès."}

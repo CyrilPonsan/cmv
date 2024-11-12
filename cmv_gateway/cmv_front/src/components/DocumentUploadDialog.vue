@@ -6,12 +6,16 @@ import Select from 'primevue/select'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-interface DocumentType {
+type DocumentType = {
   label: string
   value: string
 }
 
-const { visible, fullname } = defineProps<{ visible: boolean; fullname: string }>()
+const { fullname, loading, visible } = defineProps<{
+  fullname: string
+  loading: boolean
+  visible: boolean
+}>()
 const { t } = useI18n()
 
 const documentTypes = ref<DocumentType[]>([
@@ -136,7 +140,13 @@ const emit = defineEmits<{
       </FileUpload>
 
       <span class="w-full flex items-center gap-x-4">
-        <Button class="w-full" label="Téléverser" type="submit" :disabled="!isValid" />
+        <Button
+          class="w-full"
+          label="Téléverser"
+          type="submit"
+          :disabled="!isValid"
+          :loading="loading"
+        />
         <Button
           class="w-full"
           label="Annuler"
