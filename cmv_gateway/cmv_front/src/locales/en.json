@@ -1,6 +1,11 @@
 {
   "app": {
-    "footer": "Wazaa"
+    "footer": "Wazaa",
+    "tooltip": {
+      "home": "Home",
+      "change_mode": "Change mode",
+      "logout": "Sign out"
+    }
   },
   "login": {
     "h1": "Clinique Montvert",
