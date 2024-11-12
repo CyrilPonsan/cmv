@@ -1,23 +1,36 @@
 /**
  * @file use-http.ts
- * @description Composable for handling HTTP requests
+ * @description Composable pour gérer les requêtes HTTP avec gestion automatique des tokens
  * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 
-import { ref, type Ref, onUnmounted } from 'vue'
+import { ref, type Ref, onUnmounted, watch } from 'vue'
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios'
 
 import { AUTH } from '@/libs/urls'
 import { useUserStore } from '@/stores/user'
+import { useToast } from 'primevue/usetoast'
+import { useRouter } from 'vue-router'
 
-// Interface pour les options de requête HTTP étendant AxiosRequestConfig
+/**
+ * Interface étendant AxiosRequestConfig pour ajouter des options spécifiques
+ * @property path - Chemin de la requête
+ * @property body - Corps de la requête (optionnel)
+ * @property headers - En-têtes HTTP personnalisés (optionnel)
+ */
 interface HttpRequestOptions extends AxiosRequestConfig {
   path: string
   body?: any | FormData
   headers?: Record<string, string>
 }
 
-// Interface exposée par le composable
+/**
+ * Interface exposée par le composable useHttp
+ * @property isLoading - État de chargement de la requête
+ * @property error - Message d'erreur éventuel
+ * @property sendRequest - Fonction pour envoyer une requête HTTP
+ * @property axiosInstance - Instance Axios configurée
+ */
 export type UseHttp = {
   isLoading: Ref<boolean>
   error: Ref<string | null>
@@ -25,18 +38,29 @@ export type UseHttp = {
   axiosInstance: AxiosInstance
 }
 
+/**
+ * Composable pour gérer les requêtes HTTP
+ * Gère automatiquement le rafraîchissement des tokens et les erreurs
+ */
 const useHttp = (): UseHttp => {
+  const toast = useToast()
+  const router = useRouter()
   const isLoading = ref<boolean>(false)
   const error = ref<string | null>(null)
   const userStore = useUserStore()
 
-  // Création de l'instance axios avec la configuration de base
+  // Configuration de base de l'instance Axios
   const axiosInstance = axios.create({
     withCredentials: true,
     baseURL: AUTH
   })
 
-  // Intercepteur pour gérer automatiquement le rafraîchissement des tokens
+  /**
+   * Intercepteur de réponse pour gérer:
+   * - Les erreurs réseau
+   * - Le rafraîchissement automatique des tokens
+   * - La déconnexion en cas d'échec d'authentification
+   */
   const responseInterceptor = axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
@@ -48,7 +72,12 @@ const useHttp = (): UseHttp => {
       console.log('Response interceptor - Error status:', error.response.status)
       console.log('Original request URL:', originalRequest.url)
 
-      // Si c'est une erreur sur le refresh token lui-même, on rejette directement
+      // Redirection en cas d'erreur serveur
+      if (error.response.status >= 500) {
+        router.push({ name: 'network-issue' })
+      }
+
+      // Gestion des erreurs de rafraîchissement de token
       if (
         (error.response.status === 403 || error.response.status === 401) &&
         originalRequest.url === '/auth/refresh'
@@ -58,7 +87,7 @@ const useHttp = (): UseHttp => {
         return Promise.reject(error)
       }
 
-      // Pour les autres erreurs 401/403, on tente de rafraîchir le token
+      // Tentative de rafraîchissement du token pour les autres erreurs d'authentification
       if (
         (error.response.status === 403 || error.response.status === 401) &&
         !originalRequest._retry
@@ -83,13 +112,13 @@ const useHttp = (): UseHttp => {
     }
   )
 
-  // Nettoyage de l'intercepteur lors de la destruction du composant
+  // Nettoyage des intercepteurs à la destruction du composant
   onUnmounted(() => {
     axiosInstance.interceptors.response.eject(responseInterceptor)
   })
 
   /**
-   * Fonction principale pour envoyer des requêtes HTTP
+   * Envoie une requête HTTP avec gestion des erreurs et du chargement
    * @param req - Options de la requête
    * @param applyData - Callback optionnel pour traiter les données reçues
    * @returns Les données de la réponse ou undefined si un callback est fourni
@@ -104,8 +133,7 @@ const useHttp = (): UseHttp => {
     try {
       const { method = 'get', path, body, headers = {}, ...config } = req
 
-      // Si le body est une instance de FormData, on laisse axios définir automatiquement
-      // le Content-Type comme multipart/form-data
+      // Gestion automatique du Content-Type pour FormData
       const requestHeaders =
         body instanceof FormData ? headers : { 'Content-Type': 'application/json', ...headers }
 
@@ -130,7 +158,22 @@ const useHttp = (): UseHttp => {
     }
   }
 
-  // Retourne l'interface publique du composable
+  /**
+   * Observe les changements d'erreur pour afficher des notifications
+   */
+  watch(error, (newError) => {
+    if (newError && newError.length > 0) {
+      toast.add({
+        summary: 'Erreur',
+        detail: error.value,
+        severity: 'error',
+        life: 3000,
+        closable: true
+      })
+    }
+  })
+
+  // Interface publique du composable
   return { isLoading, error, sendRequest, axiosInstance }
 }
 

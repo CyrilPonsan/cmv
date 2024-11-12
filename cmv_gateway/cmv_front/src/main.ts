@@ -10,7 +10,7 @@ import progressBar from './includes/progress-bar'
 import 'nprogress/nprogress.css'
 import PrimeVue from 'primevue/config'
 import 'primeicons/primeicons.css'
-import Aura from '@primevue/themes/aura'
+import Lara from '@primevue/themes/lara'
 import ToastService from 'primevue/toastservice'
 import i18n from './includes/i18n'
 import Tooltip from 'primevue/tooltip'
@@ -21,7 +21,7 @@ const app = createApp(App)
 app.use(i18n)
 app.use(PrimeVue, {
   theme: {
-    preset: Aura,
+    preset: Lara,
     options: {
       prefix: 'p',
       darkModeSelector: '.my-app-dark',
