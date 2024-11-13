@@ -1,4 +1,3 @@
-from fastapi import Request
 from sqlalchemy.orm import Session
 
 from app.repositories.patients_crud import PgPatientsRepository

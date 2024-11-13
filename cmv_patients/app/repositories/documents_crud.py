@@ -2,28 +2,37 @@ from abc import ABC, abstractmethod
 
 from sqlalchemy.orm import Session
 
-from app.sql.models import Document
+from app.sql.models import Document, DocumentType
 
 
 # Interface pour les opérations liées aux documents
 class DocumentsRead(ABC):
     @abstractmethod
-    async def read_all_patient_documents(
-        self, db: Session, patient_id: int
-    ) -> list[dict]:
+    async def create_document(
+        self, db: Session, file_name: str, type_document: DocumentType, patient_id: int
+    ) -> dict:
         pass
 
 
 # Interface pour les opérations liées aux documents
 class DocumentsRepository(DocumentsRead):
     @abstractmethod
-    async def read_all_patient_documents(
-        self, db: Session, patient_id: int
-    ) -> list[dict]:
+    async def create_document(
+        self, db: Session, file_name: str, type_document: DocumentType, patient_id: int
+    ) -> dict:
         pass
 
 
 # Repository pour accéder aux données des documents
 class PgDocumentsRepository(DocumentsRepository):
-    # Fonction de lecture de tous les documents d'un patient
-    pass
+    # Méthode pour créer un document
+    async def create_document(
+        self, db: Session, file_name: str, type_document: DocumentType, patient_id: int
+    ) -> Document:
+        document = Document(
+            nom_fichier=file_name, type_document=type_document, patient_id=patient_id
+        )
+        db.add(document)
+        db.commit()
+        db.refresh(document)
+        return {"message": "Document créé avec succès"}

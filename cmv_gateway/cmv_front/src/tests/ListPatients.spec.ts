@@ -143,6 +143,12 @@ const ToastStub = defineComponent({
   template: '<div class="p-toast"></div>'
 })
 
+// Ajouter le mock pour la directive tooltip
+const tooltip = {
+  mounted: () => {},
+  unmounted: () => {}
+}
+
 describe('ListPatients', () => {
   let wrapper: any
 
@@ -172,7 +178,7 @@ describe('ListPatients', () => {
           DataTable: DataTableStub,
           Column: ColumnStub,
           InputText: InputTextStub,
-          Toast: ToastStub // Ajouter le stub de Toast
+          Toast: ToastStub
         },
         plugins: [
           i18n,
@@ -184,6 +190,9 @@ describe('ListPatients', () => {
             }
           ]
         ],
+        directives: {
+          tooltip
+        },
         mocks: {
           d: (date: Date) => date.toLocaleDateString()
         }

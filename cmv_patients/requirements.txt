@@ -17,3 +17,6 @@ pytest-asyncio
 pytest-mock
 pytest-httpx
 fakeredis
+python-multipart
+boto3
+botocore

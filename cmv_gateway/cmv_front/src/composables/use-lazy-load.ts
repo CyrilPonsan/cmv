@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * @file use-lazy-load.ts
- * @description Composable for handling lazy-loading
+ * @description Composable pour gérer le chargement paresseux (lazy loading) des données
+ * avec pagination, tri et recherche
  * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 
@@ -9,26 +11,38 @@ import useHttp from './use-http'
 import type LazyLoadEvent from '@/models/lazy-load-event'
 import type LazyState from '@/models/lazy-state'
 
-// Type pour les réponses de l'API
+/**
+ * Type définissant la structure de la réponse de l'API
+ * @template T - Type générique pour les données
+ */
 type APIResponse<T> = {
-  data: T[]
-  total: number
+  data: T[] // Tableau des données
+  total: number // Nombre total d'enregistrements
 }
 
-// Interface exposée par le composable
+/**
+ * Interface exposant les fonctionnalités du composable
+ * @template T - Type générique pour les données
+ */
 type UseLazyLoad<T> = {
-  getData: () => void
-  lazyState: Ref<LazyState>
-  loading: Ref<boolean>
-  onFilterChange: (event: Event) => void
-  onLazyLoad: (event: LazyLoadEvent) => void
-  onResetFilter: () => void
-  onSort: (event: LazyLoadEvent) => void
-  result: Ref<UnwrapRef<T>[]>
-  search: Ref<string>
-  totalRecords: Ref<number>
+  getData: () => void // Fonction pour récupérer les données
+  lazyState: Ref<LazyState> // État de la pagination
+  loading: Ref<boolean> // État du chargement
+  onFilterChange: (event: Event) => void // Gestionnaire de changement de filtre
+  onLazyLoad: (event: LazyLoadEvent) => void // Gestionnaire de lazy loading
+  onResetFilter: () => void // Réinitialisation du filtre
+  onSort: (event: LazyLoadEvent) => void // Gestionnaire de tri
+  result: Ref<UnwrapRef<T>[]> // Résultats
+  search: Ref<string> // Terme de recherche
+  totalRecords: Ref<number> // Nombre total d'enregistrements
 }
 
+/**
+ * Composable pour gérer le chargement paresseux des données
+ * @template T - Type générique pour les données
+ * @param url - URL de l'API à interroger
+ * @returns Interface UseLazyLoad
+ */
 const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
   const http = useHttp()
   const result = ref<UnwrapRef<T>[]>([]) as Ref<UnwrapRef<T>[]>
@@ -36,15 +50,18 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
   let timer: NodeJS.Timeout | null = null
   const search = ref<string>('')
 
-  // État de la pagination
+  // Configuration initiale de l'état de pagination
   const lazyState = ref<LazyState>({
-    first: 0,
-    rows: 10,
-    sortField: 'nom',
-    sortOrder: 1
+    first: 0, // Premier enregistrement
+    rows: 10, // Nombre d'enregistrements par page
+    sortField: 'nom', // Champ de tri par défaut
+    sortOrder: 1 // Ordre de tri (1: ascendant, -1: descendant)
   })
 
-  // Gestion de l'événement de filtre + debounce
+  /**
+   * Gère le changement de filtre avec debounce
+   * @param event - Événement de changement
+   */
   const onFilterChange = (event: Event) => {
     const element = event.target as HTMLInputElement
     if (timer) {
@@ -59,23 +76,30 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     }, 300)
   }
 
-  // Réinitialise le filtre global
+  /**
+   * Réinitialise le filtre de recherche
+   */
   const onResetFilter = () => {
     search.value = ''
   }
 
-  // Gestion de l'événement de lazy-loading
+  /**
+   * Gère l'événement de chargement paresseux
+   * @param event - Événement de lazy loading
+   */
   const onLazyLoad = (event: LazyLoadEvent) => {
     lazyState.value = {
       first: event.first,
       rows: event.rows,
       sortField: event.sortField ?? 'nom',
-      sortOrder: event.sortOrder as 1 | -1 // Force le type ici
+      sortOrder: event.sortOrder as 1 | -1
     }
   }
 
-  // Gestion de l'événement de tri des colonnes.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  /**
+   * Gère l'événement de tri
+   * @param _event - Événement de tri
+   */
   const onSort = (_event: LazyLoadEvent) => {
     lazyState.value = {
       ...lazyState.value,
@@ -83,15 +107,14 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     }
   }
 
-  //  Mise en cache du numéro de la page pour optimiser les performances de rendu
+  // Calcul du numéro de page actuel
   const page = computed(() => lazyState.value.first / lazyState.value.rows + 1)
 
-  //  Mise en cache de l'ordre de tri pour optimiser les performances de rendu
+  // Conversion de l'ordre de tri en format API
   const direction = computed(() => (lazyState.value.sortOrder === 1 ? 'asc' : 'desc'))
 
   /**
-   * Retourne la liste des dossiers administratifs des patients de la clinique
-   * Montvert.
+   * Récupère les données depuis l'API
    */
   const getData = () => {
     const applyData = (data: APIResponse<T>) => {
@@ -106,7 +129,10 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     )
   }
 
-  // Retourne les données filtrées en fonction de la chaîne de caractères passée en paramètre
+  /**
+   * Recherche des données filtrées
+   * @param filter - Terme de recherche
+   */
   const searchData = (filter: string) => {
     const applyData = (data: APIResponse<T>) => {
       result.value = data.data as UnwrapRef<T>[]
@@ -123,7 +149,7 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     )
   }
 
-  //  Envoie une requête à l"API lorsque l'une des valeurs liées à la pagination ou au filtre est mise à jour
+  // Observe les changements d'état pour déclencher les requêtes
   watch([lazyState, search], () => {
     console.log('watching...')
 
@@ -134,7 +160,7 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     }
   })
 
-  // Retourne l'interface publique du composable
+  // Interface publique du composable
   return {
     getData,
     lazyState,

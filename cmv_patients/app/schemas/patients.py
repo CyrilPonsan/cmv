@@ -3,6 +3,8 @@ import re
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
+from app.sql.models import DocumentType
+
 from .regular_expression import generic_pattern
 
 
@@ -71,8 +73,11 @@ class SearchPatientsParams(PatientsParams):
 class DocumentsListItem(BaseModel):
     id_document: int
     nom_fichier: str
-    type_document: str
+    type_document: DocumentType
     created_at: datetime
+
+    class Config:
+        from_attributes = True
 
 
 # Modèle utilisé pour retourner les informations d'un patient
@@ -101,3 +106,7 @@ class DetailPatient(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class DocumentData(BaseModel):
+    type_document: DocumentType
