@@ -1,0 +1,10 @@
+.venv
+.env
+app/.env
+app/__pycache__
+app/*/__pycache__
+app/*/*/__pycache__
+alembic/__pycache__
+alembic/*/__pycache__
+app/dist
+app/logs

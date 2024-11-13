@@ -1,0 +1,99 @@
+{
+  "app": {
+    "footer": "Projet de formation : toute ressemblance avec une clinique déjà existente ne serait que pure coïncidence.",
+    "tooltip": {
+      "home": "Accueil",
+      "change_mode": "Changer de mode",
+      "logout": "Déconnexion"
+    }
+  },
+  "columns": {
+    "patientsList": {
+      "civilite": "Civilité",
+      "lastname": "Nom",
+      "firstname": "Prénom",
+      "birth_date": "Date de naissance",
+      "phone_number": "Numéro de téléphone",
+      "email": "Email"
+    }
+  },
+  "components": {
+    "documentsList": {
+      "uploaded_documents": "Documents téléversés",
+      "document": "Document",
+      "download": "Télécharger",
+      "delete": "Supprimer",
+      "no_document": "Aucun document trouvé.",
+      "document_types": {
+        "health_insurance_card_certificate": "Attestation de carte vitale",
+        "authorization_for_care": "Autorisation de soins",
+        "authorization_for_treatment": "Autorisation de traitement",
+        "authorization_for_visit": "Autorisation de visite",
+        "authorization_for_overnight_stay": "Autorisation de remise à nuit",
+        "authorization_for_departure": "Autorisation de départ",
+        "authorization_for_disconnection": "Autorisation de débranchement",
+        "miscellaneous": "Divers"
+      }
+    }
+  },
+  "error": {
+    "error": "Erreur",
+    "no_email": "Une adresse email est requise",
+    "not_valid_email": "Adresse email non valide",
+    "no_password": "Un mot de passe est requis",
+    "not_valid_password": "Le mot de passe n'est pas valide",
+    "connection_failure": "La connexion a échoué...",
+    "credentials": "Identifiant ou mot de passe incorrect",
+    "network_issue": "Un problème est survenu, réessayez plus tard..."
+  },
+  "login": {
+    "h1": "Clinique Montvert",
+    "labelEmail": "Email",
+    "labelPassword": "Mot de passe"
+  },
+  "pagination": {
+    "to": "à",
+    "from": "de"
+  },
+  "patients": {
+    "home": {
+      "description": "Liste des patients",
+      "placeholder": {
+        "search": "Rechercher un patient...",
+        "empty": "Aucun patient trouvé"
+      },
+      "title": "Espace administratif",
+      "toasters": {
+        "delete": {
+          "summary": "Suppression du patient",
+          "detail": "Cette fonctionnalité n'est pas encore implémentée..."
+        }
+      },
+      "tooltip": {
+        "delete": "Supprimer",
+        "navigate": "Accéder au dossier administratif"
+      },
+      "total_patients": "Aucun patient | Un patient | {n} patients"
+    },
+    "detail": {
+      "description": "Dossier administratif",
+      "button": {
+        "create_admission": "Créer une admission",
+        "edit": "Modifier"
+      },
+      "documents": {},
+      "h2": "Informations",
+      "panel": {
+        "fullname": "Nom complet",
+        "birth_date": "Date de naissance",
+        "address": "Adresse",
+        "contact": "Contacts",
+        "not_provided": "Non renseigné"
+      }
+    }
+  },
+  "success": {
+    "connection_success": "Connexion réussie",
+    "connection_success_detail": "Bienvenue sur le système d'information de la clinique Montvert !"
+  }
+}
