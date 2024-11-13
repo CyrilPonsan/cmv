@@ -28,7 +28,7 @@ const { t } = useI18n()
 
 <template>
   <!-- En-tête avec titre et bouton d'ajout -->
-  <span class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-y-2 mb-4">
+  <span class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-y-2 mb-4">
     <h2 class="text-lg font-bold">
       {{ t('components.documentsList.uploaded_documents') }}
     </h2>

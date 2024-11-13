@@ -6,6 +6,7 @@
  */
 
 // Import des dépendances nécessaires
+import { AUTH } from '@/libs/urls'
 import type Document from '@/models/document' // Type pour les documents
 import Button from 'primevue/button' // Composant Button de PrimeVue
 import Card from 'primevue/card' // Composant Card de PrimeVue
@@ -23,9 +24,13 @@ const { d, t } = useI18n()
 // Récupération des props
 const { document, documentIndex } = defineProps<Props>()
 
-const emit = defineEmits<{
-  (e: 'download-document', documentId: number): void // Event pour télécharger un document
-}>()
+/**
+ * Télécharge un document en ouvrant un nouvel onglet
+ * @param documentId - L'ID du document à télécharger
+ */
+const downloadDocument = async (documentId: number) => {
+  window.open(`${AUTH}/patients/documents/download/${documentId}`, '_blank')
+}
 </script>
 
 <template>
@@ -52,7 +57,7 @@ const emit = defineEmits<{
           :label="t('components.documentsList.download')"
           icon="pi pi-download"
           size="small"
-          @click="emit('download-document', document.id_document)"
+          @click="downloadDocument(document.id_document)"
         />
         <!-- Bouton de suppression -->
         <Button

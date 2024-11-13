@@ -4,6 +4,8 @@
  * @description Composant de dialogue pour téléverser des documents administratifs
  * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
+import useHttp from '@/composables/use-http'
+import type SuccessWithMessage from '@/models/success-with-message'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import FileUpload from 'primevue/fileupload'
@@ -18,11 +20,12 @@ type DocumentType = {
 }
 
 // Props du composant
-const { fullname, loading, visible } = defineProps<{
+const { fullname, patientId, visible } = defineProps<{
   fullname: string // Nom complet du patient
-  loading: boolean // État de chargement
+  patientId: number // Identifiant du patient
   visible: boolean // Visibilité du dialogue
 }>()
+const { isLoading, sendRequest } = useHttp()
 const { t } = useI18n()
 
 // Liste des types de documents disponibles
@@ -75,7 +78,25 @@ const onSubmit = (): void => {
     formData.append('document_type', selectedDocumentType.value.value)
     formData.append('file', selectedFile.value)
 
-    emit('upload:submit', formData)
+    const applyData = (data: SuccessWithMessage) => {
+      if (data.success) {
+        emit('update:visible', false)
+        selectedFile.value = null
+        selectedDocumentType.value = null
+        emit('refresh', data.message)
+      }
+    }
+    sendRequest<any>(
+      {
+        path: `/patients/upload/documents/create/${patientId}`,
+        method: 'POST',
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      },
+      applyData
+    )
   }
 }
 
@@ -93,7 +114,7 @@ const onSelect = (event: any): void => {
 // Events émis par le composant
 const emit = defineEmits<{
   (e: 'update:visible', value: boolean): void // Mise à jour de la visibilité
-  (e: 'upload:submit', form: FormData): void // Soumission du formulaire
+  (e: 'refresh', message: string): void // Rafraîchir la page
 }>()
 </script>
 
@@ -171,7 +192,7 @@ const emit = defineEmits<{
           label="Téléverser"
           type="submit"
           :disabled="!isValid"
-          :loading="loading"
+          :loading="isLoading"
         />
         <Button
           class="w-full"

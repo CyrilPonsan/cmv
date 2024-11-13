@@ -4,8 +4,6 @@
  * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 
-const VITE_BACKEND = import.meta.env.VITE_BACKEND
-
-console.log({ VITE_BACKEND })
+//const VITE_BACKEND = import.meta.env.VITE_BACKEND
 
 export const AUTH = '/api'
