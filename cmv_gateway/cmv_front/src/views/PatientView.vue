@@ -25,6 +25,12 @@ const toast = useToast()
 const detailPatient = ref<DetailPatient | null>(null)
 const visible = ref(false)
 
+const downloadDocument = async (documentId: number) => {
+  console.log('downloading')
+
+  window.open(`http://localhost:8001/api/patients/documents/download/${documentId}`, '_blank')
+}
+
 const getDocuments = () => {
   const applyData = (data: DetailPatient) => {
     detailPatient.value = data
@@ -94,7 +100,11 @@ onBeforeMount(() => getDocuments())
       </article>
       <!-- Uploaded documents -->
       <article v-if="detailPatient" class="col-span-2 2xl:col-span-1 p-4">
-        <DocumentsList :documents="detailPatient.documents" @toggle-visible="toggleVisible" />
+        <DocumentsList
+          :documents="detailPatient.documents"
+          @toggle-visible="toggleVisible"
+          @download-document="downloadDocument"
+        />
       </article>
     </section>
   </main>

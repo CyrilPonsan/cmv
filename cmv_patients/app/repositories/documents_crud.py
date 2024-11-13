@@ -39,4 +39,4 @@ class PgDocumentsRepository(DocumentsRepository):
 
     # Méthode pour récupérer un document par son ID
     async def get_document_by_id(self, db: Session, document_id: int) -> Document:
-        return db.query(Document).filter(Document.id == document_id).first()
+        return db.query(Document).filter(Document.id_document == document_id).first()

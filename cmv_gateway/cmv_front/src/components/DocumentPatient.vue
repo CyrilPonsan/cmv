@@ -22,6 +22,10 @@ const { d, t } = useI18n()
 
 // Récupération des props
 const { document, documentIndex } = defineProps<Props>()
+
+const emit = defineEmits<{
+  (e: 'download-document', documentId: number): void // Event pour télécharger un document
+}>()
 </script>
 
 <template>
@@ -48,6 +52,7 @@ const { document, documentIndex } = defineProps<Props>()
           :label="t('components.documentsList.download')"
           icon="pi pi-download"
           size="small"
+          @click="emit('download-document', document.id_document)"
         />
         <!-- Bouton de suppression -->
         <Button
