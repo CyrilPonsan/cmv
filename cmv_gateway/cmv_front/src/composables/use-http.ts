@@ -4,12 +4,11 @@
  * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 
-import { ref, type Ref, onUnmounted, watch } from 'vue'
+import { ref, type Ref, onUnmounted } from 'vue'
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios'
 
 import { AUTH } from '@/libs/urls'
 import { useUserStore } from '@/stores/user'
-import { useToast } from 'primevue/usetoast'
 import { useRouter } from 'vue-router'
 
 /**
@@ -43,7 +42,6 @@ export type UseHttp = {
  * Gère automatiquement le rafraîchissement des tokens et les erreurs
  */
 const useHttp = (): UseHttp => {
-  const toast = useToast()
   const router = useRouter()
   const isLoading = ref<boolean>(false)
   const error = ref<string | null>(null)
@@ -59,7 +57,7 @@ const useHttp = (): UseHttp => {
    * Intercepteur de réponse pour gérer:
    * - Les erreurs réseau
    * - Le rafraîchissement automatique des tokens
-   * - La déconnexion en cas d'échec d'authentification
+   * - La déconnexion en cas d'échec d'AUTHentification
    */
   const responseInterceptor = axiosInstance.interceptors.response.use(
     (response) => response,
@@ -80,14 +78,14 @@ const useHttp = (): UseHttp => {
       // Gestion des erreurs de rafraîchissement de token
       if (
         (error.response.status === 403 || error.response.status === 401) &&
-        originalRequest.url === '/auth/refresh'
+        originalRequest.url === '/AUTH/refresh'
       ) {
         console.log('Error on refresh token request - logging out')
         userStore.logout()
         return Promise.reject(error)
       }
 
-      // Tentative de rafraîchissement du token pour les autres erreurs d'authentification
+      // Tentative de rafraîchissement du token pour les autres erreurs d'AUTHentification
       if (
         (error.response.status === 403 || error.response.status === 401) &&
         !originalRequest._retry
@@ -96,7 +94,7 @@ const useHttp = (): UseHttp => {
         originalRequest._retry = true
 
         try {
-          const res = await axiosInstance.get('/auth/refresh')
+          const res = await axiosInstance.get('/AUTH/refresh')
           if (res.status === 200) {
             console.log('Token refreshed successfully - retrying original request')
             return axiosInstance(originalRequest)
@@ -157,21 +155,6 @@ const useHttp = (): UseHttp => {
       isLoading.value = false
     }
   }
-
-  /**
-   * Observe les changements d'erreur pour afficher des notifications
-   */
-  watch(error, (newError) => {
-    if (newError && newError.length > 0) {
-      toast.add({
-        summary: 'Erreur',
-        detail: error.value,
-        severity: 'error',
-        life: 3000,
-        closable: true
-      })
-    }
-  })
 
   // Interface publique du composable
   return { isLoading, error, sendRequest, axiosInstance }

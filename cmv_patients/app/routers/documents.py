@@ -2,7 +2,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
-from fastapi.responses import StreamingResponse
+from fastapi.responses import Response
 
 from app.dependancies.auth import check_authorization
 from app.dependancies.db_session import get_db
@@ -101,8 +101,8 @@ async def download_document(
         db=db, document_id=document_id
     )
 
-    return StreamingResponse(
-        file_content,
+    return Response(
+        content=file_content.getvalue(),
         media_type="application/pdf",
         headers={"Content-Disposition": f'inline; filename="{filename}"'},
     )

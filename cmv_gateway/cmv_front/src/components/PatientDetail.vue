@@ -8,6 +8,7 @@
 // Import des dépendances nécessaires
 import type DetailPatient from '@/models/detail-patient' // Type pour les détails du patient
 import Panel from 'primevue/panel' // Composant Panel de PrimeVue
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n' // Hook pour l'internationalisation
 
 // Récupération des props du composant
@@ -17,13 +18,16 @@ const { detailPatient } = defineProps<{
 
 // Récupération des fonctions d'internationalisation
 const { d, t } = useI18n()
+const civilite = computed(() => {
+  return detailPatient.civilite.toLowerCase() === 'autre' ? '' : detailPatient.civilite
+})
 </script>
 
 <template>
   <!-- Panel affichant le nom complet du patient -->
   <Panel class="mb-4 shadow-sm" :header="t('patients.detail.panel.fullname')">
     <p class="m-0 mt-4 capitalize">
-      {{ detailPatient.civilite }} {{ detailPatient.prenom }} {{ detailPatient.nom }}
+      {{ civilite }} {{ detailPatient.prenom }} {{ detailPatient.nom }}
     </p>
   </Panel>
 

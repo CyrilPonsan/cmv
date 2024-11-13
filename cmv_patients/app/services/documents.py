@@ -118,18 +118,19 @@ class DocumentsService:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="document_not_found"
             )
-        # Récupère le fichier depuis S3
+
         s3_client = boto3.client(
             "s3",
             aws_access_key_id=AWS_ACCESS_KEY_ID,
             aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
             region_name=AWS_REGION,
         )
-        # Récupère le fichier depuis S3
+
         file_obj = BytesIO()
         s3_client.download_fileobj(
             AWS_BUCKET_NAME, existing_document.nom_fichier, file_obj
         )
 
-        # Convertit l'objet fichier en bytes
-        return file_obj.getvalue()
+        # Reset le curseur et retourne l'objet BytesIO directement au lieu de getvalue()
+        file_obj.seek(0)
+        return file_obj, existing_document.nom_fichier
