@@ -2,6 +2,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
+from fastapi.responses import Response
 
 from app.dependancies.auth import check_authorization
 from app.dependancies.db_session import get_db
@@ -79,3 +80,29 @@ async def create_document(
 
     # Retour d'une réponse de succès
     return {"success": True, "message": "Le document a été téléversé avec succès."}
+
+
+# Route pour télécharger un document
+@router.get("/download/{document_id}")
+async def download_document(
+    request: Request,
+    payload: Annotated[InternalPayload, Depends(check_authorization)],
+    document_id: int,
+    documents_service=Depends(get_documents_service),
+    db=Depends(get_db),
+):
+    # Journalisation de l'action
+    logger.write_log(
+        f"{payload['role']} - {payload['user_id']} - {request.method} - download - {document_id}",
+        request,
+    )
+    # Télécharge le fichier depuis S3
+    file_content, filename = await documents_service.download_file_from_s3(
+        db=db, document_id=document_id
+    )
+
+    return Response(
+        content=file_content.getvalue(),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'inline; filename="{filename}"'},
+    )

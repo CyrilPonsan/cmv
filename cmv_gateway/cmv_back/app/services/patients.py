@@ -1,6 +1,6 @@
 import httpx
 
-from fastapi import HTTPException, Request, UploadFile
+from fastapi import HTTPException, Request, Response, UploadFile
 
 from app.schemas.user import User
 from app.utils.config import PATIENTS_SERVICE
@@ -44,6 +44,17 @@ class PatientsService:
             request=request,
         )
         if response.status_code == 200:
+            # Si c'est un PDF, on retourne directement la réponse
+            if response.headers.get("content-type") == "application/pdf":
+                return Response(
+                    content=response.content,
+                    media_type="application/pdf",
+                    headers={
+                        "Content-Disposition": response.headers.get(
+                            "content-disposition", "inline"
+                        )
+                    },
+                )
             return response.json()
         else:
             result = response.json()

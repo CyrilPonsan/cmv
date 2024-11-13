@@ -18,7 +18,8 @@ const { documents } = defineProps<{
 
 // Events émis par le composant
 const emit = defineEmits<{
-  (e: 'toggleVisible'): void // Event pour afficher/masquer le dialogue d'upload
+  (e: 'toggle-visible'): void // Event pour afficher/masquer le dialogue d'upload
+  (e: 'download-document', documentId: number): void // Event pour télécharger un document
 }>()
 
 // Récupération des fonctions d'internationalisation
@@ -27,7 +28,7 @@ const { t } = useI18n()
 
 <template>
   <!-- En-tête avec titre et bouton d'ajout -->
-  <span class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-y-2 mb-4">
+  <span class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-y-2 mb-4">
     <h2 class="text-lg font-bold">
       {{ t('components.documentsList.uploaded_documents') }}
     </h2>
@@ -36,7 +37,7 @@ const { t } = useI18n()
       label="Ajouter un document"
       icon="pi pi-paperclip "
       outlined
-      @click="emit('toggleVisible')"
+      @click="emit('toggle-visible')"
     />
   </span>
 
@@ -49,6 +50,7 @@ const { t } = useI18n()
       :key="document.id_document"
       :documentIndex="documentIndex"
       :document="document"
+      @download-document="emit('download-document', document.id_document)"
     />
   </div>
 
