@@ -35,8 +35,14 @@ class PgDocumentsRepository(DocumentsRepository):
         db.add(document)
         db.commit()
         db.refresh(document)
-        return {"message": "Document créé avec succès"}
+        return {"message": "document_created"}
 
     # Méthode pour récupérer un document par son ID
     async def get_document_by_id(self, db: Session, document_id: int) -> Document:
         return db.query(Document).filter(Document.id_document == document_id).first()
+
+    # Méthode pour supprimer un document par son ID
+    async def delete_document_by_id(self, db: Session, document_id: int) -> Document:
+        db.query(Document).filter(Document.id_document == document_id).delete()
+        db.commit()
+        return {"success": True, "message": "document_deleted"}
