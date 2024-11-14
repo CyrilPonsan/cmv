@@ -9,16 +9,27 @@ from app.utils.logging_setup import LoggerSetup
 
 # Initialisation du service patients
 def get_patients_service():
+    """
+    Crée et retourne une instance du service patients avec l'URL configurée
+    """
     return PatientsService(url_api_patients=PATIENTS_SERVICE)
 
 
 class PatientsService:
+    """
+    Service gérant les interactions avec l'API Patients
+    Permet de récupérer, créer et transférer des documents patients
+    """
+
     logger = LoggerSetup()
 
     def __init__(
         self,
         url_api_patients: str,
     ):
+        """
+        Initialise le service avec l'URL de l'API patients
+        """
         self.url_api_patients = url_api_patients
 
     async def get_patients(
@@ -29,6 +40,19 @@ class PatientsService:
         client: httpx.AsyncClient,
         request: Request,
     ):
+        """
+        Récupère les informations patients via l'API
+
+        Args:
+            current_user: Utilisateur courant faisant la requête
+            path: Chemin de l'endpoint à appeler
+            internal_token: Token d'authentification
+            client: Client HTTP pour faire les requêtes
+            request: Requête FastAPI originale
+
+        Returns:
+            Les données patients ou le PDF si c'est un document
+        """
         full_path = path
         if request.query_params:
             full_path = f"{path}?{request.query_params}"
@@ -71,6 +95,19 @@ class PatientsService:
         client: httpx.AsyncClient,
         request: Request,
     ):
+        """
+        Crée ou met à jour des informations patients via l'API
+
+        Args:
+            current_user: Utilisateur courant faisant la requête
+            path: Chemin de l'endpoint à appeler
+            internal_token: Token d'authentification
+            client: Client HTTP pour faire les requêtes
+            request: Requête FastAPI originale
+
+        Returns:
+            La réponse de l'API patients
+        """
         full_path = path
         if request.query_params:
             full_path = f"{path}?{request.query_params}"
@@ -103,6 +140,20 @@ class PatientsService:
         document_type: str,
         request: Request,
     ):
+        """
+        Transfère un document vers l'API patients
+
+        Args:
+            current_user: Utilisateur courant faisant la requête
+            path: Chemin de l'endpoint à appeler
+            internal_token: Token d'authentification
+            file: Fichier à transférer
+            document_type: Type du document
+            request: Requête FastAPI originale
+
+        Returns:
+            La réponse de l'API patients après le transfert
+        """
         full_path = path
         url = f"{self.url_api_patients}/{full_path}"
         async with httpx.AsyncClient() as client:

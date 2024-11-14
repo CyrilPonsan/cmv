@@ -29,7 +29,7 @@ const { document, documentIndex } = defineProps<Props>()
  * @param documentId - L'ID du document à télécharger
  */
 const downloadDocument = async (documentId: number) => {
-  window.open(`${AUTH}/patients/documents/download/${documentId}`, '_blank')
+  window.open(`${AUTH}/patients/download/documents/download/${documentId}`, '_blank')
 }
 </script>
 
