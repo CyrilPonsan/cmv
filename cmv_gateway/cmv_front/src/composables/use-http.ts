@@ -78,7 +78,7 @@ const useHttp = (): UseHttp => {
       // Gestion des erreurs de rafraîchissement de token
       if (
         (error.response.status === 403 || error.response.status === 401) &&
-        originalRequest.url === '/AUTH/refresh'
+        originalRequest.url === `/auth/refresh`
       ) {
         console.log('Error on refresh token request - logging out')
         userStore.logout()
@@ -94,13 +94,13 @@ const useHttp = (): UseHttp => {
         originalRequest._retry = true
 
         try {
-          const res = await axiosInstance.get('/AUTH/refresh')
+          const res = await axiosInstance.get('/auth/refresh')
           if (res.status === 200) {
             console.log('Token refreshed successfully - retrying original request')
-            return axiosInstance(originalRequest)
+            return await axiosInstance(originalRequest)
           }
         } catch (refreshError) {
-          console.log('Token refresh failed - logging out')
+          console.log('Token refresh failed - logging out', refreshError)
           userStore.logout()
           return Promise.reject(refreshError)
         }

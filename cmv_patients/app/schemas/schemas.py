@@ -121,3 +121,8 @@ class PatientDetail(PatientCreate):
 
     class Config:
         from_attributes = True
+
+
+class SuccessWithMessage(BaseModel):
+    success: bool
+    message: str

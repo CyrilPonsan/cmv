@@ -31,9 +31,6 @@ const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
 </script>
 
 <template>
-  <!-- Affichage des erreurs globales -->
-  <p>{{ error }}</p>
-
   <!-- Formulaire de connexion -->
   <Form
     class="w-80 flex flex-col items-start gap-y-2"
@@ -88,8 +85,8 @@ const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
     </div>
 
     <!-- Message d'erreur de connexion -->
-    <Message v-if="error" :closable="true" :severity="'error'">{{
-      t('error.connection_failure')
+    <Message v-if="error" class="w-full" :closable="true" :severity="'error'">{{
+      t(`error.${error}`)
     }}</Message>
   </Form>
 </template>

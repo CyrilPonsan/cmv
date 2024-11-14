@@ -1,4 +1,8 @@
 {
+  "api": {
+    "document_created": "Document créé avec succès",
+    "document_deleted": "Document supprimé avec succès"
+  },
   "app": {
     "footer": "Projet de formation : toute ressemblance avec une clinique déjà existente ne serait que pure coïncidence.",
     "tooltip": {
@@ -44,7 +48,9 @@
     "not_valid_password": "Le mot de passe n'est pas valide",
     "connection_failure": "La connexion a échoué...",
     "credentials": "Identifiant ou mot de passe incorrect",
-    "network_issue": "Un problème est survenu, réessayez plus tard..."
+    "network_issue": "Un problème est survenu, réessayez plus tard...",
+    "patient_not_found": "Le patient n'existe pas.",
+    "document_not_found": "Le document n'existe pas."
   },
   "login": {
     "h1": "Clinique Montvert",
