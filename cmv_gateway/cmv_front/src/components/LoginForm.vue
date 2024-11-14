@@ -31,9 +31,6 @@ const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
 </script>
 
 <template>
-  <!-- Affichage des erreurs globales -->
-  <p>{{ error }}</p>
-
   <!-- Formulaire de connexion -->
   <Form
     class="w-80 flex flex-col items-start gap-y-2"
