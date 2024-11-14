@@ -99,8 +99,11 @@ async def post_patients(
 @router.delete("delete/{path:path}")
 async def delete_patients(
     request: Request,
-    current_user : Annotated[User, Depends(get_current_user)],
-    internal_token: Annotated[str, Depends(get_dynamic_permissions("delete", "documentsts"))],
+    current_user: Annotated[User, Depends(get_current_user)],
+    path: str,
+    internal_token: Annotated[
+        str, Depends(get_dynamic_permissions("delete", "documentsts"))
+    ],
     patients_service=Depends(get_patients_service),
     client=Depends(get_http_client),
 ):
