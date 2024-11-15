@@ -37,7 +37,7 @@ const visible = ref(false)
 /**
  * Récupère les informations détaillées du patient et ses documents
  */
-const getDocuments = () => {
+const getData = () => {
   const applyData = (data: DetailPatient) => {
     detailPatient.value = data
   }
@@ -57,7 +57,7 @@ const onSubmitRefresh = (message: string) => {
     life: 3000,
     closable: true
   })
-  getDocuments()
+  getData()
 }
 
 /**
@@ -68,7 +68,7 @@ const toggleVisible = () => {
 }
 
 // Chargement initial des données
-onBeforeMount(() => getDocuments())
+onBeforeMount(() => getData())
 </script>
 
 <template>
@@ -100,7 +100,11 @@ onBeforeMount(() => getDocuments())
       </article>
       <!-- Liste des documents -->
       <article v-if="detailPatient" class="col-span-2 2xl:col-span-1 p-4">
-        <DocumentsList :documents="detailPatient.documents" @toggle-visible="toggleVisible" />
+        <DocumentsList
+          :documents="detailPatient.documents"
+          @toggle-visible="toggleVisible"
+          @delete-document="getData"
+        />
       </article>
     </section>
   </main>

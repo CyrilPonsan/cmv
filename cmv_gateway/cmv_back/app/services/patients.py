@@ -165,7 +165,6 @@ class PatientsService:
         response = await client.delete(
             url,
             headers={"Authorization": f"Bearer {internal_token}"},
-            json=request.json(),
         )
 
         # Journalisation de la requête
