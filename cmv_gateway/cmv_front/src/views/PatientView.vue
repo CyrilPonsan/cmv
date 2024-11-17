@@ -6,8 +6,8 @@
  */
 
 // Import des composants
-import DocumentsList from '@/components/DocumentsList.vue'
-import DocumentUpload from '@/components/DocumentUploadDialog.vue'
+import DocumentsList from '@/components/documents/DocumentsList.vue'
+import DocumentUpload from '@/components/documents/DocumentUploadDialog.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import PatientDetail from '@/components/PatientDetail.vue'
 
@@ -72,7 +72,7 @@ onBeforeMount(() => getData())
 </script>
 
 <template>
-  <main class="min-w-screen min-h-[80vh] flex flex-col gap-y-8">
+  <div class="min-w-screen min-h-[80vh] flex flex-col gap-y-8">
     <!-- En-tête de la page -->
     <section>
       <PageHeader
@@ -107,7 +107,7 @@ onBeforeMount(() => getData())
         />
       </article>
     </section>
-  </main>
+  </div>
   <!-- Boîte de dialogue de téléversement de documents -->
   <DocumentUpload
     v-if="detailPatient"
