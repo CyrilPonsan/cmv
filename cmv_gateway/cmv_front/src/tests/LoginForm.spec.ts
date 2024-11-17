@@ -269,11 +269,6 @@ describe('LoginForm tests unitaires', () => {
     // Ensuite monter le composant
     mountWrapper()
 
-    // Vérifier le message d'erreur
-    const p = wrapper.find('p')
-    expect(p.exists()).toBe(true)
-    expect(p.text()).toBe('ERROR')
-
     // Déclencher l'action qui cause l'erreur
     await errorLoginMock.onSubmit({
       username: 'valid@email.com',

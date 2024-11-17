@@ -123,13 +123,13 @@ const emit = defineEmits<{
   <Dialog
     :visible="visible"
     modal
-    header="Téléverser un document"
+    :header="t('components.documentsList.upload_dialog.header')"
     :style="{ width: '40rem' }"
     @update:visible="emit('update:visible', false)"
   >
     <!-- En-tête avec le nom du patient -->
     <span class="text-surface-500 dark:text-surface-400 flex gap-x-2 items-center mb-8">
-      <p>Dossier administratif de :</p>
+      <p>{{ t('components.documentsList.upload_dialog.content') }}</p>
       <p class="capitalize">{{ fullname }}</p>
     </span>
     <!-- Formulaire de téléversement -->
@@ -140,7 +140,7 @@ const emit = defineEmits<{
         v-model="selectedDocumentType"
         :options="documentTypes"
         optionLabel="label"
-        placeholder="Sélectionner un type de document"
+        :placeholder="t('components.documentsList.upload_dialog.placeholder')"
         class="w-full"
       />
       <!-- Zone de téléversement de fichier -->
@@ -151,11 +151,11 @@ const emit = defineEmits<{
         accept="application/pdf"
         :maxFileSize="3000000"
         previewWidth="0"
-        chooseLabel="Choisir un fichier"
+        :chooseLabel="t('components.documentsList.upload_dialog.buttons.choose_label')"
         :showUploadButton="false"
         :showCancelButton="false"
-        invalidFileSizeMessage="Le fichier est trop volumineux (max 3Mo)"
-        invalidFileTypeMessage="Le fichier doit être au format PDF"
+        :invalidFileSizeMessage="t('components.documentsList.upload_dialog.invalid_file_size')"
+        :invalidFileTypeMessage="t('components.documentsList.upload_dialog.invalid_file_type')"
         @select="onSelect"
       >
         <!-- Affichage du fichier sélectionné -->
@@ -181,7 +181,7 @@ const emit = defineEmits<{
         <!-- Message par défaut -->
         <template #empty>
           <br />
-          <span>Glissez et déposez un fichier PDF ici (max 3Mo)</span>
+          <span>{{ t('components.documentsList.upload_dialog.empty') }}</span>
         </template>
       </FileUpload>
 

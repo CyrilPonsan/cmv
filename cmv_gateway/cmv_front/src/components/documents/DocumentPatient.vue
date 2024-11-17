@@ -24,6 +24,10 @@ const { d, t } = useI18n()
 // Récupération des props
 const { document, documentIndex } = defineProps<Props>()
 
+const emit = defineEmits<{
+  (e: 'delete-document', documentId: number): void // Event pour supprimer un document
+}>()
+
 /**
  * Télécharge un document en ouvrant un nouvel onglet
  * @param documentId - L'ID du document à télécharger
@@ -65,6 +69,7 @@ const downloadDocument = async (documentId: number) => {
           severity="warn"
           icon="pi pi-trash"
           size="small"
+          @click="emit('delete-document', document.id_document)"
         />
       </span>
     </template>
