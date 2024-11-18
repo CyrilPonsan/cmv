@@ -7,7 +7,7 @@
  */
 
 import { computed, ref, watch, type Ref, type UnwrapRef } from 'vue'
-import useHttp from './use-http'
+import useHttp from './useHttp'
 import type LazyLoadEvent from '@/models/lazy-load-event'
 import type LazyState from '@/models/lazy-state'
 

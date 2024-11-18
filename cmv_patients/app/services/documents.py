@@ -134,3 +134,32 @@ class DocumentsService:
         # Reset le curseur et retourne l'objet BytesIO directement au lieu de getvalue()
         file_obj.seek(0)
         return file_obj, existing_document.nom_fichier
+
+    # Méthode pour supprimer un document par son ID
+    async def delete_document_by_id(self, db: Session, document_id: int):
+        # Vérifie si le document existe dans la base de données
+        existing_document = await self.documents_repository.get_document_by_id(
+            db=db, document_id=document_id
+        )
+        # Si le document n'existe pas, lève une exception 404
+        if not existing_document:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="document_not_found"
+            )
+
+        # Initialise le client S3 avec les credentials AWS
+        s3_client = boto3.client(
+            "s3",
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+            region_name=AWS_REGION,
+        )
+        # Supprime le fichier du bucket S3 en utilisant le nom du fichier comme clé
+        s3_client.delete_object(
+            Bucket=AWS_BUCKET_NAME, Key=existing_document.nom_fichier
+        )
+
+        # Supprime l'entrée du document dans la base de données et retourne le résultat
+        return await self.documents_repository.delete_document_by_id(
+            db=db, document_id=document_id
+        )

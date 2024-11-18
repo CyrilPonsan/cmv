@@ -63,7 +63,7 @@ vi.mock('primevue/usetoast', () => ({
 // Créons un mock pour onSort
 const mockOnSort = vi.fn()
 
-vi.mock('@/composables/use-lazy-load', () => ({
+vi.mock('@/composables/useLazyLoad', () => ({
   default: () => ({
     getData: vi.fn(),
     lazyState: {

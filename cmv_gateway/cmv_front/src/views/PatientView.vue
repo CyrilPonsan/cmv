@@ -6,73 +6,38 @@
  */
 
 // Import des composants
-import DocumentsList from '@/components/DocumentsList.vue'
-import DocumentUpload from '@/components/DocumentUploadDialog.vue'
+import DocumentsList from '@/components/documents/DocumentsList.vue'
+import DocumentUpload from '@/components/documents/DocumentUploadDialog.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import PatientDetail from '@/components/PatientDetail.vue'
+import PatientActions from '@/components/patient/PatientActions.vue'
 
 // Import des composables et utilitaires
-import useHttp from '@/composables/use-http'
-import type DetailPatient from '@/models/detail-patient'
-
-// Import des composants PrimeVue
-import Button from 'primevue/button'
-import { useToast } from 'primevue/usetoast'
+import usePatient from '@/composables/usePatient'
+import useDocuments from '@/composables/useDocuments'
 
 // Import des composables Vue
-import { onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
 // Initialisation des composables
 const { t } = useI18n()
-const { sendRequest } = useHttp()
 const route = useRoute()
-const toast = useToast()
 
-// Références réactives
-const detailPatient = ref<DetailPatient | null>(null)
-const visible = ref(false)
+const { detailPatient, fetchPatientData } = usePatient(route.params.id as string)
+const { visible, toggleVisible, handleUploadSuccess } = useDocuments(fetchPatientData)
 
-/**
- * Récupère les informations détaillées du patient et ses documents
- */
-const getDocuments = () => {
-  const applyData = (data: DetailPatient) => {
-    detailPatient.value = data
-  }
-  sendRequest<DetailPatient>({ path: `/patients/patients/detail/${route.params.id}` }, applyData)
-}
+const fullName = computed(() => {
+  if (!detailPatient.value) return ''
+  return `${detailPatient.value.prenom} ${detailPatient.value.nom}`
+})
 
-/**
- * Callback appelé après un téléversement réussi
- * Affiche un toast de succès et rafraîchit les documents
- * @param message - Message de succès à afficher
- */
-const onSubmitRefresh = (message: string) => {
-  toast.add({
-    summary: 'Téléversement',
-    detail: message,
-    severity: 'success',
-    life: 3000,
-    closable: true
-  })
-  getDocuments()
-}
-
-/**
- * Bascule la visibilité de la boîte de dialogue de téléversement
- */
-const toggleVisible = () => {
-  visible.value = !visible.value
-}
-
-// Chargement initial des données
-onBeforeMount(() => getDocuments())
+onBeforeMount(fetchPatientData)
 </script>
 
 <template>
-  <main class="min-w-screen min-h-[80vh] flex flex-col gap-y-8">
+  <div class="min-w-screen min-h-[80vh] flex flex-col gap-y-8">
     <!-- En-tête de la page -->
     <section>
       <PageHeader
@@ -89,28 +54,28 @@ onBeforeMount(() => getDocuments())
           class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-y-2 mb-4"
         >
           <h2 class="text-lg font-bold">{{ t('patients.detail.h2') }}</h2>
-          <!-- Boutons d'action -->
-          <span class="flex gap-x-4 items-center">
-            <Button :label="t('patients.detail.button.create_admission')" icon="pi pi-plus" />
-            <Button :label="t('patients.detail.button.edit')" icon="pi pi-pencil" severity="info" />
-          </span>
+          <PatientActions />
         </div>
         <!-- Composant affichant les détails du patient -->
         <PatientDetail :detail-patient="detailPatient" />
       </article>
       <!-- Liste des documents -->
       <article v-if="detailPatient" class="col-span-2 2xl:col-span-1 p-4">
-        <DocumentsList :documents="detailPatient.documents" @toggle-visible="toggleVisible" />
+        <DocumentsList
+          :documents="detailPatient.documents"
+          @toggle-visible="toggleVisible"
+          @delete-document="fetchPatientData"
+        />
       </article>
     </section>
-  </main>
+  </div>
   <!-- Boîte de dialogue de téléversement de documents -->
   <DocumentUpload
     v-if="detailPatient"
-    :fullname="`${detailPatient.prenom} ${detailPatient.nom}`"
+    :fullname="fullName"
     :patientId="detailPatient.id_patient"
     :visible="visible"
     @update:visible="visible = $event"
-    @refresh="onSubmitRefresh"
+    @refresh="handleUploadSuccess"
   />
 </template>

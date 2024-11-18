@@ -1,4 +1,8 @@
 {
+  "api": {
+    "document_created": "Document créé avec succès",
+    "document_deleted": "Document supprimé avec succès"
+  },
   "app": {
     "footer": "Projet de formation : toute ressemblance avec une clinique déjà existente ne serait que pure coïncidence.",
     "tooltip": {
@@ -19,24 +23,48 @@
   },
   "components": {
     "documentsList": {
-      "uploaded_documents": "Documents téléversés",
-      "document": "Document",
-      "download": "Télécharger",
+      "add_document": "Ajouter un document",
       "delete": "Supprimer",
-      "no_document": "Aucun document trouvé.",
+      "deletion": "Suppression",
+      "dialog": {
+        "buttons": {
+          "cancel": "Annuler",
+          "confirm": "Confirmer"
+        },
+        "content": "Confirmez la suppression du document :",
+        "header": "Suppression d'un document administratif"
+      },
+      "document": "Document",
       "document_types": {
-        "health_insurance_card_certificate": "Attestation de carte vitale",
         "authorization_for_care": "Autorisation de soins",
-        "authorization_for_treatment": "Autorisation de traitement",
-        "authorization_for_visit": "Autorisation de visite",
-        "authorization_for_overnight_stay": "Autorisation de remise à nuit",
         "authorization_for_departure": "Autorisation de départ",
         "authorization_for_disconnection": "Autorisation de débranchement",
+        "authorization_for_overnight_stay": "Autorisation de remise à nuit",
+        "authorization_for_treatment": "Autorisation de traitement",
+        "authorization_for_visit": "Autorisation de visite",
+        "health_insurance_card_certificate": "Attestation de carte vitale",
         "miscellaneous": "Divers"
-      }
+      },
+      "download": "Télécharger",
+      "no_document": "Aucun document trouvé.",
+      "upload_dialog": {
+        "buttons": {
+          "cancel": "Annuler",
+          "confirm": "Téléverser",
+          "choose_label": "Choisir un fichier"
+        },
+        "content": "Dossier administratif de :",
+        "empty": "Glissez / Déposez un fichier PDF ici (max 3Mo)",
+        "header": "Téléverser un document administratif",
+        "invalid_file_size": "Le fichier est trop volumineux (max 3Mo)",
+        "invalid_file_type": "Le fichier doit être au format PDF",
+        "placeholder": "Sélectionner un type de document"
+      },
+      "uploaded_documents": "Documents téléversés"
     }
   },
   "error": {
+    "ERROR": "Une erreur est survenue",
     "error": "Erreur",
     "no_email": "Une adresse email est requise",
     "not_valid_email": "Adresse email non valide",
@@ -44,7 +72,9 @@
     "not_valid_password": "Le mot de passe n'est pas valide",
     "connection_failure": "La connexion a échoué...",
     "credentials": "Identifiant ou mot de passe incorrect",
-    "network_issue": "Un problème est survenu, réessayez plus tard..."
+    "network_issue": "Un problème est survenu, réessayez plus tard...",
+    "patient_not_found": "Le patient n'existe pas.",
+    "document_not_found": "Le document n'existe pas."
   },
   "login": {
     "h1": "Clinique Montvert",

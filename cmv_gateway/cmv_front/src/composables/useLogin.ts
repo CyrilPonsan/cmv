@@ -12,7 +12,7 @@ import { useToast } from 'primevue/usetoast' // Hook PrimeVue pour afficher des 
 import { watch, type Ref } from 'vue' // Fonctionnalités Vue.js
 import { z } from 'zod' // Bibliothèque de validation
 import { useI18n } from 'vue-i18n' // Hook pour l'internationalisation
-import useHttp from './use-http' // Hook personnalisé pour les requêtes HTTP
+import useHttp from './useHttp' // Hook personnalisé pour les requêtes HTTP
 import type { Credentials } from '@/models/credentials' // Type pour les identifiants
 
 /**

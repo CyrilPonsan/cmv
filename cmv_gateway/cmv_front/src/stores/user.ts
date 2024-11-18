@@ -6,7 +6,7 @@
 
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import useHttp from '@/composables/use-http'
+import useHttp from '@/composables/useHttp'
 import { useRoute, useRouter } from 'vue-router'
 
 export const useUserStore = defineStore('user', () => {

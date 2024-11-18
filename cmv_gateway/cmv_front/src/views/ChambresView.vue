@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import ServiceItem from '@/components/ServiceItem.vue'
-import useHttp from '@/composables/use-http'
+import useHttp from '@/composables/useHttp'
 import type Service from '@/models/service'
 import Button from 'primevue/button'
 import { onBeforeMount, ref } from 'vue'

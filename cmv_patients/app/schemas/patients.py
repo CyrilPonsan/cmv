@@ -70,6 +70,7 @@ class SearchPatientsParams(PatientsParams):
         return value
 
 
+# Modèle utilisé pour retourner un document dans la liste des documents d'un patient
 class DocumentsListItem(BaseModel):
     id_document: int
     nom_fichier: str

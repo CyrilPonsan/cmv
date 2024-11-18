@@ -2,13 +2,13 @@
  * Série de tests pour la fonctionnalité de recherche de patients
  */
 
-import useLazyLoad from '@/composables/use-lazy-load'
+import useLazyLoad from '@/composables/useLazyLoad'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { ref } from 'vue'
 import { createPinia, setActivePinia } from 'pinia'
 
 // Mock useHttp
-vi.mock('@/composables/use-http', () => ({
+vi.mock('@/composables/useHttp', () => ({
   default: () => ({
     sendRequest: vi.fn(),
     isLoading: ref(false)
