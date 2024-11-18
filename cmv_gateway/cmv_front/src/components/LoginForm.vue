@@ -10,7 +10,7 @@ import { Form, Field, type SubmissionHandler, type GenericObject } from 'vee-val
 import { useI18n } from 'vue-i18n' // Internationalisation
 import InputText from 'primevue/inputtext' // Champ de texte PrimeVue
 import Message from 'primevue/message' // Message d'erreur PrimeVue
-import useLogin from '@/composables/use-login' // Hook personnalisé pour la logique de connexion
+import useLogin from '@/composables/useLogin' // Hook personnalisé pour la logique de connexion
 import Password from 'primevue/password' // Champ mot de passe PrimeVue
 import Button from 'primevue/button' // Bouton PrimeVue
 import type { Credentials } from '@/models/credentials' // Type pour les identifiants

@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
-import useHttp from '@/composables/use-http'
+import useHttp from '@/composables/useHttp'
 import type Document from '@/models/document'
 import type SuccessWithMessage from '@/models/success-with-message'
 import { useI18n } from 'vue-i18n'

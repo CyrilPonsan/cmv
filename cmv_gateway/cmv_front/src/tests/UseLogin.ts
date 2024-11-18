@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
-import useLogin from '../composables/use-login'
+import useLogin from '../composables/useLogin'
 import { ref } from 'vue'
 import { z } from 'zod'
 import { regexPassword } from '@/libs/regex'
@@ -40,7 +40,7 @@ vi.mock('@/stores/user', () => ({
 }))
 
 // Mock de useLogin avec les valeurs et fonctions nécessaires
-vi.mock('../composables/use-login', () => ({
+vi.mock('../composables/useLogin', () => ({
   default: () => ({
     error: ref(null),
     isLoading: ref(false),

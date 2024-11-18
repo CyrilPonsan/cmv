@@ -16,7 +16,7 @@ import Button from 'primevue/button'
 
 import type { DataTableFilterMeta } from 'primevue/datatable'
 import { patientsListColumns } from '@/libs/columns/patients-list'
-import useLazyLoad from '@/composables/use-lazy-load'
+import useLazyLoad from '@/composables/useLazyLoad'
 import type PatientsListItem from '@/models/patients-list-item'
 
 // Définition des props et des types
