@@ -48,33 +48,31 @@ const handleCancel = () => {
 </script>
 
 <template>
-  <div>
-    <!-- En-tête avec titre et bouton d'ajout -->
-    <DocumentsHeader @toggle-visible="emit('toggle-visible')" />
+  <!-- En-tête avec titre et bouton d'ajout -->
+  <DocumentsHeader @toggle-visible="emit('toggle-visible')" />
 
-    <!-- Liste des documents -->
-    <div v-if="documents.length > 0">
-      <DocumentPatient
-        v-for="(document, documentIndex) of documents"
-        class="mb-4"
-        :key="document.id_document"
-        :documentIndex="documentIndex"
-        :document="document"
-        @download-document="emit('download-document', document.id_document)"
-        @delete-document="(documentToDelete = document), (visible = true)"
-      />
-    </div>
-
-    <!-- Message si aucun document -->
-    <EmptyDocumentsList v-else />
-
-    <!-- Dialogue de confirmation de suppression -->
-    <DeleteConfirmationDialog
-      :visible="visible"
-      :document="documentToDelete"
-      :loading="isLoading"
-      @confirm="handleDelete"
-      @cancel="handleCancel"
+  <!-- Liste des documents -->
+  <div v-if="documents.length > 0">
+    <DocumentPatient
+      v-for="(document, documentIndex) of documents"
+      class="mb-4"
+      :key="document.id_document"
+      :documentIndex="documentIndex"
+      :document="document"
+      @download-document="emit('download-document', document.id_document)"
+      @delete-document="(documentToDelete = document), (visible = true)"
     />
   </div>
+
+  <!-- Message si aucun document -->
+  <EmptyDocumentsList v-else />
+
+  <!-- Dialogue de confirmation de suppression -->
+  <DeleteConfirmationDialog
+    :visible="visible"
+    :document="documentToDelete"
+    :loading="isLoading"
+    @confirm="handleDelete"
+    @cancel="handleCancel"
+  />
 </template>

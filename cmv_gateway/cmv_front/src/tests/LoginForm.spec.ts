@@ -9,7 +9,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { nextTick, ref } from 'vue'
 import { regexPassword } from '@/libs/regex'
 import { z } from 'zod'
-import useLogin from '@/composables/use-login'
+import useLogin from '@/composables/useLogin'
 import { toTypedSchema } from '@vee-validate/zod'
 
 // Mock des composants
@@ -110,7 +110,7 @@ const errorLoginMock = {
 
 let currentLoginMock = successLoginMock
 
-vi.mock('@/composables/use-login', () => ({
+vi.mock('@/composables/useLogin', () => ({
   default: () => currentLoginMock
 }))
 

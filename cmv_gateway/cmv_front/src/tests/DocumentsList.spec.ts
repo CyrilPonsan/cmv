@@ -38,7 +38,7 @@ vi.mock('primevue/usetoast', () => ({
 }))
 
 // Mock de useHttp
-vi.mock('@/composables/use-http', () => ({
+vi.mock('@/composables/useHttp', () => ({
   default: () => ({
     isLoading: false,
     sendRequest: vi.fn()
