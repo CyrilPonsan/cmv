@@ -59,6 +59,12 @@ const router = createRouter({
           path: '/patient/:id',
           name: 'patient',
           component: () => import('../views/PatientView.vue')
+        },
+        //  formulaire d'ajout d'un patient
+        {
+          path: '/add-patient',
+          name: 'add-patient',
+          component: () => import('../views/AddPatientView.vue')
         }
       ]
     }

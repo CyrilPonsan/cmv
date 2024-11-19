@@ -86,6 +86,10 @@
     "from": "de"
   },
   "patients": {
+    "add": {
+      "description": "Création d'un nouveau dossier administratif",
+      "title": "Espace administratif"
+    },
     "home": {
       "description": "Liste des patients",
       "placeholder": {
