@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from app.schemas.patients import CreatePatient
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from app.sql.models import Patient
@@ -59,6 +60,25 @@ class PgPatientsRepository(PatientsRepository):
             )
         print(f"PATIENT : {patient.nom} {patient.prenom}")
         return patient
+
+    async def check_patient_exists(self, db: Session, patient: CreatePatient) -> bool:
+        patient = (
+            db.query(Patient)
+            .filter(
+                Patient.nom == patient.nom
+                and Patient.prenom == patient.prenom
+                and Patient.date_de_naissance == patient.date_de_naissance
+            )
+            .first()
+        )
+        return patient
+
+    async def create_patient(self, db: Session, patient: CreatePatient) -> Patient:
+        new_patient = Patient(**patient.model_dump())
+        db.add(new_patient)
+        db.commit()
+        db.refresh(new_patient)
+        return new_patient
 
     # Fonction de pagination et de tri
     def paginate_and_order(

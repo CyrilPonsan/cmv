@@ -1,6 +1,8 @@
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.repositories.patients_crud import PgPatientsRepository
+from app.schemas.patients import CreatePatient
 
 
 # Retourne une instance de la classe PgPatientsRepository
@@ -97,3 +99,16 @@ class PatientsService:
         return await self.patients_repository.search_patients(
             db=db, search=search, page=page, limit=limit, field=field, order=order
         )
+
+    async def create_patient(self, db: Session, patient: CreatePatient):
+        """
+        Crée un nouveau patient dans la base de données
+        """
+        exisiting_patient = await self.patients_repository.check_patient_exists(
+            db=db, patient=patient
+        )
+        if exisiting_patient:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="patient_already_exists"
+            )
+        return await self.patients_repository.create_patient(db=db, patient=patient)
