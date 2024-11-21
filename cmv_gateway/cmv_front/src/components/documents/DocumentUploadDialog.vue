@@ -11,6 +11,11 @@ import FileUpload from 'primevue/fileupload'
 import Select from 'primevue/select'
 import { useI18n } from 'vue-i18n'
 
+type Emits = {
+  (e: 'refresh', message: string): void
+  (e: 'update:visible', value: boolean): void
+}
+
 // Props du composant
 const { fullname, patientId, visible } = defineProps<{
   fullname: string // Nom complet du patient
@@ -19,6 +24,8 @@ const { fullname, patientId, visible } = defineProps<{
 }>()
 
 const { t } = useI18n()
+
+const emit = defineEmits<Emits>()
 
 // Récupération des fonctions du composable
 const {
@@ -29,18 +36,10 @@ const {
   onSelect,
   selectedDocumentType,
   selectedFile
-} = useUploadDocument(patientId)
-
-// Events émis par le composant
-const emit = defineEmits<{
-  (e: 'update:visible', value: boolean): void // Mise à jour de la visibilité
-  (e: 'refresh', message: string): void // Rafraîchir la page
-}>()
+} = useUploadDocument(patientId, emit)
 
 const handleSubmit = () => {
   onSubmit()
-  emit('update:visible', false)
-  emit('refresh', 'document_created')
 }
 </script>
 

@@ -81,7 +81,7 @@ onMounted(() => getData())
     <template #header>
       <div class="flex items-center gap-x-4 rounded-tl-lg rounded-tr-lg">
         <div class="w-full flex items-center justify-between gap-x-4">
-          <Button as="router-link" to="/" icon="pi pi-plus" label="Ajouter un patient" />
+          <Button as="router-link" to="/add-patient" icon="pi pi-plus" label="Ajouter un patient" />
           <IconField class="flex items-center gap-x-4">
             <InputIcon>
               <i class="pi pi-search opacity-20" />
