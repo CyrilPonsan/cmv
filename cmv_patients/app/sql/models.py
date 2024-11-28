@@ -80,7 +80,7 @@ class Patient(Base):
     code_postal: Mapped[str] = mapped_column(String, nullable=False)
     ville: Mapped[str] = mapped_column(String, nullable=False)
     telephone: Mapped[str] = mapped_column(String, nullable=False)
-    email: Mapped[str] = mapped_column(String, nullable=True, unique=True)
+    email: Mapped[str] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(), server_default=func.now(), onupdate=func.now()
