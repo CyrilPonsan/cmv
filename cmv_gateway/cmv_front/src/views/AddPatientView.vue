@@ -122,6 +122,15 @@ watch(error, (value) => {
               fluid
               selectionMode="single"
               view="date"
+              yearNavigator
+              monthNavigator
+              :manualInput="false"
+              :showTime="false"
+              :showButtonBar="true"
+              yearRange="1900:2024"
+              locale="fr"
+              dateFormat="dd MMMM yyyy"
+              class="stable-datepicker"
               iconDisplay="input"
               v-model="date_de_naissance"
             />
@@ -297,3 +306,12 @@ watch(error, (value) => {
     </section>
   </div>
 </template>
+
+<style scoped>
+:deep(.stable-datepicker) {
+  .p-datepicker-header,
+  .p-datepicker-group {
+    transition: none !important;
+  }
+}
+</style>
