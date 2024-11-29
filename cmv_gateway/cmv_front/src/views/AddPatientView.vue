@@ -2,6 +2,7 @@
 import PageHeader from '@/components/PageHeader.vue'
 import useHttp from '@/composables/useHttp'
 import { regexGeneric } from '@/libs/regex'
+import type SuccessWithMessage from '@/models/success-with-message'
 import { toTypedSchema } from '@vee-validate/zod'
 import Button from 'primevue/button'
 import DatePicker from 'primevue/datepicker'
@@ -9,8 +10,9 @@ import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
 import Select from 'primevue/select'
 import Textarea from 'primevue/textarea'
+import { useToast } from 'primevue/usetoast'
 import { Field, Form, type GenericObject, type SubmissionHandler } from 'vee-validate'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { z } from 'zod'
 
@@ -24,9 +26,8 @@ const { t } = useI18n()
 const civilites = ref(['Monsieur', 'Madame', 'Mademoiselle', 'Autre', 'Roberto'])
 const civilite = ref('Autre')
 const date_de_naissance = ref<Date | null>(null)
-const { sendRequest } = useHttp()
-
-//console.log(date_de_naissance.value)
+const { error, isLoading, sendRequest } = useHttp()
+const toast = useToast()
 
 const newPatientSchema = toTypedSchema(
   z.object({
@@ -61,13 +62,35 @@ const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
     date_de_naissance: date_de_naissance.value
   }
 
-  const applyData = (data: any) => {
-    console.log(data)
+  const applyData = (data: SuccessWithMessage) => {
+    if (data.success) {
+      toast.add({
+        summary: 'Patient ajouté',
+        detail: data.message,
+        severity: 'success',
+        closable: true,
+        life: 5000
+      })
+    }
   }
 
-  sendRequest({ path: '/patients/patients', method: 'POST', data: body }, applyData)
-  applyData(body)
+  sendRequest<SuccessWithMessage>(
+    { path: '/patients/patients', method: 'POST', data: body },
+    applyData
+  )
 }
+
+watch(error, (value) => {
+  if (value && value.length > 0) {
+    toast.add({
+      summary: 'Erreur',
+      detail: value,
+      severity: 'error',
+      closable: true,
+      life: 5000
+    })
+  }
+})
 </script>
 
 <template>
@@ -94,7 +117,14 @@ const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
           </span>
           <span class="flex flex-col gap-y-2">
             <label for="date_de_naissance">Date de naissance</label>
-            <DatePicker showIcon fluid iconDisplay="input" v-model="date_de_naissance" />
+            <DatePicker
+              showIcon
+              fluid
+              selectionMode="single"
+              view="date"
+              iconDisplay="input"
+              v-model="date_de_naissance"
+            />
           </span>
         </div>
         <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -225,7 +255,7 @@ const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
           </span>
         </div>
         <div class="flex justify-end">
-          <Button type="submit" label="Enregistrer" />
+          <Button type="submit" label="Enregistrer" :loading="isLoading" />
         </div>
       </Form>
     </section>
