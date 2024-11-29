@@ -102,7 +102,7 @@ class PatientsService:
             db=db, search=search, page=page, limit=limit, field=field, order=order
         )
 
-    async def create_patient(self, db: Session, patient: Patient) -> Patient:
+    async def create_patient(self, db: Session, data: Patient) -> Patient:
         """
         Crée un nouveau patient
         Args:
@@ -114,9 +114,9 @@ class PatientsService:
             HTTPException: Si le patient existe déjà
         """
         # Vérification si le patient existe déjà
-        if await self.patients_repository.check_patient_exists(db, patient):
+        if await self.patients_repository.check_patient_exists(db, data):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="patient_already_exists"
             )
         # Création du patient via le repository
-        return await self.patients_repository.create_patient(db, patient)
+        return await self.patients_repository.create_patient(db, data)

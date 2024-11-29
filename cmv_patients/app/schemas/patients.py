@@ -148,3 +148,7 @@ class DetailPatient(CreatePatient):
 class DocumentData(BaseModel):
     # Type de document (enum DocumentType)
     type_document: DocumentType
+
+
+class PostPatient(BaseModel):
+    data: CreatePatient

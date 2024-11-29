@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PageHeader from '@/components/PageHeader.vue'
+import useHttp from '@/composables/useHttp'
 import { regexGeneric } from '@/libs/regex'
 import { toTypedSchema } from '@vee-validate/zod'
 import Button from 'primevue/button'
@@ -20,7 +21,12 @@ import { z } from 'zod'
  */
 
 const { t } = useI18n()
-const civilites = ref(['Monsieur', 'Madame', 'Mademoiselle'])
+const civilites = ref(['Monsieur', 'Madame', 'Mademoiselle', 'Autre', 'Roberto'])
+const civilite = ref('Autre')
+const date_de_naissance = ref<Date | null>(null)
+const { sendRequest } = useHttp()
+
+//console.log(date_de_naissance.value)
 
 const newPatientSchema = toTypedSchema(
   z.object({
@@ -49,7 +55,18 @@ const newPatientSchema = toTypedSchema(
 )
 
 const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
-  console.log(values)
+  const body = {
+    ...values,
+    civilite: civilite.value,
+    date_de_naissance: date_de_naissance.value
+  }
+
+  const applyData = (data: any) => {
+    console.log(data)
+  }
+
+  sendRequest({ path: '/patients/patients', method: 'POST', data: body }, applyData)
+  applyData(body)
 }
 </script>
 
@@ -68,6 +85,7 @@ const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
           <span class="flex flex-col gap-y-2">
             <label for="civilite">Civilité</label>
             <Select
+              v-model="civilite"
               label="civilite"
               placeholder="Sélectionner une civilité"
               name="civilite"
@@ -76,7 +94,7 @@ const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
           </span>
           <span class="flex flex-col gap-y-2">
             <label for="date_de_naissance">Date de naissance</label>
-            <DatePicker showIcon fluid iconDisplay="input" />
+            <DatePicker showIcon fluid iconDisplay="input" v-model="date_de_naissance" />
           </span>
         </div>
         <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">

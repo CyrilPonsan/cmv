@@ -117,18 +117,28 @@ class PatientsService:
         Returns:
             La réponse de l'API patients
         """
-        # Construction du chemin complet avec les paramètres de requête
-        full_path = path
+        # Construction du chemin complet avec les paramètres de requête et slash final
+        full_path = path.rstrip("/") + "/"
         if request.query_params:
-            full_path = f"{path}?{request.query_params}"
+            full_path = f"{full_path}?{request.query_params}"
         url = f"{self.url_api_patients}/{full_path}"
         print(f"URL : {url}")
+
+        # Récupération du corps de la requête
+        request_body = await request.json()
+        # Si les données sont dans un objet 'data', on les extrait
+        if isinstance(request_body, dict) and "data" in request_body:
+            request_body = request_body["data"]
 
         # Envoi de la requête POST à l'API patients
         response = await client.post(
             url,
-            headers={"Authorization": f"Bearer {internal_token}"},
-            json=request.json(),
+            headers={
+                "Authorization": f"Bearer {internal_token}",
+                "Content-Type": "application/json",
+            },
+            json=request_body,  # Envoi direct des données du patient
+            follow_redirects=True,
         )
 
         # Journalisation de la requête
@@ -142,6 +152,7 @@ class PatientsService:
         else:
             # Gestion des erreurs
             result = response.json()
+            print(f"RESULT : {result}")
             raise HTTPException(
                 status_code=response.status_code,
                 detail=result["detail"] or "server_issue",
