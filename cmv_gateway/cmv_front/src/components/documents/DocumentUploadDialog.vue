@@ -71,11 +71,11 @@ const handleSubmit = () => {
       <!-- Zone de téléversement de fichier -->
       <FileUpload
         name="file"
-        customUpload="true"
+        :customUpload="true"
         :multiple="false"
         accept="application/pdf"
         :maxFileSize="3000000"
-        previewWidth="0"
+        :previewWidth="0"
         :chooseLabel="t('components.documentsList.upload_dialog.buttons.choose_label')"
         :showUploadButton="false"
         :showCancelButton="false"

@@ -25,7 +25,7 @@ import { z } from 'zod'
 const { t } = useI18n()
 const civilites = ref(['Monsieur', 'Madame', 'Mademoiselle', 'Autre', 'Roberto'])
 const civilite = ref('Autre')
-const date_de_naissance = ref<Date | null>(null)
+const date_de_naissance = ref<Date | null>(new Date(1974, 3, 14))
 const { error, isLoading, sendRequest } = useHttp()
 const toast = useToast()
 
@@ -122,17 +122,12 @@ watch(error, (value) => {
               fluid
               selectionMode="single"
               view="date"
-              yearNavigator
-              monthNavigator
-              :manualInput="false"
-              :showTime="false"
               :showButtonBar="true"
               yearRange="1900:2024"
               locale="fr"
-              dateFormat="dd MMMM yyyy"
-              class="stable-datepicker"
               iconDisplay="input"
               v-model="date_de_naissance"
+              :defaultDate="date_de_naissance"
             />
           </span>
         </div>
@@ -312,6 +307,15 @@ watch(error, (value) => {
   .p-datepicker-header,
   .p-datepicker-group {
     transition: none !important;
+  }
+
+  .p-datepicker {
+    min-width: 350px;
+  }
+
+  .p-datepicker-year-picker {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 </style>
