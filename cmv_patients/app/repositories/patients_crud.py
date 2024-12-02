@@ -81,6 +81,9 @@ class PgPatientsRepository(PatientsRepository):
         db.add(db_patient)
         db.commit()
         db.refresh(db_patient)
+        print(
+            f"DB_PATIENT : {db_patient.nom} {db_patient.prenom} {db_patient.id_patient}"
+        )
         return db_patient
 
     async def check_patient_exists(self, db: Session, patient: Patient) -> bool:

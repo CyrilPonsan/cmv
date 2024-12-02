@@ -1,8 +1,18 @@
+<script setup lang="ts">
+/**
+ * @file PatientDataDisclaimer.vue
+ * @description Composant affichant les informations légales et les responsabilités concernant la protection des données
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
+ */
+</script>
+
 <template>
+  <!-- Titre principal -->
   <h3 class="text-primary-500 font-bold mb-3">
     Engagement de confidentialité et protection des données
   </h3>
 
+  <!-- Section sur le contexte légal -->
   <div class="surface-100 p-3 border-round mb-3">
     <h4 class="text-primary-500 font-bold mt-0">Contexte Légal</h4>
     <p>
@@ -11,6 +21,7 @@
       :
     </p>
 
+    <!-- Liste des principes RGPD -->
     <ul class="pl-4">
       <li>- Collecter uniquement les données strictement nécessaires</li>
       <li>- Informer la personne concernée de l'usage de ses données</li>
@@ -19,9 +30,11 @@
     </ul>
   </div>
 
+  <!-- Section sur les responsabilités -->
   <div class="surface-100 p-3 border-round mb-3">
     <h4 class="text-primary-500 font-bold mt-0">Vos Responsabilités</h4>
     <p>En tant qu'employé, vous devez :</p>
+    <!-- Liste des responsabilités de l'employé -->
     <ol class="pl-4">
       <li>- Expliquer au patient l'usage de ses données</li>
       <li>- Recueillir son consentement</li>

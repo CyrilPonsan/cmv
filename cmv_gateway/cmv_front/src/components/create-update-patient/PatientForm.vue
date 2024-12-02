@@ -1,8 +1,22 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod'
-import { Button, DatePicker, InputText, Message, Select, Textarea } from 'primevue'
-import { Field, Form } from 'vee-validate'
+/**
+ * @file PatientForm.vue
+ * @description Formulaire de création/modification d'un patient
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
+ */
 
+// Import des dépendances nécessaires
+import { toTypedSchema } from '@vee-validate/zod'
+import Button from 'primevue/button'
+import DatePicker from 'primevue/datepicker'
+import InputText from 'primevue/inputtext'
+import Message from 'primevue/message'
+import Select from 'primevue/select'
+import Textarea from 'primevue/textarea'
+import { Field, Form } from 'vee-validate'
+import { useI18n } from 'vue-i18n'
+
+// Définition des props du composant
 const props = defineProps<{
   civilite: string
   civilites: string[]
@@ -14,31 +28,36 @@ const props = defineProps<{
   updateDateDeNaissance: (value: Date | Date[] | (Date | null)[] | null | undefined) => void
 }>()
 
+const { t } = useI18n()
+
+// Gestion de la soumission du formulaire
 const handleSubmit = (values: Record<string, unknown>) => {
   props.onSubmit(values)
 }
 </script>
 
 <template>
+  <!-- Formulaire principal -->
   <Form
     class="flex flex-col gap-y-8 w-5/6 lg:w-[42rem]"
     :validation-schema="schema"
     @submit="handleSubmit"
   >
+    <!-- Section civilité et date de naissance -->
     <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
       <span class="flex flex-col gap-y-2">
-        <label for="civilite">Civilité</label>
+        <label for="civilite">{{ t('components.patientForm.civilite') }}</label>
         <Select
           :value="civilite"
-          label="civilite"
-          placeholder="Sélectionner une civilité"
+          :label="t('components.patientForm.civilite')"
+          :placeholder="t('components.patientForm.select_placeholder')"
           name="civilite"
           :options="civilites"
           @update:modelValue="updateCivilite"
         />
       </span>
       <span class="flex flex-col gap-y-2">
-        <label for="date_de_naissance">Date de naissance</label>
+        <label for="date_de_naissance">{{ t('components.patientForm.date_de_naissance') }}</label>
         <DatePicker
           showIcon
           fluid
@@ -54,10 +73,12 @@ const handleSubmit = (values: Record<string, unknown>) => {
         />
       </span>
     </div>
+
+    <!-- Section nom et prénom -->
     <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
       <span class="flex flex-col gap-y-2">
         <Field v-slot="{ field, errorMessage }" name="nom">
-          <label for="nom">Nom</label>
+          <label for="nom">{{ t('components.patientForm.lastname') }}</label>
           <InputText
             fluid
             id="nom"
@@ -75,7 +96,7 @@ const handleSubmit = (values: Record<string, unknown>) => {
       </span>
       <span class="flex flex-col gap-y-2">
         <Field v-slot="{ field, errorMessage }" name="prenom">
-          <label for="prenom">Prénom</label>
+          <label for="prenom">{{ t('components.patientForm.firstname') }}</label>
           <InputText
             fluid
             id="prenom"
@@ -92,9 +113,11 @@ const handleSubmit = (values: Record<string, unknown>) => {
         </Field>
       </span>
     </div>
+
+    <!-- Section adresse -->
     <div class="w-full flex flex-col gap-y-2">
       <Field v-slot="{ field, errorMessage }" name="adresse">
-        <label for="adresse">Adresse</label>
+        <label for="adresse">{{ t('components.patientForm.address') }}</label>
         <Textarea
           fluid
           id="adresse"
@@ -109,10 +132,12 @@ const handleSubmit = (values: Record<string, unknown>) => {
         </Message>
       </Field>
     </div>
+
+    <!-- Section code postal et ville -->
     <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
       <span class="flex flex-col gap-y-2">
         <Field v-slot="{ field, errorMessage }" name="code_postal">
-          <label for="code_postal">Code postal</label>
+          <label for="code_postal">{{ t('components.patientForm.zip_code') }}</label>
           <InputText
             fluid
             id="code_postal"
@@ -129,7 +154,7 @@ const handleSubmit = (values: Record<string, unknown>) => {
       </span>
       <span class="flex flex-col gap-y-2">
         <Field v-slot="{ field, errorMessage }" name="ville">
-          <label for="ville">Ville</label>
+          <label for="ville">{{ t('components.patientForm.city') }}</label>
           <InputText
             fluid
             id="ville"
@@ -145,10 +170,12 @@ const handleSubmit = (values: Record<string, unknown>) => {
         </Field>
       </span>
     </div>
+
+    <!-- Section téléphone et email -->
     <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
       <span class="flex flex-col gap-y-2">
         <Field v-slot="{ field, errorMessage }" name="telephone">
-          <label for="telephone">Téléphone</label>
+          <label for="telephone">{{ t('components.patientForm.phone_number') }}</label>
           <InputText
             fluid
             id="telephone"
@@ -165,7 +192,7 @@ const handleSubmit = (values: Record<string, unknown>) => {
       </span>
       <span class="flex flex-col gap-y-2">
         <Field v-slot="{ field, errorMessage }" name="email">
-          <label for="email">Email</label>
+          <label for="email">{{ t('components.patientForm.email') }}</label>
           <InputText
             fluid
             id="email"
@@ -181,8 +208,10 @@ const handleSubmit = (values: Record<string, unknown>) => {
         </Field>
       </span>
     </div>
+
+    <!-- Bouton de soumission -->
     <div class="flex justify-end">
-      <Button type="submit" label="Enregistrer" :loading="isLoading" />
+      <Button type="submit" :label="t('components.patientForm.submit')" :loading="isLoading" />
     </div>
   </Form>
 </template>

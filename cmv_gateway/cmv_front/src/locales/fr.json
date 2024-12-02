@@ -61,6 +61,19 @@
         "placeholder": "Sélectionner un type de document"
       },
       "uploaded_documents": "Documents téléversés"
+    },
+    "patientForm": {
+      "civilite": "Civilité",
+      "select_placeholder": "Sélectionner une civilité",
+      "date_de_naissance": "Date de naissance",
+      "lastname": "Nom",
+      "firstname": "Prénom",
+      "address": "Adresse",
+      "zip_code": "Code postal",
+      "city": "Ville",
+      "phone_number": "Numéro de téléphone",
+      "email": "Email",
+      "submit": "Enregistrer"
     }
   },
   "error": {
@@ -74,7 +87,19 @@
     "credentials": "Identifiant ou mot de passe incorrect",
     "network_issue": "Un problème est survenu, réessayez plus tard...",
     "patient_not_found": "Le patient n'existe pas.",
-    "document_not_found": "Le document n'existe pas."
+    "document_not_found": "Le document n'existe pas.",
+    "no_firstname": "Un prénom est requis",
+    "not_valid_firstname": "Le prénom n'est pas valide",
+    "no_lastname": "Un nom est requis",
+    "not_valid_lastname": "Le nom n'est pas valide",
+    "no_address": "Une adresse est requise",
+    "not_valid_address": "L'adresse n'est pas valide",
+    "no_zipcode": "Un code postal est requis",
+    "not_valid_zipcode": "Le code postal n'est pas valide",
+    "no_city": "Une ville est requise",
+    "not_valid_city": "La ville n'est pas valide",
+    "no_phone": "Un numéro de téléphone est requis",
+    "not_valid_phone": "Le numéro de téléphone n'est pas valide"
   },
   "login": {
     "h1": "Clinique Montvert",

@@ -1,17 +1,19 @@
 import { ref, watch, type Ref } from 'vue'
 import useHttp from './useHttp'
-import { useToast } from 'primevue'
 import type SuccessWithMessage from '@/models/success-with-message'
 import { toTypedSchema } from '@vee-validate/zod'
 import { regexGeneric } from '@/libs/regex'
 import { useI18n } from 'vue-i18n'
 import { z } from 'zod'
 import { useRouter } from 'vue-router'
+import { useToast } from 'primevue/usetoast'
 
+// Type pour la réponse de création d'un patient
 type CreatePatientResponse = SuccessWithMessage & {
   id_patient: number
 }
 
+// Type pour le formulaire patient avec ses propriétés et méthodes
 type PatientForm = {
   civilite: Ref<string>
   civilites: Ref<string[]>
@@ -23,12 +25,14 @@ type PatientForm = {
   updateDateDeNaissance: (value: Date | Date[] | (Date | null)[] | null | undefined) => void
 }
 
+// Hook personnalisé pour gérer le formulaire patient
 const usePatientForm = (): PatientForm => {
   const { error, isLoading, sendRequest } = useHttp()
   const toast = useToast()
   const { t } = useI18n()
   const router = useRouter()
 
+  // Schéma de validation du formulaire avec Zod
   const schema = toTypedSchema(
     z.object({
       prenom: z
@@ -50,36 +54,45 @@ const usePatientForm = (): PatientForm => {
         message: t('error.not_valid_phone')
       }),
       email: z
-        .string({ required_error: t('error.no_email') })
+        .string()
         .email({ message: t('error.not_valid_email') })
+        .optional()
+        .nullable()
     })
   )
 
+  // Valeurs par défaut pour les champs du formulaire
   const civilites = ref(['Monsieur', 'Madame', 'Autre', 'Roberto'])
   const civilite = ref('Autre')
   const date_de_naissance = ref<Date | Date[] | (Date | null)[] | null | undefined>(
     new Date(1974, 3, 14)
   )
 
+  // Méthode pour mettre à jour la civilité
   const updateCivilite = (value: string) => {
     civilite.value = value
   }
 
+  // Méthode pour mettre à jour la date de naissance
   const updateDateDeNaissance = (value: Date | Date[] | (Date | null)[] | null | undefined) => {
     date_de_naissance.value = value
   }
 
+  // Gestionnaire de soumission du formulaire
   const onSubmit = (data: Record<string, unknown>) => {
+    // Préparation des données à envoyer
     const body = {
       ...data,
       civilite: civilite.value,
       date_de_naissance: date_de_naissance.value
     }
 
+    // Callback appelé après la création réussie du patient
     const applyData = (data: CreatePatientResponse) => {
       console.log({ data })
 
       if (data.success) {
+        // Affichage d'un message de succès
         toast.add({
           summary: 'Patient ajouté',
           detail: data.message,
@@ -87,16 +100,19 @@ const usePatientForm = (): PatientForm => {
           closable: true,
           life: 5000
         })
+        // Redirection vers la page du patient créé
         router.push(`/patient/${data.id_patient}`)
       }
     }
 
+    // Envoi de la requête de création du patient
     sendRequest<CreatePatientResponse>(
       { path: '/patients/patients', method: 'POST', data: body },
       applyData
     )
   }
 
+  // Surveillance des erreurs pour afficher les notifications
   watch(error, (value) => {
     if (value && value.length > 0) {
       toast.add({
@@ -109,6 +125,7 @@ const usePatientForm = (): PatientForm => {
     }
   })
 
+  // Retourne les propriétés et méthodes du formulaire
   return {
     civilite,
     civilites,
