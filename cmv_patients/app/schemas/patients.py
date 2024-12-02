@@ -4,6 +4,7 @@ import re
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
 from app.sql.models import Civilite, DocumentType
+from app.schemas.schemas import SuccessWithMessage
 
 from .regular_expression import generic_pattern
 
@@ -150,5 +151,6 @@ class DocumentData(BaseModel):
     type_document: DocumentType
 
 
-class PostPatient(BaseModel):
-    data: CreatePatient
+class PostPatientResponse(SuccessWithMessage):
+    # Identifiant unique du patient
+    id_patient: int

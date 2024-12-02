@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import PatientForm from '@/components/PatientForm.vue'
+import PatientForm from '@/components/create-update-patient/PatientForm.vue'
 import PageHeader from '@/components/PageHeader.vue'
-import PatientDataDisclaimer from '@/components/PatientDataDisclaimer.vue'
+import PatientDataDisclaimer from '@/components/create-update-patient/PatientDataDisclaimer.vue'
 import usePatientForm from '@/composables/usePatientForm'
 import { useI18n } from 'vue-i18n'
 

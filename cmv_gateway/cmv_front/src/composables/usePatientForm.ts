@@ -6,6 +6,11 @@ import { toTypedSchema } from '@vee-validate/zod'
 import { regexGeneric } from '@/libs/regex'
 import { useI18n } from 'vue-i18n'
 import { z } from 'zod'
+import { useRouter } from 'vue-router'
+
+type CreatePatientResponse = SuccessWithMessage & {
+  id_patient: number
+}
 
 type PatientForm = {
   civilite: Ref<string>
@@ -22,6 +27,7 @@ const usePatientForm = (): PatientForm => {
   const { error, isLoading, sendRequest } = useHttp()
   const toast = useToast()
   const { t } = useI18n()
+  const router = useRouter()
 
   const schema = toTypedSchema(
     z.object({
@@ -70,7 +76,9 @@ const usePatientForm = (): PatientForm => {
       date_de_naissance: date_de_naissance.value
     }
 
-    const applyData = (data: SuccessWithMessage) => {
+    const applyData = (data: CreatePatientResponse) => {
+      console.log({ data })
+
       if (data.success) {
         toast.add({
           summary: 'Patient ajouté',
@@ -79,10 +87,11 @@ const usePatientForm = (): PatientForm => {
           closable: true,
           life: 5000
         })
+        router.push(`/patient/${data.id_patient}`)
       }
     }
 
-    sendRequest<SuccessWithMessage>(
+    sendRequest<CreatePatientResponse>(
       { path: '/patients/patients', method: 'POST', data: body },
       applyData
     )

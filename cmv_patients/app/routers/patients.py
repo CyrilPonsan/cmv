@@ -8,7 +8,7 @@ from app.dependancies.db_session import get_db
 from app.schemas.patients import (
     CreatePatient,
     PatientsParams,
-    PostPatient,
+    PostPatientResponse,
     ReadAllPatients,
     SearchPatientsParams,
     DetailPatient,
@@ -46,8 +46,13 @@ async def create_patient(
         HTTPException: En cas d'erreur lors de la création
     """
     print(f"DATA: {data.nom}")
-    await patients_service.create_patient(db=db, data=data)
-    return {"success": True, "message": "Patient créé avec succès"}
+    new_patient = await patients_service.create_patient(db=db, data=data)
+    print(f"NEW_PATIENT: {new_patient.id_patient}")
+    return {
+        "success": True,
+        "message": "Patient créé avec succès",
+        "id_patient": new_patient.id_patient,
+    }
 
 
 # Endpoint pour récupérer la liste des patients avec pagination et tri
