@@ -1,35 +1,22 @@
 <script setup lang="ts">
-import useHttp from '@/composables/useHttp'
-import type SuccessWithMessage from '@/models/success-with-message'
 import { toTypedSchema } from '@vee-validate/zod'
-import { DatePicker, InputText, Message, Select, useToast } from 'primevue'
+import { Button, DatePicker, InputText, Message, Select, Textarea } from 'primevue'
 import { Field, Form } from 'vee-validate'
-import { ref } from 'vue'
 
 const props = defineProps<{
-  schema: ReturnType<typeof toTypedSchema>
   civilite: string
+  civilites: string[]
   date_de_naissance: Date | Date[] | (Date | null)[] | null | undefined
+  onSubmit: (data: Record<string, unknown>) => void
+  schema: ReturnType<typeof toTypedSchema>
+  isLoading: boolean
+  updateCivilite: (value: string) => void
+  updateDateDeNaissance: (value: Date | Date[] | (Date | null)[] | null | undefined) => void
 }>()
-
-const { isLoading, sendRequest } = useHttp()
-const toast = useToast()
 
 const handleSubmit = (values: Record<string, unknown>) => {
-  const body = {
-    ...values,
-    civilite: props.civilite,
-    date_de_naissance: props.date_de_naissance
-  }
+  props.onSubmit(values)
 }
-
-const toto = (value: Date | Date[] | (Date | null)[] | null | undefined) => {
-  emit('update:date_de_naissance', value)
-}
-
-const emit = defineEmits<{
-  (e: 'update:date_de_naissance', value: Date | Date[] | (Date | null)[] | null | undefined): void
-}>()
 </script>
 
 <template>
@@ -47,6 +34,7 @@ const emit = defineEmits<{
           placeholder="Sélectionner une civilité"
           name="civilite"
           :options="civilites"
+          @update:modelValue="updateCivilite"
         />
       </span>
       <span class="flex flex-col gap-y-2">
@@ -62,7 +50,7 @@ const emit = defineEmits<{
           iconDisplay="input"
           :value="props.date_de_naissance"
           :defaultDate="props.date_de_naissance"
-          @update:modelValue="toto"
+          @update:modelValue="updateDateDeNaissance"
         />
       </span>
     </div>

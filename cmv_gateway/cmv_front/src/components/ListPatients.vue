@@ -32,7 +32,7 @@ const {
   getData,
   lazyState,
   loading,
-  onFilterChange,
+  //onFilterChange,
   onResetFilter,
   onLazyLoad,
   onSort,
@@ -97,9 +97,8 @@ const handleSort = (event: DataTableSortEvent) => {
             </InputIcon>
             <InputText
               class="focus:!ring-0 focus:!ring-offset-0"
-              :value="search"
+              v-model="search"
               :placeholder="t('patients.home.placeholder.search')"
-              @input="onFilterChange"
             />
             <InputIcon>
               <i
