@@ -89,8 +89,6 @@ const usePatientForm = (): PatientForm => {
 
     // Callback appelé après la création réussie du patient
     const applyData = (data: CreatePatientResponse) => {
-      console.log({ data })
-
       if (data.success) {
         // Affichage d'un message de succès
         toast.add({
@@ -113,17 +111,20 @@ const usePatientForm = (): PatientForm => {
   }
 
   // Surveillance des erreurs pour afficher les notifications
-  watch(error, (value) => {
-    if (value && value.length > 0) {
-      toast.add({
-        summary: 'Erreur',
-        detail: value,
-        severity: 'error',
-        closable: true,
-        life: 5000
-      })
+  watch(
+    () => error.value,
+    (newError) => {
+      if (newError) {
+        toast.add({
+          summary: 'Erreur',
+          detail: newError,
+          severity: 'error',
+          closable: true,
+          life: 5000
+        })
+      }
     }
-  })
+  )
 
   // Retourne les propriétés et méthodes du formulaire
   return {

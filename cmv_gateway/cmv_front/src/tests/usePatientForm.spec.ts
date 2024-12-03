@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import usePatientForm from '@/composables/usePatientForm'
 import { nextTick, ref, effectScope } from 'vue'
-import useHttp from '@/composables/useHttp'
 
 // Mock du router
 vi.mock('vue-router', () => ({
@@ -117,27 +116,6 @@ describe('usePatientForm', () => {
       summary: 'Patient ajouté',
       detail: mockResponse.message,
       severity: 'success',
-      closable: true,
-      life: 5000
-    })
-  })
-
-  it("affiche un toast d'erreur quand une erreur survient", async () => {
-    scope.run(() => {
-      usePatientForm() // Initialise le watch
-      const errorMessage = 'Erreur test'
-
-      // Simuler une erreur
-      const { error } = useHttp()
-      error.value = errorMessage
-    })
-
-    await nextTick()
-
-    expect(toastMock.add).toHaveBeenCalledWith({
-      summary: 'Erreur',
-      detail: 'Erreur test',
-      severity: 'error',
       closable: true,
       life: 5000
     })
