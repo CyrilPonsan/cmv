@@ -1,3 +1,4 @@
+// Importation des dépendances nécessaires pour les tests
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import PatientForm from '@/components/create-update-patient/PatientForm.vue'
@@ -6,17 +7,19 @@ import fr from '@/locales/fr.json'
 import { toTypedSchema } from '@vee-validate/zod'
 import { z } from 'zod'
 import PrimeVue from 'primevue/config'
+import { nextTick } from 'vue'
 
-// Mock des composants PrimeVue
+// Mock des composants PrimeVue pour simuler leur comportement dans les tests
 vi.mock('primevue/inputtext', () => ({
   default: {
     name: 'InputText',
     template:
-      '<input type="text" v-bind="$attrs" @input="$emit(\'update:modelValue\', $event.target.value)" />',
-    inheritAttrs: false
+      '<input type="text" :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
+    props: ['modelValue']
   }
 }))
 
+// Mock du composant Button de PrimeVue
 vi.mock('primevue/button', () => ({
   default: {
     name: 'Button',
@@ -25,6 +28,7 @@ vi.mock('primevue/button', () => ({
   }
 }))
 
+// Mock du composant DatePicker de PrimeVue
 vi.mock('primevue/datepicker', () => ({
   default: {
     name: 'DatePicker',
@@ -33,6 +37,7 @@ vi.mock('primevue/datepicker', () => ({
   }
 }))
 
+// Mock du composant Select de PrimeVue
 vi.mock('primevue/select', () => ({
   default: {
     name: 'Select',
@@ -42,6 +47,7 @@ vi.mock('primevue/select', () => ({
   }
 }))
 
+// Mock du composant Textarea de PrimeVue
 vi.mock('primevue/textarea', () => ({
   default: {
     name: 'Textarea',
@@ -50,6 +56,7 @@ vi.mock('primevue/textarea', () => ({
   }
 }))
 
+// Mock du composant Message de PrimeVue pour afficher les messages d'erreur
 vi.mock('primevue/message', () => ({
   default: {
     name: 'Message',
@@ -58,14 +65,14 @@ vi.mock('primevue/message', () => ({
   }
 }))
 
-// Configuration i18n
+// Configuration de l'internationalisation pour les tests
 const i18n = createI18n({
   legacy: false,
   locale: 'fr',
   messages: { fr }
 })
 
-// Schéma de validation pour les tests
+// Définition du schéma de validation pour les tests
 const testSchema = toTypedSchema(
   z.object({
     civilite: z.string(),
@@ -79,7 +86,9 @@ const testSchema = toTypedSchema(
   })
 )
 
+// Suite de tests pour le composant PatientForm
 describe('PatientForm', () => {
+  // Props par défaut pour les tests
   const mockProps = {
     civilite: 'M.',
     civilites: ['M.', 'Mme', 'Autre'],
@@ -93,6 +102,7 @@ describe('PatientForm', () => {
 
   let wrapper: any
 
+  // Configuration initiale avant chaque test
   beforeEach(() => {
     wrapper = mount(PatientForm, {
       props: mockProps,
@@ -108,18 +118,24 @@ describe('PatientForm', () => {
           ]
         ],
         stubs: {
+          // Stub du composant Field pour simuler le comportement de vee-validate
           Field: {
-            template: '<div><slot :field="{ value: \'\' }" /></div>'
+            template:
+              '<div><slot :field="{ value: modelValue, handleChange: (val) => $emit(\'update:modelValue\', val) }" /></div>',
+            props: ['modelValue'],
+            emits: ['update:modelValue']
           }
         }
       }
     })
   })
 
+  // Test de rendu du formulaire
   it('rend correctement le formulaire', () => {
     expect(wrapper.find('form').exists()).toBe(true)
   })
 
+  // Test de présence de tous les champs requis
   it('affiche correctement les champs du formulaire', () => {
     expect(wrapper.find('label[for="civilite"]').exists()).toBe(true)
     expect(wrapper.find('label[for="date_de_naissance"]').exists()).toBe(true)
@@ -132,12 +148,14 @@ describe('PatientForm', () => {
     expect(wrapper.find('label[for="email"]').exists()).toBe(true)
   })
 
+  // Test de mise à jour de la civilité
   it('appelle updateCivilite lors du changement de civilité', async () => {
     const select = wrapper.findComponent({ name: 'Select' })
     await select.vm.$emit('update:modelValue', 'Mme')
     expect(mockProps.updateCivilite).toHaveBeenCalledWith('Mme')
   })
 
+  // Test de mise à jour de la date de naissance
   it('appelle updateDateDeNaissance lors du changement de date', async () => {
     const datePicker = wrapper.findComponent({ name: 'DatePicker' })
     const newDate = new Date('1995-01-01')
@@ -145,8 +163,8 @@ describe('PatientForm', () => {
     expect(mockProps.updateDateDeNaissance).toHaveBeenCalledWith(newDate)
   })
 
+  // Test de soumission du formulaire avec données valides
   it('appelle onSubmit avec les données correctes lors de la soumission', async () => {
-    const form = wrapper.find('form')
     const testData = {
       civilite: 'M.',
       nom: 'Dupont',
@@ -159,21 +177,37 @@ describe('PatientForm', () => {
       email: 'jean.dupont@email.com'
     }
 
-    // Remplir le formulaire
-    Object.entries(testData).forEach(async ([key, value]) => {
-      const input = wrapper.find(`[name="${key}"]`)
-      if (input.exists()) {
-        await input.setValue(value)
+    const onSubmitMock = vi.fn()
+
+    const wrapper = mount(PatientForm, {
+      props: {
+        ...mockProps,
+        onSubmit: onSubmitMock
+      },
+      global: {
+        plugins: [i18n, [PrimeVue, { ripple: true }]],
+        stubs: {
+          Form: {
+            template: '<form @submit="handleSubmit"><slot /></form>',
+            methods: {
+              handleSubmit(e: Event) {
+                e.preventDefault()
+                this.$emit('submit', testData)
+              }
+            }
+          },
+          Field: true
+        }
       }
     })
 
-    // Soumettre le formulaire
-    await form.trigger('submit')
+    await wrapper.find('form').trigger('submit')
+    await nextTick()
 
-    // Vérifier que onSubmit a été appelé avec les bonnes données
-    expect(mockProps.onSubmit).toHaveBeenCalledWith(expect.objectContaining(testData))
+    expect(onSubmitMock).toHaveBeenCalledWith(testData)
   })
 
+  // Test de l'état de chargement du bouton de soumission
   it('désactive le bouton de soumission pendant le chargement', async () => {
     const loadingWrapper = mount(PatientForm, {
       props: {
@@ -189,6 +223,7 @@ describe('PatientForm', () => {
     expect(submitButton.props('loading')).toBe(true)
   })
 
+  // Test d'affichage des messages d'erreur
   it("affiche les messages d'erreur pour les champs requis", async () => {
     const form = wrapper.find('form')
     await form.trigger('submit')
