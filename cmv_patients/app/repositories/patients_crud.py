@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from sqlalchemy import func
 from sqlalchemy.orm import Session
+from app.schemas.patients import CreatePatient
 from app.sql.models import Patient
 from typing import List
 from fastapi import HTTPException, status
@@ -18,10 +19,48 @@ class PatientsRead(ABC):
     ) -> tuple[List[Patient], int]:
         pass
 
+    @abstractmethod
+    async def create_patient(self, db: Session, patient: Patient) -> Patient:
+        pass
+
+    @abstractmethod
+    async def check_patient_exists(self, db: Session, patient: Patient) -> bool:
+        pass
+
+    @abstractmethod
+    async def search_patients(
+        self, db: Session, search: str, page: int, limit: int, field: str, order: str
+    ) -> dict:
+        pass
+
+    @abstractmethod
+    async def read_patient_by_id(self, db: Session, patient_id: int) -> Patient:
+        pass
+
 
 class PatientsRepository(PatientsRead):
     @abstractmethod
-    async def read_all_patients():
+    async def read_all_patients(
+        self, db: Session, page: int, limit: int, field: str, order: str
+    ) -> dict:
+        pass
+
+    @abstractmethod
+    async def read_patient_by_id(self, db: Session, patient_id: int) -> Patient:
+        pass
+
+    @abstractmethod
+    async def create_patient(self, db: Session, patient: Patient) -> Patient:
+        pass
+
+    @abstractmethod
+    async def check_patient_exists(self, db: Session, patient: Patient) -> bool:
+        pass
+
+    @abstractmethod
+    async def search_patients(
+        self, db: Session, search: str, page: int, limit: int, field: str, order: str
+    ) -> dict:
         pass
 
 
@@ -36,6 +75,26 @@ class PgPatientsRepository(PatientsRepository):
         order: str = "asc",
     ) -> dict:
         return self.paginate_and_order(db, Patient, page, limit, field, order)
+
+    async def create_patient(self, db: Session, patient: CreatePatient) -> Patient:
+        db_patient = Patient(**patient.model_dump())
+        db.add(db_patient)
+        db.commit()
+        db.refresh(db_patient)
+        print(
+            f"DB_PATIENT : {db_patient.nom} {db_patient.prenom} {db_patient.id_patient}"
+        )
+        return db_patient
+
+    async def check_patient_exists(self, db: Session, patient: Patient) -> bool:
+        patient = (
+            db.query(Patient)
+            .filter(Patient.nom == patient.nom)
+            .filter(Patient.prenom == patient.prenom)
+            .filter(Patient.date_de_naissance == patient.date_de_naissance)
+            .first()
+        )
+        return patient is not None
 
     # Fonction de recherche de patients avec pagination et tri
     async def search_patients(

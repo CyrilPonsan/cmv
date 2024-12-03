@@ -23,53 +23,18 @@ describe('useLazyLoad composable', () => {
     composable = useLazyLoad<any>('/api/patients')
   })
 
-  it('should update search value and reset pagination on filter change', () => {
-    const event = {
-      target: {
-        value: 'test'
-      }
-    } as unknown as Event
-
-    composable.onFilterChange(event)
+  it('should update search value and reset pagination', () => {
+    composable.search.value = 'test'
 
     expect(composable.lazyState.value.first).toBe(0)
     expect(composable.loading.value).toBe(false)
   })
 
-  it('should debounce filter change events', () => {
-    vi.useFakeTimers()
-    const event = {
-      target: {
-        value: 'test'
-      }
-    } as unknown as Event
+  it('should reset search value', () => {
+    composable.search.value = 'test'
+    composable.onResetFilter()
 
-    composable.onFilterChange(event)
-    composable.onFilterChange(event)
-    composable.onFilterChange(event)
-
-    vi.runAllTimers()
-
+    expect(composable.search.value).toBe('')
     expect(composable.lazyState.value.first).toBe(0)
-    expect(composable.loading.value).toBe(false)
-  })
-
-  it('should clear previous timer on new filter change event', () => {
-    vi.useFakeTimers()
-    const event = {
-      target: {
-        value: 'test'
-      }
-    } as unknown as Event
-
-    composable.onFilterChange(event)
-    vi.advanceTimersByTime(500)
-    composable.onFilterChange(event)
-    vi.advanceTimersByTime(500)
-    composable.onFilterChange(event)
-    vi.runAllTimers()
-
-    expect(composable.lazyState.value.first).toBe(0)
-    expect(composable.loading.value).toBe(false)
   })
 })

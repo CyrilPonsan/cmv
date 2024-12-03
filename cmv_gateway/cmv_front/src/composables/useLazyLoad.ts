@@ -28,7 +28,6 @@ type UseLazyLoad<T> = {
   getData: () => void // Fonction pour récupérer les données
   lazyState: Ref<LazyState> // État de la pagination
   loading: Ref<boolean> // État du chargement
-  onFilterChange: (event: Event) => void // Gestionnaire de changement de filtre
   onLazyLoad: (event: LazyLoadEvent) => void // Gestionnaire de lazy loading
   onResetFilter: () => void // Réinitialisation du filtre
   onSort: (event: LazyLoadEvent) => void // Gestionnaire de tri
@@ -57,24 +56,6 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     sortField: 'nom', // Champ de tri par défaut
     sortOrder: 1 // Ordre de tri (1: ascendant, -1: descendant)
   })
-
-  /**
-   * Gère le changement de filtre avec debounce
-   * @param event - Événement de changement
-   */
-  const onFilterChange = (event: Event) => {
-    const element = event.target as HTMLInputElement
-    if (timer) {
-      clearTimeout(timer)
-    }
-    timer = setTimeout(() => {
-      lazyState.value = {
-        ...lazyState.value,
-        first: 0
-      }
-      search.value = element.value
-    }, 300)
-  }
 
   /**
    * Réinitialise le filtre de recherche
@@ -154,10 +135,23 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     console.log('watching...')
 
     if (search.value) {
-      searchData(search.value)
+      if (timer) {
+        clearTimeout(timer)
+      }
+      timer = setTimeout(() => {
+        lazyState.value = {
+          ...lazyState.value,
+          first: 0
+        }
+        searchData(search.value)
+      }, 300)
     } else {
       getData()
     }
+  })
+
+  watch(http.error, (error) => {
+    if (error && error.length > 0 && timer) clearTimeout(timer)
   })
 
   // Interface publique du composable
@@ -165,7 +159,6 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
     getData,
     lazyState,
     loading: http.isLoading,
-    onFilterChange,
     onLazyLoad,
     onResetFilter,
     onSort,

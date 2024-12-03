@@ -84,7 +84,6 @@ const useUploadDocument = (patientId: number, emit: Emits): UseUploadDocument =>
           selectedDocumentType.value = null
           emit('refresh', data.message)
           emit('update:visible', false)
-          console.log('done done done')
         }
       }
       sendRequest<any>(

@@ -6,8 +6,7 @@
 
 import type Document from './document'
 
-export default interface DetailPatient {
-  id_patient: number
+export interface CreatePatient {
   prenom: string
   nom: string
   civilite: string
@@ -17,5 +16,9 @@ export default interface DetailPatient {
   ville: string
   telephone: string
   email?: string
+}
+
+export default interface DetailPatient extends CreatePatient {
+  id_patient: number
   documents: Document[]
 }

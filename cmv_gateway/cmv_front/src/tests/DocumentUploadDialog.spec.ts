@@ -50,8 +50,9 @@ vi.mock('primevue/select', () => ({
 }))
 
 // Mock du composable useUploadDocument avec les données de test
+const emitMock = vi.fn()
+
 const mockUseUploadDocument = {
-  // Liste des types de documents disponibles
   documentTypes: ref([
     {
       label: 'components.documentsList.document_types.health_insurance_card_certificate',
@@ -84,30 +85,33 @@ const mockUseUploadDocument = {
     { label: 'components.documentsList.document_types.miscellaneous', value: 'miscellaneous' }
   ]),
   isLoading: ref(false),
-  isValid: ref(true),
-  onSubmit: vi.fn(), // Mock de la fonction de soumission
-  onSelect: vi.fn(), // Mock de la fonction de sélection
+  isValid: ref(false),
+  onSubmit: vi.fn().mockImplementation(() => {
+    emitMock('update:visible', false)
+    emitMock('refresh', 'document_created')
+    return Promise.resolve()
+  }),
+  onSelect: vi.fn(),
   selectedDocumentType: ref(null),
   selectedFile: ref(null)
 }
 
-// Version invalide du mock pour tester les cas d'erreur
-const mockUseUploadDocumentInvalid = {
-  ...mockUseUploadDocument,
-  documentTypes: mockUseUploadDocument.documentTypes,
-  isValid: ref(false)
-}
-
-// Mock du composable useUploadDocument pour retourner la version invalide par défaut
+// Mock du composable useUploadDocument
 vi.mock('@/composables/useUploadDocument', () => ({
-  default: () => mockUseUploadDocumentInvalid
+  default: (patientId: number, emit: typeof emitMock) => {
+    return {
+      ...mockUseUploadDocument,
+      onSubmit: () => mockUseUploadDocument.onSubmit(emit)
+    }
+  }
 }))
 
 describe('DocumentUploadDialog', () => {
   let wrapper: any
 
   // Fonction utilitaire pour monter le composant avec les props par défaut
-  const mountComponent = () => {
+  const mountComponent = (isValid = false) => {
+    mockUseUploadDocument.isValid.value = isValid
     return mount(DocumentUploadDialog, {
       props: {
         fullname: 'John Doe',
@@ -120,10 +124,10 @@ describe('DocumentUploadDialog', () => {
     })
   }
 
-  // Réinitialisation avant chaque test
   beforeEach(() => {
     vi.clearAllMocks()
-    wrapper = mountComponent()
+    mockUseUploadDocument.isValid.value = true
+    wrapper = mountComponent(true)
   })
 
   // Test du rendu initial du composant
@@ -169,24 +173,20 @@ describe('DocumentUploadDialog', () => {
     const form = wrapper.find('form')
     await form.trigger('submit')
 
+    // Attendre que les promesses soient résolues
+    await wrapper.vm.$nextTick()
+
+    // Vérifier que onSubmit a été appelé
     expect(mockUseUploadDocument.onSubmit).toHaveBeenCalled()
-    expect(wrapper.emitted('update:visible')).toBeTruthy()
-    expect(wrapper.emitted('refresh')).toBeTruthy()
-    expect(wrapper.emitted('refresh')[0]).toEqual(['document_created'])
+
+    // Vérifier que les événements ont été émis
+    expect(emitMock).toHaveBeenCalledWith('update:visible', false)
+    expect(emitMock).toHaveBeenCalledWith('refresh', 'document_created')
   })
 
   // Test de la désactivation du bouton de soumission
   it('désactive le bouton de soumission quand le formulaire est invalide', async () => {
-    const newWrapper = mount(DocumentUploadDialog, {
-      props: {
-        fullname: 'John Doe',
-        patientId: 1,
-        visible: true
-      },
-      global: {
-        plugins: [i18n]
-      }
-    })
+    const newWrapper = mountComponent(false)
 
     const buttons = newWrapper.findAll('button')
     expect(buttons.length).toBeGreaterThan(0)

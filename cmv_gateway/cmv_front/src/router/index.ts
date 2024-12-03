@@ -54,7 +54,7 @@ const router = createRouter({
           name: 'patients',
           component: () => import('../views/AccueilView.vue')
         },
-        // Mise à jour d'un dossier administratif
+        //  Détails d'un dossier administratif
         {
           path: '/patient/:id',
           name: 'patient',
