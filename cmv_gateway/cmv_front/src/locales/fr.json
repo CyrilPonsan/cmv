@@ -22,6 +22,22 @@
     }
   },
   "components": {
+    "patient_data_disclaimer": {
+      "title": "Données personnelles",
+      "legal_context_title": "Contexte légal",
+      "legal_context_text": "Les données personnelles sont collectées dans le cadre de l'exécution de mes fonctions et sont destinées à l'usage de la clinique Montvert.",
+      "principle_1": "Collecte limitée et pertinente",
+      "principle_2": "Collecte explicite",
+      "principle_3": "Collecte minimale",
+      "principle_4": "Exactitude des données",
+      "responsibilities_title": "Responsabilités",
+      "responsibilities_text": "Je suis responsable de la collecte, du traitement et de la protection des données personnelles conformément aux principes RGPD.",
+      "responsibility_1": "Je collecte uniquement les données nécessaires pour les besoins professionnels de la clinique Montvert.",
+      "responsibility_2": "Je respecte les droits d'accès, de rectification et d'opposition des personnes concernées.",
+      "responsibility_3": "Je veille à la sécurité des données personnelles et prends les mesures nécessaires pour les protéger contre toute perte, destruction, utilisation ou accès non autorisé.",
+      "responsibility_4": "Je respecte les principes de confidentialité et de sécurité des données personnelles.",
+      "responsibility_5": "Je respecte les principes de confidentialité et de sécurité des données personnelles."
+    },
     "documentsList": {
       "add_document": "Ajouter un document",
       "delete": "Supprimer",
