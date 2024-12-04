@@ -40,9 +40,9 @@ const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
   >
     <!-- Champ email -->
     <div class="w-full flex flex-col gap-y-2">
-      <label for="username">{{ t('login.labelEmail') }}</label>
       <!-- Message d'erreur de validation du champ email -->
       <Field v-slot="{ field, errorMessage }" name="username">
+        <label for="username">{{ t('login.labelEmail') }}</label>
         <Message class="text-xs" severity="error" v-show="errorMessage">{{ errorMessage }}</Message>
         <InputText
           fluid

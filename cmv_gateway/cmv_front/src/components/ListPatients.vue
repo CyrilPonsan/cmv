@@ -7,7 +7,7 @@
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useToast } from 'primevue/usetoast'
-import DataTable from 'primevue/datatable'
+import DataTable, { type DataTablePageEvent, type DataTableSortEvent } from 'primevue/datatable'
 import Column from 'primevue/column'
 import InputText from 'primevue/inputtext'
 import IconField from 'primevue/iconfield'
@@ -32,7 +32,7 @@ const {
   getData,
   lazyState,
   loading,
-  onFilterChange,
+  //onFilterChange,
   onResetFilter,
   onLazyLoad,
   onSort,
@@ -54,6 +54,15 @@ const onTrash = () => {
 
 // Chargement initial des données
 onMounted(() => getData())
+
+// Wrappers de type pour les événements
+const handlePage = (event: DataTablePageEvent) => {
+  onLazyLoad(event as any)
+}
+
+const handleSort = (event: DataTableSortEvent) => {
+  onSort(event as any)
+}
 </script>
 
 <template>
@@ -74,23 +83,22 @@ onMounted(() => getData())
     paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
     :current-page-report-template="`${lazyState.first + 1} ${t('pagination.to')} ${lazyState.first + lazyState.rows} ${t('pagination.from')} ${totalRecords}`"
     class="shadow-md"
-    @page="onLazyLoad"
-    @sort="onSort"
+    @page="handlePage"
+    @sort="handleSort"
   >
     <!-- En-tête avec barre de recherche -->
     <template #header>
       <div class="flex items-center gap-x-4 rounded-tl-lg rounded-tr-lg">
         <div class="w-full flex items-center justify-between gap-x-4">
-          <Button as="router-link" to="/" icon="pi pi-plus" label="Ajouter un patient" />
+          <Button as="router-link" to="/add-patient" icon="pi pi-plus" label="Ajouter un patient" />
           <IconField class="flex items-center gap-x-4">
             <InputIcon>
               <i class="pi pi-search opacity-20" />
             </InputIcon>
             <InputText
               class="focus:!ring-0 focus:!ring-offset-0"
-              :value="search"
+              v-model="search"
               :placeholder="t('patients.home.placeholder.search')"
-              @input="onFilterChange"
             />
             <InputIcon>
               <i

@@ -33,6 +33,8 @@ export default function useDocuments(refreshData: () => void) {
    * @param message - Message de succès à afficher
    */
   const handleUploadSuccess = (message: string) => {
+    console.log('refreshData')
+
     toast.add({
       summary: 'Téléversement',
       detail: t(`api.${message}`),

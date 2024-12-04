@@ -1,6 +1,8 @@
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.repositories.patients_crud import PgPatientsRepository
+from app.schemas.schemas import Patient
 
 
 # Retourne une instance de la classe PgPatientsRepository
@@ -16,6 +18,7 @@ def get_patients_service():
 class PatientsService:
     """Service gérant les opérations liées aux patients"""
 
+    # Repository pour accéder aux données des patients
     patients_repository: PgPatientsRepository
 
     def __init__(self, patients_repository: PgPatientsRepository):
@@ -48,6 +51,7 @@ class PatientsService:
         Returns:
             dict: Dictionnaire contenant les patients et leur nombre total
         """
+        # Appel au repository pour récupérer les patients avec pagination et tri
         return await self.patients_repository.read_all_patients(
             db=db, page=page, limit=limit, field=field, order=order
         )
@@ -64,7 +68,7 @@ class PatientsService:
         Returns:
             Patient: Les détails du patient demandé
         """
-
+        # Appel au repository pour récupérer les détails d'un patient par son ID
         return await self.patients_repository.read_patient_by_id(
             db=db, patient_id=patient_id
         )
@@ -93,7 +97,26 @@ class PatientsService:
         Returns:
             dict: Dictionnaire contenant les patients trouvés et leur nombre total
         """
-
+        # Appel au repository pour rechercher des patients avec pagination et tri
         return await self.patients_repository.search_patients(
             db=db, search=search, page=page, limit=limit, field=field, order=order
         )
+
+    async def create_patient(self, db: Session, data: Patient) -> Patient:
+        """
+        Crée un nouveau patient
+        Args:
+            db: Session de base de données
+            patient: Données du patient à créer
+        Returns:
+            Patient: Le patient créé
+        Raises:
+            HTTPException: Si le patient existe déjà
+        """
+        # Vérification si le patient existe déjà
+        if await self.patients_repository.check_patient_exists(db, data):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="patient_already_exists"
+            )
+        # Création du patient via le repository
+        return await self.patients_repository.create_patient(db, data)

@@ -18,9 +18,10 @@
       </div>
     </div>
     <!-- Boutons d'action -->
-    <div class="flex gap-x-4 mt-12">
+    <div class="w-full flex gap-x-4 mt-12">
       <!-- Bouton de confirmation -->
       <Button
+        fluid
         type="button"
         :label="t('components.documentsList.dialog.buttons.confirm')"
         severity="warn"
@@ -29,6 +30,7 @@
       />
       <!-- Bouton d'annulation -->
       <Button
+        fluid
         type="button"
         :label="t('components.documentsList.dialog.buttons.cancel')"
         severity="secondary"

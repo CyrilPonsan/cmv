@@ -19,15 +19,14 @@ type UseUploadDocument = {
   selectedFile: Ref<File | null>
 }
 
-const useUploadDocument = (patientId: number): UseUploadDocument => {
+type Emits = {
+  (e: 'refresh', message: string): void
+  (e: 'update:visible', value: boolean): void
+}
+
+const useUploadDocument = (patientId: number, emit: Emits): UseUploadDocument => {
   const { t } = useI18n()
   const { isLoading, sendRequest } = useHttp()
-
-  // Events émis par le composant
-  /*   const emit = defineEmits<{
-    (e: 'update:visible', value: boolean): void // Mise à jour de la visibilité
-    (e: 'refresh', message: string): void // Rafraîchir la page
-  }>() */
 
   // Liste des types de documents disponibles
   const documentTypes = ref<DocumentType[]>([
@@ -83,6 +82,8 @@ const useUploadDocument = (patientId: number): UseUploadDocument => {
         if (data.success) {
           selectedFile.value = null
           selectedDocumentType.value = null
+          emit('refresh', data.message)
+          emit('update:visible', false)
         }
       }
       sendRequest<any>(
