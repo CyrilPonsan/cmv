@@ -1,9 +1,10 @@
+# Imports nécessaires pour les tests
 from datetime import datetime, timedelta
 from app.sql import models
 from app.utils.config import ALGORITHM, SECRET_KEY
 import pytest
 from redis.asyncio import Redis
-from httpx import AsyncClient
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
@@ -13,9 +14,11 @@ from app.dependancies.db_session import get_db
 from app.sql.models import Base
 from app.main import app
 
+# URL de la base de données de test en mémoire
 DATABASE_URL = "sqlite:///:memory:"
 
 
+# Fixture pour le client Redis
 @pytest.fixture(scope="session")
 async def redis_client():
     client = Redis.from_url("redis://redis:6379", decode_responses=True)
@@ -23,6 +26,7 @@ async def redis_client():
     await client.aclose()
 
 
+# Fixture pour créer le moteur SQLAlchemy
 @pytest.fixture(scope="session")
 def engine():
     return create_engine(
@@ -32,6 +36,7 @@ def engine():
     )
 
 
+# Fixture pour créer une session de base de données
 @pytest.fixture(scope="function")
 def db_session(engine):
     Base.metadata.create_all(engine)
@@ -44,9 +49,13 @@ def db_session(engine):
         Base.metadata.drop_all(engine)
 
 
+# Fixture pour créer un client HTTP asynchrone
 @pytest.fixture(scope="function")
 async def ac():
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    """Crée un client HTTP asynchrone pour les tests d'API."""
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
         yield client
 
 
@@ -62,7 +71,7 @@ async def internal_token():
     return jwt.encode(internal_payload, SECRET_KEY or "", algorithm=ALGORITHM or "")
 
 
-# Retourne un cookie avec un jeton d'accès qui sera utilisé pour tester les routes protégées
+# Retourne un cookie avec un jeton d'accès invalide pour tester les cas d'erreur
 @pytest.fixture
 async def wrong_internal_token():
     internal_payload = {
@@ -74,6 +83,7 @@ async def wrong_internal_token():
     return jwt.encode(internal_payload, "SECRET_KEY" or "", algorithm=ALGORITHM or "")
 
 
+# Fixture pour remplacer la dépendance de base de données par notre session de test
 @pytest.fixture(autouse=True)
 def override_dependency(db_session):
     def override_get_db():
@@ -87,9 +97,10 @@ def override_dependency(db_session):
     del app.dependency_overrides[get_db]
 
 
-# Création d'une vingtaine de patients pour tester la pagination
+# Fixture pour créer un jeu de données de test avec des patients et des documents
 @pytest.fixture(scope="function")
 def patients(db_session):
+    # Création d'une liste de 20 patients
     patients: list[models.Patient] = []
     for i in range(0, 20):
         patient = models.Patient(
@@ -103,6 +114,8 @@ def patients(db_session):
             date_de_naissance=datetime(year=1969, month=7, day=21),
         )
         patients.append(patient)
+
+    # Ajout d'un patient supplémentaire nommé "toto"
     patient = models.Patient(
         civilite="AUTRE",
         nom="toto",
@@ -114,11 +127,17 @@ def patients(db_session):
         date_de_naissance=datetime(year=1969, month=7, day=21),
     )
     patients.append(patient)
+
+    # Sauvegarde des patients dans la base de données
     db_session.add_all(patients)
     db_session.commit()
+
+    # Récupération du premier patient pour lui ajouter des documents
     patient = (
         db_session.query(models.Patient).filter(models.Patient.id_patient == 1).first()
     )
+
+    # Création et association de 2 documents au premier patient
     documents: list[models.Document] = []
     for i in range(0, 2):
         document = models.Document(
@@ -127,6 +146,8 @@ def patients(db_session):
         )
         documents.append(document)
     patient.documents = documents
+
+    # Sauvegarde des modifications
     db_session.add(patient)
     db_session.commit()
     return patients

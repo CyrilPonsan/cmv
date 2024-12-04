@@ -24,10 +24,10 @@ logger = LoggerSetup()
 
 
 # Endpoint pour créer un nouveau patient
-@router.post("/")
+@router.post("/", response_model=PostPatientResponse, status_code=201)
 async def create_patient(
     request: Request,
-    # payload: Annotated[InternalPayload, Depends(check_authorization)],
+    payload: Annotated[InternalPayload, Depends(check_authorization)],
     data: Annotated[CreatePatient, Body()],
     db: Session = Depends(get_db),
     patients_service=Depends(get_patients_service),
@@ -45,9 +45,11 @@ async def create_patient(
     Raises:
         HTTPException: En cas d'erreur lors de la création
     """
-    print(f"DATA: {data.nom}")
+    logger.write_log(
+        f"{payload['role']} - {payload['user_id']} - {request.method} - create patient",
+        request,
+    )
     new_patient = await patients_service.create_patient(db=db, data=data)
-    print(f"NEW_PATIENT: {new_patient.id_patient}")
     return {
         "success": True,
         "message": "Patient créé avec succès",
