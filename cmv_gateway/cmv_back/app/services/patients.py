@@ -147,7 +147,7 @@ class PatientsService:
             request=request,
         )
 
-        if response.status_code == 200:
+        if response.status_code == 200 or response.status_code == 201:
             return response.json()
         else:
             # Gestion des erreurs

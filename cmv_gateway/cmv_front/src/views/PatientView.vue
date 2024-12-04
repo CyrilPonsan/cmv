@@ -17,9 +17,11 @@ import usePatient from '@/composables/usePatient'
 import useDocuments from '@/composables/useDocuments'
 
 // Import des composables Vue
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+import PatientForm from '@/components/create-update-patient/PatientForm.vue'
+import usePatientForm from '@/composables/usePatientForm'
 
 // Initialisation des composables
 const { t } = useI18n()
@@ -27,6 +29,18 @@ const route = useRoute()
 
 const { detailPatient, fetchPatientData } = usePatient(route.params.id as string)
 const { visible, toggleVisible, handleUploadSuccess } = useDocuments(fetchPatientData)
+const {
+  //civilite,
+  civilites,
+  //date_de_naissance,
+  isLoading,
+  onSubmit,
+  schema
+  //updateCivilite,
+  //updateDateDeNaissance
+} = usePatientForm()
+
+const isEditing = ref(false)
 
 const fullName = computed(() => {
   if (!detailPatient.value) return ''
@@ -47,14 +61,27 @@ onBeforeMount(fetchPatientData)
     </section>
     <!-- Section principale avec les détails du patient et ses documents -->
     <section class="grid grid-cols-4 2xl:grid-cols-3 gap-x-4 xl:gap-x-8">
+      <article
+        v-if="isEditing && detailPatient"
+        class="col-span-2 p-4 rounded-lg flex justify-center items-center"
+      >
+        <PatientForm
+          :patientDetail="detailPatient"
+          :isLoading="isLoading"
+          :onSubmit="onSubmit"
+          :schema="schema"
+          :civilites="civilites"
+        />
+      </article>
+
       <!-- Détails du patient -->
-      <article v-if="detailPatient" class="col-span-2 p-4 rounded-lg">
+      <article v-if="detailPatient && !isEditing" class="col-span-2 p-4 rounded-lg">
         <!-- Titre et boutons d'action -->
         <div
           class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-y-2 mb-4"
         >
           <h2 class="text-lg font-bold">{{ t('patients.detail.h2') }}</h2>
-          <PatientActions />
+          <PatientActions @toggle-editing="isEditing = $event" />
         </div>
         <!-- Composant affichant les détails du patient -->
         <PatientDetail :detail-patient="detailPatient" />
