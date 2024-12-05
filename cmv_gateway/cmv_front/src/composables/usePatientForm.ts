@@ -8,51 +8,66 @@ import { z } from 'zod'
 import { useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
 
-// Type pour la réponse de création d'un patient
 type CreatePatientResponse = SuccessWithMessage & {
   id_patient: number
 }
 
-// Type pour le formulaire patient avec ses propriétés et méthodes
 type PatientForm = {
-  civilite: Ref<string>
   civilites: Ref<string[]>
-  date_de_naissance: Ref<Date | Date[] | (Date | null)[] | null | undefined>
   isLoading: Ref<boolean>
-  onSubmit: (body: Record<string, unknown>) => void
+  onCreatePatient: (body: Record<string, unknown>) => void
   schema: ReturnType<typeof toTypedSchema>
-  updateCivilite: (value: string) => void
-  updateDateDeNaissance: (value: Date | Date[] | (Date | null)[] | null | undefined) => void
 }
 
-// Hook personnalisé pour gérer le formulaire patient
 const usePatientForm = (): PatientForm => {
   const { error, isLoading, sendRequest } = useHttp()
   const toast = useToast()
   const { t } = useI18n()
   const router = useRouter()
 
-  // Schéma de validation du formulaire avec Zod
+  const civilites = ref(['Monsieur', 'Madame', 'Autre', 'Roberto'])
+
   const schema = toTypedSchema(
     z.object({
+      civilite: z
+        .any()
+        .transform((val) => {
+          if (val && typeof val === 'object' && 'value' in val) {
+            return val.value
+          }
+          return val
+        })
+        .pipe(
+          z.enum(['Monsieur', 'Madame', 'Autre', 'Roberto'], {
+            errorMap: () => ({ message: t('error.invalid_civility') })
+          })
+        ),
+      date_de_naissance: z.union([
+        z.string({
+          required_error: t('error.no_birth_date')
+        }),
+        z.date({
+          required_error: t('error.no_birth_date')
+        })
+      ]),
       prenom: z
         .string({ required_error: t('error.no_firstname') })
         .regex(regexGeneric, { message: t('error.not_valid_firstname') }),
       nom: z
         .string({ required_error: t('error.no_lastname') })
         .regex(regexGeneric, { message: t('error.not_valid_lastname') }),
-      adresse: z.string({ required_error: t('error.no_address') }).regex(regexGeneric, {
-        message: t('error.not_valid_address')
-      }),
-      code_postal: z.string({ required_error: t('error.no_zipcode') }).regex(regexGeneric, {
-        message: t('error.not_valid_zipcode')
-      }),
-      ville: z.string({ required_error: t('error.no_city') }).regex(regexGeneric, {
-        message: t('error.not_valid_city')
-      }),
-      telephone: z.string({ required_error: t('error.no_phone') }).regex(regexGeneric, {
-        message: t('error.not_valid_phone')
-      }),
+      adresse: z
+        .string({ required_error: t('error.no_address') })
+        .regex(regexGeneric, { message: t('error.not_valid_address') }),
+      code_postal: z
+        .string({ required_error: t('error.no_zipcode') })
+        .regex(regexGeneric, { message: t('error.not_valid_zipcode') }),
+      ville: z
+        .string({ required_error: t('error.no_city') })
+        .regex(regexGeneric, { message: t('error.not_valid_city') }),
+      telephone: z
+        .string({ required_error: t('error.no_phone') })
+        .regex(regexGeneric, { message: t('error.not_valid_phone') }),
       email: z
         .string()
         .email({ message: t('error.not_valid_email') })
@@ -61,56 +76,40 @@ const usePatientForm = (): PatientForm => {
     })
   )
 
-  // Valeurs par défaut pour les champs du formulaire
-  const civilites = ref(['Monsieur', 'Madame', 'Autre', 'Roberto'])
-  const civilite = ref('Autre')
-  const date_de_naissance = ref<Date | Date[] | (Date | null)[] | null | undefined>(
-    new Date(1974, 3, 14)
-  )
-
-  // Méthode pour mettre à jour la civilité
-  const updateCivilite = (value: string) => {
-    civilite.value = value
-  }
-
-  // Méthode pour mettre à jour la date de naissance
-  const updateDateDeNaissance = (value: Date | Date[] | (Date | null)[] | null | undefined) => {
-    date_de_naissance.value = value
-  }
-
-  // Gestionnaire de soumission du formulaire
-  const onSubmit = (data: Record<string, unknown>) => {
-    // Préparation des données à envoyer
-    const body = {
+  const onCreatePatient = (data: Record<string, unknown>) => {
+    const date = data.date_de_naissance as Date
+    const year = date.getFullYear()
+    const month = date.getMonth()
+    const day = date.getDate()
+    const updatedDate = new Date(year, month, day, 12, 0, 0)
+    const formData = {
       ...data,
-      civilite: civilite.value,
-      date_de_naissance: date_de_naissance.value
+      date_de_naissance: updatedDate,
+      civilite:
+        typeof data.civilite === 'object' && data.civilite !== null
+          ? (data.civilite as { value: string }).value
+          : data.civilite
     }
 
-    // Callback appelé après la création réussie du patient
-    const applyData = (data: CreatePatientResponse) => {
-      if (data.success) {
-        // Affichage d'un message de succès
+    const applyData = (response: CreatePatientResponse) => {
+      if (response.success) {
         toast.add({
           summary: 'Patient ajouté',
-          detail: data.message,
+          detail: response.message,
           severity: 'success',
           closable: true,
           life: 5000
         })
-        // Redirection vers la page du patient créé
-        router.push(`/patient/${data.id_patient}`)
+        router.push(`/patient/${response.id_patient}`)
       }
     }
 
-    // Envoi de la requête de création du patient
     sendRequest<CreatePatientResponse>(
-      { path: '/patients/patients', method: 'POST', data: body },
+      { path: '/patients/patients', method: 'POST', data: formData },
       applyData
     )
   }
 
-  // Surveillance des erreurs pour afficher les notifications
   watch(
     () => error.value,
     (newError) => {
@@ -126,16 +125,11 @@ const usePatientForm = (): PatientForm => {
     }
   )
 
-  // Retourne les propriétés et méthodes du formulaire
   return {
-    civilite,
     civilites,
-    date_de_naissance,
     isLoading,
-    onSubmit,
-    schema,
-    updateCivilite,
-    updateDateDeNaissance
+    onCreatePatient,
+    schema
   }
 }
 

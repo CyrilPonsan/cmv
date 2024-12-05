@@ -11,16 +11,7 @@ import { useI18n } from 'vue-i18n'
  * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 
-const {
-  civilite,
-  civilites,
-  date_de_naissance,
-  isLoading,
-  onSubmit,
-  schema,
-  updateCivilite,
-  updateDateDeNaissance
-} = usePatientForm()
+const { civilites, isLoading, onCreatePatient, schema } = usePatientForm()
 const { t } = useI18n()
 </script>
 
@@ -32,13 +23,9 @@ const { t } = useI18n()
     <section class="flex justify-center items-start">
       <PatientForm
         :isLoading="isLoading"
-        :onSubmit="onSubmit"
+        :onSubmit="onCreatePatient"
         :schema="schema"
-        :civilite="civilite"
         :civilites="civilites"
-        :date_de_naissance="date_de_naissance"
-        :updateCivilite="updateCivilite"
-        :updateDateDeNaissance="updateDateDeNaissance"
       />
     </section>
     <section class="flex justify-center items-center">
