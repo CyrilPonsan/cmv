@@ -7,14 +7,10 @@ import PrimeVue from 'primevue/config'
 
 // Mock du composable usePatientForm
 const mockFormData = {
-  civilite: 'M.',
-  civilites: ['M.', 'Mme', 'Autre'],
-  date_de_naissance: new Date('1990-01-01'),
-  isLoading: false,
-  onSubmit: vi.fn(),
+  civilites: ['Monsieur', 'Madame', 'Autre', 'Roberto'],
+  onCreatePatient: vi.fn(),
   schema: {},
-  updateCivilite: vi.fn(),
-  updateDateDeNaissance: vi.fn()
+  isLoading: false
 }
 
 vi.mock('@/composables/usePatientForm', () => ({
@@ -45,16 +41,7 @@ describe('AddPatientView', () => {
           PatientForm: {
             name: 'PatientForm',
             template: '<div />',
-            props: [
-              'civilite',
-              'civilites',
-              'date_de_naissance',
-              'isLoading',
-              'onSubmit',
-              'schema',
-              'updateCivilite',
-              'updateDateDeNaissance'
-            ]
+            props: ['civilites', 'isLoading', 'onSubmit', 'schema']
           },
           PatientDataDisclaimer: true
         }
@@ -81,7 +68,12 @@ describe('AddPatientView', () => {
     const patientForm = wrapper.findComponent({ name: 'PatientForm' })
 
     expect(patientForm.exists()).toBe(true)
-    expect(patientForm.props()).toEqual(mockFormData)
+    expect(patientForm.props()).toEqual({
+      civilites: mockFormData.civilites,
+      isLoading: mockFormData.isLoading,
+      onSubmit: expect.any(Function),
+      schema: mockFormData.schema
+    })
   })
 
   it('affiche le composant PatientDataDisclaimer', () => {
