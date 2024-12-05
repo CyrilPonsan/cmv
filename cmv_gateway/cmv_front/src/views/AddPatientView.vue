@@ -11,7 +11,7 @@ import { useI18n } from 'vue-i18n'
  * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 
-const { civilites, isLoading, onSubmit, schema } = usePatientForm()
+const { civilites, isLoading, onCreatePatient, schema } = usePatientForm()
 const { t } = useI18n()
 </script>
 
@@ -23,7 +23,7 @@ const { t } = useI18n()
     <section class="flex justify-center items-start">
       <PatientForm
         :isLoading="isLoading"
-        :onSubmit="onSubmit"
+        :onSubmit="onCreatePatient"
         :schema="schema"
         :civilites="civilites"
       />

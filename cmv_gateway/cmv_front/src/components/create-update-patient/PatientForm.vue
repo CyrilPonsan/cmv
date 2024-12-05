@@ -15,6 +15,7 @@ import Message from 'primevue/message'
 import Select from 'primevue/select'
 import Textarea from 'primevue/textarea'
 import { Field, Form } from 'vee-validate'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // Définition des props du composant
@@ -30,10 +31,12 @@ const { t } = useI18n()
 
 // Gestion de la soumission du formulaire
 const handleSubmit = (values: Record<string, unknown>) => {
-  console.log({ values })
-
   props.onSubmit(values)
 }
+
+const date = computed(() =>
+  props.patientDetail?.date_de_naissance ? new Date(props.patientDetail.date_de_naissance) : null
+)
 </script>
 
 <template>
@@ -80,9 +83,7 @@ const handleSubmit = (values: Record<string, unknown>) => {
             id="date_de_naissance"
             name="date_de_naissance"
             aria-label="date de naissance"
-            :modelValue="
-              patientDetail?.date_de_naissance ? new Date(patientDetail.date_de_naissance) : null
-            "
+            :modelValue="date ?? null"
           />
           <Message v-show="errorMessage" class="text-xs text-error" severity="error">
             {{ errorMessage }}
