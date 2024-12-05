@@ -51,10 +51,10 @@ onBeforeMount(fetchPatientData)
       />
     </section>
     <!-- Section principale avec les détails du patient et ses documents -->
-    <section class="grid grid-cols-4 2xl:grid-cols-3 gap-x-4 xl:gap-x-8">
+    <section class="grid grid-cols-1 2xl:grid-cols-3 gap-x-4 xl:gap-x-8">
       <article
         v-if="isEditing && detailPatient"
-        class="col-span-2 p-4 rounded-lg flex justify-center items-center"
+        class="col-span-2 2xl:col-span-1 p-4 rounded-lg flex justify-center items-center"
       >
         <PatientForm
           :patientDetail="detailPatient"
@@ -66,7 +66,7 @@ onBeforeMount(fetchPatientData)
       </article>
 
       <!-- Détails du patient -->
-      <article v-if="detailPatient && !isEditing" class="col-span-2 p-4 rounded-lg">
+      <article v-if="detailPatient && !isEditing" class="col-span-2 2xl:col-span-1 p-4 rounded-lg">
         <!-- Titre et boutons d'action -->
         <div
           class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-y-2 mb-4"
@@ -85,15 +85,15 @@ onBeforeMount(fetchPatientData)
           @delete-document="fetchPatientData"
         />
       </article>
+      <!-- Boîte de dialogue de téléversement de documents -->
+      <DocumentUpload
+        v-if="detailPatient"
+        :fullname="fullName"
+        :patientId="detailPatient.id_patient"
+        :visible="visible"
+        @update:visible="visible = $event"
+        @refresh="handleUploadSuccess"
+      />
     </section>
   </div>
-  <!-- Boîte de dialogue de téléversement de documents -->
-  <DocumentUpload
-    v-if="detailPatient"
-    :fullname="fullName"
-    :patientId="detailPatient.id_patient"
-    :visible="visible"
-    @update:visible="visible = $event"
-    @refresh="handleUploadSuccess"
-  />
 </template>
