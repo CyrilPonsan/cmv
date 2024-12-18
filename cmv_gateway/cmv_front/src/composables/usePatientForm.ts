@@ -39,7 +39,7 @@ const usePatientForm = (): PatientForm => {
         })
         .pipe(
           z.enum(['Monsieur', 'Madame', 'Autre', 'Roberto'], {
-            errorMap: () => ({ message: t('error.invalid_civility') })
+            errorMap: () => ({ message: t('error.not_valid_civility') })
           })
         ),
       date_de_naissance: z.union([
@@ -47,7 +47,7 @@ const usePatientForm = (): PatientForm => {
           required_error: t('error.no_birth_date')
         }),
         z.date({
-          required_error: t('error.no_birth_date')
+          required_error: t('error.not_valid_birth_date')
         })
       ]),
       prenom: z

@@ -115,7 +115,10 @@
     "no_city": "Une ville est requise",
     "not_valid_city": "La ville n'est pas valide",
     "no_phone": "Un numéro de téléphone est requis",
-    "not_valid_phone": "Le numéro de téléphone n'est pas valide"
+    "not_valid_phone": "Le numéro de téléphone n'est pas valide",
+    "not_valid_civility": "La civilité n'est pas valide",
+    "not_valid_birth_date": "La date de naissance n'est pas valide",
+    "no_birth_date": "Une date de naissance est requise"
   },
   "login": {
     "h1": "Clinique Montvert",
