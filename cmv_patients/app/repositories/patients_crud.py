@@ -37,6 +37,12 @@ class PatientsRead(ABC):
     async def read_patient_by_id(self, db: Session, patient_id: int) -> Patient:
         pass
 
+    @abstractmethod
+    async def update_patient(
+        self, db: Session, patient_id: int, data: Patient
+    ) -> Patient:
+        pass
+
 
 class PatientsRepository(PatientsRead):
     @abstractmethod
@@ -61,6 +67,12 @@ class PatientsRepository(PatientsRead):
     async def search_patients(
         self, db: Session, search: str, page: int, limit: int, field: str, order: str
     ) -> dict:
+        pass
+
+    @abstractmethod
+    async def update_patient(
+        self, db: Session, patient_id: int, data: Patient
+    ) -> Patient:
         pass
 
 
@@ -95,6 +107,19 @@ class PgPatientsRepository(PatientsRepository):
             .first()
         )
         return patient is not None
+
+    async def update_patient(
+        self, db: Session, patient_id: int, data: Patient
+    ) -> Patient:
+        patient = db.query(Patient).filter(Patient.id_patient == patient_id).first()
+        if not patient:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="patient_not_found"
+            )
+        patient.update(data)
+        db.commit()
+        db.refresh(patient)
+        return patient
 
     # Fonction de recherche de patients avec pagination et tri
     async def search_patients(

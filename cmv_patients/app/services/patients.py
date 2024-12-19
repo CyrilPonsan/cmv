@@ -120,3 +120,18 @@ class PatientsService:
             )
         # Création du patient via le repository
         return await self.patients_repository.create_patient(db, data)
+
+    async def update_patient(
+        self, db: Session, patient_id: int, data: Patient
+    ) -> Patient:
+        """
+        Met à jour les données d'un patient existant
+        """
+
+        if not await self.patients_repository.read_patient_by_id(
+            db=db, patient_id=patient_id
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="patient_not_found"
+            )
+        return await self.patients_repository.update_patient(db, patient_id, data)

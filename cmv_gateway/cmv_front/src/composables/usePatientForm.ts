@@ -16,6 +16,7 @@ type PatientForm = {
   civilites: Ref<string[]>
   isLoading: Ref<boolean>
   onCreatePatient: (body: Record<string, unknown>) => void
+  onUpdatePatient: (body: Record<string, unknown>) => void
   schema: ReturnType<typeof toTypedSchema>
 }
 
@@ -110,6 +111,50 @@ const usePatientForm = (): PatientForm => {
     )
   }
 
+  const onUpdatePatient = (data: Record<string, unknown>) => {
+    console.log({ data })
+
+    const date = new Date(data.date_de_naissance as string)
+    console.log({ date })
+
+    const year = date.getFullYear()
+    const month = date.getMonth()
+    const day = date.getDate()
+
+    console.log({ year, month, day })
+
+    const updatedDate = new Date(year, month, day, 12, 0, 0)
+    console.log({ updatedDate })
+
+    const formData = {
+      ...data,
+      date_de_naissance: updatedDate,
+      civilite:
+        typeof data.civilite === 'object' && data.civilite !== null
+          ? (data.civilite as { value: string }).value
+          : data.civilite
+    }
+
+    console.log('etape 2')
+
+    const applyData = (response: CreatePatientResponse) => {
+      if (response.success) {
+        toast.add({
+          summary: 'Patient modifié',
+          detail: response.message,
+          severity: 'success',
+          closable: true,
+          life: 5000
+        })
+      }
+    }
+
+    sendRequest<CreatePatientResponse>(
+      { path: `/patients/patients/${data.id_patient}`, method: 'PUT', data: formData },
+      applyData
+    )
+  }
+
   watch(
     () => error.value,
     (newError) => {
@@ -129,6 +174,7 @@ const usePatientForm = (): PatientForm => {
     civilites,
     isLoading,
     onCreatePatient,
+    onUpdatePatient,
     schema
   }
 }
