@@ -31,7 +31,11 @@ const { t } = useI18n()
 
 // Gestion de la soumission du formulaire
 const handleSubmit = (values: Record<string, unknown>) => {
-  props.onSubmit(values)
+  if (props.patientDetail?.id_patient) {
+    props.onSubmit({ ...values, id_patient: props.patientDetail.id_patient })
+  } else {
+    props.onSubmit(values)
+  }
 }
 
 const date = computed(() =>

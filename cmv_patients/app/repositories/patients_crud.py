@@ -116,7 +116,8 @@ class PgPatientsRepository(PatientsRepository):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="patient_not_found"
             )
-        patient.update(data)
+        patient = Patient(**data.model_dump())
+        db.add(patient)
         db.commit()
         db.refresh(patient)
         return patient

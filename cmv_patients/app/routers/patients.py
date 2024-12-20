@@ -174,8 +174,10 @@ async def update_patient(
         f"{payload['role']} - {payload['user_id']} - {request.method} - update patient {patient_id}",
         request,
     )
-    return await patients_service.update_patient(
+    patient = await patients_service.update_patient(
         db=db,
         patient_id=patient_id,
         data=data,
     )
+    print(f"PATIENT : {patient.nom} {patient.prenom}")
+    return patient
