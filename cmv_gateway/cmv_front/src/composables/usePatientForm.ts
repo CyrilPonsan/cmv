@@ -112,19 +112,13 @@ const usePatientForm = (): PatientForm => {
   }
 
   const onUpdatePatient = (data: Record<string, unknown>) => {
-    console.log({ data })
-
     const date = new Date(data.date_de_naissance as string)
-    console.log({ date })
 
     const year = date.getFullYear()
     const month = date.getMonth()
     const day = date.getDate()
 
-    console.log({ year, month, day })
-
     const updatedDate = new Date(year, month, day, 12, 0, 0)
-    console.log({ updatedDate })
 
     const formData = {
       ...data,
@@ -134,8 +128,6 @@ const usePatientForm = (): PatientForm => {
           ? (data.civilite as { value: string }).value
           : data.civilite
     }
-
-    console.log('etape 2')
 
     const applyData = (response: CreatePatientResponse) => {
       if (response.success) {
