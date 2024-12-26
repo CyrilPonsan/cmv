@@ -117,3 +117,22 @@ async def delete_patients(
         client=client,
         request=request,
     )
+
+
+# Requêtes utilisant la méthode 'PUT' pour la modification des données d'un patient
+@router.put("/{path:path}")
+async def put_patients(
+    request: Request,
+    current_user: Annotated[User, Depends(get_current_user)],
+    path: str,
+    internal_token: Annotated[str, Depends(get_dynamic_permissions("put", "patients"))],
+    patients_service=Depends(get_patients_service),
+    client=Depends(get_http_client),
+):
+    return await patients_service.put_patients(
+        current_user=current_user,
+        path=path,
+        internal_token=internal_token,
+        client=client,
+        request=request,
+    )

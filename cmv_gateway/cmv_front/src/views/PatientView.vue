@@ -29,7 +29,7 @@ const route = useRoute()
 
 const { detailPatient, fetchPatientData } = usePatient(route.params.id as string)
 const { visible, toggleVisible, handleUploadSuccess } = useDocuments(fetchPatientData)
-const { civilites, isLoading, onCreatePatient, schema } = usePatientForm()
+const { civilites, isLoading, onUpdatePatient, schema } = usePatientForm()
 
 const isEditing = ref(false)
 
@@ -59,7 +59,7 @@ onBeforeMount(fetchPatientData)
         <PatientForm
           :patientDetail="detailPatient"
           :isLoading="isLoading"
-          :onSubmit="onCreatePatient"
+          :onSubmit="onUpdatePatient"
           :schema="schema"
           :civilites="civilites"
         />
