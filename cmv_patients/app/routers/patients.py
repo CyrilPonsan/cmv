@@ -9,6 +9,7 @@ from app.schemas.patients import (
     CreatePatient,
     PatientsParams,
     PostPatientResponse,
+    PutPatientResponse,
     ReadAllPatients,
     SearchPatientsParams,
     DetailPatient,
@@ -158,3 +159,29 @@ async def read_patient(
         db=db,
         patient_id=patient_id,
     )
+
+
+# Endpoint pour mettre à jour les données d'un patient
+@router.put("/{patient_id}", response_model=PutPatientResponse)
+async def update_patient(
+    request: Request,
+    patient_id: int,
+    data: Annotated[CreatePatient, Body()],
+    payload: Annotated[InternalPayload, Depends(check_authorization)],
+    patients_service=Depends(get_patients_service),
+    db: Session = Depends(get_db),
+):
+    logger.write_log(
+        f"{payload['role']} - {payload['user_id']} - {request.method} - update patient {patient_id}",
+        request,
+    )
+    patient = await patients_service.update_patient(
+        db=db,
+        patient_id=patient_id,
+        data=data,
+    )
+    return {
+        "success": True,
+        "message": "Patient modifié avec succès",
+        "id_patient": patient.id_patient,
+    }

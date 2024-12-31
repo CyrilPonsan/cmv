@@ -147,7 +147,7 @@ class PatientsService:
             request=request,
         )
 
-        if response.status_code == 200:
+        if response.status_code == 200 or response.status_code == 201:
             return response.json()
         else:
             # Gestion des erreurs
@@ -242,6 +242,51 @@ class PatientsService:
         else:
             # Gestion des erreurs
             result = response.json()
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=result["detail"] or "server_issue",
+            )
+
+    async def put_patients(
+        self,
+        current_user: User,
+        path: str,
+        internal_token: str,
+        client: httpx.AsyncClient,
+        request: Request,
+    ):
+        full_path = path
+        url = f"{self.url_api_patients}/{full_path}"
+
+        # Récupération du corps de la requête
+        request_body = await request.json()
+        # Si les données sont dans un objet 'data', on les extrait
+        if isinstance(request_body, dict) and "data" in request_body:
+            request_body = request_body["data"]
+
+        # Envoi de la requête POST à l'API patients
+        response = await client.put(
+            url,
+            headers={
+                "Authorization": f"Bearer {internal_token}",
+                "Content-Type": "application/json",
+            },
+            json=request_body,  # Envoi direct des données du patient
+            follow_redirects=True,
+        )
+
+        # Journalisation de la requête
+        self.logger.write_log(
+            f"{current_user.role.name} - {current_user.id_user} - {request.method} - {path}",
+            request=request,
+        )
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            # Gestion des erreurs
+            result = response.json()
+            print(f"RESULT : {result}")
             raise HTTPException(
                 status_code=response.status_code,
                 detail=result["detail"] or "server_issue",

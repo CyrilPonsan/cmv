@@ -6,6 +6,7 @@
  */
 
 // Import des dépendances nécessaires
+import type DetailPatient from '@/models/detail-patient'
 import { toTypedSchema } from '@vee-validate/zod'
 import Button from 'primevue/button'
 import DatePicker from 'primevue/datepicker'
@@ -14,26 +15,32 @@ import Message from 'primevue/message'
 import Select from 'primevue/select'
 import Textarea from 'primevue/textarea'
 import { Field, Form } from 'vee-validate'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // Définition des props du composant
 const props = defineProps<{
-  civilite: string
+  patientDetail?: DetailPatient
   civilites: string[]
-  date_de_naissance: Date | Date[] | (Date | null)[] | null | undefined
   onSubmit: (data: Record<string, unknown>) => void
   schema: ReturnType<typeof toTypedSchema>
   isLoading: boolean
-  updateCivilite: (value: string) => void
-  updateDateDeNaissance: (value: Date | Date[] | (Date | null)[] | null | undefined) => void
 }>()
 
 const { t } = useI18n()
 
 // Gestion de la soumission du formulaire
 const handleSubmit = (values: Record<string, unknown>) => {
-  props.onSubmit(values)
+  if (props.patientDetail?.id_patient) {
+    props.onSubmit({ ...values, id_patient: props.patientDetail.id_patient })
+  } else {
+    props.onSubmit(values)
+  }
 }
+
+const date = computed(() =>
+  props.patientDetail?.date_de_naissance ? new Date(props.patientDetail.date_de_naissance) : null
+)
 </script>
 
 <template>
@@ -41,36 +48,51 @@ const handleSubmit = (values: Record<string, unknown>) => {
   <Form
     class="flex flex-col gap-y-8 w-5/6 lg:w-[42rem]"
     :validation-schema="schema"
+    :initial-values="patientDetail ?? {}"
     @submit="handleSubmit"
   >
     <!-- Section civilité et date de naissance -->
     <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
       <span class="flex flex-col gap-y-2">
-        <label for="civilite">{{ t('components.patientForm.civilite') }}</label>
-        <Select
-          :value="civilite"
-          :label="t('components.patientForm.civilite')"
-          :placeholder="t('components.patientForm.select_placeholder')"
-          name="civilite"
-          :options="civilites"
-          @update:modelValue="updateCivilite"
-        />
+        <Field v-slot="{ field, errorMessage }" name="civilite">
+          <label for="civilite">{{ t('components.patientForm.civilite') }}</label>
+          <Select
+            v-bind="field"
+            :label="t('components.patientForm.civilite')"
+            :placeholder="t('components.patientForm.select_placeholder')"
+            name="civilite"
+            :options="civilites"
+            id="civilite"
+            aria-label="civilité"
+            :modelValue="patientDetail?.civilite"
+          />
+          <Message v-show="errorMessage" class="text-xs text-error" severity="error">
+            {{ errorMessage }}
+          </Message>
+        </Field>
       </span>
       <span class="flex flex-col gap-y-2">
-        <label for="date_de_naissance">{{ t('components.patientForm.date_de_naissance') }}</label>
-        <DatePicker
-          showIcon
-          fluid
-          selectionMode="single"
-          view="date"
-          :showButtonBar="true"
-          yearRange="1900:2024"
-          locale="fr"
-          iconDisplay="input"
-          :value="props.date_de_naissance"
-          :defaultDate="props.date_de_naissance"
-          @update:modelValue="updateDateDeNaissance"
-        />
+        <Field v-slot="{ field, errorMessage }" name="date_de_naissance">
+          <label for="date_de_naissance">{{ t('components.patientForm.date_de_naissance') }}</label>
+          <DatePicker
+            showIcon
+            fluid
+            selectionMode="single"
+            view="date"
+            :showButtonBar="true"
+            yearRange="1900:2024"
+            locale="fr"
+            iconDisplay="input"
+            v-bind="field"
+            id="date_de_naissance"
+            name="date_de_naissance"
+            aria-label="date de naissance"
+            :modelValue="date ?? null"
+          />
+          <Message v-show="errorMessage" class="text-xs text-error" severity="error">
+            {{ errorMessage }}
+          </Message>
+        </Field>
       </span>
     </div>
 

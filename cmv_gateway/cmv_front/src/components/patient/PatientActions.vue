@@ -9,6 +9,10 @@
 import Button from 'primevue/button'
 import { useI18n } from 'vue-i18n'
 
+const emit = defineEmits<{
+  (e: 'toggle-editing', value: boolean): void
+}>()
+
 // Récupération de la fonction de traduction
 const { t } = useI18n()
 </script>
@@ -20,6 +24,11 @@ const { t } = useI18n()
     <Button :label="t('patients.detail.button.create_admission')" icon="pi pi-plus" />
 
     <!-- Bouton d'édition du patient -->
-    <Button :label="t('patients.detail.button.edit')" icon="pi pi-pencil" severity="info" />
+    <Button
+      :label="t('patients.detail.button.edit')"
+      icon="pi pi-pencil"
+      severity="info"
+      @click="emit('toggle-editing', true)"
+    />
   </span>
 </template>
