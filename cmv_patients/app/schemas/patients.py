@@ -154,3 +154,8 @@ class DocumentData(BaseModel):
 class PostPatientResponse(SuccessWithMessage):
     # Identifiant unique du patient
     id_patient: int
+
+
+class PutPatientResponse(SuccessWithMessage):
+    # Identifiant unique du patient
+    id_patient: int
