@@ -9,6 +9,7 @@ from app.schemas.patients import (
     CreatePatient,
     PatientsParams,
     PostPatientResponse,
+    PutPatientResponse,
     ReadAllPatients,
     SearchPatientsParams,
     DetailPatient,
@@ -161,7 +162,7 @@ async def read_patient(
 
 
 # Endpoint pour mettre à jour les données d'un patient
-@router.put("/{patient_id}", response_model=DetailPatient)
+@router.put("/{patient_id}", response_model=PutPatientResponse)
 async def update_patient(
     request: Request,
     patient_id: int,
@@ -179,5 +180,8 @@ async def update_patient(
         patient_id=patient_id,
         data=data,
     )
-    print(f"PATIENT : {patient.nom} {patient.prenom}")
-    return patient
+    return {
+        "success": True,
+        "message": "Patient modifié avec succès",
+        "id_patient": patient.id_patient,
+    }

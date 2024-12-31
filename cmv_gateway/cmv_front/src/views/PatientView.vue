@@ -17,7 +17,7 @@ import usePatient from '@/composables/usePatient'
 import useDocuments from '@/composables/useDocuments'
 
 // Import des composables Vue
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import PatientForm from '@/components/create-update-patient/PatientForm.vue'
@@ -29,13 +29,15 @@ const route = useRoute()
 
 const { detailPatient, fetchPatientData } = usePatient(route.params.id as string)
 const { visible, toggleVisible, handleUploadSuccess } = useDocuments(fetchPatientData)
-const { civilites, isLoading, onUpdatePatient, schema } = usePatientForm()
-
-const isEditing = ref(false)
+const { civilites, isEditing, isLoading, onUpdatePatient, schema } = usePatientForm()
 
 const fullName = computed(() => {
   if (!detailPatient.value) return ''
   return `${detailPatient.value.prenom} ${detailPatient.value.nom}`
+})
+
+watchEffect(() => {
+  console.log(isEditing.value)
 })
 
 onBeforeMount(fetchPatientData)
