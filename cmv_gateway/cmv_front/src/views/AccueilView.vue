@@ -13,7 +13,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <main class="flex flex-col gap-y-8 text-xs">
+  <main class="min-w-screen flex flex-col gap-y-8 text-xs">
     <PageHeader :title="t('patients.home.title')" :description="t('patients.home.description')" />
     <ListPatients />
   </main>

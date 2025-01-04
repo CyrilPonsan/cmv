@@ -13,7 +13,7 @@ import { useI18n } from 'vue-i18n'
  * @param refreshData - Fonction pour rafraîchir les données après un téléversement
  * @returns Un objet contenant l'état de visibilité et les fonctions de gestion
  */
-export default function useDocuments(refreshData: () => void) {
+export default function useDocuments(refreshData: (patientId: number | null) => void) {
   // Référence pour contrôler la visibilité de la boîte de dialogue
   const visible = ref(false)
   // Hook pour afficher les notifications toast
@@ -33,8 +33,6 @@ export default function useDocuments(refreshData: () => void) {
    * @param message - Message de succès à afficher
    */
   const handleUploadSuccess = (message: string) => {
-    console.log('refreshData')
-
     toast.add({
       summary: 'Téléversement',
       detail: t(`api.${message}`),
@@ -42,7 +40,7 @@ export default function useDocuments(refreshData: () => void) {
       life: 3000,
       closable: true
     })
-    refreshData()
+    refreshData(null)
   }
 
   return {

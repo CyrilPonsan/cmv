@@ -33,7 +33,7 @@ type PatientForm = {
  * Composable pour gérer le formulaire patient
  * @returns {PatientForm} Objet contenant les données et méthodes du formulaire
  */
-const usePatientForm = (): PatientForm => {
+const usePatientForm = (fetchPatientData: ((id: number) => void) | null): PatientForm => {
   const { error, isLoading, sendRequest } = useHttp()
   const toast = useToast()
   const { t } = useI18n()
@@ -168,18 +168,27 @@ const usePatientForm = (): PatientForm => {
           closable: true,
           life: 5000
         })
+
         // Retour à l'affichage du détail du patient
         isEditing.value = false
+
+        // Vérification que fetchPatientData est une fonction avant de l'appeler
+        if (typeof fetchPatientData === 'function' && response.id_patient) {
+          fetchPatientData(response.id_patient)
+        }
       }
     }
 
     // Envoi de la requête
     sendRequest<CreatePatientResponse>(
-      { path: `/patients/patients/${data.id_patient}`, method: 'PUT', data: formData },
+      {
+        path: `/patients/patients/${data.id_patient}`,
+        method: 'PUT',
+        data: formData
+      },
       applyData
     )
   }
-
   // Surveillance des erreurs pour afficher les notifications
   watch(
     () => error.value,
