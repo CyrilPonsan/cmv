@@ -24,6 +24,9 @@ const colorSchemeIcon = computed(() => `pi pi-${userStore.mode === 'dark' ? 'moo
         <li>
           <Button class="w-full" as="router-link" :label="t('app.sidebar.rooms')" to="/chambres" />
         </li>
+        <li>
+          <Button class="w-full" as="a" label="Rendez-vous" href="https://www.doctissimo.fr/" />
+        </li>
       </ul>
     </span>
 

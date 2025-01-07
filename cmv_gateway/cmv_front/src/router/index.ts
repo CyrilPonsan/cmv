@@ -35,6 +35,11 @@ const router = createRouter({
         else next()
       }
     },
+    {
+      path: '/forbidden',
+      name: 'forbidden',
+      component: () => import('../views/NotAuthorized.vue')
+    },
     //  formulaire de connexion
     {
       path: '/accueil',
@@ -45,7 +50,7 @@ const router = createRouter({
         const { userStore } = await setup()
         if (userStore.role === 'home') next()
         //  si le rôle n'est pas adéquat, l'utilisateur est redirigé vers la page d'accueil
-        else next('/')
+        else next('/forbidden')
       },
       children: [
         //  liste des dossiers administratifs
@@ -71,7 +76,14 @@ const router = createRouter({
     {
       path: '/chambres',
       name: 'chambres',
-      component: () => import('../views/ChambresView.vue')
+      component: () => import('../views/ChambresView.vue'),
+      beforeEnter: async (_to, _from, next) => {
+        const { userStore } = await setup()
+        const allowedRoles = ['home', 'nurses', 'cleaning']
+        if (allowedRoles.includes(userStore.role)) next()
+        //  si le rôle n'est pas adéquat, l'utilisateur est redirigé vers la page d'accueil
+        else next('/forbidden')
+      }
     }
   ]
 })
