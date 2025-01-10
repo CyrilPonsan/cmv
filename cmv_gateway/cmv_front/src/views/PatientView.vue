@@ -59,12 +59,19 @@ onBeforeMount(() => {
       />
     </section>
     <!-- Section principale avec les détails du patient et ses documents -->
-    <section class="gap-x-4 xl:gap-x-8">
+    <section class="flex flex-col gap-x-4 xl:gap-x-8 gap-y-4">
       <!-- Formulaire d'édition du patient -->
       <article
         v-if="isEditing && detailPatient"
-        class="rounded-lg flex justify-center items-center"
+        class="rounded-lg flex flex-col gap-y-4 justify-center items-start"
       >
+        <!-- Bascule l'affichage sur la vue détaillée des informations du patient -->
+        <p
+          class="text-sm font-normal text-primary-500 underline cursor-pointer"
+          @click="isEditing = false"
+        >
+          Retour aux informations du patient
+        </p>
         <PatientForm
           :patientDetail="detailPatient"
           :isLoading="isLoading"

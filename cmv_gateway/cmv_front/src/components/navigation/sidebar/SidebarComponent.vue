@@ -11,21 +11,41 @@ const colorSchemeIcon = computed(() => `pi pi-${userStore.mode === 'dark' ? 'moo
 </script>
 
 <template>
-  <div class="w-64 sticky top-0 left-0 h-screen bg-surface-900 flex flex-col justify-between">
+  <div
+    class="w-64 sticky top-0 left-0 h-screen bg-surface-900 flex flex-col justify-between items-center"
+  >
     <span>
-      <img class="w-48 h-auto" src="@/assets/images/cmv-logo.webp" alt="logo" />
+      <img class="w-full h-auto" src="@/assets/images/cmv-logo.jpeg" alt="logo" />
     </span>
 
     <span class="flex-1 flex flex-col justify-evenly items-center">
-      <ul class="w-full p-4 flex flex-col gap-y-4">
+      <ul class="w-full p-2 flex flex-col gap-y-4">
         <li>
-          <Button class="w-full" as="router-link" :label="t('app.sidebar.home')" to="/" />
+          <Button
+            class="w-full"
+            as="router-link"
+            severity="secondary"
+            :label="t('app.sidebar.home')"
+            to="/"
+          />
         </li>
         <li>
-          <Button class="w-full" as="router-link" :label="t('app.sidebar.rooms')" to="/chambres" />
+          <Button
+            class="w-full"
+            as="router-link"
+            severity="secondary"
+            :label="t('app.sidebar.rooms')"
+            to="/chambres"
+          />
         </li>
         <li>
-          <Button class="w-full" as="a" label="Rendez-vous" href="https://www.doctissimo.fr/" />
+          <Button
+            class="w-full"
+            as="a"
+            severity="secondary"
+            label="Rendez-vous"
+            href="https://www.doctissimo.fr/"
+          />
         </li>
       </ul>
     </span>
