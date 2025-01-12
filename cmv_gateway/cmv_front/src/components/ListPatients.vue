@@ -82,7 +82,7 @@ const handleSort = (event: DataTableSortEvent) => {
     table-style="min-width: 50rem"
     paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
     :current-page-report-template="`${lazyState.first + 1} ${t('pagination.to')} ${lazyState.first + lazyState.rows} ${t('pagination.from')} ${totalRecords}`"
-    class="shadow-md"
+    class="shadow-md min-w-full"
     @page="handlePage"
     @sort="handleSort"
   >

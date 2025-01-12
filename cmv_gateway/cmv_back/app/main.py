@@ -12,6 +12,7 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.middleware.exceptions import ExceptionHandlerMiddleware
+from app.middleware.security_headers import SecurityHeadersMiddleware
 from .dependancies.db_session import get_db
 from .routers import api
 from .utils.logging_setup import LoggerSetup
@@ -29,19 +30,23 @@ app = FastAPI()
 app.include_router(api.router)
 
 origins = [
-    "http://localhost:5173",
+    # "http://localhost:5173",
+    # "http://localhost:8080",
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["Content-Type", "Authorization"],
+    expose_headers=["Content-Disposition"],
+    max_age=600,
 )
 
 # handle global exceptions like network or db errors, uncomment the following line for production
-# app.add_middleware(ExceptionHandlerMiddleware)
+app.add_middleware(ExceptionHandlerMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
 
 
 # handle app raised http exceptions

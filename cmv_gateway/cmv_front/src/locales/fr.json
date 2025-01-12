@@ -4,7 +4,11 @@
     "document_deleted": "Document supprimé avec succès"
   },
   "app": {
-    "footer": "Projet de formation : toute ressemblance avec une clinique déjà existente ne serait que pure coïncidence.",
+    "footer": "Projet de formation : toute ressemblance avec une clinique déjà existante ne serait que pure coïncidence.",
+    "sidebar": {
+      "home": "Accueil",
+      "rooms": "Chambres"
+    },
     "tooltip": {
       "home": "Accueil",
       "change_mode": "Changer de mode",
