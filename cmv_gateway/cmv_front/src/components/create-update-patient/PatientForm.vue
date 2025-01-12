@@ -233,7 +233,12 @@ const date = computed(() =>
 
     <!-- Bouton de soumission -->
     <div class="flex justify-end">
-      <Button type="submit" :label="t('components.patientForm.submit')" :loading="isLoading" />
+      <Button
+        type="submit"
+        :label="t('components.patientForm.submit')"
+        :loading="isLoading"
+        :disabled="isLoading"
+      />
     </div>
   </Form>
 </template>
