@@ -45,6 +45,7 @@ const colorSchemeIcon = computed(() => `pi pi-${userStore.mode === 'dark' ? 'moo
             severity="secondary"
             label="Rendez-vous"
             href="https://www.doctissimo.fr/"
+            target="_blank"
           />
         </li>
       </ul>

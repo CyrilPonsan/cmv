@@ -12,7 +12,7 @@ import Select from 'primevue/select'
 import { useI18n } from 'vue-i18n'
 
 type Emits = {
-  (e: 'refresh', message: string): void
+  (e: 'refresh', message: string, patientId: number): void
   (e: 'update:visible', value: boolean): void
 }
 

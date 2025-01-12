@@ -20,7 +20,7 @@ type UseUploadDocument = {
 }
 
 type Emits = {
-  (e: 'refresh', message: string): void
+  (e: 'refresh', message: string, patientId: number): void
   (e: 'update:visible', value: boolean): void
 }
 
@@ -82,7 +82,7 @@ const useUploadDocument = (patientId: number, emit: Emits): UseUploadDocument =>
         if (data.success) {
           selectedFile.value = null
           selectedDocumentType.value = null
-          emit('refresh', data.message)
+          emit('refresh', data.message, patientId)
           emit('update:visible', false)
         }
       }

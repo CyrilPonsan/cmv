@@ -32,7 +32,7 @@ export default function useDocuments(refreshData: (patientId: number | null) => 
    * Gère le succès du téléversement d'un document
    * @param message - Message de succès à afficher
    */
-  const handleUploadSuccess = (message: string) => {
+  const handleUploadSuccess = (message: string, patientId: number) => {
     toast.add({
       summary: 'Téléversement',
       detail: t(`api.${message}`),
@@ -40,7 +40,7 @@ export default function useDocuments(refreshData: (patientId: number | null) => 
       life: 3000,
       closable: true
     })
-    refreshData(null)
+    refreshData(patientId)
   }
 
   return {
