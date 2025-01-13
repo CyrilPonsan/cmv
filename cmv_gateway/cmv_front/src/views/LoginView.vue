@@ -18,7 +18,7 @@ const { t } = useI18n()
     <section class="grid grid-cols-1 xl:grid-cols-2 gap-8">
       <img
         class="w-96 h-96 hidden xl:block rounded-md shadow-sm"
-        src="../assets/images/witch.jpg"
+        src="../assets/images/witch.webp"
         alt="illustration page de connexion"
       />
       <article class="flex flex-col justify-center items-center gap-y-4">

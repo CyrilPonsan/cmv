@@ -13,7 +13,7 @@ import useHttp from '@/composables/useHttp'
  * @param patientId - L'identifiant du patient
  * @returns Un objet contenant les données du patient et une fonction pour les récupérer
  */
-export default function usePatient(patientId: string) {
+export default function usePatient() {
   const { sendRequest } = useHttp()
   // Référence peu profonde pour stocker les détails du patient
   const detailPatient = ref<DetailPatient | null>(null)
@@ -21,7 +21,7 @@ export default function usePatient(patientId: string) {
   /**
    * Récupère les données du patient depuis l'API
    */
-  const fetchPatientData = () => {
+  const fetchPatientData = (patientId: number | null) => {
     // Fonction de callback pour mettre à jour les données du patient
     const applyData = (data: DetailPatient) => {
       detailPatient.value = data

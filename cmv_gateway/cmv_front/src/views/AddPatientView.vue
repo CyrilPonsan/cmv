@@ -15,7 +15,7 @@ import { useI18n } from 'vue-i18n'
  */
 
 // Récupération des fonctionnalités du formulaire patient
-const { civilites, isLoading, onCreatePatient, schema } = usePatientForm()
+const { civilites, isLoading, onCreatePatient, schema } = usePatientForm(null)
 
 // Initialisation du composable i18n pour les traductions
 const { t } = useI18n()

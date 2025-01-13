@@ -132,8 +132,6 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
 
   // Observe les changements d'état pour déclencher les requêtes
   watch([lazyState, search], () => {
-    console.log('watching...')
-
     if (search.value) {
       if (timer) {
         clearTimeout(timer)

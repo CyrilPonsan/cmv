@@ -166,6 +166,20 @@ class PatientsService:
         client: httpx.AsyncClient,
         request: Request,
     ):
+        """
+        Supprime des informations patients via l'API
+
+        Args:
+            current_user: Utilisateur courant faisant la requête
+            path: Chemin de l'endpoint à appeler
+            internal_token: Token d'authentification
+            client: Client HTTP pour faire les requêtes
+            request: Requête FastAPI originale
+
+        Returns:
+            La réponse de l'API patients
+        """
+        # Construction du chemin complet avec les paramètres de requête
         full_path = path
         if request.query_params:
             full_path = f"{path}?{request.query_params}"
@@ -255,6 +269,20 @@ class PatientsService:
         client: httpx.AsyncClient,
         request: Request,
     ):
+        """
+        Met à jour des informations patients via l'API
+
+        Args:
+            current_user: Utilisateur courant faisant la requête
+            path: Chemin de l'endpoint à appeler
+            internal_token: Token d'authentification
+            client: Client HTTP pour faire les requêtes
+            request: Requête FastAPI originale
+
+        Returns:
+            La réponse de l'API patients
+        """
+        # Construction du chemin complet
         full_path = path
         url = f"{self.url_api_patients}/{full_path}"
 
@@ -264,7 +292,7 @@ class PatientsService:
         if isinstance(request_body, dict) and "data" in request_body:
             request_body = request_body["data"]
 
-        # Envoi de la requête POST à l'API patients
+        # Envoi de la requête PUT à l'API patients
         response = await client.put(
             url,
             headers={
