@@ -1,0 +1,7 @@
+2025-01-15 23:01:48,710 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - read patients FROM: None
+2025-01-15 23:01:51,150 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - read patient 216 FROM: None
+2025-01-15 23:01:57,654 - AFFRANCHISSEMENT - WARNING - home - 2 - PUT - update patient 216 FROM: None
+2025-01-15 23:01:57,688 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - read patient 216 FROM: None
+2025-01-15 23:51:23,379 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - read patients FROM: None
+2025-01-15 23:51:44,086 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - read patients FROM: None
+2025-01-15 23:51:44,934 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - read patients FROM: None

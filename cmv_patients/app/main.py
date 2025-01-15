@@ -23,10 +23,11 @@ logger = LoggerSetup()
 
 app = FastAPI()
 
-
 app.include_router(api.router)
+
+# Politiques CORS
 origins = [
-    "http://localhost:5173",
+    "http://localhost:8001",  # cmv_back
 ]
 
 app.add_middleware(

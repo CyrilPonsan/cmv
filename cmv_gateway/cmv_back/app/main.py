@@ -30,7 +30,7 @@ app = FastAPI()
 app.include_router(api.router)
 
 origins = [
-    # "http://localhost:5173",
+    "http://localhost:5173",
     # "http://localhost:8080",
 ]
 
@@ -45,7 +45,7 @@ app.add_middleware(
 )
 
 # handle global exceptions like network or db errors, uncomment the following line for production
-app.add_middleware(ExceptionHandlerMiddleware)
+# app.add_middleware(ExceptionHandlerMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 
 

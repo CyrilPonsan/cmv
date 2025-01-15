@@ -3,15 +3,9 @@ networks:
     external: true
 
 volumes:
-  cmv_gateway:
-    driver: local
   db_gateway:
     driver: local
-  cmv_patients:
-    driver: local
   db_patients:
-    driver: local
-  logs:
     driver: local
   redis:
     driver: local
@@ -43,34 +37,6 @@ services:
       POSTGRES_PASSWORD: ${GATEWAY_POSTGRES_PASSWORD}
       POSTGRES_DB: ${GATEWAY_POSTGRES_DB}
 
-  api_gateway:
-    build:
-      context: ./cmv_gateway
-    restart: always
-    networks:
-      - cmv
-    volumes:
-      - logs:/app/app/logs
-    container_name: cmv_gateway
-    ports:
-      - "8001:8000"
-    depends_on:
-      - db_gateway
-    environment:
-      GATEWAY_DATABASE_URL: ${GATEWAY_POSTGRES_URL}
-      SECRET_KEY: ${SECRET_KEY}
-      ALGORITHM: ${ALGORITHM}
-      PATIENTS_SERVICE: ${PATIENTS_SERVICE}
-      ACCESS_MAX_AGE: ${ACCESS_MAX_AGE}
-      REFRESH_MAX_AGE: ${REFRESH_MAX_AGE}
-    command: >
-      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
-
-    develop:
-      watch:
-        - path: ./cmv_gateway
-          action: rebuild
-
   db_patients:
     image: postgres:latest
     restart: always
@@ -85,39 +51,3 @@ services:
       POSTGRES_USER: ${PATIENTS_POSTGRES_USER}
       POSTGRES_PASSWORD: ${PATIENTS_POSTGRES_PASSWORD}
       POSTGRES_DB: ${PATIENTS_POSTGRES_DB}
-
-  api_patients:
-    build:
-      context: ./cmv_patients
-    restart: always
-    networks:
-      - cmv
-    container_name: cmv_patients
-    ports:
-      - "8002:8000"
-    depends_on:
-      - db_patients
-    environment:
-      PATIENTS_DATABASE_URL: ${PATIENTS_DATABASE_URL}
-      SECRET_KEY: ${SECRET_KEY}
-      ALGORITHM: ${ALGORITHM}
-      AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      AWS_REGION: ${AWS_REGION}
-    command: >
-      bash -c 'while !</dev/tcp/db_patients/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
-
-    develop:
-      watch:
-        - path: ./cmv_patients
-          action: rebuild
-
-  nginx:
-    image: nginx:latest
-    networks:
-      - cmv
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./nginx_config.conf:/etc/nginx/conf.d/default.conf
