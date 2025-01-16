@@ -18,45 +18,74 @@ from ..utils.database import Base
 
 
 class Civilite(enum.Enum):
+    """Enumération des civilités possibles pour un patient."""
+
     MONSIEUR = "Monsieur"
     MADAME = "Madame"
     AUTRE = "Autre"
-    ROBERTO = "Roberto"
 
 
 class DocumentType(enum.Enum):
-    HEALTH_INSURANCE_CARD_CERTIFICATE = "health_insurance_card_certificate"
-    AUTHORIZATION_FOR_CARE = "authorization_for_care"
-    AUTHORIZATION_FOR_TREATMENT = "authorization_for_treatment"
-    AUTHORIZATION_FOR_VISIT = "authorization_for_visit"
-    AUTHORIZATION_FOR_OVERNIGHT_STAY = "authorization_for_overnight_stay"
-    AUTHORIZATION_FOR_DEPARTURE = "authorization_for_departure"
-    AUTHORIZATION_FOR_DISCONNECTION = "authorization_for_disconnection"
-    MISCELLANEOUS = "miscellaneous"
+    """Enumération des différents types de documents pouvant être associés à un patient."""
+
+    HEALTH_INSURANCE_CARD_CERTIFICATE = (
+        "health_insurance_card_certificate"  # Attestation carte vitale
+    )
+    AUTHORIZATION_FOR_CARE = "authorization_for_care"  # Autorisation de soins
+    AUTHORIZATION_FOR_TREATMENT = (
+        "authorization_for_treatment"  # Autorisation de traitement
+    )
+    AUTHORIZATION_FOR_VISIT = "authorization_for_visit"  # Autorisation de visite
+    AUTHORIZATION_FOR_OVERNIGHT_STAY = (
+        "authorization_for_overnight_stay"  # Autorisation de nuitée
+    )
+    AUTHORIZATION_FOR_DEPARTURE = (
+        "authorization_for_departure"  # Autorisation de sortie
+    )
+    AUTHORIZATION_FOR_DISCONNECTION = (
+        "authorization_for_disconnection"  # Autorisation de débranchement
+    )
+    MISCELLANEOUS = "miscellaneous"  # Divers
 
 
 class Admission(Base):
+    """Modèle représentant une admission d'un patient dans l'établissement."""
+
     __tablename__ = "admission"
 
     id_admission: Mapped[int] = mapped_column(primary_key=True, index=True)
-    entree_le: Mapped[datetime] = mapped_column(DateTime)
-    ambulatoire: Mapped[bool] = mapped_column(Boolean, default=True)
-    sorti_le: Mapped[datetime] = mapped_column(DateTime, nullable=True)
-    sortie_prevue_le: Mapped[datetime] = mapped_column(DateTime, nullable=True)
-    ref_chambre: Mapped[int] = mapped_column(Integer, nullable=True)
+    entree_le: Mapped[datetime] = mapped_column(DateTime)  # Date et heure d'entrée
+    ambulatoire: Mapped[bool] = mapped_column(
+        Boolean, default=True
+    )  # Type d'admission (ambulatoire ou hospitalisation)
+    sorti_le: Mapped[datetime] = mapped_column(
+        DateTime, nullable=True
+    )  # Date et heure de sortie effective
+    sortie_prevue_le: Mapped[datetime] = mapped_column(
+        DateTime, nullable=True
+    )  # Date et heure de sortie prévue
+    ref_chambre: Mapped[int] = mapped_column(
+        Integer, nullable=True
+    )  # Référence de la chambre attribuée
 
 
 class Document(Base):
+    """Modèle représentant un document associé à un patient."""
+
     __tablename__ = "document"
 
     id_document: Mapped[int] = mapped_column(primary_key=True, index=True)
-    nom_fichier: Mapped[str] = mapped_column(String, nullable=False, unique=True)
+    nom_fichier: Mapped[str] = mapped_column(
+        String, nullable=False, unique=True
+    )  # Nom unique du fichier
     type_document: Mapped[DocumentType] = mapped_column(
         Enum(DocumentType), default=DocumentType.MISCELLANEOUS, nullable=False
-    )
-    created_at: Mapped[DateTime] = mapped_column(DateTime(), server_default=func.now())
+    )  # Type de document
+    created_at: Mapped[DateTime] = mapped_column(
+        DateTime(), server_default=func.now()
+    )  # Date de création
 
-    # relation one to many avec l'entité "Patient"
+    # Relation one to many avec l'entité "Patient"
     patient_id: Mapped[int] = mapped_column(
         ForeignKey(
             "patient.id_patient",
@@ -67,31 +96,42 @@ class Document(Base):
 
 
 class Patient(Base):
+    """Modèle représentant un patient dans le système."""
+
     __tablename__ = "patient"
 
     id_patient: Mapped[int] = mapped_column(primary_key=True, index=True)
     civilite: Mapped[Civilite] = mapped_column(
         Enum(Civilite), default=Civilite.AUTRE, nullable=False
-    )
-    nom: Mapped[str] = mapped_column(String, index=True)
-    prenom: Mapped[str] = mapped_column(String, index=True)
-    date_de_naissance: Mapped[datetime] = mapped_column(DateTime(), nullable=False)
-    adresse: Mapped[str] = mapped_column(String, nullable=False)
-    code_postal: Mapped[str] = mapped_column(String, nullable=False)
-    ville: Mapped[str] = mapped_column(String, nullable=False)
-    telephone: Mapped[str] = mapped_column(String, nullable=False)
-    email: Mapped[str] = mapped_column(String, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(), server_default=func.now())
+    )  # Civilité du patient
+    nom: Mapped[str] = mapped_column(String, index=True)  # Nom de famille
+    prenom: Mapped[str] = mapped_column(String, index=True)  # Prénom
+    date_de_naissance: Mapped[datetime] = mapped_column(
+        DateTime(), nullable=False
+    )  # Date de naissance
+    adresse: Mapped[str] = mapped_column(String, nullable=False)  # Adresse postale
+    code_postal: Mapped[str] = mapped_column(String, nullable=False)  # Code postal
+    ville: Mapped[str] = mapped_column(String, nullable=False)  # Ville
+    telephone: Mapped[str] = mapped_column(
+        String, nullable=False
+    )  # Numéro de téléphone
+    email: Mapped[str] = mapped_column(
+        String, nullable=True
+    )  # Adresse email (optionnelle)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(), server_default=func.now()
+    )  # Date de création
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(), server_default=func.now(), onupdate=func.now()
-    )
+    )  # Date de dernière modification
 
-    # relation many to one avec l'entité "Document"
+    # Relation many to one avec l'entité "Document"
     documents: Mapped[list["Document"]] = relationship(
         "Document", back_populates="patient"
     )
 
 
+# Table d'association entre Patient et Admission (relation many-to-many)
 admission_patient = Table(
     "admission_patient",
     Base.metadata,
