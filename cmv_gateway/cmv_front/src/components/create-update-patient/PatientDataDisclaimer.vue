@@ -48,7 +48,6 @@ const { t } = useI18n()
       <li>- {{ t('components.patient_data_disclaimer.responsibility_2') }}</li>
       <li>- {{ t('components.patient_data_disclaimer.responsibility_3') }}</li>
       <li>- {{ t('components.patient_data_disclaimer.responsibility_4') }}</li>
-      <li>- {{ t('components.patient_data_disclaimer.responsibility_5') }}</li>
     </ol>
   </div>
 </template>
