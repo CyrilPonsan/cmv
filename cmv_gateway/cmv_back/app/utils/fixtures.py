@@ -234,7 +234,7 @@ for object in objects:
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-hashed_password = pwd_context.hash("Abcd@1234")
+hashed_password = pwd_context.hash("Abcdef@123456")
 
 
 # création des utilisateurs
@@ -255,22 +255,32 @@ def create_fixtures(db: Session):
     nurse_role = db.query(models.Role).filter(models.Role.name == "nurses").first()
     home_role = db.query(models.Role).filter(models.Role.name == "home").first()
 
+    permissions = [
+        {"role": nurse_role, "action": "get", "resource": "chambres"},
+        {"role": nurse_role, "action": "get", "resource": "services"},
+        {"role": home_role, "action": "get", "resource": "patients"},
+        {"role": home_role, "action": "get", "resource": "documents"},
+        {"role": home_role, "action": "post", "resource": "documents"},
+        {"role": home_role, "action": "delete", "resource": "documents"},
+        {"role": home_role, "action": "post", "resource": "patients"},
+        {"role": home_role, "action": "put", "resource": "patients"},
+        {"role": home_role, "action": "delete", "resource": "patients"},
+    ]
+
     db_perms: models.Permission = []
-    db_perms.append(
-        models.Permission(role=nurse_role, action="get", resource="chambres")
-    )
-    db_perms.append(
-        models.Permission(role=nurse_role, action="get", resource="services")
-    )
-    db_perms.append(
-        models.Permission(role=home_role, action="get", resource="patients")
-    )
+    for perm in permissions:
+        db_perm = models.Permission(
+            role=perm["role"],
+            action=perm["action"],
+            resource=perm["resource"],
+        )
+        db_perms.append(db_perm)
 
     db.add_all(db_perms)
     db.commit()
 
     user = models.User(
-        username="toto@toto.fr",
+        username="admin@cmv.fr",
         password=hashed_password,
         prenom="jacques",
         nom="durand",
@@ -279,7 +289,7 @@ def create_fixtures(db: Session):
     )
 
     home = models.User(
-        username="tata@toto.fr",
+        username="accueil@cmv.fr",
         password=hashed_password,
         prenom="jacqueline",
         nom="dupond",

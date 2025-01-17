@@ -14,8 +14,6 @@ export const useUserStore = defineStore('user', () => {
   const router = useRouter()
   const route = useRoute()
 
-  const access_token = ref('')
-  const refresh_token = ref('')
   const role = ref('')
   const mode = ref('light')
 
@@ -81,8 +79,6 @@ export const useUserStore = defineStore('user', () => {
   }
 
   const logout = () => {
-    console.log('logging out')
-
     role.value = ''
     if (route.name !== 'root') {
       console.log('redirecting to root')
@@ -91,12 +87,10 @@ export const useUserStore = defineStore('user', () => {
   }
 
   return {
-    access_token,
     getUserInfos,
     handshake,
     logout,
     mode,
-    refresh_token,
     role,
     signout,
     toggleColorScheme

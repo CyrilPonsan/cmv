@@ -1,4 +1,5 @@
 # Import des modules nécessaires
+import os
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
@@ -71,16 +72,22 @@ async def create_document(
         raise HTTPException(status_code=400, detail="not_valid_pdf")
 
     # Sauvegarde temporaire du fichier sur le serveur pour vérification supplémentaire si nécessaire
-    with open(f"uploaded_{file.filename}", "wb") as f:
-        f.write(contents)
+    temp_file_path = f"uploaded_{file.filename}"
+    try:
+        with open(temp_file_path, "wb") as f:
+            f.write(contents)
 
-    # Appel au service pour créer le document dans la base de données et le stocker sur S3
-    await documents_service.create_document(
-        db=db,
-        file_contents=contents,
-        type_document=data,
-        patient_id=patient_id,
-    )
+        # Appel au service pour créer le document dans la base de données et le stocker sur S3
+        await documents_service.create_document(
+            db=db,
+            file_contents=contents,
+            type_document=data,
+            patient_id=patient_id,
+        )
+    finally:
+        # Suppression du fichier temporaire
+        if os.path.exists(temp_file_path):
+            os.remove(temp_file_path)
 
     # Retour d'une réponse de succès à l'utilisateur
     return {"success": True, "message": "document_created"}
