@@ -12,9 +12,7 @@
       />
     </div>
     <div class="flex flex-col gap-y-24 mt-4">
-      <div v-for="service in services" v-bind:key="service.id">
-        <ServiceItem v-bind:service="service" />
-      </div>
+      <pre>{{ services }}</pre>
     </div>
   </main>
 </template>
@@ -26,19 +24,19 @@ import type Service from '@/models/service'
 import Button from 'primevue/button'
 import { onBeforeMount, ref } from 'vue'
 
-const services = ref<Service[]>([])
+const services = ref<any>([])
 const http = useHttp()
 
 /**
  * retourne la liste des services et des chambres associées
  */
 const getChambres = async () => {
-  const applyData = (data: Service[]) => {
+  const applyData = (data: any) => {
     services.value = data
   }
   http.sendRequest(
     {
-      path: '/home/services'
+      path: '/chambres/services'
     },
     applyData
   )

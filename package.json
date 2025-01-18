@@ -15,14 +15,16 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "set-venv": "cd cmv_gateway/cmv_back && python3.13 -m venv venv && source venv/bin/activate && cd ../../cmv_patients && python3.13 -m venv venv && source venv/bin/activate",
+    "set-venv": "cd cmv_gateway/cmv_back && python3.13 -m venv venv && source venv/bin/activate && cd ../../cmv_patients && python3.13 -m venv venv && source venv/bin/activate && cd ../cmv_chambres && python3.13 -m venv venv && source venv/bin/activate",
     "install-gateway": "npm i && cd cmv_gateway/cmv_back && source venv/bin/activate && pip install -r requirements.txt && cd ../cmv_front && npm install",
-    "install-patients": "npm i && cd cmv_patients && source venv/bin/activate && pip install -r requirements.txt",
-    "install:app": "npm i && npm run install-gateway && npm run install-patients",
+    "install-patients": "cd cmv_patients && source venv/bin/activate && pip install -r requirements.txt",
+    "install-chambres": "cd cmv_chambres && source venv/bin/activate && pip install -r requirements.txt",
+    "install:app": "npm i && npm run install-gateway && npm run install-patients && npm run install-chambres",
     "start:preprod": "docker network create cmv || true&& docker compose -f preprod-docker-compose.yml up --build",
     "start-gateway": "npm run start --prefix cmv_gateway",
     "start-patients": "cd cmv_patients && source venv/bin/activate && uvicorn app.main:app --reload --port 8002",
-    "start:dev": "docker network create cmv || true && docker compose -f dev-docker-compose.yml up -d && concurrently \"npm run start-gateway\" \"npm run start-patients\""
+    "start-chambres": "cd cmv_chambres && source venv/bin/activate && uvicorn app.main:app --reload --port 8003",
+    "start:dev": "docker network create cmv || true && docker compose -f dev-docker-compose.yml up -d && concurrently \"npm run start-gateway\" \"npm run start-patients\" \"npm run start-chambres\""
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

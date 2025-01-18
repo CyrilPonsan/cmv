@@ -11,6 +11,8 @@ volumes:
     driver: local
   db_patients:
     driver: local
+  db_chambres:
+    driver: local
   logs:
     driver: local
   redis:
@@ -61,6 +63,7 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
       PATIENTS_SERVICE: ${PATIENTS_SERVICE}
+      CHAMBRES_SERVICE: ${CHAMBRES_SERVICE}
       ACCESS_MAX_AGE: ${ACCESS_MAX_AGE}
       REFRESH_MAX_AGE: ${REFRESH_MAX_AGE}
       ENVIRONMENT: ${ENVIRONMENT}
@@ -112,6 +115,44 @@ services:
     develop:
       watch:
         - path: ./cmv_patients
+          action: rebuild
+
+  db_chambres:
+    image: postgres:latest
+    restart: always
+    container_name: db_chambres
+    volumes:
+      - db_chambres:/var/lib/postgresql/data
+    networks:
+      - cmv
+    ports:
+      - "6003:5432"
+    environment:
+      POSTGRES_USER: ${CHAMBRES_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${CHAMBRES_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${CHAMBRES_POSTGRES_DB}
+
+  api_chambres:
+    build:
+      context: ./cmv_chambres
+    restart: always
+    networks:
+      - cmv
+    container_name: cmv_chambres
+    ports:
+      - "8003:8000"
+    depends_on:
+      - db_chambres
+    environment:
+      CHAMBRES_DATABASE_URL: ${CHAMBRES_DATABASE_URL}
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+    command: >
+      bash -c 'while !</dev/tcp/db_chambres/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+
+    develop:
+      watch:
+        - path: ./cmv_chambres
           action: rebuild
 
   nginx:
