@@ -7,7 +7,7 @@ from typing import List
 from fastapi import HTTPException, status
 
 
-class PatientsRead(ABC):
+class PatientCrud(ABC):
     @abstractmethod
     async def read_all_patients(
         self,
@@ -44,7 +44,7 @@ class PatientsRead(ABC):
         pass
 
 
-class PatientsRepository(PatientsRead):
+class PatientsRepository(PatientCrud):
     @abstractmethod
     async def read_all_patients(
         self, db: Session, page: int, limit: int, field: str, order: str

@@ -11,7 +11,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <main class="w-screen h-[70vh] flex flex-col justify-center items-center gap-8 fade-in">
+  <main class="w-screen h-[75vh] flex flex-col justify-center items-center gap-16 fade-in">
     <section>
       <h1 class="text-5xl text-primary-500 font-bold">{{ t('login.h1') }}</h1>
     </section>

@@ -11,7 +11,7 @@ from fastapi.exceptions import RequestValidationError
 from app.routers import api
 from app.dependancies.db_session import get_db
 from app.sql import models
-from app.settings.database import engine
+from cmv_chambres.app.utils.database import engine
 from app.utils.logging_setup import LoggerSetup
 
 
