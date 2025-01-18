@@ -1,10 +1,13 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
 class Chambre(BaseModel):
     id_chambre: int
-    numero: int
-    etat: str
+    nom: str
+    status: str
+    dernier_nettoyage: datetime
     service_id: int
 
     class Config:

@@ -11,8 +11,9 @@ from fastapi.exceptions import RequestValidationError
 from app.routers import api
 from app.dependancies.db_session import get_db
 from app.sql import models
-from cmv_chambres.app.utils.database import engine
+from app.utils.database import engine
 from app.utils.logging_setup import LoggerSetup
+from app.utils.fixtures import create_fixtures
 
 
 # Initialisation de la bdd
@@ -57,4 +58,4 @@ async def validation_exception_handler(request, exc):
 
 @app.get("/fixtures")
 def fixtures(db: Session = Depends(get_db)):
-    pass
+    return create_fixtures(db)

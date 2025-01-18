@@ -7,6 +7,8 @@ volumes:
     driver: local
   db_patients:
     driver: local
+  db_chambres:
+    driver: local
   redis:
     driver: local
 
@@ -51,3 +53,18 @@ services:
       POSTGRES_USER: ${PATIENTS_POSTGRES_USER}
       POSTGRES_PASSWORD: ${PATIENTS_POSTGRES_PASSWORD}
       POSTGRES_DB: ${PATIENTS_POSTGRES_DB}
+
+  db_chambres:
+    image: postgres:latest
+    restart: always
+    container_name: db_chambres
+    volumes:
+      - db_chambres:/var/lib/postgresql/data
+    networks:
+      - cmv
+    ports:
+      - "6003:5432"
+    environment:
+      POSTGRES_USER: ${CHAMBRES_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${CHAMBRES_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${CHAMBRES_POSTGRES_DB}
