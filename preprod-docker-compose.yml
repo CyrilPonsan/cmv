@@ -114,18 +114,6 @@ services:
         - path: ./cmv_patients
           action: rebuild
 
-  api_chambres:
-    build:
-      context: ./cmv_chambres
-    restart: always
-    networks:
-      - cmv
-    container_name: cmv_chambres
-    ports:
-      - "8003:8000"
-    depends_on:
-      - db_chambres
-
   nginx:
     image: nginx:latest
     networks:
