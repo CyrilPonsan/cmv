@@ -40,7 +40,7 @@ const usePatientForm = (fetchPatientData: ((id: number) => void) | null): Patien
   const router = useRouter()
 
   // Liste des civilités disponibles
-  const civilites = ref(['Monsieur', 'Madame', 'Autre', 'Roberto'])
+  const civilites = ref(['Monsieur', 'Madame', 'Autre'])
   const isEditing = ref(false)
 
   // Schéma de validation du formulaire
@@ -55,7 +55,7 @@ const usePatientForm = (fetchPatientData: ((id: number) => void) | null): Patien
           return val
         })
         .pipe(
-          z.enum(['Monsieur', 'Madame', 'Autre', 'Roberto'], {
+          z.enum(['Monsieur', 'Madame', 'Autre'], {
             errorMap: () => ({ message: t('error.not_valid_civility') })
           })
         ),

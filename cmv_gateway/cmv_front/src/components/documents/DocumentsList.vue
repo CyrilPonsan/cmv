@@ -9,8 +9,8 @@ import type Document from '@/models/document'
 import DocumentPatient from './DocumentPatient.vue'
 import useDocumentManagement from '@/composables/useDocumentManagement'
 import DocumentsHeader from './DocumentsHeader.vue'
-import EmptyDocumentsList from './EmptyDocumentsList.vue'
 import DeleteConfirmationDialog from './DeleteConfirmationDialog.vue'
+import { Panel } from 'primevue'
 
 // Props du composant
 const { documents } = defineProps<{
@@ -48,24 +48,28 @@ const handleCancel = () => {
 </script>
 
 <template>
-  <!-- En-tête avec titre et bouton d'ajout -->
-  <DocumentsHeader @toggle-visible="emit('toggle-visible')" />
+  <Panel :toggleable="documents.length > 0" :collapsed="true">
+    <template #header>
+      <span class="w-full h-full flex items-center justify-between">
+        <DocumentsHeader
+          @toggle-visible="emit('toggle-visible')"
+          :totalDocuments="documents.length"
+        />
+      </span>
+    </template>
 
-  <!-- Liste des documents -->
-  <div v-if="documents.length > 0">
-    <DocumentPatient
-      v-for="(document, documentIndex) of documents"
-      class="mb-4"
-      :key="document.id_document"
-      :documentIndex="documentIndex"
-      :document="document"
-      @download-document="emit('download-document', document.id_document)"
-      @delete-document="(documentToDelete = document), (visible = true)"
-    />
-  </div>
-
-  <!-- Message si aucun document -->
-  <EmptyDocumentsList v-else />
+    <div v-if="documents.length > 0">
+      <DocumentPatient
+        v-for="(document, documentIndex) of documents"
+        class="mb-4"
+        :key="document.id_document"
+        :documentIndex="documentIndex"
+        :document="document"
+        @download-document="emit('download-document', document.id_document)"
+        @delete-document="(documentToDelete = document), (visible = true)"
+      />
+    </div>
+  </Panel>
 
   <!-- Dialogue de confirmation de suppression -->
   <DeleteConfirmationDialog
