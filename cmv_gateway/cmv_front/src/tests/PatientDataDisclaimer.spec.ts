@@ -20,8 +20,7 @@ const messages = {
         responsibility_1: 'Responsabilité 1',
         responsibility_2: 'Responsabilité 2',
         responsibility_3: 'Responsabilité 3',
-        responsibility_4: 'Responsabilité 4',
-        responsibility_5: 'Responsabilité 5'
+        responsibility_4: 'Responsabilité 4'
       }
     }
   }
@@ -61,7 +60,7 @@ describe('PatientDataDisclaimer', () => {
 
   it('devrait afficher la section des responsabilités', () => {
     const responsibilities = wrapper.findAll('ol li')
-    expect(responsibilities).toHaveLength(5)
+    expect(responsibilities).toHaveLength(4)
     expect(responsibilities[0].text()).toContain('Responsabilité 1')
   })
 

@@ -118,6 +118,6 @@ describe('DocumentsList', () => {
     })
 
     const message = emptyWrapper.find('p')
-    expect(message.text()).toBe(fr.components.documentsList.no_document)
+    expect(message.text()).toBe('-')
   })
 })
