@@ -6,41 +6,40 @@ from sqlalchemy.orm import Session
 from app.sql.models import Chambre, Service, Status
 
 services = [
-    "Urgences",
-    "Chirurgie orthopédique",
-    "Chirurgie vasculaire",
-    "Chirurgie urologique",
-    "Chirurgie plastique et esthétique",
-    "Gynécologie-obstétrique",
-    "Cardiologie",
-    "Pneumologie",
-    "Gastro-entérologie",
-    "Neurologie",
-    "Ophtalmologie",
     "Anesthésie-réanimation",
-    "Soins intensifs",
+    "Cardiologie",
+    "Chirurgie orthopédique",
+    "Chirurgie plastique et esthétique",
+    "Chirurgie urologique",
+    "Chirurgie vasculaire",
+    "Gastro-entérologie",
+    "Gynécologie-obstétrique",
+    "Neurologie",
     "Oncologie",
+    "Ophtalmologie",
+    "Pneumologie",
     "Psychiatrie",
-    "Imagerie médicale (IRM, scanner, échographie, etc.)",
+    "Soins intensifs",
+    "Urgences",
 ]
 
 
 def create_fixtures(db: Session):
     print("FIXTURING ...")
     db_services: list[Service] = []
-    index = -1
+    index = 0
     for service in services:
-        index += 1
-        chambres = [
-            Chambre(
-                nom=f"{index}{'0' + str(i + 1) if i < 10 else i}",
+        chambres: list[Chambre] = []
+        for i in range(1, 11):
+            chambre = Chambre(
+                nom=f"{index}{'0' + str(i) if i < 10 else i}",
                 status=Status.LIBRE,
                 dernier_nettoyage=datetime.now(),
             )
-            for i in range(15)
-        ]
+            chambres.append(chambre)
         service = Service(nom=service, chambres=chambres)
         db_services.append(service)
+        index += 1
     print(len(db_services))
     db.add_all(db_services)
     db.commit()

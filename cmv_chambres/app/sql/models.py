@@ -21,7 +21,7 @@ class Service(Base):
 
     # Relation Many to one entre les entités Chambre et Service
     chambres: Mapped[list["Chambre"]] = relationship(
-        "Chambre", back_populates="service"
+        "Chambre", back_populates="service", order_by="Chambre.nom"
     )
 
 
@@ -39,7 +39,6 @@ class Chambre(Base):
     )
     service: Mapped[Service] = relationship("Service", back_populates="chambres")
 
-    # Relation One to Many entre chambre et réservation
     reservations: Mapped[list["Reservation"]] = relationship(
         "Reservation", back_populates="chambre"
     )
@@ -68,13 +67,9 @@ class Reservation(Base):
     patient_id: Mapped[int] = mapped_column(
         ForeignKey("patient.id_patient", ondelete="CASCADE"), nullable=False
     )
-    patient: Mapped[list["Patient"]] = relationship(
-        "Patient", back_populates="reservations"
-    )
+    patient: Mapped["Patient"] = relationship("Patient", back_populates="reservations")
 
     chambre_id: Mapped[int] = mapped_column(
         ForeignKey("chambre.id_chambre", ondelete="CASCADE"), nullable=False
     )
-    chambre: Mapped[list["Chambre"]] = relationship(
-        "Chambre", back_populates="reservations"
-    )
+    chambre: Mapped["Chambre"] = relationship("Chambre", back_populates="reservations")

@@ -7,7 +7,7 @@
 import type Chambre from './chambre'
 
 export default interface Service {
-  id: number
+  id_service: number
   nom: string
   chambres: Chambre[]
 }

@@ -4,11 +4,23 @@
  * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 
+interface Patient {
+  id_patient: number
+  ref_patient: number
+  full_name: string
+}
+
+interface Reservation {
+  id_reservation: number
+  entree_prevue: string
+  sortie_prevue: string
+  patient: Patient
+}
+
 export default interface Chambre {
-  id: number
+  id_chambre: number
   numero: number
   status: string
-  last_freed: string
-  last_occuped: string
-  last_cleanup: string
+  dernier_nettoyage: string
+  reservation: Reservation[]
 }
