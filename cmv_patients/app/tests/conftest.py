@@ -29,6 +29,7 @@ async def redis_client():
 # Fixture pour créer le moteur SQLAlchemy
 @pytest.fixture(scope="session")
 def engine():
+    print(f"DATABASE_URL : {DATABASE_URL}")
     return create_engine(
         DATABASE_URL,
         connect_args={"check_same_thread": False},

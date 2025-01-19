@@ -74,7 +74,7 @@ def user(db_session):
     Retourne l'utilisateur créé.
     """
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    hashed_password = pwd_context.hash("Toto@1234")
+    hashed_password = pwd_context.hash("MrToto@123456")
 
     role = Role(name="home", label="Service Accueil")
     db_session.add(role)
@@ -107,7 +107,7 @@ async def auth_cookie(ac, user):
     """
     response = await ac.post(
         "/api/auth/login",
-        json={"username": user.username, "password": "Toto@1234"},
+        json={"username": user.username, "password": "MrToto@123456"},
     )
     assert response.status_code == 200
     return response.cookies.get("access_token")

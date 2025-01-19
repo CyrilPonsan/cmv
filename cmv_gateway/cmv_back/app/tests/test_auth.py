@@ -13,7 +13,7 @@ async def test_login(ac, user):
     print(f"USER : {user.prenom}")
     response = await ac.post(
         "/api/auth/login",
-        json={"username": "test.user@test.fr", "password": "Toto@1234"},
+        json={"username": "test.user@test.fr", "password": "MrToto@123456"},
     )
     assert response.status_code == 200
 
@@ -23,7 +23,7 @@ async def test_login_wrong_user(ac, user):
     print(f"USER : {user.prenom}")
     response = await ac.post(
         "/api/auth/login",
-        json={"username": "foo.user@test.fr", "password": "Toto@1234"},
+        json={"username": "foo.user@test.fr", "password": "MrToto@123456"},
     )
     assert response.status_code == 401
 
@@ -43,7 +43,7 @@ async def test_login_wrong_username_type(ac, user):
     print(f"USER : {user.prenom}")
     response = await ac.post(
         "/api/auth/login",
-        json={"username": "test", "password": "Toto@1234"},
+        json={"username": "test", "password": "MrToto@123456"},
     )
     assert response.status_code == 422
 
