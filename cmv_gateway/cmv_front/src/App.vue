@@ -18,7 +18,7 @@ watch(
   (role) => {
     if (route.redirectedFrom?.fullPath !== undefined && route.redirectedFrom?.fullPath !== '/') {
       router.push(route.redirectedFrom?.fullPath)
-    } else if (role.length > 0)
+    } else if (role.length > 0 && route.name === 'root') {
       switch (role) {
         case 'home':
           router.push({ name: 'patients' })
@@ -26,6 +26,7 @@ watch(
         default:
           break
       }
+    }
   }
 )
 
@@ -38,7 +39,7 @@ onBeforeMount(() => {
   <Toast />
   <div class="flex relative">
     <SidebarComponent v-if="isLoggedIn" />
-    <div class="w-full flex flex-col min-h-screen justify-between">
+    <div class="flex-1 flex flex-col min-h-screen justify-between">
       <RouterView />
       <footer class="w-full h-16 flex justify-center items-center bg-black">
         <h3 class="text-xs text-primary-500">
