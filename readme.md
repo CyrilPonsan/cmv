@@ -59,12 +59,55 @@ Cette commande va créer plusieurs fichiers d'environnement avec des valeurs exe
 npm run Install:app
 ```
 
+## Tests frontend
+
+```bash
+cd cmv_gateway/cmv_front
+npm run test:unit
+```
+
+## Tests API Gateway
+
+```bash
+cd cmv_gateway/cmv_back
+docker compose up --build
+docker compose down
+```
+
+## Tests API Patients
+
+Avant de lancer les tests, assurez vous de démonter les conteneurs existants avec la commande suivante :
+
+```bash
+docker compose -f preprod-docker-compose.yml down
+```
+
+```bash
+cd cmv_patients
+docker compose up --build
+docker compose down
+```
+
+## Tests API Chambres
+
+```bash
+cd cmv_chambres
+docker compose up --build
+docker compose down
+```
+
 ## Démarrage
 
 Pour lancer l'application en mode développement :
 
 ```bash
 npm run start:dev
+```
+
+Pour lancer l'application en mode préproduction :
+
+```bash
+npm run start:preprod
 ```
 
 ## Contribution
