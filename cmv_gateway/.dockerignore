@@ -1,1 +1,15 @@
-cmv_auth/app/dist
+# Ignore all .env files
+**/.env
+**/.env.*
+
+# Ignore specifically the frontend .env
+cmv_front/.env
+cmv_front/.env.*
+
+# Other files to ignore
+**/node_modules
+**/dist
+**/.git
+**/.gitignore
+**/.vscode
+**/*.log

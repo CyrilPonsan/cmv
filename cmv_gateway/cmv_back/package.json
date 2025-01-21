@@ -1,0 +1,12 @@
+{
+  "name": "cmv_back",
+  "version": "1.0.0",
+  "description": "api gateway backend",
+  "license": "ISC",
+  "author": "cyril.ponsan@gmail.com",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "source venv/bin/activate && uvicorn app.main:app --reload --port 8001"
+  }
+}

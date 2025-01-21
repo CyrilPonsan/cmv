@@ -1,2 +1,16 @@
 .env
-/tmp
+tmp/
+.DS_Store
+cmv_gateway/cmv_back/dist
+cmv_gateway/cmv_back/app/logs/* 
+cmv_patients/app/logs/*
+node_modules/
+venv/
+cmv_gateway/node_modules/
+cmv_gateway/tmp/
+cmv_gateway/cmv_back/tmp/
+cmv_gateway/cmv_front/tmp/
+cmv_patients/tmp/
+/cmv_gateway/cmv_back/app/logs
+/cmv_gateway/cmv_back/app/logs
+/cmv_patients/app/logs

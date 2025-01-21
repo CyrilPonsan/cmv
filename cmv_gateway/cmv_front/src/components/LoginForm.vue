@@ -10,7 +10,7 @@ import { Form, Field, type SubmissionHandler, type GenericObject } from 'vee-val
 import { useI18n } from 'vue-i18n' // Internationalisation
 import InputText from 'primevue/inputtext' // Champ de texte PrimeVue
 import Message from 'primevue/message' // Message d'erreur PrimeVue
-import useLogin from '@/composables/use-login' // Hook personnalisé pour la logique de connexion
+import useLogin from '@/composables/useLogin' // Hook personnalisé pour la logique de connexion
 import Password from 'primevue/password' // Champ mot de passe PrimeVue
 import Button from 'primevue/button' // Bouton PrimeVue
 import type { Credentials } from '@/models/credentials' // Type pour les identifiants
@@ -31,9 +31,6 @@ const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
 </script>
 
 <template>
-  <!-- Affichage des erreurs globales -->
-  <p>{{ error }}</p>
-
   <!-- Formulaire de connexion -->
   <Form
     class="w-80 flex flex-col items-start gap-y-2"
@@ -43,9 +40,9 @@ const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
   >
     <!-- Champ email -->
     <div class="w-full flex flex-col gap-y-2">
-      <label for="username">{{ t('login.labelEmail') }}</label>
       <!-- Message d'erreur de validation du champ email -->
       <Field v-slot="{ field, errorMessage }" name="username">
+        <label for="username">{{ t('login.labelEmail') }}</label>
         <Message class="text-xs" severity="error" v-show="errorMessage">{{ errorMessage }}</Message>
         <InputText
           fluid
@@ -83,13 +80,13 @@ const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
     </div>
 
     <!-- Bouton de soumission -->
-    <div class="w-full flex justify-end m-2">
+    <div class="w-full flex justify-end m-2 pr-2">
       <Button type="submit" label="Se Connecter" :loading="isLoading" />
     </div>
 
     <!-- Message d'erreur de connexion -->
-    <Message v-if="error" :closable="true" :severity="'error'">{{
-      t('error.connection_failure')
+    <Message v-if="error" class="w-full" :closable="true" :severity="'error'">{{
+      t(`error.${error}`)
     }}</Message>
   </Form>
 </template>

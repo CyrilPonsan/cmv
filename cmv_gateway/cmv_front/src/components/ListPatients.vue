@@ -7,7 +7,7 @@
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useToast } from 'primevue/usetoast'
-import DataTable from 'primevue/datatable'
+import DataTable, { type DataTablePageEvent, type DataTableSortEvent } from 'primevue/datatable'
 import Column from 'primevue/column'
 import InputText from 'primevue/inputtext'
 import IconField from 'primevue/iconfield'
@@ -16,7 +16,7 @@ import Button from 'primevue/button'
 
 import type { DataTableFilterMeta } from 'primevue/datatable'
 import { patientsListColumns } from '@/libs/columns/patients-list'
-import useLazyLoad from '@/composables/use-lazy-load'
+import useLazyLoad from '@/composables/useLazyLoad'
 import type PatientsListItem from '@/models/patients-list-item'
 
 // Définition des props et des types
@@ -32,7 +32,7 @@ const {
   getData,
   lazyState,
   loading,
-  onFilterChange,
+  //onFilterChange,
   onResetFilter,
   onLazyLoad,
   onSort,
@@ -54,6 +54,15 @@ const onTrash = () => {
 
 // Chargement initial des données
 onMounted(() => getData())
+
+// Wrappers de type pour les événements
+const handlePage = (event: DataTablePageEvent) => {
+  onLazyLoad(event as any)
+}
+
+const handleSort = (event: DataTableSortEvent) => {
+  onSort(event as any)
+}
 </script>
 
 <template>
@@ -73,24 +82,24 @@ onMounted(() => getData())
     table-style="min-width: 50rem"
     paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
     :current-page-report-template="`${lazyState.first + 1} ${t('pagination.to')} ${lazyState.first + lazyState.rows} ${t('pagination.from')} ${totalRecords}`"
-    class="shadow-md"
-    @page="onLazyLoad"
-    @sort="onSort"
+    class="shadow-md min-w-full"
+    @page="handlePage"
+    @sort="handleSort"
   >
     <!-- En-tête avec barre de recherche -->
     <template #header>
       <div class="flex items-center gap-x-4 rounded-tl-lg rounded-tr-lg">
         <div class="w-full flex items-center justify-between gap-x-4">
-          <Button as="router-link" to="/" icon="pi pi-plus" label="Ajouter un patient" />
+          <Button as="router-link" to="/add-patient" icon="pi pi-plus" label="Ajouter un patient" />
+          <!-- Barre de recherche -->
           <IconField class="flex items-center gap-x-4">
             <InputIcon>
               <i class="pi pi-search opacity-20" />
             </InputIcon>
             <InputText
               class="focus:!ring-0 focus:!ring-offset-0"
-              :value="search"
+              v-model="search"
               :placeholder="t('patients.home.placeholder.search')"
-              @input="onFilterChange"
             />
             <InputIcon>
               <i
@@ -124,6 +133,7 @@ onMounted(() => getData())
       :sortable="col.sortable"
     >
       <template #body="slotProps">
+        <!-- Affichage de la date de naissance formatée et de l'email s'il est renseigné -->
         <div :key="slotProps.data.id_patient">
           <template v-if="col.field === 'date_de_naissance'">
             {{ d(new Date(slotProps.data[col.field]), 'short') }}
@@ -141,6 +151,7 @@ onMounted(() => getData())
     <Column header="Actions" :exportable="false">
       <template #body="slotProps">
         <span class="flex items-center gap-x-4">
+          <!-- Bouton pour accéder aux détails du dossier administratif -->
           <Button
             as="router-link"
             :to="`/patient/${slotProps.data.id_patient}`"
@@ -151,6 +162,7 @@ onMounted(() => getData())
             aria-label="Détails du dossier administratif"
             v-tooltip.bottom="t('patients.home.tooltip.navigate')"
           />
+          <!-- Bouton pour supprimer un patient -->
           <Button
             icon="pi pi-trash"
             severity="danger"
@@ -164,6 +176,7 @@ onMounted(() => getData())
         </span>
       </template>
     </Column>
+    <!-- Message affiché lorsque le tableau est vide -->
     <template #empty>
       <div class="text-center p-4">
         <i class="pi pi-info-circle text-warn text-xl mb-2"></i>

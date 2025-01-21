@@ -246,11 +246,11 @@ def create_fixtures(db: Session):
         patient = models.Patient(
             prenom=o["first_name"],
             nom=o["last_name"],
-            adresse="2 rue truc muche",
+            adresse="2 rue des écrivains",
             code_postal="64000",
             ville="gelos",
             telephone="06.66.69.96.99",
-            date_de_naissance=datetime(year=1969, month=7, day=21),
+            date_de_naissance=datetime(year=1969, month=7, day=20),
         )
         patients.append(patient)
 

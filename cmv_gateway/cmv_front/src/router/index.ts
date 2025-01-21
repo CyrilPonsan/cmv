@@ -35,6 +35,11 @@ const router = createRouter({
         else next()
       }
     },
+    {
+      path: '/forbidden',
+      name: 'forbidden',
+      component: () => import('../views/NotAuthorized.vue')
+    },
     //  formulaire de connexion
     {
       path: '/accueil',
@@ -54,13 +59,31 @@ const router = createRouter({
           name: 'patients',
           component: () => import('../views/AccueilView.vue')
         },
-        // Mise à jour d'un dossier administratif
+        //  Détails d'un dossier administratif
         {
           path: '/patient/:id',
           name: 'patient',
           component: () => import('../views/PatientView.vue')
+        },
+        //  formulaire d'ajout d'un patient
+        {
+          path: '/add-patient',
+          name: 'add-patient',
+          component: () => import('../views/AddPatientView.vue')
         }
       ]
+    },
+    {
+      path: '/chambres',
+      name: 'chambres',
+      component: () => import('../views/ChambresView.vue'),
+      beforeEnter: async (_to, _from, next) => {
+        const { userStore } = await setup()
+        const allowedRoles = ['home', 'nurses', 'cleaning']
+        if (allowedRoles.includes(userStore.role)) next()
+        //  si le rôle n'est pas adéquat, l'utilisateur est redirigé vers la page d'accueil
+        else next('/')
+      }
     }
   ]
 })

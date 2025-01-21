@@ -1,6 +1,14 @@
 {
+  "api": {
+    "document_created": "Document créé avec succès",
+    "document_deleted": "Document supprimé avec succès"
+  },
   "app": {
-    "footer": "Projet de formation : toute ressemblance avec une clinique déjà existente ne serait que pure coïncidence.",
+    "footer": "Projet de formation : toute ressemblance avec une clinique déjà existante ne serait que pure coïncidence.",
+    "sidebar": {
+      "home": "Accueil",
+      "rooms": "Chambres"
+    },
     "tooltip": {
       "home": "Accueil",
       "change_mode": "Changer de mode",
@@ -18,25 +26,78 @@
     }
   },
   "components": {
+    "patient_data_disclaimer": {
+      "title": "Données personnelles",
+      "legal_context_title": "Contexte légal",
+      "legal_context_text": "Les données personnelles sont collectées dans le cadre de l'exécution de mes fonctions et sont destinées à l'usage de la clinique Montvert.",
+      "principle_1": "Collecte limitée et pertinente",
+      "principle_2": "Collecte explicite",
+      "principle_3": "Collecte minimale",
+      "principle_4": "Exactitude des données",
+      "responsibilities_title": "Responsabilités",
+      "responsibilities_text": "Je suis responsable de la collecte, du traitement et de la protection des données personnelles conformément aux principes RGPD.",
+      "responsibility_1": "Je collecte uniquement les données nécessaires pour les besoins professionnels de la clinique Montvert.",
+      "responsibility_2": "Je respecte les droits d'accès, de rectification et d'opposition des personnes concernées.",
+      "responsibility_3": "Je veille à la sécurité des données personnelles et prends les mesures nécessaires pour les protéger contre toute perte, destruction, utilisation ou accès non autorisé.",
+      "responsibility_4": "Je respecte les principes de confidentialité et de sécurité des données personnelles."
+    },
     "documentsList": {
-      "uploaded_documents": "Documents téléversés",
-      "document": "Document",
-      "download": "Télécharger",
+      "add_document": "Ajouter un document",
       "delete": "Supprimer",
-      "no_document": "Aucun document trouvé.",
+      "deletion": "Suppression",
+      "dialog": {
+        "buttons": {
+          "cancel": "Annuler",
+          "confirm": "Confirmer"
+        },
+        "content": "Confirmez la suppression du document :",
+        "header": "Suppression d'un document administratif"
+      },
+      "document": "Document",
       "document_types": {
-        "health_insurance_card_certificate": "Attestation de carte vitale",
         "authorization_for_care": "Autorisation de soins",
-        "authorization_for_treatment": "Autorisation de traitement",
-        "authorization_for_visit": "Autorisation de visite",
-        "authorization_for_overnight_stay": "Autorisation de remise à nuit",
         "authorization_for_departure": "Autorisation de départ",
         "authorization_for_disconnection": "Autorisation de débranchement",
+        "authorization_for_overnight_stay": "Autorisation de remise à nuit",
+        "authorization_for_treatment": "Autorisation de traitement",
+        "authorization_for_visit": "Autorisation de visite",
+        "health_insurance_card_certificate": "Attestation de carte vitale",
         "miscellaneous": "Divers"
-      }
+      },
+      "download": "Télécharger",
+      "no_document": "Aucun document trouvé.",
+      "upload_dialog": {
+        "buttons": {
+          "cancel": "Annuler",
+          "confirm": "Téléverser",
+          "choose_label": "Choisir un fichier"
+        },
+        "content": "Dossier administratif de :",
+        "empty": "Glissez / Déposez un fichier PDF ici (max 3Mo)",
+        "header": "Téléverser un document administratif",
+        "invalid_file_size": "Le fichier est trop volumineux (max 3Mo)",
+        "invalid_file_type": "Le fichier doit être au format PDF",
+        "placeholder": "Sélectionner un type de document"
+      },
+      "total_documents": "Aucun document | Un document | {n} documents",
+      "uploaded_documents": "Documents téléversés"
+    },
+    "patientForm": {
+      "civilite": "Civilité",
+      "select_placeholder": "Sélectionner une civilité",
+      "date_de_naissance": "Date de naissance",
+      "lastname": "Nom",
+      "firstname": "Prénom",
+      "address": "Adresse",
+      "zip_code": "Code postal",
+      "city": "Ville",
+      "phone_number": "Numéro de téléphone",
+      "email": "Email",
+      "submit": "Enregistrer"
     }
   },
   "error": {
+    "ERROR": "Une erreur est survenue",
     "error": "Erreur",
     "no_email": "Une adresse email est requise",
     "not_valid_email": "Adresse email non valide",
@@ -44,7 +105,24 @@
     "not_valid_password": "Le mot de passe n'est pas valide",
     "connection_failure": "La connexion a échoué...",
     "credentials": "Identifiant ou mot de passe incorrect",
-    "network_issue": "Un problème est survenu, réessayez plus tard..."
+    "network_issue": "Un problème est survenu, réessayez plus tard...",
+    "patient_not_found": "Le patient n'existe pas.",
+    "document_not_found": "Le document n'existe pas.",
+    "no_firstname": "Un prénom est requis",
+    "not_valid_firstname": "Le prénom n'est pas valide",
+    "no_lastname": "Un nom est requis",
+    "not_valid_lastname": "Le nom n'est pas valide",
+    "no_address": "Une adresse est requise",
+    "not_valid_address": "L'adresse n'est pas valide",
+    "no_zipcode": "Un code postal est requis",
+    "not_valid_zipcode": "Le code postal n'est pas valide",
+    "no_city": "Une ville est requise",
+    "not_valid_city": "La ville n'est pas valide",
+    "no_phone": "Un numéro de téléphone est requis",
+    "not_valid_phone": "Le numéro de téléphone n'est pas valide",
+    "not_valid_civility": "La civilité n'est pas valide",
+    "not_valid_birth_date": "La date de naissance n'est pas valide",
+    "no_birth_date": "Une date de naissance est requise"
   },
   "login": {
     "h1": "Clinique Montvert",
@@ -56,6 +134,10 @@
     "from": "de"
   },
   "patients": {
+    "add": {
+      "description": "Création d'un nouveau dossier administratif",
+      "title": "Espace administratif"
+    },
     "home": {
       "description": "Liste des patients",
       "placeholder": {

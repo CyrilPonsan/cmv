@@ -1,7 +1,7 @@
 <template>Page Detail</template>
 
 <script setup lang="ts">
-import useHttp from '@/composables/use-http'
+import useHttp from '@/composables/useHttp'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 

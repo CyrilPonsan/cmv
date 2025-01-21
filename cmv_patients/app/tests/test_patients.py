@@ -1,4 +1,7 @@
+# Import du module pytest pour les tests
 import pytest
+
+from app.sql import models
 
 
 @pytest.mark.asyncio
@@ -249,3 +252,270 @@ async def test_get_patient_detail_success(ac, internal_token, patients):
     assert len(result["documents"]) == 2
     assert result["documents"][0]["nom_fichier"] == "document_test_0"
     assert result["documents"][1]["nom_fichier"] == "document_test_1"
+
+
+@pytest.mark.asyncio
+async def test_create_patient_no_cookie(ac):
+    """Test la création d'un patient sans authentification"""
+    patient_data = {
+        "civilite": "Monsieur",
+        "nom": "Dupont",
+        "prenom": "Jean",
+        "date_de_naissance": "1990-01-01",
+        "adresse": "1 rue du Test",
+        "code_postal": "75000",
+        "ville": "Paris",
+        "telephone": "0123456789",
+        "email": "jean.dupont@test.com",
+    }
+    response = await ac.post("/api/patients/", json=patient_data)
+
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Not authenticated"}
+
+
+@pytest.mark.asyncio
+async def test_create_patient_wrong_token(ac, wrong_internal_token):
+    """Test la création d'un patient avec un token invalide"""
+    patient_data = {
+        "civilite": "Monsieur",
+        "nom": "Dupont",
+        "prenom": "Jean",
+        "date_de_naissance": "1990-01-01",
+        "adresse": "1 rue du Test",
+        "code_postal": "75000",
+        "ville": "Paris",
+        "telephone": "0123456789",
+        "email": "jean.dupont@test.com",
+    }
+    headers = {"Authorization": f"Bearer {wrong_internal_token}"}
+    response = await ac.post("/api/patients/", headers=headers, json=patient_data)
+
+    assert response.status_code == 401
+    assert response.json() == {"detail": "not_authorized"}
+
+
+@pytest.mark.asyncio
+async def test_create_patient_no_data(ac, internal_token):
+    """Test la création d'un patient avec des données invalides"""
+    invalid_patient_data = {}
+    headers = {"Authorization": f"Bearer {internal_token}"}
+    response = await ac.post(
+        "/api/patients/", headers=headers, json=invalid_patient_data
+    )
+
+    assert response.status_code == 422
+    errors = response.json()
+    assert "detail" in errors
+    assert len(errors["detail"]) == 8
+
+
+@pytest.mark.asyncio
+async def test_create_patient_invalid_characters_last_name(ac, internal_token):
+    """Test la création d'un patient avec des caractères non autorisés dans le nom"""
+    invalid_patient_data = {
+        "civilite": "<hacked />",  # Caractères non autorisés
+        "nom": "<hacked />",  # Caractères non autorisés
+        "prenom": "<hacked />",  # Caractères non autorisés
+        "date_de_naissance": "<hacked />",  # Caractères non autorisés
+        "adresse": "<hacked />",  # Caractères non autorisés
+        "code_postal": "<hacked />",  # Caractères non autorisés
+        "ville": "<hacked />",  # Caractères non autorisés
+        "telephone": "<hacked />",  # Caractères non autorisés
+        "email": "<hacked />",  # Caractères non autorisés
+    }
+    headers = {"Authorization": f"Bearer {internal_token}"}
+    response = await ac.post(
+        "/api/patients/", headers=headers, json=invalid_patient_data
+    )
+
+    assert response.status_code == 422
+    errors = response.json()
+    assert "detail" in errors
+    assert len(errors["detail"]) == 9
+
+
+@pytest.mark.asyncio
+async def test_create_patient_success(ac, internal_token):
+    """Test la création réussie d'un patient"""
+    patient_data = {
+        "civilite": "Monsieur",
+        "nom": "Dupont",
+        "prenom": "Jean",
+        "date_de_naissance": "1990-01-01",
+        "adresse": "1 rue du Test",
+        "code_postal": "75000",
+        "ville": "Paris",
+        "telephone": "0123456789",
+        "email": "jean.dupont@test.com",
+    }
+    headers = {"Authorization": f"Bearer {internal_token}"}
+    response = await ac.post("/api/patients/", headers=headers, json=patient_data)
+
+    assert response.status_code == 201
+    created_patient = response.json()
+
+    # Vérification des données du patient créé
+    assert "id_patient" in created_patient
+    assert created_patient["success"] is True
+    assert created_patient["message"] == "Patient créé avec succès"
+
+
+@pytest.mark.asyncio
+async def test_create_patient_duplicate(ac, internal_token):
+    """Test la création d'un patient avec un nom, un prénom et une date de naissance déjà existant"""
+    patient_data = {
+        "civilite": "Monsieur",
+        "nom": "Dupont",
+        "prenom": "Jean",
+        "date_de_naissance": "1990-01-01",
+        "adresse": "1 rue du Test",
+        "code_postal": "75000",
+        "ville": "Paris",
+        "telephone": "0123456789",
+        "email": "jean.dupont@test.com",
+    }
+    headers = {"Authorization": f"Bearer {internal_token}"}
+    response = await ac.post("/api/patients/", headers=headers, json=patient_data)
+    response = await ac.post("/api/patients/", headers=headers, json=patient_data)
+
+    assert response.status_code == 400
+    assert response.json() == {"detail": "patient_already_exists"}
+
+
+@pytest.mark.asyncio
+async def test_update_patient_no_token(ac):
+    """Test la mise à jour d'un patient sans authentification"""
+    patient_data = {
+        "civilite": "Madame",
+        "nom": "Marcel",
+        "prenom": "Gudule",
+        "date_de_naissance": "1990-01-01",
+        "adresse": "1 rue du Test",
+        "code_postal": "75000",
+        "ville": "Paris",
+        "telephone": "0123456789",
+        "email": "jean.dupont@test.com",
+    }
+    response = await ac.put("/api/patients/1", json=patient_data)
+
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Not authenticated"}
+
+
+@pytest.mark.asyncio
+async def test_update_patient_wrong_token(ac, wrong_internal_token):
+    """Test la mise à jour d'un patient avec un token invalide"""
+    patient_data = {
+        "civilite": "Madame",
+        "nom": "Marcel",
+        "prenom": "Gudule",
+        "date_de_naissance": "1990-01-01",
+        "adresse": "1 rue du Test",
+        "code_postal": "75000",
+        "ville": "Paris",
+        "telephone": "0123456789",
+        "email": "jean.dupont@test.com",
+    }
+    headers = {"Authorization": f"Bearer {wrong_internal_token}"}
+    response = await ac.put("/api/patients/1", headers=headers, json=patient_data)
+
+    assert response.status_code == 401
+    assert response.json() == {"detail": "not_authorized"}
+
+
+@pytest.mark.asyncio
+async def test_update_patient_success(ac, db_session, internal_token):
+    """Test la mise à jour réussie d'un patient"""
+
+    patient = db_session.query(models.Patient).first()
+    if not patient:
+        print("NO PATIENT FOUND")
+        return
+
+    patient_data = {
+        "civilite": "Madame",
+        "nom": "Marcel",
+        "prenom": "Gudule",
+        "date_de_naissance": "1990-01-01",
+        "adresse": "1 rue du Test",
+        "code_postal": "75000",
+        "ville": "Paris",
+        "telephone": "0123456789",
+        "email": "jean.dupont@test.com",
+    }
+    headers = {"Authorization": f"Bearer {internal_token}"}
+    response = await ac.put(
+        f"/api/patients/{patient.id_patient}", headers=headers, json=patient_data
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "id_patient": 1,
+        "civilite": "Madame",
+        "nom": "Marcel",
+        "prenom": "Gudule",
+        "date_de_naissance": "1990-01-01",
+        "adresse": "1 rue du Test",
+        "code_postal": "75000",
+        "ville": "Paris",
+        "telephone": "0123456789",
+        "email": "jean.dupont@test.com",
+    }
+
+
+@pytest.mark.asyncio
+async def test_update_patient_not_found(ac, internal_token):
+    """Test la mise à jour d'un patient inexistant"""
+    patient_data = {
+        "civilite": "Madame",
+        "nom": "Marcel",
+        "prenom": "Gudule",
+        "date_de_naissance": "1990-01-01",
+        "adresse": "1 rue du Test",
+        "code_postal": "75000",
+        "ville": "Paris",
+        "telephone": "0123456789",
+        "email": "jean.dupont@test.com",
+    }
+    headers = {"Authorization": f"Bearer {internal_token}"}
+    response = await ac.put("/api/patients/999", headers=headers, json=patient_data)
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "patient_not_found"}
+
+
+@pytest.mark.asyncio
+async def test_update_patient_invalid_characters_last_name(ac, internal_token):
+    """Test la mise à jour d'un patient avec des caractères non autorisés dans les données entrantes"""
+    patient_data = {
+        "civilite": "<hacked />",  # Caractères non autorisés
+        "nom": "<hacked />",  # Caractères non autorisés
+        "prenom": "<hacked />",  # Caractères non autorisés
+        "date_de_naissance": "<hacked />",  # Caractères non autorisés
+        "adresse": "<hacked />",  # Caractères non autorisés
+        "code_postal": "<hacked />",  # Caractères non autorisés
+        "ville": "<hacked />",  # Caractères non autorisés
+        "telephone": "<hacked />",  # Caractères non autorisés
+        "email": "<hacked />",  # Caractères non autorisés
+    }
+    headers = {"Authorization": f"Bearer {internal_token}"}
+    response = await ac.put("/api/patients/1", headers=headers, json=patient_data)
+
+    assert response.status_code == 422
+    errors = response.json()
+    assert "detail" in errors
+    assert len(errors["detail"]) == 9
+
+
+@pytest.mark.asyncio
+async def test_update_patient_duplicate(ac, internal_token):
+    """Test la mise à jour d'un patient avec une absence de données"""
+    patient_data = {}
+    headers = {"Authorization": f"Bearer {internal_token}"}
+    response = await ac.put("/api/patients/1", headers=headers, json=patient_data)
+
+    assert response.status_code == 422
+    errors = response.json()
+    assert "detail" in errors
+    assert len(errors["detail"]) == 8

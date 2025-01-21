@@ -1,78 +1,56 @@
 <script setup lang="ts">
 /**
  * @file PatientView.vue
- * @description Patient view
+ * @description Vue détaillée d'un patient permettant de voir et modifier ses informations et documents
  * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 
 // Import des composants
-import DocumentsList from '@/components/DocumentsList.vue'
-import DocumentUpload from '@/components/DocumentUploadDialog.vue'
+import DocumentsList from '@/components/documents/DocumentsList.vue'
+import DocumentUpload from '@/components/documents/DocumentUploadDialog.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import PatientDetail from '@/components/PatientDetail.vue'
+import PatientActions from '@/components/patient/PatientActions.vue'
+import PatientForm from '@/components/create-update-patient/PatientForm.vue'
 
 // Import des composables et utilitaires
-import useHttp from '@/composables/use-http'
-import type DetailPatient from '@/models/detail-patient'
-
-// Import des composants PrimeVue
-import Button from 'primevue/button'
-import { useToast } from 'primevue/usetoast'
+import usePatient from '@/composables/usePatient'
+import useDocuments from '@/composables/useDocuments'
+import usePatientForm from '@/composables/usePatientForm'
 
 // Import des composables Vue
-import { onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
 // Initialisation des composables
 const { t } = useI18n()
-const { sendRequest } = useHttp()
 const route = useRoute()
-const toast = useToast()
 
-// Références réactives
-const detailPatient = ref<DetailPatient | null>(null)
-const visible = ref(false)
+// Récupération des fonctionnalités liées au patient
+const { detailPatient, fetchPatientData } = usePatient()
+// Gestion des documents (upload, visibilité)
+const { visible, toggleVisible, handleUploadSuccess } = useDocuments(fetchPatientData)
+// Gestion du formulaire de modification du patient
+const { civilites, isEditing, isLoading, onUpdatePatient, schema } =
+  usePatientForm(fetchPatientData)
 
-/**
- * Récupère les informations détaillées du patient et ses documents
- */
-const getDocuments = () => {
-  const applyData = (data: DetailPatient) => {
-    detailPatient.value = data
+// Calcul du nom complet du patient pour l'affichage
+const fullName = computed(() => {
+  if (!detailPatient.value) return ''
+  return `${detailPatient.value.prenom} ${detailPatient.value.nom}`
+})
+
+// Chargement initial des données du patient
+onBeforeMount(() => {
+  if (route.params.id) {
+    fetchPatientData(+route.params.id)
   }
-  sendRequest<DetailPatient>({ path: `/patients/patients/detail/${route.params.id}` }, applyData)
-}
-
-/**
- * Callback appelé après un téléversement réussi
- * Affiche un toast de succès et rafraîchit les documents
- * @param message - Message de succès à afficher
- */
-const onSubmitRefresh = (message: string) => {
-  toast.add({
-    summary: 'Téléversement',
-    detail: message,
-    severity: 'success',
-    life: 3000,
-    closable: true
-  })
-  getDocuments()
-}
-
-/**
- * Bascule la visibilité de la boîte de dialogue de téléversement
- */
-const toggleVisible = () => {
-  visible.value = !visible.value
-}
-
-// Chargement initial des données
-onBeforeMount(() => getDocuments())
+})
 </script>
 
 <template>
-  <main class="min-w-screen min-h-[80vh] flex flex-col gap-y-8">
+  <div class="min-w-screen min-h-[80vh] flex flex-col gap-y-8">
     <!-- En-tête de la page -->
     <section>
       <PageHeader
@@ -81,36 +59,59 @@ onBeforeMount(() => getDocuments())
       />
     </section>
     <!-- Section principale avec les détails du patient et ses documents -->
-    <section class="grid grid-cols-4 2xl:grid-cols-3 gap-x-4 xl:gap-x-8">
-      <!-- Détails du patient -->
-      <article v-if="detailPatient" class="col-span-2 p-4 rounded-lg">
+    <section class="w-full flex flex-col xl:flex-row gap-x-4 xl:gap-x-8 gap-y-4">
+      <!-- Formulaire d'édition du patient -->
+      <article
+        v-if="isEditing && detailPatient"
+        class="rounded-lg flex flex-col gap-y-4 justify-center items-start"
+      >
+        <!-- Bascule l'affichage sur la vue détaillée des informations du patient -->
+        <p
+          class="text-sm font-normal text-primary-500 underline cursor-pointer"
+          @click="isEditing = false"
+        >
+          Retour aux informations du patient
+        </p>
+        <PatientForm
+          :patientDetail="detailPatient"
+          :isLoading="isLoading"
+          :onSubmit="onUpdatePatient"
+          :schema="schema"
+          :civilites="civilites"
+        />
+      </article>
+
+      <!-- Détails du patient en mode lecture -->
+      <article v-if="detailPatient && !isEditing" class="w-full xl:w-3/6 2xl:w-4/6 p-4 rounded-lg">
         <!-- Titre et boutons d'action -->
         <div
           class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-y-2 mb-4"
         >
           <h2 class="text-lg font-bold">{{ t('patients.detail.h2') }}</h2>
-          <!-- Boutons d'action -->
-          <span class="flex gap-x-4 items-center">
-            <Button :label="t('patients.detail.button.create_admission')" icon="pi pi-plus" />
-            <Button :label="t('patients.detail.button.edit')" icon="pi pi-pencil" severity="info" />
-          </span>
+          <PatientActions @toggle-editing="isEditing = $event" />
         </div>
         <!-- Composant affichant les détails du patient -->
         <PatientDetail :detail-patient="detailPatient" />
       </article>
-      <!-- Liste des documents -->
-      <article v-if="detailPatient" class="col-span-2 2xl:col-span-1 p-4">
-        <DocumentsList :documents="detailPatient.documents" @toggle-visible="toggleVisible" />
+
+      <!-- Section des documents du patient -->
+      <article v-if="detailPatient" class="w-full xl:w-3/6 2xl:w-2/6 p-4">
+        <DocumentsList
+          :documents="detailPatient.documents"
+          @toggle-visible="toggleVisible"
+          @delete-document="fetchPatientData(+route.params.id)"
+        />
       </article>
+
+      <!-- Modal de téléversement de documents -->
+      <DocumentUpload
+        v-if="detailPatient"
+        :fullname="fullName"
+        :patientId="detailPatient.id_patient"
+        :visible="visible"
+        @update:visible="visible = $event"
+        @refresh="handleUploadSuccess"
+      />
     </section>
-  </main>
-  <!-- Boîte de dialogue de téléversement de documents -->
-  <DocumentUpload
-    v-if="detailPatient"
-    :fullname="`${detailPatient.prenom} ${detailPatient.nom}`"
-    :patientId="detailPatient.id_patient"
-    :visible="visible"
-    @update:visible="visible = $event"
-    @refresh="onSubmitRefresh"
-  />
+  </div>
 </template>

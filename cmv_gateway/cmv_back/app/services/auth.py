@@ -185,12 +185,16 @@ class AuthService:
         session_id = payload.get("session_id")
 
         if not session_id:
-            raise HTTPException(status_code=403, detail="no_session_found")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="no_session_found"
+            )
 
         # Vérifie que la session existe
         session_exists = await redis_client.exists(f"session:{session_id}")
         if not session_exists:
-            raise HTTPException(status_code=403, detail="session_not_found")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="session_not_found"
+            )
 
         # Suppression de l'ancienne session et blacklist de l'ancien token
         await redis_client.delete(f"session:{session_id}")
