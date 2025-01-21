@@ -14,7 +14,7 @@ env_configs = {
         "CHAMBRES_SERVICE": "http://localhost:8003/api",
         "ACCESS_MAX_AGE": "30",
         "REFRESH_MAX_AGE": "1440",
-        "ENVIRONMENT": "development",
+        "ENVIRONMENT": "dev",
         "TEST_DATABASE_URL": "sqlite:///:memory:",
     },  # Destiné au développement et aux tests
     "cmv_gateway/cmv_front/.env": {
@@ -27,7 +27,7 @@ env_configs = {
         "PATIENTS_POSTGRES_DB": "cmv_patients",
         "SECRET_KEY": "cle_tres_tres_tres_secrete",
         "ALGORITHM": "HS256",
-        "ENVIRONMENT": "development",
+        "ENVIRONMENT": "dev",
         "TEST_DATABASE_URL": "sqlite:///:memory:",
         "AWS_BUCKET_NAME": "nom_du_bucker",
         "AWS_ACCESS_KEY_ID": "aws_access_key_id",
@@ -41,11 +41,11 @@ env_configs = {
         "CHAMBRES_POSTGRES_DB": "cmv_chambres",
         "SECRET_KEY": "cle_tres_tres_tres_secrete",
         "ALGORITHM": "HS256",
-        "ENVIRONMENT": "development",
+        "ENVIRONMENT": "dev",
         "TEST_DATABASE_URL": "sqlite:///:memory:",
     },
     # Destiné à la production ou préparation à la production
-    "./env": {
+    "./.env": {
         "GATEWAY_POSTGRES_URL": "postgresql://postgres:cmv_gateway@db_gateway:5432/cmv_gateway",
         "PATIENTS_DATABASE_URL": "postgresql://postgres:cmv_patients@db_patients:5432/cmv_patients",
         "CHAMBRES_DATABASE_URL": "postgresql://postgres:cmv_chambres@db_chambres:5432/cmv_chambres",
