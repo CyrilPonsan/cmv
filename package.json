@@ -16,6 +16,7 @@
   "main": "index.js",
   "scripts": {
     "set-venv": "cd cmv_gateway/cmv_back && python3.13 -m venv venv && source venv/bin/activate && cd ../../cmv_patients && python3.13 -m venv venv && source venv/bin/activate && cd ../cmv_chambres && python3.13 -m venv venv && source venv/bin/activate",
+    "set-env": "python3.13 create_env.py",
     "install-gateway": "npm i && cd cmv_gateway/cmv_back && source venv/bin/activate && pip install -r requirements.txt && cd ../cmv_front && npm install",
     "install-patients": "cd cmv_patients && source venv/bin/activate && pip install -r requirements.txt",
     "install-chambres": "cd cmv_chambres && source venv/bin/activate && pip install -r requirements.txt",
