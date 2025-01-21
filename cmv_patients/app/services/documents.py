@@ -92,6 +92,12 @@ class DocumentsService:
                 aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
                 region_name=AWS_REGION,
             )
+
+            print("AWS Configuration:")
+            print(f"Bucket: {AWS_BUCKET_NAME}")
+            print(f"Region: {AWS_REGION}")
+            print(f"Access Key ID: {AWS_ACCESS_KEY_ID[:4]}...")
+
             # Convertit les bytes en objet fichier
             file_obj = BytesIO(file_contents)
 
