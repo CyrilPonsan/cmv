@@ -50,7 +50,7 @@ const router = createRouter({
         const { userStore } = await setup()
         if (userStore.role === 'home') next()
         //  si le rôle n'est pas adéquat, l'utilisateur est redirigé vers la page d'accueil
-        else next('/forbidden')
+        else next('/')
       },
       children: [
         //  liste des dossiers administratifs
@@ -82,7 +82,7 @@ const router = createRouter({
         const allowedRoles = ['home', 'nurses', 'cleaning']
         if (allowedRoles.includes(userStore.role)) next()
         //  si le rôle n'est pas adéquat, l'utilisateur est redirigé vers la page d'accueil
-        else next('/forbidden')
+        else next('/')
       }
     }
   ]

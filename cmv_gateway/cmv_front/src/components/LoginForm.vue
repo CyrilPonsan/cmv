@@ -80,7 +80,7 @@ const handleSubmit: SubmissionHandler<GenericObject> = (values) => {
     </div>
 
     <!-- Bouton de soumission -->
-    <div class="w-full flex justify-end m-2">
+    <div class="w-full flex justify-end m-2 pr-2">
       <Button type="submit" label="Se Connecter" :loading="isLoading" />
     </div>
 

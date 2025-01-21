@@ -1,3 +1,31 @@
+<script setup lang="ts">
+import ServiceItem from '@/components/ServiceItem.vue'
+import useHttp from '@/composables/useHttp'
+import type Service from '@/models/service'
+import Button from 'primevue/button'
+import { onBeforeMount, ref } from 'vue'
+
+const services = ref<Service[]>([])
+const http = useHttp()
+
+/**
+ * retourne la liste des services et des chambres associées
+ */
+const getChambres = async () => {
+  const applyData = (data: Service[]) => {
+    services.value = data
+  }
+  http.sendRequest(
+    {
+      path: '/chambres/services'
+    },
+    applyData
+  )
+}
+
+onBeforeMount(() => getChambres())
+</script>
+
 <template>
   <main class="flex flex-col gap-y-4">
     <div class="flex gap-x-4 items-center">
@@ -12,35 +40,11 @@
       />
     </div>
     <div class="flex flex-col gap-y-24 mt-4">
-      <pre>{{ services }}</pre>
+      <ul class="flex flex-col">
+        <li v-for="service of services" :key="service.id_service">
+          <ServiceItem v-bind="service" />
+        </li>
+      </ul>
     </div>
   </main>
 </template>
-
-<script setup lang="ts">
-import ServiceItem from '@/components/ServiceItem.vue'
-import useHttp from '@/composables/useHttp'
-import type Service from '@/models/service'
-import Button from 'primevue/button'
-import { onBeforeMount, ref } from 'vue'
-
-const services = ref<any>([])
-const http = useHttp()
-
-/**
- * retourne la liste des services et des chambres associées
- */
-const getChambres = async () => {
-  const applyData = (data: any) => {
-    services.value = data
-  }
-  http.sendRequest(
-    {
-      path: '/chambres/services'
-    },
-    applyData
-  )
-}
-
-onBeforeMount(() => getChambres())
-</script>

@@ -59,7 +59,7 @@ onBeforeMount(() => {
       />
     </section>
     <!-- Section principale avec les détails du patient et ses documents -->
-    <section class="flex flex-col gap-x-4 xl:gap-x-8 gap-y-4">
+    <section class="w-full flex flex-col xl:flex-row gap-x-4 xl:gap-x-8 gap-y-4">
       <!-- Formulaire d'édition du patient -->
       <article
         v-if="isEditing && detailPatient"
@@ -82,7 +82,7 @@ onBeforeMount(() => {
       </article>
 
       <!-- Détails du patient en mode lecture -->
-      <article v-if="detailPatient && !isEditing" class="p-4 rounded-lg">
+      <article v-if="detailPatient && !isEditing" class="w-full xl:w-3/6 2xl:w-4/6 p-4 rounded-lg">
         <!-- Titre et boutons d'action -->
         <div
           class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-y-2 mb-4"
@@ -95,7 +95,7 @@ onBeforeMount(() => {
       </article>
 
       <!-- Section des documents du patient -->
-      <article v-if="detailPatient" class="p-4">
+      <article v-if="detailPatient" class="w-full xl:w-3/6 2xl:w-2/6 p-4">
         <DocumentsList
           :documents="detailPatient.documents"
           @toggle-visible="toggleVisible"

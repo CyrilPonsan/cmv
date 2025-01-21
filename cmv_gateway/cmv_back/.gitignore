@@ -1,5 +1,6 @@
 venv
 .env
+.env.test
 app/.env
 app/__pycache__
 app/*/__pycache__
