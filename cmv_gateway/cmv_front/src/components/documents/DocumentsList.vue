@@ -10,6 +10,7 @@ import DocumentPatient from './DocumentPatient.vue'
 import useDocumentManagement from '@/composables/useDocumentManagement'
 import DocumentsHeader from './DocumentsHeader.vue'
 import DeleteConfirmationDialog from './DeleteConfirmationDialog.vue'
+import EmptyDocumentsList from './EmptyDocumentsList.vue'
 
 // Props du composant
 const { documents } = defineProps<{
