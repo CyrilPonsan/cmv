@@ -110,6 +110,14 @@ Pour lancer l'application en mode préproduction :
 npm run start:preprod
 ```
 
+## Bases de données des différentes API
+
+Les bases de données sont créées automatiquement lors du lancement de l'application en mode développement ou en mode préproduction. Les bases de données des microservices sont accessibles sur les port 6001, 6002 et 6003.
+Les identifiants de connexion des bases de données sont disponibles dans les fichiers d'environnement des microservices.
+L'url de connexion des bases de données des microservices est accessible dans les fichiers d'environnement des microservices,les identifiants de connexion présents dans l'url sont ceux pour un "rôle" utilisateur postgresql.
+Les identifiants indiqués à la suite de l'url sont ceux pour un "rôle" admin postgresql.
+Il est prudent de créer un rôle utilisateur avec des droits limités en se référent à la documentation de postgresql.
+
 ## Contribution
 
 Pour contribuer au projet, veuillez consulter le dépôt GitHub : [https://github.com/CyrilPonsan/cmv](https://github.com/CyrilPonsan/cmv)
