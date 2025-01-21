@@ -1,24 +1,3 @@
-<template>
-  <main class="flex flex-col gap-y-4">
-    <div class="flex gap-x-4 items-center">
-      <h1 class="text-2xl font-bold">Liste des chambres</h1>
-      <Button
-        icon="pi pi-refresh"
-        text
-        aria-label="rafraîchir la liste des chambres"
-        :loading="http.isLoading.value"
-        :disabled="http.isLoading.value"
-        @:click="getChambres"
-      />
-    </div>
-    <div class="flex flex-col gap-y-24 mt-4">
-      <div v-for="service in services" v-bind:key="service.id">
-        <ServiceItem v-bind:service="service" />
-      </div>
-    </div>
-  </main>
-</template>
-
 <script setup lang="ts">
 import ServiceItem from '@/components/ServiceItem.vue'
 import useHttp from '@/composables/useHttp'
@@ -38,7 +17,7 @@ const getChambres = async () => {
   }
   http.sendRequest(
     {
-      path: '/home/services'
+      path: '/chambres/services'
     },
     applyData
   )
@@ -46,3 +25,26 @@ const getChambres = async () => {
 
 onBeforeMount(() => getChambres())
 </script>
+
+<template>
+  <main class="flex flex-col gap-y-4">
+    <div class="flex gap-x-4 items-center">
+      <h1 class="text-2xl font-bold">Liste des chambres</h1>
+      <Button
+        icon="pi pi-refresh"
+        text
+        aria-label="rafraîchir la liste des chambres"
+        :loading="http.isLoading.value"
+        :disabled="http.isLoading.value"
+        @:click="getChambres"
+      />
+    </div>
+    <div class="flex flex-col gap-y-24 mt-4">
+      <ul class="flex flex-col">
+        <li v-for="service of services" :key="service.id_service">
+          <ServiceItem v-bind="service" />
+        </li>
+      </ul>
+    </div>
+  </main>
+</template>

@@ -15,7 +15,7 @@ const userStore = useUserStore()
   >
     <!-- Section logo -->
     <section>
-      <img class="w-64 h-auto" src="@/assets/images/cmv-logo.jpeg" alt="logo" />
+      <img width="256" height="256" src="@/assets/images/cmv-logo.jpeg" alt="logo" />
     </section>
 
     <!-- Section menu du service accueil (visible uniquement pour le rôle 'home') -->

@@ -91,6 +91,7 @@ const handleSort = (event: DataTableSortEvent) => {
       <div class="flex items-center gap-x-4 rounded-tl-lg rounded-tr-lg">
         <div class="w-full flex items-center justify-between gap-x-4">
           <Button as="router-link" to="/add-patient" icon="pi pi-plus" label="Ajouter un patient" />
+          <!-- Barre de recherche -->
           <IconField class="flex items-center gap-x-4">
             <InputIcon>
               <i class="pi pi-search opacity-20" />
@@ -132,6 +133,7 @@ const handleSort = (event: DataTableSortEvent) => {
       :sortable="col.sortable"
     >
       <template #body="slotProps">
+        <!-- Affichage de la date de naissance formatée et de l'email s'il est renseigné -->
         <div :key="slotProps.data.id_patient">
           <template v-if="col.field === 'date_de_naissance'">
             {{ d(new Date(slotProps.data[col.field]), 'short') }}
@@ -149,6 +151,7 @@ const handleSort = (event: DataTableSortEvent) => {
     <Column header="Actions" :exportable="false">
       <template #body="slotProps">
         <span class="flex items-center gap-x-4">
+          <!-- Bouton pour accéder aux détails du dossier administratif -->
           <Button
             as="router-link"
             :to="`/patient/${slotProps.data.id_patient}`"
@@ -159,6 +162,7 @@ const handleSort = (event: DataTableSortEvent) => {
             aria-label="Détails du dossier administratif"
             v-tooltip.bottom="t('patients.home.tooltip.navigate')"
           />
+          <!-- Bouton pour supprimer un patient -->
           <Button
             icon="pi pi-trash"
             severity="danger"
@@ -172,6 +176,7 @@ const handleSort = (event: DataTableSortEvent) => {
         </span>
       </template>
     </Column>
+    <!-- Message affiché lorsque le tableau est vide -->
     <template #empty>
       <div class="text-center p-4">
         <i class="pi pi-info-circle text-warn text-xl mb-2"></i>

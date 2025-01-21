@@ -11,7 +11,7 @@ const { t } = useI18n()
   <!-- Conteneur principal avec flex layout -->
   <article class="flex-1 flex flex-col justify-evenly items-center">
     <!-- Liste des boutons de navigation -->
-    <ul class="w-full p-2 flex flex-col gap-y-4">
+    <ul class="w-64 p-4 flex flex-col gap-y-4">
       <!-- Bouton vers la page d'accueil -->
       <li>
         <Button
