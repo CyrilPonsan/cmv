@@ -3,17 +3,20 @@ from fastapi.exception_handlers import (
     request_validation_exception_handler,
 )
 from pathlib import Path
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy.orm import Session
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.middleware.exceptions import ExceptionHandlerMiddleware
 from app.middleware.security_headers import SecurityHeadersMiddleware
+from .dependancies.db_session import get_db
 from .routers import api
 from .utils.logging_setup import LoggerSetup
+from .utils.fixtures import create_fixtures
 from .utils.database import engine
 from .sql import models
 
@@ -61,6 +64,11 @@ async def validation_exception_handler(request, exc):
     print(f"OMG! The client sent invalid data!: {exc}")
     logger.write_valid(request, exc)
     return await request_validation_exception_handler(request, exc)
+
+
+@app.get("/fixtures")
+def fixtures(db: Session = Depends(get_db)):
+    return create_fixtures(db)
 
 
 # Serve the Vue app in production mode
