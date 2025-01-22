@@ -26,9 +26,14 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             "frame-ancestors": ["'self'"],
             "img-src": ["'self'", "data:", "https:"],
             "object-src": ["'none'"],
-            "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+            "script-src": [
+                "'self'",
+                "'unsafe-inline'",
+                "'unsafe-eval'",
+                "https://cdn.jsdelivr.net",
+            ],
             "script-src-attr": ["'none'"],
-            "style-src": ["'self'", "'unsafe-inline'"],
+            "style-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
             "upgrade-insecure-requests": [],
         }
 
