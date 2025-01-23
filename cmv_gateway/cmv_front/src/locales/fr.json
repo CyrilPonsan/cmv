@@ -182,6 +182,12 @@
       }
     }
   },
+  "rooms": {
+    "home": {
+      "description": "Occupation des chambres",
+      "title": "Espace administratif"
+    }
+  },
   "success": {
     "connection_success": "Connexion réussie",
     "connection_success_detail": "Bienvenue sur le système d'information de la clinique Montvert !"

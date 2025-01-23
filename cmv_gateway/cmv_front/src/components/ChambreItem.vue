@@ -1,30 +1,47 @@
 <!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <template>
   <Card class="w-96" style="overflow: hidden">
-    <template #header>
-      <div
-        class="w-full h-48 bg-[url('../assets/images/witch.jpg')] bg-center-top bg-no-repeat bg-cover"
-      ></div>
+    <template #title>
+      <div class="text-green-500 flex justify-between items-center">
+        <p class="capitalize">{{ chambre.nom }}</p>
+        <p class="capitalize">{{ chambre.status }}</p>
+      </div>
+      <Divider />
     </template>
-    <template #title>Advanced Card</template>
-    <template #subtitle>Card subtitle</template>
     <template #content>
-      <p class="m-0">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error
-        repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa
-        ratione quam perferendis esse, cupiditate neque quas!
-      </p>
+      <div class="flex flex-col gap-y-2 mt-4">
+        <span>Dernier nettoyage : {{ d(new Date(chambre.dernier_nettoyage), 'short') }}</span>
+        <span>
+          {{
+            chambre.reservation && chambre.reservation.length > 0
+              ? chambre.reservation[0].patient.full_name
+              : ''
+          }}</span
+        >
+      </div>
     </template>
     <template #footer>
-      <div class="flex gap-4 mt-1">
-        <Button label="Cancel" severity="secondary" outlined class="w-full" />
-        <Button label="Save" class="w-full" />
+      <div class="flex justify-end items-center">
+        <Button
+          variant="text"
+          icon="pi pi-user"
+          :disabled="chambre.status !== 'occupée'"
+          aria-label="Voir les détails de l'occupant"
+          v-tooltip.bottom="'Voir les détails du patient'"
+        />
       </div>
     </template>
   </Card>
 </template>
 
 <script setup lang="ts">
-import Button from 'primevue/button'
+import type Chambre from '@/models/chambre'
+import Divider from 'primevue/divider'
 import Card from 'primevue/card'
+import { useI18n } from 'vue-i18n'
+import { Button } from 'primevue'
+
+const { d } = useI18n()
+
+const { chambre } = defineProps<{ chambre: Chambre }>()
 </script>
