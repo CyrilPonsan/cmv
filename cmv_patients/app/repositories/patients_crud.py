@@ -1,4 +1,3 @@
-# Import des modules nécessaires
 from abc import ABC, abstractmethod
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -10,6 +9,8 @@ from fastapi import HTTPException, status
 
 # Classe abstraite définissant l'interface pour les opérations CRUD sur les patients
 class PatientCrud(ABC):
+    """Interface abstraite définissant les méthodes CRUD pour les patients"""
+
     @abstractmethod
     async def read_all_patients(
         self,
@@ -19,35 +20,48 @@ class PatientCrud(ABC):
         field: str,
         order: str,
     ) -> tuple[List[Patient], int]:
+        """Récupère tous les patients avec pagination"""
         pass
 
     @abstractmethod
     async def create_patient(self, db: Session, patient: Patient) -> Patient:
+        """Crée un nouveau patient"""
         pass
 
     @abstractmethod
     async def check_patient_exists(self, db: Session, patient: Patient) -> bool:
+        """Vérifie si un patient existe déjà"""
         pass
 
     @abstractmethod
     async def search_patients(
         self, db: Session, search: str, page: int, limit: int, field: str, order: str
     ) -> dict:
+        """Recherche des patients selon des critères"""
         pass
 
     @abstractmethod
     async def read_patient_by_id(self, db: Session, patient_id: int) -> Patient:
+        """Récupère un patient par son ID"""
         pass
 
     @abstractmethod
     async def update_patient(
         self, db: Session, patient_id: int, data: Patient
     ) -> Patient:
+        """Met à jour les données d'un patient"""
+        pass
+
+    @abstractmethod
+    async def delete_patient(self, db: Session, patient_id: int):
+        """Supprime un patient"""
         pass
 
 
 # Classe intermédiaire implémentant l'interface PatientCrud
 class PatientsRepository(PatientCrud):
+    """Classe abstraite intermédiaire pour implémenter les méthodes CRUD"""
+
     @abstractmethod
     async def read_all_patients(
         self, db: Session, page: int, limit: int, field: str, order: str
@@ -78,10 +92,15 @@ class PatientsRepository(PatientCrud):
     ) -> Patient:
         pass
 
+    @abstractmethod
+    async def delete_patient(self, db: Session, patient_id: int):
+        pass
+
 
 # Implémentation PostgreSQL du repository de patients
 class PgPatientsRepository(PatientsRepository):
-    # Fonction de lecture de tous les patients avec pagination et tri
+    """Implémentation concrète du repository pour PostgreSQL"""
+
     async def read_all_patients(
         self,
         db: Session,
@@ -90,10 +109,28 @@ class PgPatientsRepository(PatientsRepository):
         field: str = "nom",
         order: str = "asc",
     ) -> dict:
+        """
+        Récupère tous les patients avec pagination et tri
+        Args:
+            db: Session de base de données
+            page: Numéro de la page
+            limit: Nombre d'éléments par page
+            field: Champ de tri
+            order: Ordre de tri (asc/desc)
+        Returns:
+            dict: Dictionnaire contenant les données et le total
+        """
         return self.paginate_and_order(db, Patient, page, limit, field, order)
 
-    # Fonction de création d'un nouveau patient
     async def create_patient(self, db: Session, patient: CreatePatient) -> Patient:
+        """
+        Crée un nouveau patient dans la base de données
+        Args:
+            db: Session de base de données
+            patient: Données du patient à créer
+        Returns:
+            Patient: Le patient créé
+        """
         # Création d'une instance Patient à partir des données reçues
         db_patient = Patient(**patient.model_dump())
         # Ajout à la session
@@ -107,8 +144,15 @@ class PgPatientsRepository(PatientsRepository):
         )
         return db_patient
 
-    # Fonction de vérification de l'existence d'un patient
     async def check_patient_exists(self, db: Session, patient: Patient) -> bool:
+        """
+        Vérifie si un patient existe déjà avec les mêmes informations
+        Args:
+            db: Session de base de données
+            patient: Patient à vérifier
+        Returns:
+            bool: True si le patient existe, False sinon
+        """
         # Recherche d'un patient avec les mêmes nom, prénom et date de naissance
         patient = (
             db.query(Patient)
@@ -119,10 +163,20 @@ class PgPatientsRepository(PatientsRepository):
         )
         return patient is not None
 
-    # Fonction de mise à jour d'un patient
     async def update_patient(
         self, db: Session, patient_id: int, data: Patient
     ) -> Patient:
+        """
+        Met à jour les données d'un patient
+        Args:
+            db: Session de base de données
+            patient_id: ID du patient à mettre à jour
+            data: Nouvelles données du patient
+        Returns:
+            Patient: Le patient mis à jour
+        Raises:
+            HTTPException: Si le patient n'est pas trouvé
+        """
         # Recherche du patient par son ID
         patient = db.query(Patient).filter(Patient.id_patient == patient_id).first()
         if not patient:
@@ -137,7 +191,6 @@ class PgPatientsRepository(PatientsRepository):
         db.refresh(patient)
         return patient
 
-    # Fonction de recherche de patients avec pagination et tri
     async def search_patients(
         self,
         db: Session,
@@ -147,12 +200,33 @@ class PgPatientsRepository(PatientsRepository):
         field: str = "nom",
         order: str = "asc",
     ) -> dict:
+        """
+        Recherche des patients selon des critères
+        Args:
+            db: Session de base de données
+            search: Terme de recherche
+            page: Numéro de la page
+            limit: Nombre d'éléments par page
+            field: Champ de tri
+            order: Ordre de tri
+        Returns:
+            dict: Résultats de recherche paginés
+        """
         # Création du filtre de recherche sur le nom
         filters = [Patient.nom.ilike(f"%{search}%")]
         return self.paginate_and_order(db, Patient, page, limit, field, order, filters)
 
-    # Fonction de lecture d'un patient par son id
     async def read_patient_by_id(self, db: Session, patient_id: int) -> Patient:
+        """
+        Récupère un patient par son ID
+        Args:
+            db: Session de base de données
+            patient_id: ID du patient
+        Returns:
+            Patient: Le patient trouvé
+        Raises:
+            HTTPException: Si le patient n'est pas trouvé
+        """
         # Recherche du patient par son ID
         patient = db.query(Patient).filter(Patient.id_patient == patient_id).first()
         if not patient:
@@ -162,10 +236,22 @@ class PgPatientsRepository(PatientsRepository):
         print(f"PATIENT : {patient.nom} {patient.prenom}")
         return patient
 
-    # Fonction utilitaire pour la pagination et le tri des résultats
     def paginate_and_order(
         self, db, model, page, limit, field, order, filters=None
     ) -> dict:
+        """
+        Fonction utilitaire pour la pagination et le tri des résultats
+        Args:
+            db: Session de base de données
+            model: Modèle SQLAlchemy
+            page: Numéro de la page
+            limit: Nombre d'éléments par page
+            field: Champ de tri
+            order: Ordre de tri
+            filters: Filtres additionnels
+        Returns:
+            dict: Résultats paginés et triés
+        """
         # Validation des paramètres d'entrée
         limit = min(max(1, limit), 50)  # Limite entre 1 et 50
         page = max(1, page)  # Page minimum de 1
@@ -200,3 +286,21 @@ class PgPatientsRepository(PatientsRepository):
         result = query.all()
 
         return {"data": result, "total": total}
+
+    async def delete_patient(self, db: Session, patient_id: int):
+        """
+        Supprime un patient de la base de données
+        Args:
+            db: Session de base de données
+            patient_id: ID du patient à supprimer
+        Returns:
+            dict: Message de confirmation
+        Raises:
+            HTTPException: Si le patient n'est pas trouvé
+        """
+        query = db.query(Patient).filter(Patient.id_patient == patient_id).first()
+        if not query:
+            raise HTTPException(status_code=404, detail="patient_not_found")
+        db.delete(query)
+        db.commit()
+        return {"message": "patient_deleted"}

@@ -185,3 +185,20 @@ async def update_patient(
         "message": "Patient modifié avec succès",
         "id_patient": patient.id_patient,
     }
+
+
+@router.delete("/{patient_id}")
+async def delete_patient(
+    request: Request,
+    patient_id: int,
+    payload: Annotated[InternalPayload, Depends(check_authorization)],
+    patients_service=Depends(get_patients_service),
+    db: Session = Depends(get_db),
+):
+    logger.write_log(
+        f"{payload['role']} - {payload['user_id']} - {request.method} - delete patient {patient_id}",
+        request,
+    )
+
+    await patients_service.delete_patient(db=db, patient_id=patient_id)
+    return {"message": "Patient deleted successfully"}

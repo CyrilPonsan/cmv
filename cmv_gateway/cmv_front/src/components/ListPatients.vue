@@ -18,6 +18,8 @@ import type { DataTableFilterMeta } from 'primevue/datatable'
 import { patientsListColumns } from '@/libs/columns/patients-list'
 import useLazyLoad from '@/composables/useLazyLoad'
 import type PatientsListItem from '@/models/patients-list-item'
+import useHttp from '@/composables/useHttp'
+import type SuccessWithMessage from '@/models/success-with-message'
 
 // Définition des props et des types
 const columns = patientsListColumns
@@ -40,9 +42,29 @@ const {
   result: patientsList,
   totalRecords
 } = useLazyLoad<PatientsListItem>('/patients/patients')
+const { sendRequest, isLoading, error } = useHttp()
 
 // Gestion du message de suppression
-const onTrash = () => {
+const onTrash = (patientId: number) => {
+  console.log('onTrash', patientId)
+  const applyData = (data: SuccessWithMessage) => {
+    if (data.success) {
+      toast.add({
+        severity: 'success',
+        life: 5000,
+        summary: t('patients.home.toasters.delete.success.summary'),
+        detail: t(`api.${data.message}`),
+        closable: true
+      })
+    }
+  }
+  sendRequest(
+    {
+      path: `/patients/delete/patients/${patientId}`,
+      method: 'delete'
+    },
+    applyData
+  )
   toast.add({
     severity: 'warn',
     life: 5000,
@@ -171,7 +193,7 @@ const handleSort = (event: DataTableSortEvent) => {
             text
             aria-label="Supprimer"
             v-tooltip.bottom="t('patients.home.tooltip.delete')"
-            @click="onTrash"
+            @click="onTrash(slotProps.data.id_patient)"
           />
         </span>
       </template>
