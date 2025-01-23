@@ -202,4 +202,4 @@ async def delete_patient(
     )
 
     await patients_service.delete_patient(db=db, patient_id=patient_id)
-    return {"success": True, "message": "Patient deleted successfully"}
+    return {"success": True, "message": "patient_deleted"}

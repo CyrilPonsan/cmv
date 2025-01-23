@@ -120,7 +120,7 @@ const {
     </Column>
 
     <!-- Colonne d'actions -->
-    <Column header="Actions" :exportable="false">
+    <Column :header="t('columns.patientsList.actions')" :exportable="false">
       <template #body="slotProps">
         <span class="flex items-center gap-x-4">
           <!-- Bouton pour accéder aux détails du dossier administratif -->
