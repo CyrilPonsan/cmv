@@ -8,7 +8,7 @@ import en from '../locales/en.json'
 import { ref } from 'vue'
 import { patientsListColumns } from '@/libs/columns/patients-list'
 
-// Configuration i18n
+// Configuration i18n with complete column translations
 const i18n = createI18n({
   legacy: false,
   locale: 'fr',
@@ -20,7 +20,10 @@ const i18n = createI18n({
           nom: 'Nom',
           prenom: 'Prénom',
           email: 'Email',
-          date_de_naissance: 'Date de naissance'
+          date_de_naissance: 'Date de naissance',
+          civilite: 'Civilité',
+          telephone: 'Téléphone',
+          actions: 'Actions'
         }
       }
     },
@@ -64,7 +67,7 @@ const mockPatientsList = [
   }
 ]
 
-// Mock du composable useListPatients
+// Mock useListPatients with all required functions
 vi.mock('@/composables/useListPatients', () => ({
   default: () => ({
     onTrash: vi.fn(),
@@ -82,8 +85,12 @@ vi.mock('@/composables/useListPatients', () => ({
     }),
     loading: ref(false),
     isLoading: ref(false),
-    error: ref(null),
-    columns: patientsListColumns
+    getData: vi.fn(),
+    showDeleteDialog: vi.fn(),
+    onCancel: vi.fn(),
+    onConfirm: vi.fn(),
+    selectedPatient: ref(null),
+    dialogVisible: ref(false)
   })
 }))
 
@@ -115,57 +122,45 @@ vi.mock('@/libs/columns/patients-list', () => ({
   ]
 }))
 
-// Déplacer ColumnStub en dehors du beforeEach
-const ColumnStub = {
-  template: '<th class="p-column"><slot></slot></th>',
-  props: ['field', 'header', 'sortable']
-}
-
 describe('ListPatients', () => {
   let wrapper: any
 
   beforeEach(() => {
-    // Création des stubs pour les composants PrimeVue
-    const DataTableStub = {
-      template: `
-        <div class="p-datatable">
-          <div class="p-paginator">
-            <slot name="paginatorstart"></slot>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <slot></slot>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in value" :key="item.id_patient">
-                <td v-for="col in patientsListColumns" :key="col.field">
-                  {{ item[col.field] }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      `,
-      props: ['value', 'loading', 'totalRecords', 'lazy'],
-      data() {
-        return {
-          patientsListColumns
-        }
-      }
-    }
-
     wrapper = mount(ListPatients, {
       global: {
         plugins: [i18n, PrimeVue],
         stubs: {
-          DataTable: DataTableStub,
-          Column: ColumnStub,
+          DataTable: {
+            template: `
+              <div class="p-datatable">
+                <div class="p-paginator">
+                  <slot name="paginatorstart"></slot>
+                </div>
+                <table>
+                  <thead>
+                    <tr><slot></slot></tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="item in value" :key="item.id_patient">
+                      <td v-for="col in columns" :key="col.field">
+                        {{ item[col.field] }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            `,
+            props: ['value', 'loading', 'totalRecords', 'lazy', 'columns']
+          },
+          Column: {
+            template: '<th class="p-column"><slot></slot></th>',
+            props: ['field', 'header', 'sortable']
+          },
           Button: true,
           InputText: true,
           IconField: true,
-          InputIcon: true
+          InputIcon: true,
+          DeletePatientDialog: true
         },
         directives: {
           tooltip

@@ -1,3 +1,33 @@
+<script setup lang="ts">
+/**
+ * @file DeleteConfirmationDialog.vue
+ * @description Dialogue de confirmation pour la suppression d'un document
+ */
+
+// Import des dépendances
+import { useI18n } from 'vue-i18n'
+import Dialog from 'primevue/dialog'
+import Button from 'primevue/button'
+import type Document from '@/models/document'
+
+// Props du composant
+const { visible, document, loading } = defineProps<{
+  visible: boolean // Contrôle la visibilité du dialogue
+  document: Document | null // Document à supprimer
+  loading: boolean // État de chargement pendant la suppression
+}>()
+
+// Events émis par le composant
+const emit = defineEmits<{
+  (e: 'update:visible', value: boolean): void // Mise à jour de la visibilité
+  (e: 'confirm'): void // Confirmation de la suppression
+  (e: 'cancel'): void // Annulation de la suppression
+}>()
+
+// Hook d'internationalisation
+const { t } = useI18n()
+</script>
+
 <template>
   <!-- Dialogue modal de confirmation de suppression -->
   <Dialog
@@ -40,33 +70,3 @@
     </div>
   </Dialog>
 </template>
-
-<script setup lang="ts">
-/**
- * @file DeleteConfirmationDialog.vue
- * @description Dialogue de confirmation pour la suppression d'un document
- */
-
-// Import des dépendances
-import { useI18n } from 'vue-i18n'
-import Dialog from 'primevue/dialog'
-import Button from 'primevue/button'
-import type Document from '@/models/document'
-
-// Props du composant
-const { visible, document, loading } = defineProps<{
-  visible: boolean // Contrôle la visibilité du dialogue
-  document: Document | null // Document à supprimer
-  loading: boolean // État de chargement pendant la suppression
-}>()
-
-// Events émis par le composant
-const emit = defineEmits<{
-  (e: 'update:visible', value: boolean): void // Mise à jour de la visibilité
-  (e: 'confirm'): void // Confirmation de la suppression
-  (e: 'cancel'): void // Annulation de la suppression
-}>()
-
-// Hook d'internationalisation
-const { t } = useI18n()
-</script>
