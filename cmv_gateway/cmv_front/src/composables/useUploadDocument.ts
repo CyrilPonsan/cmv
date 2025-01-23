@@ -1,7 +1,8 @@
-import { ref, computed, type Ref, type ComputedRef } from 'vue'
+import { ref, computed, type Ref, type ComputedRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type SuccessWithMessage from '@/models/success-with-message'
 import useHttp from './useHttp'
+import { useToast } from 'primevue'
 
 // Type pour les documents administratifs
 type DocumentType = {
@@ -26,8 +27,8 @@ type Emits = {
 
 const useUploadDocument = (patientId: number, emit: Emits): UseUploadDocument => {
   const { t } = useI18n()
-  const { isLoading, sendRequest } = useHttp()
-
+  const { isLoading, sendRequest, error } = useHttp()
+  const toast = useToast()
   // Liste des types de documents disponibles
   const documentTypes = ref<DocumentType[]>([
     {
@@ -110,6 +111,18 @@ const useUploadDocument = (patientId: number, emit: Emits): UseUploadDocument =>
       selectedFile.value = file
     }
   }
+
+  watch(error, (newError) => {
+    if (newError && newError?.length > 0) {
+      toast.add({
+        summary: 'Erreur',
+        detail: t(`api.${newError}`),
+        severity: 'error',
+        life: 3000,
+        closable: true
+      })
+    }
+  })
 
   return {
     documentTypes,

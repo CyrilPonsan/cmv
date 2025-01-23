@@ -4,10 +4,7 @@
  * @description Component for displaying the list of patients
  * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
-import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useToast } from 'primevue/usetoast'
-import DataTable, { type DataTablePageEvent, type DataTableSortEvent } from 'primevue/datatable'
 import Column from 'primevue/column'
 import InputText from 'primevue/inputtext'
 import IconField from 'primevue/iconfield'
@@ -16,10 +13,9 @@ import Button from 'primevue/button'
 
 import type { DataTableFilterMeta } from 'primevue/datatable'
 import { patientsListColumns } from '@/libs/columns/patients-list'
-import useLazyLoad from '@/composables/useLazyLoad'
-import type PatientsListItem from '@/models/patients-list-item'
-import useHttp from '@/composables/useHttp'
-import type SuccessWithMessage from '@/models/success-with-message'
+import useListPatients from '@/composables/useListPatients'
+import { ref } from 'vue'
+import DataTable from 'primevue/datatable'
 
 // Définition des props et des types
 const columns = patientsListColumns
@@ -27,64 +23,18 @@ const filters = ref<DataTableFilterMeta>({})
 
 // Composables
 const { t, d } = useI18n()
-const toast = useToast()
-
-// Utilisation du composable de lazy loading
 const {
-  getData,
+  onTrash,
+  handlePage,
+  handleSort,
+  search,
+  onResetFilter,
+  result: patientsList,
+  totalRecords,
   lazyState,
   loading,
-  //onFilterChange,
-  onResetFilter,
-  onLazyLoad,
-  onSort,
-  search,
-  result: patientsList,
-  totalRecords
-} = useLazyLoad<PatientsListItem>('/patients/patients')
-const { sendRequest, isLoading, error } = useHttp()
-
-// Gestion du message de suppression
-const onTrash = (patientId: number) => {
-  console.log('onTrash', patientId)
-  const applyData = (data: SuccessWithMessage) => {
-    if (data.success) {
-      toast.add({
-        severity: 'success',
-        life: 5000,
-        summary: t('patients.home.toasters.delete.success.summary'),
-        detail: t(`api.${data.message}`),
-        closable: true
-      })
-    }
-  }
-  sendRequest(
-    {
-      path: `/patients/delete/patients/${patientId}`,
-      method: 'delete'
-    },
-    applyData
-  )
-  toast.add({
-    severity: 'warn',
-    life: 5000,
-    summary: t('patients.home.toasters.delete.summary'),
-    detail: t('patients.home.toasters.delete.detail'),
-    closable: false
-  })
-}
-
-// Chargement initial des données
-onMounted(() => getData())
-
-// Wrappers de type pour les événements
-const handlePage = (event: DataTablePageEvent) => {
-  onLazyLoad(event as any)
-}
-
-const handleSort = (event: DataTableSortEvent) => {
-  onSort(event as any)
-}
+  isLoading
+} = useListPatients()
 </script>
 
 <template>
@@ -170,7 +120,7 @@ const handleSort = (event: DataTableSortEvent) => {
     </Column>
 
     <!-- Colonne d'actions -->
-    <Column header="Actions" :exportable="false">
+    <Column :header="t('columns.patientsList.actions')" :exportable="false">
       <template #body="slotProps">
         <span class="flex items-center gap-x-4">
           <!-- Bouton pour accéder aux détails du dossier administratif -->
@@ -186,7 +136,8 @@ const handleSort = (event: DataTableSortEvent) => {
           />
           <!-- Bouton pour supprimer un patient -->
           <Button
-            icon="pi pi-trash"
+            :disabled="isLoading"
+            :icon="isLoading ? 'pi pi-spinner animate-spin text-primary-500' : 'pi pi-trash'"
             severity="danger"
             rounded
             variant="outlined"

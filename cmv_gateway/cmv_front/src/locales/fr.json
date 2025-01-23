@@ -1,7 +1,9 @@
 {
   "api": {
     "document_created": "Document créé avec succès",
-    "document_deleted": "Document supprimé avec succès"
+    "document_deleted": "Document supprimé avec succès",
+    "patient_deleted": "Patient supprimé avec succès",
+    "unknown_error": "Le serveur est injoignable, si le problème persiste, veuillez contacter l'assistance."
   },
   "app": {
     "footer": "Projet de formation : toute ressemblance avec une clinique déjà existante ne serait que pure coïncidence.",
@@ -22,7 +24,8 @@
       "firstname": "Prénom",
       "birth_date": "Date de naissance",
       "phone_number": "Numéro de téléphone",
-      "email": "Email"
+      "email": "Email",
+      "actions": "Actions"
     }
   },
   "components": {
@@ -148,8 +151,12 @@
       "title": "Espace administratif",
       "toasters": {
         "delete": {
-          "summary": "Suppression du patient",
-          "detail": "Cette fonctionnalité n'est pas encore implémentée..."
+          "success": {
+            "summary": "Suppression du patient"
+          },
+          "error": {
+            "summary": "Erreur lors de la suppression du patient"
+          }
         }
       },
       "tooltip": {
