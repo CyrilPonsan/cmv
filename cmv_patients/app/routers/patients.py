@@ -17,6 +17,7 @@ from app.schemas.patients import (
 from app.schemas.user import InternalPayload
 from app.services.patients import get_patients_service
 from app.utils.logging_setup import LoggerSetup
+from app.schemas.schemas import SuccessWithMessage
 
 # Création du router FastAPI pour les endpoints patients
 router = APIRouter(prefix="/patients", tags=["patients"])
@@ -187,7 +188,7 @@ async def update_patient(
     }
 
 
-@router.delete("/{patient_id}")
+@router.delete("/{patient_id}", response_model=SuccessWithMessage)
 async def delete_patient(
     request: Request,
     patient_id: int,
@@ -201,4 +202,4 @@ async def delete_patient(
     )
 
     await patients_service.delete_patient(db=db, patient_id=patient_id)
-    return {"message": "Patient deleted successfully"}
+    return {"success": True, "message": "Patient deleted successfully"}
