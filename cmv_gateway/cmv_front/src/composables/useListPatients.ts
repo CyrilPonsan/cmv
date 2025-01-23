@@ -1,6 +1,6 @@
 /**
  * @file useListPatients.ts
- * @description Composable pour gérer la liste des patients avec fonctionnalités de pagination, tri et suppression
+ * @description Composable to manage the patient list with pagination, sorting and deletion features
  * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 
@@ -10,36 +10,72 @@ import { useToast, type DataTablePageEvent, type DataTableSortEvent } from 'prim
 import { useI18n } from 'vue-i18n'
 import useLazyLoad from './useLazyLoad'
 import type PatientsListItem from '@/models/patients-list-item'
-import { onMounted, watch, type Ref, type UnwrapRef } from 'vue'
+import { ref, watch, type Ref, type UnwrapRef } from 'vue'
 
 /**
- * Interface définissant les retours du composable
+ * Interface defining the composable returns
  */
 type ListPatientsReturn = {
-  onTrash: (patientId: number) => void // Fonction de suppression d'un patient
-  handlePage: (event: DataTablePageEvent) => void // Gestionnaire de pagination
-  handleSort: (event: DataTableSortEvent) => void // Gestionnaire de tri
-  search: Ref<string> // Terme de recherche
-  onResetFilter: () => void // Réinitialisation des filtres
-  result: Ref<UnwrapRef<PatientsListItem>[]> // Liste des patients
-  totalRecords: Ref<number> // Nombre total d'enregistrements
-  lazyState: any // État du lazy loading
-  loading: Ref<boolean> // État du chargement
-  isLoading: Ref<boolean> // État du chargement (requêtes HTTP)
-  error: Ref<string | null> // Message d'erreur éventuel
+  onTrash: (patientId: number) => void // Function to delete a patient
+  handlePage: (event: DataTablePageEvent) => void // Pagination handler
+  handleSort: (event: DataTableSortEvent) => void // Sort handler
+  search: Ref<string> // Search term
+  onResetFilter: () => void // Reset filters
+  result: Ref<UnwrapRef<PatientsListItem>[]> // List of patients
+  totalRecords: Ref<number> // Total number of records
+  lazyState: any // Lazy loading state
+  loading: Ref<boolean> // Loading state
+  isLoading: Ref<boolean> // Loading state (HTTP requests)
+  error: Ref<string | null> // Error message if any
+  getData: () => void // Function to fetch data
+  showDeleteDialog: (patient: PatientsListItem) => void // Function to show delete dialog
+  onCancel: () => void // Function to cancel deletion
+  onConfirm: () => void // Function to confirm deletion
+  selectedPatient: Ref<PatientsListItem | null> // Selected patient for deletion
+  dialogVisible: Ref<boolean> // Delete dialog visibility
 }
 
 /**
- * Composable pour gérer la liste des patients
- * @returns Interface ListPatientsReturn
+ * Composable to manage the patient list
+ * @returns ListPatientsReturn interface
  */
 const useListPatients = (): ListPatientsReturn => {
   // Composables
   const { t } = useI18n()
   const toast = useToast()
   const { sendRequest, isLoading, error } = useHttp()
+  const dialogVisible = ref(false)
+  const selectedPatient = ref<PatientsListItem | null>(null)
 
-  // Utilisation du composable de lazy loading
+  /**
+   * Affiche la boîte de dialogue de confirmation de suppression
+   * @param patient - Le patient à supprimer
+   */
+  const showDeleteDialog = (patient: PatientsListItem) => {
+    selectedPatient.value = patient
+    dialogVisible.value = true
+  }
+
+  /**
+   * Gère l'annulation de la suppression
+   * Réinitialise le patient sélectionné et ferme la boîte de dialogue
+   */
+  const onCancel = () => {
+    selectedPatient.value = null
+    dialogVisible.value = false
+  }
+
+  /**
+   * Gère la confirmation de la suppression
+   * Supprime le patient sélectionné et ferme la boîte de dialogue
+   */
+  const onConfirm = () => {
+    onTrash(selectedPatient.value!.id_patient)
+    selectedPatient.value = null
+    dialogVisible.value = false
+  }
+
+  // Using lazy loading composable
   const {
     getData,
     lazyState,
@@ -53,8 +89,8 @@ const useListPatients = (): ListPatientsReturn => {
   } = useLazyLoad<PatientsListItem>('/patients/patients')
 
   /**
-   * Gère la suppression d'un patient
-   * @param patientId - ID du patient à supprimer
+   * Handles patient deletion
+   * @param patientId - ID of the patient to delete
    */
   const onTrash = (patientId: number) => {
     console.log('onTrash', patientId)
@@ -79,20 +115,17 @@ const useListPatients = (): ListPatientsReturn => {
     )
   }
 
-  // Chargement initial des données au montage du composant
-  onMounted(() => getData())
-
   /**
-   * Wrapper pour la gestion de la pagination
-   * @param event - Événement de pagination
+   * Wrapper for pagination handling
+   * @param event - Pagination event
    */
   const handlePage = (event: DataTablePageEvent) => {
     onLazyLoad(event as any)
   }
 
   /**
-   * Wrapper pour la gestion du tri
-   * @param event - Événement de tri
+   * Wrapper for sort handling
+   * @param event - Sort event
    */
   const handleSort = (event: DataTableSortEvent) => {
     onSort(event as any)
@@ -122,7 +155,13 @@ const useListPatients = (): ListPatientsReturn => {
     lazyState,
     loading,
     isLoading,
-    error
+    error,
+    getData,
+    showDeleteDialog,
+    onCancel,
+    onConfirm,
+    selectedPatient,
+    dialogVisible
   }
 }
 
