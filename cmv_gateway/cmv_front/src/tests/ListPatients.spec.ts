@@ -7,6 +7,7 @@ import PrimeVue from 'primevue/config'
 import fr from '../locales/fr.json'
 import en from '../locales/en.json'
 import { defineComponent } from 'vue'
+import { ref } from 'vue'
 
 const i18n = createI18n({
   legacy: false, // Composition API
@@ -77,6 +78,14 @@ vi.mock('@/composables/useLazyLoad', () => ({
     onSort: mockOnSort,
     result: mockPatientsList,
     totalRecords: 2
+  })
+}))
+
+const mockSendRequest = vi.fn()
+vi.mock('@/composables/useHttp', () => ({
+  default: () => ({
+    sendRequest: mockSendRequest,
+    isLoading: ref(false)
   })
 }))
 
@@ -228,17 +237,41 @@ describe('ListPatients', () => {
   })
 
   it("déclenche le toast lors du clic sur l'icône de suppression", async () => {
+    // Simuler une réponse réussie de l'API
+    mockSendRequest.mockImplementation((config, callback) => {
+      callback({
+        success: true,
+        message: 'patient_deleted'
+      })
+    })
+
+    // Trouver la dernière colonne qui contient les actions
     const lastColumn = wrapper.findAll('.p-column').at(-1)
-    const trashIcon = lastColumn.find('.pi-trash')
-    await trashIcon.trigger('click')
+    const deleteButton = lastColumn.find('button[aria-label="Supprimer"]')
+
+    // Vérifier que le bouton existe
+    expect(deleteButton.exists()).toBe(true)
+
+    // Déclencher le clic sur le bouton
+    await deleteButton.trigger('click')
+
+    // Vérifier que sendRequest a été appelé avec les bons paramètres
+    expect(mockSendRequest).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: expect.stringContaining('/patients/delete/patients/'),
+        method: 'delete'
+      }),
+      expect.any(Function)
+    )
+
     // Vérifier que le toast a été appelé avec les bons paramètres
     expect(toastMock.add).toHaveBeenCalledWith(
       expect.objectContaining({
-        closable: false,
+        severity: 'success',
         life: 5000,
-        severity: 'warn',
-        summary: fr.patients.home.toasters.delete.summary,
-        detail: fr.patients.home.toasters.delete.detail
+        summary: fr.patients.home.toasters.delete.success.summary,
+        detail: fr.api.patient_deleted,
+        closable: true
       })
     )
   })

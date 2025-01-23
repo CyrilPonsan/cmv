@@ -55,17 +55,25 @@ class PatientsService:
         Returns:
             Les données patients ou le PDF si c'est un document
         """
+        # Récupération de l'IP réelle du client
+        client_ip = request.headers.get("X-Real-IP") or request.headers.get(
+            "X-Forwarded-For", "unknown"
+        )
+
         # Construction du chemin complet avec les paramètres de requête
         full_path = path
         if request.query_params:
             full_path = f"{path}?{request.query_params}"
         url = f"{self.url_api_patients}/{full_path}"
-        print(f"URL : {url}")
 
         # Appel à l'API patients
         response = await client.get(
             url,
-            headers={"Authorization": f"Bearer {internal_token}"},
+            headers={
+                "Authorization": f"Bearer {internal_token}",
+                "X-Real-IP": client_ip,
+                "X-Forwarded-For": client_ip,
+            },
             follow_redirects=True,
         )
 
@@ -117,12 +125,16 @@ class PatientsService:
         Returns:
             La réponse de l'API patients
         """
+
+        client_ip = request.headers.get("X-Real-IP") or request.headers.get(
+            "X-Forwarded-For", "unknown"
+        )
+
         # Construction du chemin complet avec les paramètres de requête et slash final
         full_path = path.rstrip("/") + "/"
         if request.query_params:
             full_path = f"{full_path}?{request.query_params}"
         url = f"{self.url_api_patients}/{full_path}"
-        print(f"URL : {url}")
 
         # Récupération du corps de la requête
         request_body = await request.json()
@@ -135,6 +147,8 @@ class PatientsService:
             url,
             headers={
                 "Authorization": f"Bearer {internal_token}",
+                "X-Real-IP": client_ip,
+                "X-Forwarded-For": client_ip,
                 "Content-Type": "application/json",
             },
             json=request_body,  # Envoi direct des données du patient
@@ -179,6 +193,11 @@ class PatientsService:
         Returns:
             La réponse de l'API patients
         """
+
+        client_ip = request.headers.get("X-Real-IP") or request.headers.get(
+            "X-Forwarded-For", "unknown"
+        )
+
         # Construction du chemin complet avec les paramètres de requête
         full_path = path
         if request.query_params:
@@ -189,7 +208,11 @@ class PatientsService:
         # Envoi de la requête DELETE à l'API patients
         response = await client.delete(
             url,
-            headers={"Authorization": f"Bearer {internal_token}"},
+            headers={
+                "Authorization": f"Bearer {internal_token}",
+                "X-Real-IP": client_ip,
+                "X-Forwarded-For": client_ip,
+            },
         )
 
         # Journalisation de la requête
@@ -231,6 +254,11 @@ class PatientsService:
         Returns:
             La réponse de l'API patients après le transfert
         """
+
+        client_ip = request.headers.get("X-Real-IP") or request.headers.get(
+            "X-Forwarded-For", "unknown"
+        )
+
         # Construction de l'URL complète
         full_path = path
         url = f"{self.url_api_patients}/{full_path}"
@@ -240,7 +268,11 @@ class PatientsService:
             # Envoi du fichier avec les métadonnées
             response = await client.post(
                 url,
-                headers={"Authorization": f"Bearer {internal_token}"},
+                headers={
+                    "Authorization": f"Bearer {internal_token}",
+                    "X-Real-IP": client_ip,
+                    "X-Forwarded-For": client_ip,
+                },
                 data={"document_type": document_type},
                 files={"file": (file.filename, file.file, file.content_type)},
             )
@@ -282,6 +314,10 @@ class PatientsService:
         Returns:
             La réponse de l'API patients
         """
+        client_ip = request.headers.get("X-Real-IP") or request.headers.get(
+            "X-Forwarded-For", "unknown"
+        )
+
         # Construction du chemin complet
         full_path = path
         url = f"{self.url_api_patients}/{full_path}"
@@ -298,6 +334,8 @@ class PatientsService:
             headers={
                 "Authorization": f"Bearer {internal_token}",
                 "Content-Type": "application/json",
+                "X-Real-IP": client_ip,
+                "X-Forwarded-For": client_ip,
             },
             json=request_body,  # Envoi direct des données du patient
             follow_redirects=True,

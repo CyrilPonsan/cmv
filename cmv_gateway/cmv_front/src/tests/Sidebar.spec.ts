@@ -73,7 +73,7 @@ describe('SidebarComponent', () => {
   // Vérifie que le logo est présent avec les bons attributs
   it('displays logo correctly', () => {
     const logo = wrapper.find('img')
-    expect(logo.attributes('src')).toContain('cmv-logo.jpeg')
+    expect(logo.attributes('src')).toContain('logo-cmv.webp')
     expect(logo.attributes('alt')).toBe('logo')
   })
 
