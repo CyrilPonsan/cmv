@@ -3,6 +3,7 @@ import PageHeader from '@/components/PageHeader.vue'
 import ServiceItem from '@/components/ServiceItem.vue'
 import useHttp from '@/composables/useHttp'
 import type Service from '@/models/service'
+import { InputText } from 'primevue'
 import Button from 'primevue/button'
 import { onBeforeMount, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -35,17 +36,23 @@ onBeforeMount(() => getChambres())
       <PageHeader :title="t('rooms.home.title')" :description="t('rooms.home.description')" />
     </section>
 
-    <div class="flex gap-x-4 items-center">
-      <h1 class="text-2xl font-bold">Liste des chambres</h1>
-      <Button
-        icon="pi pi-refresh"
-        text
-        aria-label="rafraîchir la liste des chambres"
-        :loading="http.isLoading.value"
-        :disabled="http.isLoading.value"
-        @:click="getChambres"
-      />
-    </div>
+    <section class="flex justify-between items-center">
+      <span class="flex items-center gap-x-4">
+        <h1 class="text-2xl font-bold">Liste des chambres</h1>
+        <Button
+          icon="pi pi-refresh"
+          text
+          aria-label="rafraîchir la liste des chambres"
+          :loading="http.isLoading.value"
+          :disabled="http.isLoading.value"
+          @:click="getChambres"
+        />
+      </span>
+      <div>
+        <InputText placeholder="Filtrer par service" />
+      </div>
+    </section>
+
     <div class="flex flex-col">
       <ul class="flex flex-col gap-y-4">
         <li v-for="service of services" :key="service.id_service">
