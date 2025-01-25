@@ -185,7 +185,12 @@
   "rooms": {
     "home": {
       "description": "Occupation des chambres",
-      "title": "Espace administratif"
+      "title": "Espace administratif",
+      "subtitle": "Liste des services et chambres",
+      "button": {
+        "refresh-label": "rafraîchir la liste des chambres",
+        "reset-search-label": "Réinitialiser la recherche de service"
+      }
     }
   },
   "success": {

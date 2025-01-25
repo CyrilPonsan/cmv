@@ -43,11 +43,11 @@ onBeforeMount(() => getChambres())
     <section class="flex justify-between items-center">
       <!-- Titre et bouton de rafraîchissement -->
       <span class="flex items-center gap-x-4">
-        <h1 class="text-2xl font-bold">Liste des chambres</h1>
+        <h1 class="text-2xl font-bold">{{ t('rooms.home.subtitle') }}</h1>
         <Button
           icon="pi pi-refresh"
           text
-          aria-label="rafraîchir la liste des chambres"
+          :aria-label="t('rooms.home.button.refresh-label')"
           :loading="isLoading"
           :disabled="isLoading"
           @:click="getChambres"
@@ -70,7 +70,7 @@ onBeforeMount(() => getChambres())
           severity="secondary"
           variant="text"
           rounded
-          aria-label="Réinitialiser la recherche de service"
+          :aria-label="t('rooms.home.button.reset-search-label')"
           @click="resetSearchValue"
         />
       </span>
