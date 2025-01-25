@@ -10,7 +10,7 @@ import { useToast, type DataTablePageEvent, type DataTableSortEvent } from 'prim
 import { useI18n } from 'vue-i18n'
 import useLazyLoad from './useLazyLoad'
 import type PatientsListItem from '@/models/patients-list-item'
-import { ref, watch, type Ref, type UnwrapRef } from 'vue'
+import { onBeforeMount, ref, watch, type Ref, type UnwrapRef } from 'vue'
 
 /**
  * Interface defining the composable returns
@@ -71,8 +71,6 @@ const useListPatients = (): ListPatientsReturn => {
    */
   const onConfirm = () => {
     onTrash(selectedPatient.value!.id_patient)
-    selectedPatient.value = null
-    dialogVisible.value = false
   }
 
   // Using lazy loading composable
@@ -93,7 +91,6 @@ const useListPatients = (): ListPatientsReturn => {
    * @param patientId - ID of the patient to delete
    */
   const onTrash = (patientId: number) => {
-    console.log('onTrash', patientId)
     const applyData = (data: SuccessWithMessage) => {
       if (data.success) {
         toast.add({
@@ -103,6 +100,8 @@ const useListPatients = (): ListPatientsReturn => {
           detail: t(`api.${data.message}`),
           closable: true
         })
+        selectedPatient.value = null
+        dialogVisible.value = false
         getData()
       }
     }
@@ -114,6 +113,9 @@ const useListPatients = (): ListPatientsReturn => {
       applyData
     )
   }
+
+  // Chargement initial des données au montage du composant
+  onBeforeMount(() => getData())
 
   /**
    * Wrapper for pagination handling
@@ -141,6 +143,8 @@ const useListPatients = (): ListPatientsReturn => {
         detail: t(`api.${newValue}`),
         closable: true
       })
+      selectedPatient.value = null
+      dialogVisible.value = false
     }
   })
 

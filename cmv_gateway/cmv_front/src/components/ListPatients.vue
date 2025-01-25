@@ -182,6 +182,7 @@ onMounted(() => getData())
 
   <!-- Dialogue de confirmation de suppression -->
   <DeletePatientDialog
+    :is-loading="isLoading"
     v-if="selectedPatient"
     :patient="selectedPatient"
     :visible="dialogVisible"
