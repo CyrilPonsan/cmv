@@ -114,7 +114,7 @@ const handleSubmit = () => {
       <span class="w-full flex items-center gap-x-4">
         <Button
           class="w-full"
-          label="Téléverser"
+          :label="t('components.documentsList.upload_dialog.buttons.upload')"
           type="submit"
           :disabled="!isValid"
           :loading="isLoading"

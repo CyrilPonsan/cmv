@@ -51,7 +51,8 @@
       "dialog": {
         "buttons": {
           "cancel": "Annuler",
-          "confirm": "Confirmer"
+          "confirm": "Confirmer",
+          "upload": "Téléverser"
         },
         "content": "Confirmez la suppression du document :",
         "header": "Suppression d'un document administratif"
@@ -147,7 +148,11 @@
       "dialog": {
         "header": "Suppression de dossier administratif",
         "content": "Dossier de : ",
-        "content-2": "Si vous confirmez, le dossier administratif et les documents liés seront définitivement supprimés."
+        "content-2": "Si vous confirmez, le dossier administratif et les documents liés seront définitivement supprimés.",
+        "button": {
+          "delete": "Supprimer",
+          "cancel": "Annuler"
+        }
       },
       "placeholder": {
         "search": "Rechercher un patient...",
