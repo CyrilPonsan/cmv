@@ -10,7 +10,7 @@ import { useToast, type DataTablePageEvent, type DataTableSortEvent } from 'prim
 import { useI18n } from 'vue-i18n'
 import useLazyLoad from './useLazyLoad'
 import type PatientsListItem from '@/models/patients-list-item'
-import { ref, watch, type Ref, type UnwrapRef } from 'vue'
+import { onBeforeMount, watch, type Ref, type UnwrapRef } from 'vue'
 
 /**
  * Interface defining the composable returns
@@ -114,7 +114,9 @@ const useListPatients = (): ListPatientsReturn => {
       applyData
     )
   }
-
+  
+// Chargement initial des données au montage du composant
+  onBeforeMount(() => getData())
   /**
    * Wrapper for pagination handling
    * @param event - Pagination event

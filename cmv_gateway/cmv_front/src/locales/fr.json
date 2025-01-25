@@ -29,6 +29,15 @@
     }
   },
   "components": {
+    "chambre": {
+      "occupant": "Occupant :",
+      "occupée": "Occupée",
+      "libre": "Libre",
+      "en_maintenance": "En cours de nettoyage",
+      "dernier_nettoyage": "Dernier nettoyage :",
+      "sortie_prevue": "Sortie prévue le :",
+      "voir_details": "Voir les détails du patient"
+    },
     "patient_data_disclaimer": {
       "title": "Données personnelles",
       "legal_context_title": "Contexte légal",
@@ -184,6 +193,17 @@
         "address": "Adresse",
         "contact": "Contacts",
         "not_provided": "Non renseigné"
+      }
+    }
+  },
+  "rooms": {
+    "home": {
+      "description": "Occupation des chambres",
+      "title": "Espace administratif",
+      "subtitle": "Liste des services et chambres",
+      "button": {
+        "refresh-label": "rafraîchir la liste des chambres",
+        "reset-search-label": "Réinitialiser la recherche de service"
       }
     }
   },

@@ -24,10 +24,10 @@ export const useUserStore = defineStore('user', () => {
     const element = document.querySelector('html')
 
     if (element) {
-      element.classList.toggle('my-app-dark')
-      if (element.classList.value === 'my-app-dark') {
+      element.classList.toggle('dark')
+      if (element.classList.value === 'dark') {
         //  si on passe au mode sombrer on enregistre le changement dans le session storage
-        localStorage.setItem('color-scheme', 'my-app-dark')
+        localStorage.setItem('color-scheme', 'dark')
         mode.value = 'dark'
       }
       //  si on revient au mode lumineux on retire l'entrée du storage
@@ -43,10 +43,10 @@ export const useUserStore = defineStore('user', () => {
     //  récupération de la valeur du mode d'affichage stocké dans le storage
     const colorScheme = localStorage.getItem('color-scheme')
     //  si une valeur est trouvée on switch sur le mode sombre
-    if (colorScheme && colorScheme === 'my-app-dark') {
+    if (colorScheme && colorScheme === 'dark') {
       mode.value = 'dark'
       const element = document.querySelector('html')
-      if (element) element.classList.toggle('my-app-dark')
+      if (element) element.classList.toggle('dark')
     } else {
       mode.value = 'light'
     }
