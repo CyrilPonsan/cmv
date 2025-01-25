@@ -22,5 +22,5 @@ export default interface Chambre {
   nom: number
   status: string
   dernier_nettoyage: string
-  reservation: Reservation[]
+  reservations: Reservation[]
 }

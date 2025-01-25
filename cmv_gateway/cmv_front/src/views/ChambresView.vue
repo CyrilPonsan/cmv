@@ -10,7 +10,6 @@ import ServiceItem from '@/components/ServiceItem.vue'
 import useChambresList from '@/composables/useChambresList'
 import { AutoComplete } from 'primevue'
 import Button from 'primevue/button'
-import { onBeforeMount } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // Récupération des fonctionnalités du composable useChambresList
@@ -27,9 +26,6 @@ const {
 
 // Composable i18n pour les traductions
 const { t } = useI18n()
-
-// Chargement initial des données
-onBeforeMount(() => getChambres())
 </script>
 
 <template>
@@ -78,7 +74,7 @@ onBeforeMount(() => getChambres())
 
     <!-- Liste des services et chambres -->
     <div class="flex flex-col">
-      <ul class="flex flex-col gap-y-4">
+      <ul class="flex flex-col gap-y-4" v-if="list.length > 0">
         <li v-for="service of list" :key="service.id_service">
           <ServiceItem v-bind="service" />
         </li>

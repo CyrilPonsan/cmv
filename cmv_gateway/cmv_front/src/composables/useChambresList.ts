@@ -1,8 +1,7 @@
 import type Service from '@/models/service'
-import { ref, watchEffect, watch, type Ref } from 'vue'
+import { ref, watchEffect, watch, type Ref, onBeforeMount } from 'vue'
 import useHttp from './useHttp'
 import type { AutoCompleteCompleteEvent, AutoCompleteOptionSelectEvent } from 'primevue'
-
 /**
  * Type définissant l'interface du composable useChambresList
  */
@@ -10,7 +9,7 @@ type UseChambresList = {
   list: Ref<Service[]>
   isLoading: Ref<boolean>
   error: Ref<string | null>
-  getChambres: () => Promise<void>
+  getChambres: () => void
   search: (event: AutoCompleteCompleteEvent) => void
   searchValue: Ref<string>
   searchBySelect: (event: AutoCompleteOptionSelectEvent) => void
@@ -32,14 +31,12 @@ const useChambresList = (): UseChambresList => {
   const searchValue = ref<string>('')
   // Suggestions affichées dans l'autocomplete
   const suggestions = ref<string[]>([])
-
   /**
    * Récupère la liste des services et des chambres associées depuis l'API
    */
-  const getChambres = async () => {
+  const getChambres = () => {
     const applyData = (data: Service[]) => {
       initialList.value = data
-      console.log(initialList.value)
     }
     sendRequest(
       {
@@ -94,6 +91,9 @@ const useChambresList = (): UseChambresList => {
       suggestions.value = initialList.value.map((service) => service.nom)
     }
   })
+
+  // Chargement initial des données
+  onBeforeMount(() => getChambres())
 
   return {
     getChambres,
