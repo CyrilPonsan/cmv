@@ -153,6 +153,11 @@
     },
     "home": {
       "description": "Liste des patients",
+      "dialog": {
+        "header": "Suppression de dossier administratif",
+        "content": "Dossier de : ",
+        "content-2": "Si vous confirmez, le dossier administratif et les documents liés seront définitivement supprimés."
+      },
       "placeholder": {
         "search": "Rechercher un patient...",
         "empty": "Aucun patient trouvé"
