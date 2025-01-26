@@ -3,12 +3,10 @@ import enum
 
 from sqlalchemy import (
     Boolean,
-    Column,
     ForeignKey,
     String,
     DateTime,
     Enum,
-    Table,
     func,
     Integer,
 )
@@ -67,6 +65,24 @@ class Admission(Base):
     ref_chambre: Mapped[int] = mapped_column(
         Integer, nullable=True
     )  # Référence de la chambre attribuée
+    nom_chambre: Mapped[str] = mapped_column(
+        String, nullable=False
+    )  # Nom de la chambre attribuée
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(), server_default=func.now()
+    )  # Date de création
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(), server_default=func.now(), onupdate=func.now()
+    )  # Date de dernière modification
+
+    # Relation one to many avec l'entité "Patient"
+    patient_id: Mapped[int] = mapped_column(
+        ForeignKey(
+            "patient.id_patient",
+            ondelete="CASCADE",
+        )
+    )
+    patient: Mapped["Patient"] = relationship("Patient", back_populates="admissions")
 
 
 class Document(Base):
@@ -129,20 +145,6 @@ class Patient(Base):
     documents: Mapped[list["Document"]] = relationship(
         "Document", back_populates="patient"
     )
-
-
-# Table d'association entre Patient et Admission (relation many-to-many)
-admission_patient = Table(
-    "admission_patient",
-    Base.metadata,
-    Column(
-        "patient_id",
-        ForeignKey("patient.id_patient", ondelete="CASCADE"),
-        primary_key=True,
-    ),
-    Column(
-        "admision_id",
-        ForeignKey("admission.id_admission", ondelete="CASCADE"),
-        primary_key=True,
-    ),
-)
+    admissions: Mapped[list["Admission"]] = relationship(
+        "Admission", back_populates="patient"
+    )

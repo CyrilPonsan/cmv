@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from app.schemas.patients import CreatePatient
-from app.sql.models import Patient
+from app.sql.models import Admission, Patient
 from typing import List
 from fastapi import HTTPException, status
 
@@ -218,21 +218,34 @@ class PgPatientsRepository(PatientsRepository):
 
     async def read_patient_by_id(self, db: Session, patient_id: int) -> Patient:
         """
-        Récupère un patient par son ID
+        Récupère un patient par son ID avec sa dernière admission
         Args:
             db: Session de base de données
             patient_id: ID du patient
         Returns:
-            Patient: Le patient trouvé
+            Patient: Le patient trouvé avec sa dernière admission
         Raises:
             HTTPException: Si le patient n'est pas trouvé
         """
-        # Recherche du patient par son ID
+        # Recherche du patient par son ID avec jointure sur les admissions
         patient = db.query(Patient).filter(Patient.id_patient == patient_id).first()
+
         if not patient:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="patient_not_found"
             )
+
+        # Récupération de la dernière admission
+        latest_admission = (
+            db.query(Admission)
+            .filter(Admission.patient_id == patient_id)
+            .order_by(Admission.created_at.desc())
+            .first()
+        )
+
+        # Ajout de la dernière admission au patient
+        patient.latest_admission = latest_admission
+
         print(f"PATIENT : {patient.nom} {patient.prenom}")
         return patient
 
