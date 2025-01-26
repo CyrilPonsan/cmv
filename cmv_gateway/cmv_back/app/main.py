@@ -45,7 +45,7 @@ app.add_middleware(
 )
 
 # handle global exceptions like network or db errors, uncomment the following line for production
-app.add_middleware(ExceptionHandlerMiddleware)
+# app.add_middleware(ExceptionHandlerMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 
 

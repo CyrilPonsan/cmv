@@ -30,21 +30,12 @@ class Admission(BaseModel):
     date_sortie: datetime = Field(description="Date de sortie du patient")
 
 
-class AdmissionDetail(Admission):
-    id: int = Field(description="Identifiant du patient dans la base de données")
-
-    class Config:
-        from_attributes = True
-
-
-"""
-class Service(BaseModel):
-    nom: str
-    chambres: list[Chambre]
-
-    class Config:
-        from_attributes = True
-"""
+class CreateAdmission(BaseModel):
+    patient_id: int
+    ambulatoire: bool
+    entree_le: datetime
+    sortie_prevue_le: datetime
+    service_id: int | None = Field(default=None)  # Optionnel si ambulatoire = True
 
 
 class PaginatedRooms(BaseModel):
