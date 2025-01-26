@@ -22,6 +22,8 @@ import usePatientForm from '@/composables/usePatientForm'
 import { computed, onBeforeMount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+import AdmissionComponent from '@/components/AdmissionComponent.vue'
+import { Button } from 'primevue'
 
 // Initialisation des composables
 const { t } = useI18n()
@@ -112,6 +114,28 @@ onBeforeMount(() => {
         @update:visible="visible = $event"
         @refresh="handleUploadSuccess"
       />
+    </section>
+
+    <section v-if="detailPatient && detailPatient.latest_admission">
+      <article>
+        <div class="w-full flex justify-end items-center gap-x-4">
+          <Button
+            as="router-link"
+            to="/admissions/create"
+            icon="pi pi-plus"
+            label="Créer une admission"
+            variant="outlined"
+          />
+          <Button
+            as="router-link"
+            to="/admissions/history"
+            icon="pi pi-history"
+            label="Historique des admissions"
+            variant="outlined"
+          />
+        </div>
+      </article>
+      <AdmissionComponent :admission="detailPatient.latest_admission" />
     </section>
   </div>
 </template>

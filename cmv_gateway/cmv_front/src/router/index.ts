@@ -35,10 +35,11 @@ const router = createRouter({
         else next()
       }
     },
+    // Route 404
     {
-      path: '/forbidden',
-      name: 'forbidden',
-      component: () => import('../views/NotAuthorized.vue')
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('../views/NotFound.vue')
     },
     //  formulaire de connexion
     {

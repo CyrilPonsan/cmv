@@ -9,6 +9,16 @@ from app.schemas.schemas import SuccessWithMessage
 from .regular_expression import generic_pattern
 
 
+# Modèle utilisé pour l'affichage d'une'admission d'un patient
+class Admission(BaseModel):
+    id_admission: int
+    entree_le: datetime
+    ambulatoire: bool
+    sorti_le: datetime | None
+    sortie_prevue_le: datetime | None
+    nom_chambre: str
+
+
 # Modèle utilisé pour l'affichage de la liste des patients dans un tableau
 class PatientListItem(BaseModel):
     # Identifiant unique du patient
@@ -140,6 +150,7 @@ class DetailPatient(CreatePatient):
     id_patient: int
     # Liste des documents associés au patient
     documents: list[DocumentsListItem]
+    latest_admission: Admission | None = Field(default=None)
 
     class Config:
         from_attributes = True
