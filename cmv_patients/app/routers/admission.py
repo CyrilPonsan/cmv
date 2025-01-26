@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, Body
 from sqlalchemy.orm import Session
 
 from app.services.admissions import AdmissionService
@@ -10,5 +12,8 @@ router = APIRouter()
 
 
 @router.post("/admissions")
-async def create_admission(data: CreateAdmission, db: Session = Depends(get_db)):
+async def create_admission(
+    data: Annotated[CreateAdmission, Body()],
+    db: Session = Depends(get_db),
+):
     return await AdmissionService(db).create_admission(data)

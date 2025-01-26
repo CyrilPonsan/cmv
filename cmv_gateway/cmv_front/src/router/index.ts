@@ -35,6 +35,11 @@ const router = createRouter({
         else next()
       }
     },
+    {
+      path: '/admissions/create',
+      name: 'admissions-create',
+      component: () => import('../views/AdmissionView.vue')
+    },
     // Route 404
     {
       path: '/:pathMatch(.*)*',

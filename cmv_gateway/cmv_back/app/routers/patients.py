@@ -87,8 +87,6 @@ async def post_patients(
     patients_service=Depends(get_patients_service),
     client=Depends(get_http_client),
 ):
-    data = await request.json()
-    print(f"NOM : {data['nom']}")
     return await patients_service.post_patients(
         current_user=current_user,
         path=path,

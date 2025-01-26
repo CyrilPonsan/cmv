@@ -14,9 +14,9 @@ class Admission(BaseModel):
     id_admission: int
     entree_le: datetime
     ambulatoire: bool
-    sorti_le: datetime | None
-    sortie_prevue_le: datetime | None
-    nom_chambre: str
+    sorti_le: datetime | None = Field(default=None)
+    sortie_prevue_le: datetime | None = Field(default=None)
+    nom_chambre: str | None = Field(default=None)
 
 
 # Modèle utilisé pour l'affichage de la liste des patients dans un tableau
