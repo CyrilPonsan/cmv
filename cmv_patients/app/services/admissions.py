@@ -3,7 +3,7 @@ import httpx
 from sqlalchemy.orm import Session
 
 from app.schemas.schemas import CreateAdmission
-from app.utils.config import CHAMBRES_API_URL
+from app.utils.config import CHAMBRES_SERVICE
 from app.sql.models import Admission
 
 
@@ -18,7 +18,7 @@ class AdmissionService:
                 chambre_data = None
                 if not data.ambulatoire:
                     response = await client.get(
-                        f"{CHAMBRES_API_URL}/chambres/reserve",
+                        f"{CHAMBRES_SERVICE}/chambres/reserve",
                         params={"service_id": data.service_id},
                     )
                     if response.status_code != 200:
@@ -39,7 +39,7 @@ class AdmissionService:
                     }
 
                     response = await client.post(
-                        f"{CHAMBRES_API_URL}/chambres/{chambre['id_chambre']}/rerserver",
+                        f"{CHAMBRES_SERVICE}/chambres/{chambre['id_chambre']}/rerserver",
                         json=reservation_data,
                     )
                     if response.status_code != 201:
@@ -70,7 +70,7 @@ class AdmissionService:
                 # Compensation en cas d'erreur
                 if chambre_data:
                     await client.delete(
-                        f"{CHAMBRES_API_URL}/chambres/{chambre_data['id_chambre']}/rerserver",
+                        f"{CHAMBRES_SERVICE}/chambres/{chambre_data['id_chambre']}/rerserver",
                     )
                 await self.db.rollback()
                 raise HTTPException(
