@@ -30,6 +30,7 @@ const emit = defineEmits<{
     <Button
       :label="t('components.documentsList.add_document')"
       icon="pi pi-paperclip"
+      variant="outlined"
       @click="emit('toggle-visible')"
     />
   </span>
