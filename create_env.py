@@ -33,6 +33,7 @@ env_configs = {
         "AWS_ACCESS_KEY_ID": "aws_access_key_id",
         "AWS_SECRET_ACCESS_KEY": "aws_secret_access_key",
         "AWS_REGION": "aws_region",
+        "CHAMBRES_SERVICE": "http://localhost:8003/api",
     },
     "cmv_chambres/.env": {
         "CHAMBRES_DATABASE_URL": "postgresql://postgres:cmv_chambres@localhost:6003/cmv_chambres",

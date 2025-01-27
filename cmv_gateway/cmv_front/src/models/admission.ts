@@ -4,6 +4,6 @@ export default interface Admission {
   ambulatoire: boolean
   sorti_le: string | null
   sortie_prevue_le: string | null
-  ref_chambre: number | null
-  nom_chambre: string
+  ref_chambre: string
+  nom_chambre: string | null
 }

@@ -19,6 +19,31 @@ class Admission(BaseModel):
     nom_chambre: str | None = Field(default=None)
 
 
+class CreateAdmission(BaseModel):
+    patient_id: int
+    ambulatoire: bool
+    entree_le: datetime
+    sortie_prevue_le: datetime
+    service_id: int | None = Field(default=None)  # Optionnel si ambulatoire = True
+
+
+class Patient(BaseModel):
+    civilite: str = Field(description="Le titre du patient", max_length=255)
+    prenom: str = Field(description="Le prénom du patient", max_length=255)
+    nom: str = Field(description="Le nom du patient", max_length=255)
+    date_naissance: datetime = Field(description="La date de naissance du patient")
+    email: EmailStr | None = Field(description="Adresse email du patient", default=None)
+    telephone: str = Field(description="Le numéro de téléphone du patient")
+
+    @field_validator("civilite", "prenom", "nom", "telephone")
+    def validate_generic_patterns(cls, value, field):
+        if not re.match(generic_pattern, value):
+            raise ValueError(
+                f"La propriété '{field.field_name}' contient des caractères non autorisés."
+            )
+        return value
+
+
 # Modèle utilisé pour l'affichage de la liste des patients dans un tableau
 class PatientListItem(BaseModel):
     # Identifiant unique du patient

@@ -19,11 +19,10 @@ import useDocuments from '@/composables/useDocuments'
 import usePatientForm from '@/composables/usePatientForm'
 
 // Import des composables Vue
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import AdmissionComponent from '@/components/AdmissionComponent.vue'
-import { Button } from 'primevue'
+import LatestAdmission from '@/components/LatestAdmission.vue'
 
 // Initialisation des composables
 const { t } = useI18n()
@@ -48,6 +47,10 @@ onBeforeMount(() => {
   if (route.params.id) {
     fetchPatientData(+route.params.id)
   }
+})
+
+watchEffect(() => {
+  console.log(detailPatient.value?.id_patient)
 })
 </script>
 
@@ -84,7 +87,7 @@ onBeforeMount(() => {
       </article>
 
       <!-- Détails du patient en mode lecture -->
-      <article v-if="detailPatient && !isEditing" class="w-full xl:w-3/6 2xl:w-4/6 p-4 rounded-lg">
+      <article v-if="detailPatient && !isEditing" class="w-full xl:w-4/6 p-4 rounded-lg">
         <!-- Titre et boutons d'action -->
         <div
           class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-y-2 mb-4"
@@ -94,10 +97,15 @@ onBeforeMount(() => {
         </div>
         <!-- Composant affichant les détails du patient -->
         <PatientDetail :detail-patient="detailPatient" />
+        <LatestAdmission
+          v-if="detailPatient"
+          :latestAdmission="detailPatient.latest_admission"
+          :patientId="detailPatient.id_patient"
+        />
       </article>
 
       <!-- Section des documents du patient -->
-      <article v-if="detailPatient" class="w-full xl:w-3/6 2xl:w-2/6 p-4">
+      <article v-if="detailPatient" class="w-full xl:w-2/6 p-4">
         <DocumentsList
           :documents="detailPatient.documents"
           @toggle-visible="toggleVisible"
@@ -114,28 +122,6 @@ onBeforeMount(() => {
         @update:visible="visible = $event"
         @refresh="handleUploadSuccess"
       />
-    </section>
-
-    <section v-if="detailPatient && detailPatient.latest_admission">
-      <article>
-        <div class="w-full flex justify-end items-center gap-x-4">
-          <Button
-            as="router-link"
-            to="/admissions/create"
-            icon="pi pi-plus"
-            label="Créer une admission"
-            variant="outlined"
-          />
-          <Button
-            as="router-link"
-            to="/admissions/history"
-            icon="pi pi-history"
-            label="Historique des admissions"
-            variant="outlined"
-          />
-        </div>
-      </article>
-      <AdmissionComponent :admission="detailPatient.latest_admission" />
     </section>
   </div>
 </template>

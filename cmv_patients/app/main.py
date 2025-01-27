@@ -26,9 +26,7 @@ app = FastAPI()
 app.include_router(api.router)
 
 # Politiques CORS
-origins = [
-    "http://localhost:8001",  # cmv_back
-]
+origins = []
 
 app.add_middleware(
     CORSMiddleware,
