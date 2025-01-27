@@ -19,7 +19,7 @@ import useDocuments from '@/composables/useDocuments'
 import usePatientForm from '@/composables/usePatientForm'
 
 // Import des composables Vue
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import LatestAdmission from '@/components/LatestAdmission.vue'
@@ -47,6 +47,10 @@ onBeforeMount(() => {
   if (route.params.id) {
     fetchPatientData(+route.params.id)
   }
+})
+
+watchEffect(() => {
+  console.log(detailPatient.value?.id_patient)
 })
 </script>
 
@@ -93,7 +97,11 @@ onBeforeMount(() => {
         </div>
         <!-- Composant affichant les détails du patient -->
         <PatientDetail :detail-patient="detailPatient" />
-        <LatestAdmission :latestAdmission="detailPatient.latest_admission" />
+        <LatestAdmission
+          v-if="detailPatient"
+          :latestAdmission="detailPatient.latest_admission"
+          :patientId="detailPatient.id_patient"
+        />
       </article>
 
       <!-- Section des documents du patient -->
@@ -115,7 +123,5 @@ onBeforeMount(() => {
         @refresh="handleUploadSuccess"
       />
     </section>
-
-    <section></section>
   </div>
 </template>

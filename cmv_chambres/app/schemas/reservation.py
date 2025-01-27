@@ -12,3 +12,11 @@ class CreateReservation(BaseModel):
     patient: Patient
     entree_prevue: datetime
     sortie_prevue: datetime
+
+
+class ReservationResponse(BaseModel):
+    id_chambre: int
+    nom: str
+    status: str
+    dernier_nettoyage: datetime
+    service_id: int

@@ -12,7 +12,7 @@ from app.utils.config import (
     AWS_REGION,
     AWS_SECRET_ACCESS_KEY,
 )
-from app.schemas.schemas import Patient
+from app.schemas.patients import Patient
 from app.sql.models import DocumentType
 
 

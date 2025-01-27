@@ -36,7 +36,7 @@ const router = createRouter({
       }
     },
     {
-      path: '/admissions/create',
+      path: '/admissions/create/:patientId',
       name: 'admissions-create',
       component: () => import('../views/AdmissionView.vue')
     },

@@ -1,11 +1,10 @@
-from datetime import datetime
 from fastapi import HTTPException, status
 import httpx
 from sqlalchemy.orm import Session
 
-from app.schemas.schemas import CreateAdmission
 from app.utils.config import CHAMBRES_SERVICE
 from app.sql.models import Admission, Patient
+from app.schemas.patients import CreateAdmission
 
 
 class AdmissionService:
@@ -57,7 +56,7 @@ class AdmissionService:
                     }
 
                     response = await client.post(
-                        f"{CHAMBRES_SERVICE}/chambres/{chambre['id_chambre']}/rerserver",
+                        f"{CHAMBRES_SERVICE}/chambres/{chambre['id_chambre']}/reserver",
                         json=reservation_data,
                     )
                     if response.status_code != 201:
@@ -67,7 +66,6 @@ class AdmissionService:
                         )
 
                     chambre_data = response.json()
-                    print(f"CHAMBRE DATA{chambre_data}")
 
                 # Etape 2 : Crée l'admission
                 admission = Admission(

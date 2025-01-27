@@ -31,7 +31,7 @@ const legend = computed(() => {
 
 <template>
   <!-- Conteneur principal utilisant le composant Fieldset avec la légende calculée -->
-  <Fieldset :legend="legend">
+  <Fieldset class="text-xs" :legend="legend">
     <!-- Grille pour l'affichage des informations -->
     <div class="grid grid-cols-4 gap-4 text-xs">
       <!-- Colonne des libellés -->

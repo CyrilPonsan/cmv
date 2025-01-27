@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.services.admissions import AdmissionService
 from app.dependancies.db_session import get_db
-from app.schemas.schemas import CreateAdmission
+from app.schemas.patients import CreateAdmission
 
 
 router = APIRouter()
