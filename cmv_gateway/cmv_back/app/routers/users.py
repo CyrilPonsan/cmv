@@ -1,25 +1,39 @@
+# Import des modules nécessaires pour le typage et FastAPI
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
+# Import des dépendances pour l'authentification et le modèle utilisateur
 from app.dependancies.auth import get_current_user
 from app.schemas.user import User
 
 
+# Configuration du routeur pour les utilisateurs avec préfixe et tag
 router = APIRouter(
-    prefix="/users",
-    tags=["users"],
+    prefix="/users",  # Préfixe pour toutes les routes utilisateurs
+    tags=["users"],  # Tag pour le regroupement dans la documentation
 )
 
 
-# Retourne le rôle d'un utilisateur authentifié
+# Point d'entrée pour obtenir le rôle de l'utilisateur connecté
 @router.get("/me", response_model=dict)
 async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
+    """
+    Retourne le rôle de l'utilisateur actuellement authentifié
+
+    Args:
+        current_user: L'utilisateur actuellement connecté (injecté via la dépendance)
+
+    Returns:
+        dict: Un dictionnaire contenant le nom du rôle de l'utilisateur
+    """
     return {"role": current_user.role.name}
 
 
 """
-# retourne la liste de tous les utilisateurs depuis le cache si elle y est présente, sinon met la liste de tous les uitlisateurs dans le cache redis
+# Routes commentées pour référence future
+
+# Point d'entrée pour obtenir la liste de tous les utilisateurs (mise en cache)
 @router.get("/")
 async def read_all_users(
     _: Annotated[
@@ -34,6 +48,7 @@ async def read_all_users(
     return await cached_users()
 
 
+# Point d'entrée pour l'enregistrement d'un nouvel utilisateur
 @router.post("/user/register")
 def register_user(data: RegisterUser, db: Session = Depends(get_db)):
     result = create_user(db, data)

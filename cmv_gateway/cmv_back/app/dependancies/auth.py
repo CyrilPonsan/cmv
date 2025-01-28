@@ -1,13 +1,16 @@
+# Imports des modules standards Python
 from datetime import datetime, timedelta
 import uuid
 from typing import Optional, Annotated
 
+# Imports des dépendances FastAPI et autres frameworks
 from fastapi import HTTPException, status, Depends, Request
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 
+# Imports des modules internes de l'application
 from app.repositories.permissions_crud import PermissionRepository
 from app.repositories.user_crud import PgUserRepository
 from app.schemas.user import User
@@ -21,17 +24,21 @@ redis = redis_client
 logger = LoggerSetup()
 
 
-# Configuration de l'authentification OAuth2
+# Configuration de l'authentification OAuth2 pour la gestion des tokens
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 # Configuration du hachage des mots de passe avec bcrypt
+# Permet de sécuriser le stockage des mots de passe
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Liste des endpoints qui ne nécessitent pas d'authentification complète
+# Ces endpoints sont accessibles avec une authentification basique
 basic_authorizations = [
     "/api/auth/users/me",
 ]
 
 # Exceptions personnalisées pour la gestion des erreurs d'authentification
+# Utilisées pour retourner des réponses HTTP appropriées en cas d'erreur
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="credentials",
@@ -44,15 +51,33 @@ not_authenticated_exception = HTTPException(
 )
 
 
-# Vérifie si le mot de passe en clair correspond au hash stocké
 def verify_password(plain_password, hashed_password):
+    """
+    Vérifie si le mot de passe en clair correspond au hash stocké
+    Args:
+        plain_password: Mot de passe en clair
+        hashed_password: Hash du mot de passe stocké
+    Returns:
+        bool: True si les mots de passe correspondent, False sinon
+    """
     return pwd_context.verify(plain_password, hashed_password)
 
 
-# Authentifie un utilisateur à partir de ses identifiants
 async def authenticate_user(
     db: Session, username: str, password: str, request: Request
 ) -> User:
+    """
+    Authentifie un utilisateur à partir de ses identifiants
+    Args:
+        db: Session de base de données
+        username: Nom d'utilisateur
+        password: Mot de passe
+        request: Requête HTTP
+    Returns:
+        User: Utilisateur authentifié
+    Raises:
+        HTTPException: Si l'authentification échoue
+    """
     user = await PgUserRepository.get_user(db, username)
     if not user:
         logger.write_log(
@@ -67,8 +92,15 @@ async def authenticate_user(
     return user
 
 
-# Crée un token JWT avec les données fournies et une durée de validité
 async def create_token(data: dict, expires_delta: Optional[timedelta] = None):
+    """
+    Crée un token JWT avec les données fournies et une durée de validité
+    Args:
+        data: Données à encoder dans le token
+        expires_delta: Durée de validité du token
+    Returns:
+        str: Token JWT encodé
+    """
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now() + expires_delta
@@ -80,25 +112,48 @@ async def create_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-# Crée une session dans Redis avec un UUID unique
 async def create_session(user_id: str):
+    """
+    Crée une session dans Redis avec un UUID unique
+    Args:
+        user_id: Identifiant de l'utilisateur
+    Returns:
+        str: Identifiant de session
+    """
     session_id = str(uuid.uuid4())
     await redis.setex(f"session:{session_id}", 3600, user_id)  # expire après 1 heure
     return session_id
 
 
-# Récupère le token d'accès depuis les cookies de la requête
 def get_token_from_cookie(request: Request):
+    """
+    Récupère le token d'accès depuis les cookies de la requête
+    Args:
+        request: Requête HTTP
+    Returns:
+        str: Token d'accès
+    Raises:
+        HTTPException: Si le token n'est pas trouvé
+    """
     token = request.cookies.get("access_token")
     if not token:
         raise not_authenticated_exception
     return token
 
 
-# Récupère l'utilisateur courant à partir du token d'accès
 async def get_current_user(
     db=Depends(get_db), token: str = Depends(get_token_from_cookie)
 ):
+    """
+    Récupère l'utilisateur courant à partir du token d'accès
+    Args:
+        db: Session de base de données
+        token: Token d'accès
+    Returns:
+        User: Utilisateur courant
+    Raises:
+        HTTPException: Si l'authentification échoue
+    """
     try:
         if not token:
             print("#### no token ####")
@@ -127,8 +182,16 @@ async def get_current_user(
     return user
 
 
-# Génère une fonction de vérification des permissions dynamique
 def get_dynamic_permissions(action: str, resource: str) -> str:
+    """
+    Génère une fonction de vérification des permissions dynamique
+    Args:
+        action: Action à vérifier
+        resource: Ressource concernée
+    Returns:
+        Callable: Fonction de vérification des permissions
+    """
+
     async def get_permissions(
         current_user: Annotated[User, Depends(get_current_user)],
         db=Depends(get_db),
@@ -148,13 +211,24 @@ def get_dynamic_permissions(action: str, resource: str) -> str:
     return get_permissions
 
 
-# Vérifie les permissions d'un rôle pour une action sur une ressource
 async def check_permissions(
     db: Session,
     role: str,
     action: str,
     resource: str,
 ) -> bool:
+    """
+    Vérifie les permissions d'un rôle pour une action sur une ressource
+    Args:
+        db: Session de base de données
+        role: Rôle à vérifier
+        action: Action à vérifier
+        resource: Ressource concernée
+    Returns:
+        bool: True si autorisé, False sinon
+    Raises:
+        HTTPException: Si non autorisé
+    """
     authorized = await PermissionRepository.check_permission(db, role, action, resource)
     if not authorized:
         raise HTTPException(

@@ -161,6 +161,7 @@ class PgChambresRepository(ChambresRepository):
         Returns:
             Chambre: La chambre trouvée ou None si non trouvée
         """
+        # Requête pour récupérer une chambre par son ID
         return db.query(Chambre).filter(Chambre.id_chambre == chambre_id).first()
 
     async def get_available_room(self, db: Session, service_id: int) -> Chambre:
@@ -174,6 +175,7 @@ class PgChambresRepository(ChambresRepository):
         Returns:
             Chambre: La première chambre libre trouvée ou None si aucune disponible
         """
+        # Requête pour trouver une chambre libre dans le service spécifié
         return (
             db.query(Chambre)
             .filter(Chambre.service_id == service_id, Chambre.status == Status.LIBRE)
@@ -197,12 +199,17 @@ class PgChambresRepository(ChambresRepository):
         Raises:
             HTTPException: Si la chambre n'est pas trouvée
         """
+        # Recherche de la chambre dans la base de données
         chambre = db.query(Chambre).filter(Chambre.id_chambre == chambre_id).first()
         if not chambre:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="chambre_not_found"
             )
+
+        # Mise à jour du statut
         chambre.status = chambre_status
+
+        # Sauvegarde des modifications
         db.commit()
         db.refresh(chambre)
         return chambre
@@ -224,12 +231,17 @@ class PgChambresRepository(ChambresRepository):
         Raises:
             HTTPException: Si la chambre n'est pas trouvée
         """
+        # Recherche de la chambre dans la base de données
         chambre = db.query(Chambre).filter(Chambre.id_chambre == chambre_id).first()
         if not chambre:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="chambre_not_found"
             )
+
+        # Association du patient à la chambre
         chambre.patient = patient
+
+        # Sauvegarde des modifications
         db.commit()
         db.refresh(chambre)
         return chambre
@@ -245,6 +257,7 @@ class PgChambresRepository(ChambresRepository):
         Returns:
             Patient: Le patient trouvé ou None si non trouvé
         """
+        # Requête pour récupérer un patient par sa référence
         return db.query(Patient).filter(Patient.ref_patient == patient_id).first()
 
     async def create_patient(self, db: Session, patient: CreatePatient):
@@ -258,10 +271,13 @@ class PgChambresRepository(ChambresRepository):
         Returns:
             Patient: Le patient créé
         """
+        # Création d'une nouvelle instance de Patient
         patient = Patient(
             ref_patient=patient.id_patient,
             full_name=patient.full_name,
         )
+
+        # Ajout et sauvegarde dans la base de données
         db.add(patient)
         db.commit()
         db.refresh(patient)
@@ -286,18 +302,15 @@ class PgChambresRepository(ChambresRepository):
         Returns:
             Reservation: La réservation créée
         """
-        """
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="test_compensation",
-        )
-        """
+        # Création d'une nouvelle instance de Reservation
         reservation = Reservation(
             patient=patient,
             chambre=chambre,
             entree_prevue=reservation.entree_prevue,
             sortie_prevue=reservation.sortie_prevue,
         )
+
+        # Ajout et sauvegarde dans la base de données
         db.add(reservation)
         db.commit()
         db.refresh(reservation)
@@ -314,6 +327,7 @@ class PgChambresRepository(ChambresRepository):
         Returns:
             Reservation: La réservation trouvée ou None si non trouvée
         """
+        # Requête pour récupérer une réservation par son ID
         return (
             db.query(Reservation)
             .filter(Reservation.id_reservation == reservation_id)
@@ -334,6 +348,7 @@ class PgChambresRepository(ChambresRepository):
         Raises:
             HTTPException: Si la réservation n'est pas trouvée
         """
+        # Recherche de la réservation dans la base de données
         reservation = (
             db.query(Reservation)
             .filter(Reservation.id_reservation == reservation_id)
@@ -344,6 +359,8 @@ class PgChambresRepository(ChambresRepository):
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="reservation_not_found",
             )
+
+        # Suppression de la réservation
         db.delete(reservation)
         db.commit()
         return reservation
@@ -359,6 +376,7 @@ class PgChambresRepository(ChambresRepository):
         Returns:
             List[Reservation]: Liste des réservations trouvées
         """
+        # Requête pour récupérer toutes les réservations d'un patient
         return db.query(Reservation).filter(Reservation.patient_id == patient_id).all()
 
     async def delete_patient(self, db: Session, patient_id: int):
@@ -372,10 +390,13 @@ class PgChambresRepository(ChambresRepository):
         Raises:
             HTTPException: Si le patient n'est pas trouvé
         """
+        # Recherche du patient dans la base de données
         patient = db.query(Patient).filter(Patient.id_patient == patient_id).first()
         if not patient:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="patient_not_found"
             )
+
+        # Suppression du patient
         db.delete(patient)
         db.commit()
