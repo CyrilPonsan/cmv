@@ -20,14 +20,11 @@ const { t } = useI18n()
 <template>
   <!-- Conteneur des boutons d'action -->
   <span class="flex gap-x-4 items-center">
-    <!-- Bouton de création d'une nouvelle admission -->
-    <Button :label="t('patients.detail.button.create_admission')" icon="pi pi-plus" />
-
     <!-- Bouton d'édition du patient -->
     <Button
       :label="t('patients.detail.button.edit')"
       icon="pi pi-pencil"
-      severity="info"
+      variant="outlined"
       @click="emit('toggle-editing', true)"
     />
   </span>

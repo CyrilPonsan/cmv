@@ -1,6 +1,6 @@
 /**
  * @file use-http.ts
- * @description Composable pour gérer les requêtes HTTP avec gestion automatique des tokens
+ * @description Composable pour gérer les requêtes HTTP avec gestion automatique du rafraîchissement des tokens
  * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 
@@ -76,10 +76,7 @@ const useHttp = (): UseHttp => {
       }
 
       // Gestion des erreurs de rafraîchissement de token
-      if (
-        (error.response.status === 403 || error.response.status === 401) &&
-        originalRequest.url === `/auth/refresh`
-      ) {
+      if (error.response.status === 403 && originalRequest.url === `/auth/refresh`) {
         console.log('Error on refresh token request - logging out')
         userStore.logout()
         return Promise.reject(error)

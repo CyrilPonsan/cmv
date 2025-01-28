@@ -20,9 +20,7 @@ const emit = defineEmits<{
 
 <template>
   <!-- Conteneur principal avec mise en page responsive -->
-  <span
-    class="w-full flex flex-col xl:flex-row justify-between items-start xl:items-center gap-y-2 pr-2 mb-4"
-  >
+  <span class="w-full flex justify-between items-center gap-y-2 pr-2 mb-4">
     <!-- Titre de la section -->
     <h2 class="text-lg font-bold">{{ t('components.documentsList.uploaded_documents') }}</h2>
 
@@ -30,6 +28,7 @@ const emit = defineEmits<{
     <Button
       :label="t('components.documentsList.add_document')"
       icon="pi pi-paperclip"
+      variant="outlined"
       @click="emit('toggle-visible')"
     />
   </span>

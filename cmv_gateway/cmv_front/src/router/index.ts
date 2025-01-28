@@ -36,9 +36,15 @@ const router = createRouter({
       }
     },
     {
-      path: '/forbidden',
-      name: 'forbidden',
-      component: () => import('../views/NotAuthorized.vue')
+      path: '/admissions/create/:patientId',
+      name: 'admissions-create',
+      component: () => import('../views/AdmissionView.vue')
+    },
+    // Route 404
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('../views/NotFound.vue')
     },
     //  formulaire de connexion
     {
