@@ -57,7 +57,7 @@ async def test_create_document_success(ac, internal_token, patients, mocker):
     """Test successful document creation"""
     # Mock S3 upload
     mocker.patch(
-        "app.services.documents.DocumentsService._upload_file_to_s3", return_value=True
+        "app.services.patients.PatientsService._upload_file_to_s3", return_value=True
     )
 
     headers = {"Authorization": f"Bearer {internal_token}"}
@@ -104,7 +104,7 @@ async def test_delete_document_success(ac, internal_token, patients, mocker):
     """Test la suppression réussie d'un document"""
     # Mock de la suppression S3
     mocker.patch(
-        "app.services.documents.DocumentsService.delete_document_by_id",
+        "app.services.patients.PatientsService.delete_document_by_id",
         return_value={
             "success": True,
             "message": "document_deleted",
@@ -155,7 +155,7 @@ async def test_download_document_success(ac, internal_token, patients, mocker):
     mock_file.seek(0)
 
     mocker.patch(
-        "app.services.documents.DocumentsService.download_file_from_s3",
+        "app.services.patients.PatientsService.download_file_from_s3",
         return_value=(mock_file, "test.pdf"),
     )
 

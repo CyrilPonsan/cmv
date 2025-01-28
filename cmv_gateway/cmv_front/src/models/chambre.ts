@@ -19,8 +19,8 @@ interface Reservation {
 
 export default interface Chambre {
   id_chambre: number
-  numero: number
+  nom: number
   status: string
   dernier_nettoyage: string
-  reservation: Reservation[]
+  reservations: Reservation[]
 }

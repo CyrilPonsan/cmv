@@ -1,7 +1,9 @@
 {
   "api": {
     "document_created": "Document créé avec succès",
-    "document_deleted": "Document supprimé avec succès"
+    "document_deleted": "Document supprimé avec succès",
+    "patient_deleted": "Patient supprimé avec succès",
+    "unknown_error": "Le serveur est injoignable, si le problème persiste, veuillez contacter l'assistance."
   },
   "app": {
     "footer": "Projet de formation : toute ressemblance avec une clinique déjà existante ne serait que pure coïncidence.",
@@ -22,10 +24,20 @@
       "firstname": "Prénom",
       "birth_date": "Date de naissance",
       "phone_number": "Numéro de téléphone",
-      "email": "Email"
+      "email": "Email",
+      "actions": "Actions"
     }
   },
   "components": {
+    "chambre": {
+      "occupant": "Occupant :",
+      "occupée": "Occupée",
+      "libre": "Libre",
+      "en_maintenance": "En cours de nettoyage",
+      "dernier_nettoyage": "Dernier nettoyage :",
+      "sortie_prevue": "Sortie prévue le :",
+      "voir_details": "Voir les détails du patient"
+    },
     "patient_data_disclaimer": {
       "title": "Données personnelles",
       "legal_context_title": "Contexte légal",
@@ -98,31 +110,32 @@
   },
   "error": {
     "ERROR": "Une erreur est survenue",
-    "error": "Erreur",
-    "no_email": "Une adresse email est requise",
-    "not_valid_email": "Adresse email non valide",
-    "no_password": "Un mot de passe est requis",
-    "not_valid_password": "Le mot de passe n'est pas valide",
     "connection_failure": "La connexion a échoué...",
     "credentials": "Identifiant ou mot de passe incorrect",
-    "network_issue": "Un problème est survenu, réessayez plus tard...",
-    "patient_not_found": "Le patient n'existe pas.",
     "document_not_found": "Le document n'existe pas.",
-    "no_firstname": "Un prénom est requis",
-    "not_valid_firstname": "Le prénom n'est pas valide",
-    "no_lastname": "Un nom est requis",
-    "not_valid_lastname": "Le nom n'est pas valide",
+    "error": "Erreur",
+    "network_issue": "Un problème est survenu, réessayez plus tard...",
     "no_address": "Une adresse est requise",
-    "not_valid_address": "L'adresse n'est pas valide",
-    "no_zipcode": "Un code postal est requis",
-    "not_valid_zipcode": "Le code postal n'est pas valide",
+    "no_birth_date": "Une date de naissance est requise",
     "no_city": "Une ville est requise",
-    "not_valid_city": "La ville n'est pas valide",
+    "no_email": "Une adresse email est requise",
+    "no_firstname": "Un prénom est requis",
+    "no_lastname": "Un nom est requis",
+    "no_password": "Un mot de passe est requis",
     "no_phone": "Un numéro de téléphone est requis",
-    "not_valid_phone": "Le numéro de téléphone n'est pas valide",
-    "not_valid_civility": "La civilité n'est pas valide",
+    "no_zipcode": "Un code postal est requis",
+    "not_valid_address": "L'adresse n'est pas valide",
     "not_valid_birth_date": "La date de naissance n'est pas valide",
-    "no_birth_date": "Une date de naissance est requise"
+    "not_valid_city": "La ville n'est pas valide",
+    "not_valid_civility": "La civilité n'est pas valide",
+    "not_valid_email": "Adresse email non valide",
+    "not_valid_firstname": "Le prénom n'est pas valide",
+    "not_valid_lastname": "Le nom n'est pas valide",
+    "not_valid_password": "Le mot de passe n'est pas valide",
+    "not_valid_phone": "Le numéro de téléphone n'est pas valide",
+    "not_valid_zipcode": "Le code postal n'est pas valide",
+    "patient_not_found": "Le patient n'existe pas.",
+    "unknown_error": "Erreur inconnue"
   },
   "login": {
     "h1": "Clinique Montvert",
@@ -140,6 +153,11 @@
     },
     "home": {
       "description": "Liste des patients",
+      "dialog": {
+        "header": "Suppression de dossier administratif",
+        "content": "Dossier de : ",
+        "content-2": "Si vous confirmez, le dossier administratif et les documents liés seront définitivement supprimés."
+      },
       "placeholder": {
         "search": "Rechercher un patient...",
         "empty": "Aucun patient trouvé"
@@ -147,8 +165,12 @@
       "title": "Espace administratif",
       "toasters": {
         "delete": {
-          "summary": "Suppression du patient",
-          "detail": "Cette fonctionnalité n'est pas encore implémentée..."
+          "success": {
+            "summary": "Suppression du patient"
+          },
+          "error": {
+            "summary": "Erreur lors de la suppression du patient"
+          }
         }
       },
       "tooltip": {
@@ -171,6 +193,17 @@
         "address": "Adresse",
         "contact": "Contacts",
         "not_provided": "Non renseigné"
+      }
+    }
+  },
+  "rooms": {
+    "home": {
+      "description": "Occupation des chambres",
+      "title": "Espace administratif",
+      "subtitle": "Liste des services et chambres",
+      "button": {
+        "refresh-label": "rafraîchir la liste des chambres",
+        "reset-search-label": "Réinitialiser la recherche de service"
       }
     }
   },

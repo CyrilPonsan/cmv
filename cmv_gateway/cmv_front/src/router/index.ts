@@ -36,9 +36,15 @@ const router = createRouter({
       }
     },
     {
-      path: '/forbidden',
-      name: 'forbidden',
-      component: () => import('../views/NotAuthorized.vue')
+      path: '/admissions/create/:patientId',
+      name: 'admissions-create',
+      component: () => import('../views/AdmissionView.vue')
+    },
+    // Route 404
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('../views/NotFound.vue')
     },
     //  formulaire de connexion
     {
@@ -75,15 +81,22 @@ const router = createRouter({
     },
     {
       path: '/chambres',
-      name: 'chambres',
-      component: () => import('../views/ChambresView.vue'),
+      name: 'chambres-layout',
+      component: () => import('../views/ChambresLayout.vue'),
       beforeEnter: async (_to, _from, next) => {
         const { userStore } = await setup()
         const allowedRoles = ['home', 'nurses', 'cleaning']
         if (allowedRoles.includes(userStore.role)) next()
         //  si le rôle n'est pas adéquat, l'utilisateur est redirigé vers la page d'accueil
         else next('/')
-      }
+      },
+      children: [
+        {
+          path: '',
+          name: 'chambres',
+          component: () => import('../views/ChambresView.vue')
+        }
+      ]
     }
   ]
 })

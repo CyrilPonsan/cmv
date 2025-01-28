@@ -4,6 +4,7 @@
  * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 
+import type Admission from './admission'
 import type Document from './document'
 
 export interface CreatePatient {
@@ -21,4 +22,5 @@ export interface CreatePatient {
 export default interface DetailPatient extends CreatePatient {
   id_patient: number
   documents: Document[]
+  latest_admission: Admission
 }

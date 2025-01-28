@@ -14,7 +14,9 @@ const { t } = useI18n()
 
 <template>
   <!-- Conteneur principal avec message d'absence de documents -->
-  <div class="w-full h-[75%] flex justify-start items-center gap-x-4">
+  <div
+    class="w-full flex justify-start items-center gap-x-4 mt-16 border border-dashed border-primary-500 rounded-lg p-4"
+  >
     <!-- Icône d'avertissement -->
     <i class="pi pi-exclamation-circle text-5xl" />
     <!-- Message indiquant l'absence de documents -->

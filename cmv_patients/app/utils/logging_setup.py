@@ -52,7 +52,7 @@ class LoggerSetup:
 
     def setup_logging(self):
         # Logger name
-        logger_name = "AFFRANCHISSEMENT"  # Change this to your desired logger name
+        logger_name = "CMV_PATIENTS"  # Change this to your desired logger name
         self.logger = logging.getLogger(logger_name)
 
         # Log format

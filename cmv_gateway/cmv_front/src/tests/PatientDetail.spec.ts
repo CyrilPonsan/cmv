@@ -42,7 +42,16 @@ describe('PatientDetail', () => {
     adresse: '1 rue de la Paix',
     code_postal: '75000',
     ville: 'Paris',
-    documents: []
+    documents: [],
+    latest_admission: {
+      id_admission: 1,
+      entree_le: 'date',
+      ambulatoire: true,
+      sorti_le: null,
+      sortie_prevue_le: '2024-01-20',
+      ref_chambre: '1',
+      nom_chambre: 'Chambre 101'
+    }
   }
 
   const mountComponent = () => {
