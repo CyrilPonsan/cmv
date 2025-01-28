@@ -89,9 +89,7 @@ watchEffect(() => {
       <!-- Détails du patient en mode lecture -->
       <article v-if="detailPatient && !isEditing" class="w-full xl:w-4/6 p-4 rounded-lg">
         <!-- Titre et boutons d'action -->
-        <div
-          class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-y-2 mb-4"
-        >
+        <div class="flex justify-between items-center gap-y-2 mb-4">
           <h2 class="text-lg font-bold">{{ t('patients.detail.h2') }}</h2>
           <PatientActions @toggle-editing="isEditing = $event" />
         </div>

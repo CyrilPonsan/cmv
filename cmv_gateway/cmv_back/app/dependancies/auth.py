@@ -16,18 +16,22 @@ from .redis import redis_client
 from ..utils.config import SECRET_KEY, ALGORITHM
 from .db_session import get_db
 
+# Initialisation des clients Redis et du logger
 redis = redis_client
 logger = LoggerSetup()
 
 
+# Configuration de l'authentification OAuth2
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-# Configuration de l'authentification
+# Configuration du hachage des mots de passe avec bcrypt
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+# Liste des endpoints qui ne nécessitent pas d'authentification complète
 basic_authorizations = [
     "/api/auth/users/me",
 ]
 
+# Exceptions personnalisées pour la gestion des erreurs d'authentification
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="credentials",
@@ -40,11 +44,12 @@ not_authenticated_exception = HTTPException(
 )
 
 
-# Fonctions d'authentification
+# Vérifie si le mot de passe en clair correspond au hash stocké
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
+# Authentifie un utilisateur à partir de ses identifiants
 async def authenticate_user(
     db: Session, username: str, password: str, request: Request
 ) -> User:
@@ -62,6 +67,7 @@ async def authenticate_user(
     return user
 
 
+# Crée un token JWT avec les données fournies et une durée de validité
 async def create_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
@@ -74,12 +80,14 @@ async def create_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
+# Crée une session dans Redis avec un UUID unique
 async def create_session(user_id: str):
     session_id = str(uuid.uuid4())
     await redis.setex(f"session:{session_id}", 3600, user_id)  # expire après 1 heure
     return session_id
 
 
+# Récupère le token d'accès depuis les cookies de la requête
 def get_token_from_cookie(request: Request):
     token = request.cookies.get("access_token")
     if not token:
@@ -87,6 +95,7 @@ def get_token_from_cookie(request: Request):
     return token
 
 
+# Récupère l'utilisateur courant à partir du token d'accès
 async def get_current_user(
     db=Depends(get_db), token: str = Depends(get_token_from_cookie)
 ):
@@ -118,6 +127,7 @@ async def get_current_user(
     return user
 
 
+# Génère une fonction de vérification des permissions dynamique
 def get_dynamic_permissions(action: str, resource: str) -> str:
     async def get_permissions(
         current_user: Annotated[User, Depends(get_current_user)],
@@ -138,6 +148,7 @@ def get_dynamic_permissions(action: str, resource: str) -> str:
     return get_permissions
 
 
+# Vérifie les permissions d'un rôle pour une action sur une ressource
 async def check_permissions(
     db: Session,
     role: str,

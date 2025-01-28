@@ -64,6 +64,26 @@ class ChambresCrud(ABC):
         """Crée une nouvelle réservation"""
         pass
 
+    @abstractmethod
+    async def get_reservation_by_id(self, db: Session, reservation_id: int):
+        """Récupère une réservation par son ID"""
+        pass
+
+    @abstractmethod
+    async def cancel_reservation(self, db: Session, reservation_id: int):
+        """Annule une réservation"""
+        pass
+
+    @abstractmethod
+    async def get_reservations(self, db: Session, patient_id: int):
+        """Récupère les réservations d'un patient"""
+        pass
+
+    @abstractmethod
+    async def delete_patient(self, db: Session, patient_id: int):
+        """Supprime un patient"""
+        pass
+
 
 class ChambresRepository(ChambresCrud):
     """Implémentation abstraite de l'interface ChambresCrud"""
@@ -106,16 +126,54 @@ class ChambresRepository(ChambresCrud):
     ):
         pass
 
+    @abstractmethod
+    async def cancel_reservation(self, db: Session, reservation_id: int):
+        """Annule une réservation"""
+        pass
+
+    @abstractmethod
+    async def get_reservation_by_id(self, db: Session, reservation_id: int):
+        """Récupère une réservation par son ID"""
+        pass
+
+    @abstractmethod
+    async def get_reservations(self, db: Session, patient_id: int):
+        """Récupère les réservations d'un patient"""
+        pass
+
+    @abstractmethod
+    async def delete_patient(self, db: Session, patient_id: int):
+        """Supprime un patient"""
+        pass
+
 
 class PgChambresRepository(ChambresRepository):
     """Implémentation PostgreSQL du repository de chambres"""
 
     async def get_chambre_by_id(self, db: Session, chambre_id: int) -> Chambre:
-        """Récupère une chambre par son ID dans la base PostgreSQL"""
+        """
+        Récupère une chambre par son ID dans la base PostgreSQL
+
+        Args:
+            db (Session): Session de base de données
+            chambre_id (int): ID de la chambre à récupérer
+
+        Returns:
+            Chambre: La chambre trouvée ou None si non trouvée
+        """
         return db.query(Chambre).filter(Chambre.id_chambre == chambre_id).first()
 
     async def get_available_room(self, db: Session, service_id: int) -> Chambre:
-        """Récupère une chambre disponible pour un service donné"""
+        """
+        Récupère une chambre disponible pour un service donné
+
+        Args:
+            db (Session): Session de base de données
+            service_id (int): ID du service pour lequel chercher une chambre
+
+        Returns:
+            Chambre: La première chambre libre trouvée ou None si aucune disponible
+        """
         return (
             db.query(Chambre)
             .filter(Chambre.service_id == service_id, Chambre.status == Status.LIBRE)
@@ -125,7 +183,20 @@ class PgChambresRepository(ChambresRepository):
     async def update_chambre_status(
         self, db: Session, chambre_id, chambre_status: Status
     ):
-        """Met à jour le statut d'une chambre"""
+        """
+        Met à jour le statut d'une chambre
+
+        Args:
+            db (Session): Session de base de données
+            chambre_id (int): ID de la chambre à mettre à jour
+            chambre_status (Status): Nouveau statut à appliquer
+
+        Returns:
+            Chambre: La chambre mise à jour
+
+        Raises:
+            HTTPException: Si la chambre n'est pas trouvée
+        """
         chambre = db.query(Chambre).filter(Chambre.id_chambre == chambre_id).first()
         if not chambre:
             raise HTTPException(
@@ -139,7 +210,20 @@ class PgChambresRepository(ChambresRepository):
     async def update_chambre_patient(
         self, db: Session, chambre_id: int, patient: Patient
     ):
-        """Met à jour le patient associé à une chambre"""
+        """
+        Met à jour le patient associé à une chambre
+
+        Args:
+            db (Session): Session de base de données
+            chambre_id (int): ID de la chambre à mettre à jour
+            patient (Patient): Patient à associer à la chambre
+
+        Returns:
+            Chambre: La chambre mise à jour
+
+        Raises:
+            HTTPException: Si la chambre n'est pas trouvée
+        """
         chambre = db.query(Chambre).filter(Chambre.id_chambre == chambre_id).first()
         if not chambre:
             raise HTTPException(
@@ -151,11 +235,29 @@ class PgChambresRepository(ChambresRepository):
         return chambre
 
     async def get_patient(self, db: Session, patient_id: int):
-        """Récupère un patient par son ID de référence"""
+        """
+        Récupère un patient par son ID de référence
+
+        Args:
+            db (Session): Session de base de données
+            patient_id (int): ID du patient à récupérer
+
+        Returns:
+            Patient: Le patient trouvé ou None si non trouvé
+        """
         return db.query(Patient).filter(Patient.ref_patient == patient_id).first()
 
     async def create_patient(self, db: Session, patient: CreatePatient):
-        """Crée un nouveau patient dans la base de données"""
+        """
+        Crée un nouveau patient dans la base de données
+
+        Args:
+            db (Session): Session de base de données
+            patient (CreatePatient): Données du patient à créer
+
+        Returns:
+            Patient: Le patient créé
+        """
         patient = Patient(
             ref_patient=patient.id_patient,
             full_name=patient.full_name,
@@ -172,7 +274,24 @@ class PgChambresRepository(ChambresRepository):
         patient: Patient,
         reservation: CreateReservation,
     ):
-        """Crée une nouvelle réservation dans la base de données"""
+        """
+        Crée une nouvelle réservation dans la base de données
+
+        Args:
+            db (Session): Session de base de données
+            chambre (Chambre): Chambre à réserver
+            patient (Patient): Patient pour qui réserver
+            reservation (CreateReservation): Données de la réservation
+
+        Returns:
+            Reservation: La réservation créée
+        """
+        """
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="test_compensation",
+        )
+        """
         reservation = Reservation(
             patient=patient,
             chambre=chambre,
@@ -183,3 +302,80 @@ class PgChambresRepository(ChambresRepository):
         db.commit()
         db.refresh(reservation)
         return reservation
+
+    async def get_reservation_by_id(self, db: Session, reservation_id: int):
+        """
+        Récupère une réservation par son ID
+
+        Args:
+            db (Session): Session de base de données
+            reservation_id (int): ID de la réservation à récupérer
+
+        Returns:
+            Reservation: La réservation trouvée ou None si non trouvée
+        """
+        return (
+            db.query(Reservation)
+            .filter(Reservation.id_reservation == reservation_id)
+            .first()
+        )
+
+    async def cancel_reservation(self, db: Session, reservation_id: int):
+        """
+        Annule une réservation
+
+        Args:
+            db (Session): Session de base de données
+            reservation_id (int): ID de la réservation à annuler
+
+        Returns:
+            Reservation: La réservation annulée
+
+        Raises:
+            HTTPException: Si la réservation n'est pas trouvée
+        """
+        reservation = (
+            db.query(Reservation)
+            .filter(Reservation.id_reservation == reservation_id)
+            .first()
+        )
+        if not reservation:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="reservation_not_found",
+            )
+        db.delete(reservation)
+        db.commit()
+        return reservation
+
+    async def get_reservations(self, db: Session, patient_id: int):
+        """
+        Récupère les réservations d'un patient
+
+        Args:
+            db (Session): Session de base de données
+            patient_id (int): ID du patient dont on veut les réservations
+
+        Returns:
+            List[Reservation]: Liste des réservations trouvées
+        """
+        return db.query(Reservation).filter(Reservation.patient_id == patient_id).all()
+
+    async def delete_patient(self, db: Session, patient_id: int):
+        """
+        Supprime un patient
+
+        Args:
+            db (Session): Session de base de données
+            patient_id (int): ID du patient à supprimer
+
+        Raises:
+            HTTPException: Si le patient n'est pas trouvé
+        """
+        patient = db.query(Patient).filter(Patient.id_patient == patient_id).first()
+        if not patient:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="patient_not_found"
+            )
+        db.delete(patient)
+        db.commit()
