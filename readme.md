@@ -96,6 +96,15 @@ docker compose up --build
 docker compose down
 ```
 
+## Bases de données
+
+Les bases de données sont créées automatiquement au montage des containers dockers.
+Pour monter les containers dockers en mode développement :
+
+```bash
+npm run db:up
+```
+
 ## Démarrage
 
 Pour lancer l'application en mode développement :
@@ -104,10 +113,18 @@ Pour lancer l'application en mode développement :
 npm run start:dev
 ```
 
+nb : Si vous lancez l'application en mode développement, les bases de données des microservices doivent être crées au préalable.
+
 Pour lancer l'application en mode préproduction :
 
 ```bash
 npm run start:preprod
+```
+
+Pour générer des fixtures l'application doit être lancée en mode développement ou préproduction, dans une autre fenêtre de terminal tapez :
+
+```bash
+npm run fixtures
 ```
 
 ## Bases de données des différentes API

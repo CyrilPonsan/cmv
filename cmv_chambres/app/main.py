@@ -1,6 +1,5 @@
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.exception_handlers import (
     http_exception_handler,
@@ -9,11 +8,9 @@ from fastapi.exception_handlers import (
 from fastapi.exceptions import RequestValidationError
 
 from app.routers import api
-from app.dependancies.db_session import get_db
 from app.sql import models
 from app.utils.database import engine
 from app.utils.logging_setup import LoggerSetup
-from app.utils.fixtures import create_fixtures
 
 
 # Initialisation de la bdd
@@ -54,8 +51,3 @@ async def validation_exception_handler(request, exc):
     print(f"OMG! The client sent invalid data!: {exc}")
     logger.write_valid(request, exc)
     return await request_validation_exception_handler(request, exc)
-
-
-@app.get("/fixtures")
-def fixtures(db: Session = Depends(get_db)):
-    return create_fixtures(db)

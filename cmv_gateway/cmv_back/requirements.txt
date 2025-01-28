@@ -7,7 +7,7 @@ alembic
 cryptography
 python-jose
 passlib
-bcrypt
+bcrypt==4.1.2
 httpx
 fastapi_limiter
 email-validator
