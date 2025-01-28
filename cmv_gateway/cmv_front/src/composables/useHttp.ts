@@ -1,6 +1,6 @@
 /**
  * @file use-http.ts
- * @description Composable pour gérer les requêtes HTTP avec gestion automatique des tokens
+ * @description Composable pour gérer les requêtes HTTP avec gestion automatique du rafraîchissement des tokens
  * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
  */
 
