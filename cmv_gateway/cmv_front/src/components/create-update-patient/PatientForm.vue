@@ -22,14 +22,18 @@ import { useI18n } from 'vue-i18n'
 const props = defineProps<{
   patientDetail?: DetailPatient
   civilites: string[]
-  onSubmit: (data: Record<string, unknown>) => void
+  onSubmit: (data: Record<string, unknown>) => VoidFunction
   schema: ReturnType<typeof toTypedSchema>
   isLoading: boolean
 }>()
 
+// Initialisation du service de traduction
 const { t } = useI18n()
 
-// Gestion de la soumission du formulaire
+/**
+ * Gère la soumission du formulaire
+ * Si un ID patient existe, l'ajoute aux données avant soumission
+ */
 const handleSubmit = (values: Record<string, unknown>) => {
   if (props.patientDetail?.id_patient) {
     props.onSubmit({ ...values, id_patient: props.patientDetail.id_patient })
@@ -38,13 +42,17 @@ const handleSubmit = (values: Record<string, unknown>) => {
   }
 }
 
+/**
+ * Convertit la date de naissance en objet Date si elle existe
+ * Utilisé pour le composant DatePicker
+ */
 const date = computed(() =>
   props.patientDetail?.date_de_naissance ? new Date(props.patientDetail.date_de_naissance) : null
 )
 </script>
 
 <template>
-  <!-- Formulaire principal -->
+  <!-- Formulaire principal avec validation et valeurs initiales -->
   <Form
     class="flex flex-col gap-y-8 w-5/6 lg:w-[42rem]"
     :validation-schema="schema"
@@ -53,6 +61,7 @@ const date = computed(() =>
   >
     <!-- Section civilité et date de naissance -->
     <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Champ civilité -->
       <span class="flex flex-col gap-y-2">
         <Field v-slot="{ field, errorMessage }" name="civilite">
           <label for="civilite">{{ t('components.patientForm.civilite') }}</label>
@@ -71,6 +80,7 @@ const date = computed(() =>
           </Message>
         </Field>
       </span>
+      <!-- Champ date de naissance -->
       <span class="flex flex-col gap-y-2">
         <Field v-slot="{ field, errorMessage }" name="date_de_naissance">
           <label for="date_de_naissance">{{ t('components.patientForm.date_de_naissance') }}</label>
@@ -98,6 +108,7 @@ const date = computed(() =>
 
     <!-- Section nom et prénom -->
     <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Champ nom -->
       <span class="flex flex-col gap-y-2">
         <Field v-slot="{ field, errorMessage }" name="nom">
           <label for="nom">{{ t('components.patientForm.lastname') }}</label>
@@ -116,6 +127,7 @@ const date = computed(() =>
           </Message>
         </Field>
       </span>
+      <!-- Champ prénom -->
       <span class="flex flex-col gap-y-2">
         <Field v-slot="{ field, errorMessage }" name="prenom">
           <label for="prenom">{{ t('components.patientForm.firstname') }}</label>
@@ -157,6 +169,7 @@ const date = computed(() =>
 
     <!-- Section code postal et ville -->
     <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Champ code postal -->
       <span class="flex flex-col gap-y-2">
         <Field v-slot="{ field, errorMessage }" name="code_postal">
           <label for="code_postal">{{ t('components.patientForm.zip_code') }}</label>
@@ -174,6 +187,7 @@ const date = computed(() =>
           </Message>
         </Field>
       </span>
+      <!-- Champ ville -->
       <span class="flex flex-col gap-y-2">
         <Field v-slot="{ field, errorMessage }" name="ville">
           <label for="ville">{{ t('components.patientForm.city') }}</label>
@@ -195,6 +209,7 @@ const date = computed(() =>
 
     <!-- Section téléphone et email -->
     <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Champ téléphone -->
       <span class="flex flex-col gap-y-2">
         <Field v-slot="{ field, errorMessage }" name="telephone">
           <label for="telephone">{{ t('components.patientForm.phone_number') }}</label>
@@ -212,6 +227,7 @@ const date = computed(() =>
           </Message>
         </Field>
       </span>
+      <!-- Champ email -->
       <span class="flex flex-col gap-y-2">
         <Field v-slot="{ field, errorMessage }" name="email">
           <label for="email">{{ t('components.patientForm.email') }}</label>

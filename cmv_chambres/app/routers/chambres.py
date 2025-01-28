@@ -56,7 +56,6 @@ async def rerserver_chambre(
     Returns:
         ReservationResponse: Les détails de la réservation créée
     """
-    print("POSTING RESERVATION")
     return await service_chambre.post_reservation(
         db=db, chambre_id=chambre_id, reservation_data=data
     )
@@ -97,10 +96,6 @@ async def cancel_reservation(
     Returns:
         SuccessWithMessage: Message indiquant le succès ou l'échec de l'opération
     """
-    print("COMPENSATING ...")
-    print(f"reservation_id: {reservation_id}")
-    print(f"chambre_id: {chambre_id}")
-    print(f"patient_id: {patient_id}")
 
     return await service_chambre.cancel_reservation(
         db=db,

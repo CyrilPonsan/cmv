@@ -1,12 +1,24 @@
 <script setup lang="ts">
+/**
+ * @file AdmissionView.vue
+ * @description Vue permettant de créer une nouvelle admission pour un patient
+ * @author [@CyrilPonsan](https://github.com/CyrilPonsan)
+ */
+
+// Import des composables et composants nécessaires
 import useHttp from '@/composables/useHttp'
 import { Button, useToast } from 'primevue'
 import { watch } from 'vue'
 import { useRoute } from 'vue-router'
 
+// Initialisation des composables
 const { sendRequest, error } = useHttp()
 const toast = useToast()
 
+/**
+ * Crée une nouvelle admission pour le patient
+ * Envoie une requête POST au serveur avec les données de l'admission
+ */
 const postAdmission = () => {
   const applyData = (data: any) => {
     console.log({ data })
@@ -27,6 +39,7 @@ const postAdmission = () => {
   )
 }
 
+// Surveillance des erreurs pour afficher les notifications
 watch(error, (newError) => {
   if (newError && newError.length > 0) {
     toast.add({
@@ -37,8 +50,10 @@ watch(error, (newError) => {
   }
 })
 
+// Récupération des paramètres de la route
 const route = useRoute()
 
+// Extraction de l'ID du patient depuis les paramètres de la route
 const patientId = route.params.patientId
 </script>
 

@@ -1,9 +1,19 @@
+# Import des dépendances FastAPI pour la gestion des erreurs HTTP
 from fastapi import HTTPException, status
+
+# Import du client HTTP asynchrone
 import httpx
+
+# Import de la session SQLAlchemy pour interagir avec la base de données
 from sqlalchemy.orm import Session
 
+# Import de la configuration du service des chambres
 from app.utils.config import CHAMBRES_SERVICE
+
+# Import des modèles SQLAlchemy pour les admissions et patients
 from app.sql.models import Admission, Patient
+
+# Import du schéma Pydantic pour la création d'une admission
 from app.schemas.patients import CreateAdmission
 
 
@@ -14,27 +24,19 @@ class AdmissionService:
     async def create_admission(self, data: CreateAdmission):
         async with httpx.AsyncClient() as client:
             try:
-                print(f"URL {CHAMBRES_SERVICE}")
-                print(f"DATA{data}")
                 # Etape 1 : Si non ambulatoire, réserve une chambre
                 chambre = None
                 chambre_data = None
-                print(f"AMBULATOIRE {data.ambulatoire}")
                 if not data.ambulatoire:
-                    print(f"SERVICE ID{data.service_id}")
-                    print(f"{CHAMBRES_SERVICE}/chambres/{data.service_id}")
                     response = await client.get(
                         f"{CHAMBRES_SERVICE}/chambres/{data.service_id}"
                     )
-                    print(f"STATUSCODE {response.status_code}")
                     if response.status_code != 200:
                         raise HTTPException(
                             status_code=status.HTTP_404_NOT_FOUND,
                             detail="no_room_available",
                         )
                     chambre = response.json()
-
-                    print(f"CHAMBRE {chambre}")
 
                     patient = (
                         self.db.query(Patient)
@@ -67,7 +69,6 @@ class AdmissionService:
                         )
 
                     chambre_data = response.json()
-                    print(f"CHAMBRE DATA {chambre_data}")
 
                 # Etape 2 : Crée l'admission
                 admission = Admission(
@@ -92,7 +93,6 @@ class AdmissionService:
                         f"{CHAMBRES_SERVICE}/chambres/{chambre_data['reservation_id']}/{chambre_data['id_chambre']}/{chambre_data['patient_id']}/cancel",
                     )
                 elif chambre is not None:
-                    print("PUTTING CHAMBRE STATUS")
                     await client.put(
                         f"{CHAMBRES_SERVICE}/chambres/{chambre['id_chambre']}",
                     )
