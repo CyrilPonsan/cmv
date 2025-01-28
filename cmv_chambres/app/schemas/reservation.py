@@ -20,3 +20,4 @@ class ReservationResponse(BaseModel):
     status: str
     dernier_nettoyage: datetime
     service_id: int
+    reservation_id: int

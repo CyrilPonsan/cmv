@@ -17,6 +17,7 @@ class AdmissionService:
                 print(f"URL {CHAMBRES_SERVICE}")
                 print(f"DATA{data}")
                 # Etape 1 : Si non ambulatoire, réserve une chambre
+                chambre = None
                 chambre_data = None
                 print(f"AMBULATOIRE {data.ambulatoire}")
                 if not data.ambulatoire:
@@ -28,12 +29,12 @@ class AdmissionService:
                     print(f"STATUSCODE {response.status_code}")
                     if response.status_code != 200:
                         raise HTTPException(
-                            status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="dans le cul lulu",
+                            status_code=status.HTTP_404_NOT_FOUND,
+                            detail="no_room_available",
                         )
                     chambre = response.json()
 
-                    print(f"CHAMBRE{chambre}")
+                    print(f"CHAMBRE {chambre}")
 
                     patient = (
                         self.db.query(Patient)
@@ -62,10 +63,11 @@ class AdmissionService:
                     if response.status_code != 201:
                         raise HTTPException(
                             status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="ooops",
+                            detail="server_failure",
                         )
 
                     chambre_data = response.json()
+                    print(f"CHAMBRE DATA {chambre_data}")
 
                 # Etape 2 : Crée l'admission
                 admission = Admission(
@@ -87,10 +89,21 @@ class AdmissionService:
                 # Compensation en cas d'erreur
                 if chambre_data:
                     await client.delete(
-                        f"{CHAMBRES_SERVICE}/chambres/{chambre_data['id_chambre']}/rerserver",
+                        f"{CHAMBRES_SERVICE}/chambres/{chambre_data['reservation_id']}/{chambre_data['id_chambre']}/{chambre_data['patient_id']}/cancel",
                     )
+                elif chambre is not None:
+                    print("PUTTING CHAMBRE STATUS")
+                    await client.put(
+                        f"{CHAMBRES_SERVICE}/chambres/{chambre['id_chambre']}",
+                    )
+
                 self.db.rollback()
+                if "no_room_available" in str(e):
+                    raise HTTPException(
+                        status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                        detail="no_room_available",
+                    )
                 raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"reservation_failed: {str(e)}",
                 )
