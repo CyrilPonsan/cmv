@@ -36,7 +36,7 @@ const {
   onResetFilter, // Réinitialisation des filtres
   result: patientsList, // Liste des patients
   totalRecords, // Nombre total d'enregistrements
-  lazyState, // État du chargement paresseux
+  lazyState, // Mode lazy-loadin
   loading, // État de chargement
   isLoading, // État de chargement des requêtes HTTP
   getData, // Fonction de récupération des données

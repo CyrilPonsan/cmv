@@ -22,7 +22,7 @@ import { useI18n } from 'vue-i18n'
 const props = defineProps<{
   patientDetail?: DetailPatient
   civilites: string[]
-  onSubmit: (data: Record<string, unknown>) => VoidFunction
+  onSubmit: (data: Record<string, unknown>) => void
   schema: ReturnType<typeof toTypedSchema>
   isLoading: boolean
 }>()

@@ -16,4 +16,6 @@ export default interface Admission {
   ref_chambre: string
   /** Nom de la chambre attribuée (null si non défini) */
   nom_chambre: string | null
+  /** Référence de la réservation */
+  ref_reservation: number
 }

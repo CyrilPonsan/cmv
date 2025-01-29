@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 # Import des dépendances internes
 from app.repositories.service_crud import PgServiceRepository
-from app.schemas.services import ServicesListItem
+from app.schemas.services import ServicesList, ServicesListItem
 
 
 def get_service_repository():
@@ -40,3 +40,14 @@ class ServiceService:
             list[ServicesListItem]: Liste des services avec leurs informations et chambres associées
         """
         return await self.service_repository.read_all_services(db)
+
+    async def get_simple_services_list(self, db: Session) -> list[ServicesList]:
+        """Récupère une liste simplifiée des services disponibles
+
+        Args:
+            db (Session): Session de base de données
+
+        Returns:
+            list[ServicesListItem]: Liste simplifiée des services
+        """
+        return await self.service_repository.get_simple_services_list(db)
