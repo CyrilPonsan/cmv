@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 
 # Import des dépendances internes
-from app.repositories.service_crud import PgServiceRepository, ServiceRepository
+from app.repositories.service_crud import PgServiceRepository
 from app.schemas.services import ServicesListItem
 
 
@@ -20,9 +20,9 @@ class ServiceService:
     """Service gérant la logique métier liée aux services hospitaliers"""
 
     # Repository pour accéder aux données des services
-    service_repository: ServiceRepository
+    service_repository: PgServiceRepository
 
-    def __init__(self, service_repository: ServiceRepository):
+    def __init__(self, service_repository: PgServiceRepository):
         """Initialise le service avec un repository de services
 
         Args:

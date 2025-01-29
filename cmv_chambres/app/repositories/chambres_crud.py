@@ -85,69 +85,7 @@ class ChambresCrud(ABC):
         pass
 
 
-class ChambresRepository(ChambresCrud):
-    """Implémentation abstraite de l'interface ChambresCrud"""
-
-    @abstractmethod
-    async def get_chambre_by_id(self, db: Session, chambre_id: int) -> Chambre:
-        pass
-
-    @abstractmethod
-    async def get_available_room(self, db: Session, service_id: int) -> Chambre:
-        pass
-
-    @abstractmethod
-    async def update_chambre_status(
-        self, db: Session, chambre_id, chambre_status: Status
-    ):
-        pass
-
-    @abstractmethod
-    async def update_chambre_patient(
-        self, db: Session, chambre_id: int, patient: Patient
-    ):
-        pass
-
-    @abstractmethod
-    async def get_patient(self, db: Session, patient_id: int):
-        pass
-
-    @abstractmethod
-    async def create_patient(self, db: Session, patient: CreatePatient):
-        pass
-
-    @abstractmethod
-    async def create_reservation(
-        self,
-        db: Session,
-        chambre: Chambre,
-        patient: Patient,
-        reservation: CreateReservation,
-    ):
-        pass
-
-    @abstractmethod
-    async def cancel_reservation(self, db: Session, reservation_id: int):
-        """Annule une réservation"""
-        pass
-
-    @abstractmethod
-    async def get_reservation_by_id(self, db: Session, reservation_id: int):
-        """Récupère une réservation par son ID"""
-        pass
-
-    @abstractmethod
-    async def get_reservations(self, db: Session, patient_id: int):
-        """Récupère les réservations d'un patient"""
-        pass
-
-    @abstractmethod
-    async def delete_patient(self, db: Session, patient_id: int):
-        """Supprime un patient"""
-        pass
-
-
-class PgChambresRepository(ChambresRepository):
+class PgChambresRepository(ChambresCrud):
     """Implémentation PostgreSQL du repository de chambres"""
 
     async def get_chambre_by_id(self, db: Session, chambre_id: int) -> Chambre:

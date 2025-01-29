@@ -65,8 +65,11 @@ class Admission(Base):
     ref_chambre: Mapped[int] = mapped_column(
         Integer, nullable=True
     )  # Référence de la chambre attribuée
+    ref_reservation: Mapped[int] = mapped_column(
+        Integer, nullable=True
+    )  # Référence de la réservation
     nom_chambre: Mapped[str] = mapped_column(
-        String, nullable=False
+        String, nullable=True
     )  # Nom de la chambre attribuée
     created_at: Mapped[datetime] = mapped_column(
         DateTime(), server_default=func.now()

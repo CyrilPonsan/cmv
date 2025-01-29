@@ -6,16 +6,7 @@ from app.sql.models import Document, DocumentType
 
 
 # Interface pour les opérations liées aux documents
-class DocumentsRead(ABC):
-    @abstractmethod
-    async def create_document(
-        self, db: Session, file_name: str, type_document: DocumentType, patient_id: int
-    ) -> dict:
-        pass
-
-
-# Interface pour les opérations liées aux documents
-class DocumentsRepository(DocumentsRead):
+class DocumentsCrud(ABC):
     @abstractmethod
     async def create_document(
         self, db: Session, file_name: str, type_document: DocumentType, patient_id: int
@@ -24,7 +15,7 @@ class DocumentsRepository(DocumentsRead):
 
 
 # Repository pour accéder aux données des documents
-class PgDocumentsRepository(DocumentsRepository):
+class PgDocumentsRepository(DocumentsCrud):
     # Méthode pour créer un document
     async def create_document(
         self, db: Session, file_name: str, type_document: DocumentType, patient_id: int

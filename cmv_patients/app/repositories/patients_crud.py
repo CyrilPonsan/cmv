@@ -58,47 +58,8 @@ class PatientCrud(ABC):
         pass
 
 
-# Classe intermédiaire implémentant l'interface PatientCrud
-class PatientsRepository(PatientCrud):
-    """Classe abstraite intermédiaire pour implémenter les méthodes CRUD"""
-
-    @abstractmethod
-    async def read_all_patients(
-        self, db: Session, page: int, limit: int, field: str, order: str
-    ) -> dict:
-        pass
-
-    @abstractmethod
-    async def read_patient_by_id(self, db: Session, patient_id: int) -> Patient:
-        pass
-
-    @abstractmethod
-    async def create_patient(self, db: Session, patient: Patient) -> Patient:
-        pass
-
-    @abstractmethod
-    async def check_patient_exists(self, db: Session, patient: Patient) -> bool:
-        pass
-
-    @abstractmethod
-    async def search_patients(
-        self, db: Session, search: str, page: int, limit: int, field: str, order: str
-    ) -> dict:
-        pass
-
-    @abstractmethod
-    async def update_patient(
-        self, db: Session, patient_id: int, data: Patient
-    ) -> Patient:
-        pass
-
-    @abstractmethod
-    async def delete_patient(self, db: Session, patient_id: int):
-        pass
-
-
 # Implémentation PostgreSQL du repository de patients
-class PgPatientsRepository(PatientsRepository):
+class PgPatientsRepository(PatientCrud):
     """Implémentation concrète du repository pour PostgreSQL"""
 
     async def read_all_patients(

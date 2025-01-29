@@ -78,6 +78,9 @@ class AdmissionService:
                     sortie_prevue_le=str(data.sortie_prevue_le),
                     ref_chambre=chambre_data["id_chambre"] if chambre_data else None,
                     nom_chambre=chambre_data["nom"] if chambre_data else None,
+                    ref_reservation=chambre_data["reservation_id"]
+                    if chambre_data
+                    else None,
                 )
 
                 self.db.add(admission)
@@ -107,3 +110,75 @@ class AdmissionService:
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"reservation_failed: {str(e)}",
                 )
+
+
+async def delete_admission(self, db: Session, admission_id: int) -> dict:
+    async with httpx.AsyncClient() as client:
+        # Garder une trace des actions effectuées pour le rollback
+        actions_done = {
+            "reservation_cancelled": False,
+            "chambre_status_updated": False,
+            "admission_deleted": False,
+        }
+
+        try:
+            # 1. Récupérer l'admission
+            admission = await self.admissions_repository.get_admission_by_id(
+                db, admission_id
+            )
+            if not admission:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail="admission_not_found"
+                )
+
+            # 2. Si non ambulatoire, annuler la réservation
+            if not admission.ambulatoire and admission.ref_reservation:
+                # Annuler la réservation
+                response = await client.delete(
+                    f"{CHAMBRES_SERVICE}/chambres/{admission.ref_reservation}/"
+                    f"{admission.ref_chambre}/cancel"
+                )
+                if response.status_code not in (200, 404):
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="failed_to_cancel_reservation",
+                    )
+                actions_done["reservation_cancelled"] = True
+                actions_done["chambre_status_updated"] = True
+
+            # 3. Supprimer l'admission
+            await self.admissions_repository.delete_admission(db, admission_id)
+            actions_done["admission_deleted"] = True
+
+            db.commit()
+            return {"message": "admission_deleted"}
+
+        except Exception as e:
+            db.rollback()
+
+            # Compensation des actions effectuées en cas d'échec
+            try:
+                if actions_done["reservation_cancelled"]:
+                    # Recréer la réservation
+                    reservation_data = {
+                        "patient": {
+                            "id_patient": admission.patient_id,
+                            "full_name": f"{admission.patient.prenom} {admission.patient.nom}",
+                        },
+                        "entree_prevue": str(admission.entree_le),
+                        "sortie_prevue": str(admission.sortie_prevue_le),
+                    }
+                    await client.post(
+                        f"{CHAMBRES_SERVICE}/chambres/{admission.ref_chambre}/reserver",
+                        json=reservation_data,
+                    )
+            except Exception as compensation_error:
+                # Log l'échec de la compensation
+                print(
+                    f"Failed to compensate actions for admission {admission_id}: {str(compensation_error)}"
+                )
+
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"delete_admission_failed: {str(e)}",
+            )
