@@ -1,8 +1,101 @@
-2025-01-20 13:29:38,235 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - read patients FROM: None
-2025-01-20 13:29:48,707 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - read patients FROM: None
-2025-01-20 13:29:50,560 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - read patient 32 FROM: None
-2025-01-21 08:37:29,446 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - read patients FROM: None
-2025-01-21 08:37:31,547 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - read patient 32 FROM: None
-2025-01-21 08:37:33,929 - AFFRANCHISSEMENT - WARNING - home - 2 - DELETE - delete - 8 FROM: None
-2025-01-21 08:37:34,398 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - read patient 32 FROM: None
-2025-01-21 14:01:58,018 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - read patients FROM: None
+2025-01-29 00:10:07,877 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 13 FROM: unknown
+2025-01-29 00:15:17,606 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 00:15:17,614 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 00:15:21,443 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 42 FROM: unknown
+2025-01-29 00:25:14,959 - CMV_PATIENTS - WARNING - reservation_failed: (psycopg2.errors.NotNullViolation) null value in column "nom_chambre" of relation "admission" violates not-null constraint
+DETAIL:  Failing row contains (3, 2025-01-28 23:25:14.821, t, null, 2026-01-31 23:00:00, null, null, 2025-01-28 23:25:14.955921, 2025-01-28 23:25:14.955921, 42, null).
+
+[SQL: INSERT INTO admission (entree_le, ambulatoire, sorti_le, sortie_prevue_le, ref_chambre, ref_reservation, nom_chambre, patient_id) VALUES (%(entree_le)s, %(ambulatoire)s, %(sorti_le)s, %(sortie_prevue_le)s, %(ref_chambre)s, %(ref_reservation)s, %(nom_chambre)s, %(patient_id)s) RETURNING admission.id_admission, admission.created_at, admission.updated_at]
+[parameters: {'entree_le': '2025-01-28 23:25:14.821000+00:00', 'ambulatoire': True, 'sorti_le': None, 'sortie_prevue_le': '2026-01-31 23:00:00+00:00', 'ref_chambre': None, 'ref_reservation': None, 'nom_chambre': None, 'patient_id': 42}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj) FROM: unknown
+2025-01-29 00:25:19,790 - CMV_PATIENTS - WARNING - reservation_failed: (psycopg2.errors.NotNullViolation) null value in column "nom_chambre" of relation "admission" violates not-null constraint
+DETAIL:  Failing row contains (4, 2025-01-28 23:25:19.765, t, null, 2026-01-31 23:00:00, null, null, 2025-01-28 23:25:19.789644, 2025-01-28 23:25:19.789644, 42, null).
+
+[SQL: INSERT INTO admission (entree_le, ambulatoire, sorti_le, sortie_prevue_le, ref_chambre, ref_reservation, nom_chambre, patient_id) VALUES (%(entree_le)s, %(ambulatoire)s, %(sorti_le)s, %(sortie_prevue_le)s, %(ref_chambre)s, %(ref_reservation)s, %(nom_chambre)s, %(patient_id)s) RETURNING admission.id_admission, admission.created_at, admission.updated_at]
+[parameters: {'entree_le': '2025-01-28 23:25:19.765000+00:00', 'ambulatoire': True, 'sorti_le': None, 'sortie_prevue_le': '2026-01-31 23:00:00+00:00', 'ref_chambre': None, 'ref_reservation': None, 'nom_chambre': None, 'patient_id': 42}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj) FROM: unknown
+2025-01-29 00:25:24,175 - CMV_PATIENTS - WARNING - reservation_failed: (psycopg2.errors.NotNullViolation) null value in column "nom_chambre" of relation "admission" violates not-null constraint
+DETAIL:  Failing row contains (5, 2025-01-28 23:25:24.151, t, null, 2026-01-31 23:00:00, null, null, 2025-01-28 23:25:24.174178, 2025-01-28 23:25:24.174178, 42, null).
+
+[SQL: INSERT INTO admission (entree_le, ambulatoire, sorti_le, sortie_prevue_le, ref_chambre, ref_reservation, nom_chambre, patient_id) VALUES (%(entree_le)s, %(ambulatoire)s, %(sorti_le)s, %(sortie_prevue_le)s, %(ref_chambre)s, %(ref_reservation)s, %(nom_chambre)s, %(patient_id)s) RETURNING admission.id_admission, admission.created_at, admission.updated_at]
+[parameters: {'entree_le': '2025-01-28 23:25:24.151000+00:00', 'ambulatoire': True, 'sorti_le': None, 'sortie_prevue_le': '2026-01-31 23:00:00+00:00', 'ref_chambre': None, 'ref_reservation': None, 'nom_chambre': None, 'patient_id': 42}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj) FROM: unknown
+2025-01-29 00:25:28,374 - CMV_PATIENTS - WARNING - reservation_failed: (psycopg2.errors.NotNullViolation) null value in column "nom_chambre" of relation "admission" violates not-null constraint
+DETAIL:  Failing row contains (6, 2025-01-28 23:25:28.336, t, null, 2026-01-31 23:00:00, null, null, 2025-01-28 23:25:28.371426, 2025-01-28 23:25:28.371426, 42, null).
+
+[SQL: INSERT INTO admission (entree_le, ambulatoire, sorti_le, sortie_prevue_le, ref_chambre, ref_reservation, nom_chambre, patient_id) VALUES (%(entree_le)s, %(ambulatoire)s, %(sorti_le)s, %(sortie_prevue_le)s, %(ref_chambre)s, %(ref_reservation)s, %(nom_chambre)s, %(patient_id)s) RETURNING admission.id_admission, admission.created_at, admission.updated_at]
+[parameters: {'entree_le': '2025-01-28 23:25:28.336000+00:00', 'ambulatoire': True, 'sorti_le': None, 'sortie_prevue_le': '2026-01-31 23:00:00+00:00', 'ref_chambre': None, 'ref_reservation': None, 'nom_chambre': None, 'patient_id': 42}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj) FROM: unknown
+2025-01-29 00:39:37,742 - CMV_PATIENTS - WARNING - reservation_failed: 'PatientsService' object has no attribute 'db' FROM: unknown
+2025-01-29 00:39:42,097 - CMV_PATIENTS - WARNING - reservation_failed: 'PatientsService' object has no attribute 'db' FROM: unknown
+2025-01-29 00:57:39,102 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 00:57:39,114 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 00:57:41,488 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 13 FROM: unknown
+2025-01-29 00:57:58,112 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 00:57:58,121 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 00:58:02,101 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 13 FROM: unknown
+2025-01-29 00:59:04,757 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 42 FROM: unknown
+2025-01-29 00:59:09,190 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 00:59:09,198 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 00:59:11,873 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 41 FROM: unknown
+2025-01-29 00:59:23,406 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 00:59:23,412 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 00:59:27,733 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 41 FROM: unknown
+2025-01-29 00:59:27,742 - CMV_PATIENTS - WARNING - delete_admission_failed: 'PatientsService' object has no attribute 'admissions_repository' FROM: unknown
+2025-01-29 01:05:03,786 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 41 FROM: unknown
+2025-01-29 01:05:03,816 - CMV_PATIENTS - WARNING - delete_admission_failed: 'PatientsService' object has no attribute 'admissions_repository' FROM: unknown
+2025-01-29 01:05:51,001 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:05:51,012 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:05:54,601 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 41 FROM: unknown
+2025-01-29 01:05:54,628 - CMV_PATIENTS - WARNING - delete_admission_failed: 'PatientsService' object has no attribute 'admissions_repository' FROM: unknown
+2025-01-29 01:07:26,043 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:07:26,055 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:07:30,913 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 41 FROM: unknown
+2025-01-29 01:07:30,940 - CMV_PATIENTS - WARNING - delete_admission_failed: 'PgAdmissionsRepository' object has no attribute 'get_admission_by_id' FROM: unknown
+2025-01-29 01:09:07,527 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 41 FROM: unknown
+2025-01-29 01:09:07,558 - CMV_PATIENTS - WARNING - delete_admission_failed: 'PgAdmissionsRepository' object has no attribute 'delete_admission' FROM: unknown
+2025-01-29 01:11:14,062 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 41 FROM: unknown
+2025-01-29 01:11:14,134 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:11:51,609 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:11:51,643 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:11:59,771 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 4 FROM: unknown
+2025-01-29 01:12:32,722 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:12:32,730 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:12:38,809 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 4 FROM: unknown
+2025-01-29 01:12:38,859 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:16:15,542 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 25 FROM: unknown
+2025-01-29 01:16:34,379 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:16:34,386 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:16:38,539 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 25 FROM: unknown
+2025-01-29 01:16:38,639 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:18:24,591 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 20 FROM: unknown
+2025-01-29 01:18:28,742 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:18:28,750 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:18:33,419 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 20 FROM: unknown
+2025-01-29 01:18:33,501 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:20:23,924 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 30 FROM: unknown
+2025-01-29 01:20:27,922 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:20:27,949 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:20:36,218 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 30 FROM: unknown
+2025-01-29 01:20:36,229 - CMV_PATIENTS - WARNING - delete_admission_failed: 'Admission' object has no attribute 'ref_patient' FROM: unknown
+2025-01-29 01:22:22,013 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 30 FROM: unknown
+2025-01-29 01:22:22,022 - CMV_PATIENTS - WARNING - delete_admission_failed: 'Admission' object has no attribute 'ref_patient' FROM: unknown
+2025-01-29 01:22:41,307 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 30 FROM: unknown
+2025-01-29 01:22:41,369 - CMV_PATIENTS - WARNING - delete_admission_failed: 400: failed_to_cancel_reservation FROM: unknown
+2025-01-29 01:33:19,688 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 30 FROM: unknown
+2025-01-29 01:33:19,765 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:35:23,544 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 5 FROM: unknown
+2025-01-29 01:35:34,984 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:35:34,992 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:35:38,920 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 5 FROM: unknown
+2025-01-29 01:35:38,973 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:39:06,610 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 31 FROM: unknown
+2025-01-29 01:39:17,532 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:39:17,543 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:39:20,186 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 31 FROM: unknown
+2025-01-29 01:39:20,280 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:39:43,222 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 12 FROM: unknown
+2025-01-29 01:40:09,582 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:40:09,590 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2025-01-29 01:40:12,860 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 12 FROM: unknown
+2025-01-29 01:40:12,959 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown

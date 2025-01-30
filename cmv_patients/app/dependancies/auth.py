@@ -38,7 +38,7 @@ def check_authorization(token: Annotated[str, Depends(oauth2_scheme)]) -> dict:
     except JWTError:
         # Erreur si le token est invalide ou expiré
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="not_authorized",
             headers={"WWW-Authenticate": "Bearer"},
         )

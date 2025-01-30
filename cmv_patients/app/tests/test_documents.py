@@ -17,7 +17,7 @@ async def test_create_document_wrong_token(ac, wrong_internal_token):
     """Test creating a document with invalid token"""
     headers = {"Authorization": f"Bearer {wrong_internal_token}"}
     response = await ac.post("/api/documents/create/1", headers=headers)
-    assert response.status_code == 401
+    assert response.status_code == 403
     assert response.json() == {"detail": "not_authorized"}
 
 
@@ -86,7 +86,7 @@ async def test_delete_document_wrong_token(ac, wrong_internal_token):
     """Test la suppression d'un document avec un token invalide"""
     headers = {"Authorization": f"Bearer {wrong_internal_token}"}
     response = await ac.delete("/api/documents/delete/1", headers=headers)
-    assert response.status_code == 401
+    assert response.status_code == 403
     assert response.json() == {"detail": "not_authorized"}
 
 
@@ -134,7 +134,7 @@ async def test_download_document_wrong_token(ac, wrong_internal_token):
     """Test le téléchargement d'un document avec un token invalide"""
     headers = {"Authorization": f"Bearer {wrong_internal_token}"}
     response = await ac.get("/api/documents/download/1", headers=headers)
-    assert response.status_code == 401
+    assert response.status_code == 403
     assert response.json() == {"detail": "not_authorized"}
 
 

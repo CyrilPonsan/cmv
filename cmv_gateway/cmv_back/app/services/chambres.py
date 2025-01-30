@@ -49,6 +49,7 @@ class ChambresService:
         if request.query_params:
             full_path = f"{path}?{request.query_params}"
         url = f"{self.url_api_chambres}/{full_path}"
+        print(f"URL: {url}")
 
         # Envoi de la requête à l'API
         response = await client.get(

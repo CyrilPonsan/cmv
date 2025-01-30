@@ -25,7 +25,7 @@ def setup_venv(service_path):
         print(f"⚠️  Suppression de l'ancien environnement virtuel dans {venv_path}")
         run_command(f"rm -rf {venv_path}")
 
-    run_command("python3.13 -m venv venv", cwd=service_path)
+    run_command("python3.12 -m venv venv", cwd=service_path)
     print(f"✅ Environnement virtuel créé dans {venv_path}")
 
 
