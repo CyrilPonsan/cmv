@@ -18,7 +18,7 @@
     "set-venv": "python3.12 setup_venv.py",
     "set-env": "python3.12 create_env.py",
     "install:app": "python3.12 install_dependencies.py",
-    "db:up": "docker network create cmv || true && compose -f dev-docker-compose.yml up -d",
+    "db:up": "docker network create cmv || true && docker compose -f dev-docker-compose.yml up -d",
     "db:down": "docker compose -f dev-docker-compose.yml down",
     "fixtures": "python3.12 run_fixtures.py",
     "start:preprod": "docker network create cmv || true&& docker compose -f preprod-docker-compose.yml up --build",
