@@ -97,9 +97,9 @@ const usePatientForm = (fetchPatientData: ((id: number) => void) | null): Patien
    * Gère la création d'un nouveau patient
    * @param {Record<string, unknown>} data - Données du formulaire
    */
-  const onCreatePatient = (data: Record<string, unknown>) => {
+  const onCreatePatient = (body: Record<string, unknown>) => {
     // Formatage de la date de naissance
-    const date = data.date_de_naissance as Date
+    const date = body.date_de_naissance as Date
     const year = date.getFullYear()
     const month = date.getMonth()
     const day = date.getDate()
@@ -107,12 +107,12 @@ const usePatientForm = (fetchPatientData: ((id: number) => void) | null): Patien
 
     // Préparation des données
     const formData = {
-      ...data,
+      ...body,
       date_de_naissance: updatedDate,
       civilite:
-        typeof data.civilite === 'object' && data.civilite !== null
-          ? (data.civilite as { value: string }).value
-          : data.civilite
+        typeof body.civilite === 'object' && body.civilite !== null
+          ? (body.civilite as { value: string }).value
+          : body.civilite
     }
 
     // Callback après création réussie
@@ -140,9 +140,9 @@ const usePatientForm = (fetchPatientData: ((id: number) => void) | null): Patien
    * Gère la mise à jour d'un patient existant
    * @param {Record<string, unknown>} data - Données du formulaire
    */
-  const onUpdatePatient = (data: Record<string, unknown>) => {
+  const onUpdatePatient = (body: Record<string, unknown>) => {
     // Formatage de la date de naissance
-    const date = new Date(data.date_de_naissance as string)
+    const date = new Date(body.date_de_naissance as string)
     const year = date.getFullYear()
     const month = date.getMonth()
     const day = date.getDate()
@@ -150,12 +150,12 @@ const usePatientForm = (fetchPatientData: ((id: number) => void) | null): Patien
 
     // Préparation des données
     const formData = {
-      ...data,
+      ...body,
       date_de_naissance: updatedDate,
       civilite:
-        typeof data.civilite === 'object' && data.civilite !== null
-          ? (data.civilite as { value: string }).value
-          : data.civilite
+        typeof body.civilite === 'object' && body.civilite !== null
+          ? (body.civilite as { value: string }).value
+          : body.civilite
     }
 
     // Callback après mise à jour réussie
@@ -182,7 +182,7 @@ const usePatientForm = (fetchPatientData: ((id: number) => void) | null): Patien
     // Envoi de la requête
     sendRequest<CreatePatientResponse>(
       {
-        path: `/patients/patients/${data.id_patient}`,
+        path: `/patients/patients/${body.id_patient}`,
         method: 'PUT',
         data: formData
       },

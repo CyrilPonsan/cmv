@@ -50,7 +50,8 @@ describe('PatientDetail', () => {
       sorti_le: null,
       sortie_prevue_le: '2024-01-20',
       ref_chambre: '1',
-      nom_chambre: 'Chambre 101'
+      nom_chambre: 'Chambre 101',
+      ref_reservation: 1
     }
   }
 

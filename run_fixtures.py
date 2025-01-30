@@ -20,20 +20,20 @@ def main():
     # Gateway fixtures
     gateway_dir = os.path.join(root_dir, "cmv_gateway", "cmv_back")
     run_command(
-        "source venv/bin/activate && python3.13 create_fixtures.py", cwd=gateway_dir
+        "source venv/bin/activate && python3.12 create_fixtures.py", cwd=gateway_dir
     )
 
     # Patients fixtures
     patients_dir = os.path.join(root_dir, "cmv_patients")
     run_command(
-        "source venv/bin/activate && python3.13 create_fixtures_patients.py",
+        "source venv/bin/activate && python3.12 create_fixtures_patients.py",
         cwd=patients_dir,
     )
 
     # Chambres fixtures
     chambres_dir = os.path.join(root_dir, "cmv_chambres")
     run_command(
-        "source venv/bin/activate && python3.13 create_fixtures_chambres.py",
+        "source venv/bin/activate && python3.12 create_fixtures_chambres.py",
         cwd=chambres_dir,
     )
 

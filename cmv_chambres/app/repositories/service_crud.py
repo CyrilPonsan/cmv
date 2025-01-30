@@ -19,13 +19,10 @@ class ServiceCrud(ABC):
         """
         pass
 
-
-# Classe repository abstraite héritant de ServiceCrud
-class ServiceRepository(ServiceCrud):
     @abstractmethod
-    async def read_all_services(self, db: Session) -> list[Service]:
+    async def get_simple_services_list(self, db: Session) -> list[Service]:
         """
-        Méthode abstraite pour récupérer tous les services
+        Méthode abstraite pour récupérer une liste épurée de tous les services
         Args:
             db (Session): Session de base de données
         Returns:
@@ -34,8 +31,8 @@ class ServiceRepository(ServiceCrud):
         pass
 
 
-# Implémentation concrète pour PostgreSQL héritant de ServiceRepository
-class PgServiceRepository(ServiceRepository):
+# Implémentation concrète pour PostgreSQL
+class PgServiceRepository(ServiceCrud):
     async def read_all_services(self, db: Session) -> list[Service]:
         """
         Récupère tous les services depuis la base PostgreSQL avec leurs chambres
@@ -80,3 +77,13 @@ class PgServiceRepository(ServiceRepository):
             # Exécution de la requête
             .all()
         )
+
+    async def get_simple_services_list(self, db: Session) -> list[Service]:
+        """
+        Récupère tous les services depuis la base PostgreSQL
+        Args:
+            db (Session): Session de base de données
+        Returns:
+            list[Service]: Liste de tous les services
+        """
+        return db.query(Service).all()

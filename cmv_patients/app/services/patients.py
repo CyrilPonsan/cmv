@@ -1,4 +1,5 @@
 from fastapi import HTTPException, status
+import httpx
 from sqlalchemy.orm import Session
 import uuid
 from io import BytesIO
@@ -6,14 +7,16 @@ import boto3
 
 from app.repositories.patients_crud import PgPatientsRepository
 from app.repositories.documents_crud import PgDocumentsRepository
+from app.repositories.admissions_crud import PgAdmissionsRepository
 from app.utils.config import (
     AWS_ACCESS_KEY_ID,
     AWS_BUCKET_NAME,
     AWS_REGION,
     AWS_SECRET_ACCESS_KEY,
+    CHAMBRES_SERVICE,
 )
-from app.schemas.patients import Patient
-from app.sql.models import DocumentType
+from app.schemas.patients import CreateAdmission, Patient
+from app.sql.models import Admission, DocumentType
 
 
 # Retourne une instance du repository pour accéder aux données des patients
@@ -26,11 +29,17 @@ def get_documents_repository():
     return PgDocumentsRepository()
 
 
+# Retourne une instance du repository pour accéder aux données des admissions
+def get_admissions_repository():
+    return PgAdmissionsRepository()
+
+
 # Retourne une instance du service gérant les patients et leurs documents
 def get_patients_service():
     return PatientsService(
         patients_repository=get_patients_repository(),
         documents_repository=get_documents_repository(),
+        admissions_repository=get_admissions_repository(),
     )
 
 
@@ -41,11 +50,14 @@ class PatientsService:
     patients_repository: PgPatientsRepository
     # Repository pour accéder aux données des documents
     documents_repository: PgDocumentsRepository
+    # Repository pour accéder aux données des admissions
+    admissions_repository: PgAdmissionsRepository
 
     def __init__(
         self,
         patients_repository: PgPatientsRepository,
         documents_repository: PgDocumentsRepository,
+        admissions_repository: PgAdmissionsRepository,
     ):
         """
         Initialise le service avec un repository de patients et un repository de documents
@@ -55,6 +67,7 @@ class PatientsService:
         """
         self.patients_repository = patients_repository
         self.documents_repository = documents_repository
+        self.admissions_repository = admissions_repository
 
     async def read_all_patients(
         self,
@@ -183,6 +196,9 @@ class PatientsService:
         documents = patient.documents
         for document in documents:
             await self.delete_document_by_id(db, document.id_document)
+        admissions = patient.admissions
+        for admission in admissions:
+            await self.delete_admission(db, admission.id_admission)
         return await self.patients_repository.delete_patient(db, patient_id)
 
     async def create_patient_document(
@@ -395,3 +411,164 @@ class PatientsService:
         return await self.documents_repository.delete_document_by_id(
             db=db, document_id=document_id
         )
+
+    async def create_admission(self, db: Session, data: CreateAdmission):
+        async with httpx.AsyncClient() as client:
+            try:
+                # Etape 1 : Si non ambulatoire, réserve une chambre
+                chambre = None
+                chambre_data = None
+                if not data.ambulatoire:
+                    response = await client.get(
+                        f"{CHAMBRES_SERVICE}/chambres/{data.service_id}"
+                    )
+                    if response.status_code != 200:
+                        raise HTTPException(
+                            status_code=status.HTTP_404_NOT_FOUND,
+                            detail="no_room_available",
+                        )
+                    chambre = response.json()
+
+                    patient = (
+                        self.db.query(Patient)
+                        .filter(Patient.id_patient == data.patient_id)
+                        .first()
+                    )
+                    if not patient:
+                        raise HTTPException(
+                            status_code=status.HTTP_404_NOT_FOUND,
+                            detail="patient_not_found",
+                        )
+                    # Créer la réservation
+                    reservation_data = {
+                        "patient": {
+                            "id_patient": data.patient_id,
+                            "full_name": f"{patient.prenom} {patient.nom}",
+                        },
+                        "entree_prevue": str(data.entree_le),
+                        "sortie_prevue": str(data.sortie_prevue_le),
+                    }
+
+                    response = await client.post(
+                        f"{CHAMBRES_SERVICE}/chambres/{chambre['id_chambre']}/reserver",
+                        json=reservation_data,
+                    )
+                    if response.status_code != 201:
+                        raise HTTPException(
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="server_failure",
+                        )
+
+                    chambre_data = response.json()
+
+                # Etape 2 : Crée l'admission
+                admission = Admission(
+                    patient_id=data.patient_id,
+                    ambulatoire=data.ambulatoire,
+                    entree_le=str(data.entree_le),
+                    sortie_prevue_le=str(data.sortie_prevue_le),
+                    ref_chambre=chambre_data["id_chambre"] if chambre_data else None,
+                    nom_chambre=chambre_data["nom"] if chambre_data else None,
+                    ref_reservation=chambre_data["reservation_id"]
+                    if chambre_data
+                    else None,
+                )
+
+                new_admission = await self.admissions_repository.create_admission(
+                    db, admission
+                )
+
+                return new_admission
+
+            except Exception as e:
+                # Compensation en cas d'erreur
+                if chambre_data:
+                    await client.delete(
+                        f"{CHAMBRES_SERVICE}/chambres/{chambre_data['reservation_id']}/{chambre_data['id_chambre']}/cancel",
+                    )
+                elif chambre is not None:
+                    await client.put(
+                        f"{CHAMBRES_SERVICE}/chambres/{chambre['id_chambre']}",
+                    )
+
+                db.rollback()
+                if "no_room_available" in str(e):
+                    raise HTTPException(
+                        status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                        detail="no_room_available",
+                    )
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"reservation_failed: {str(e)}",
+                )
+
+    async def delete_admission(self, db: Session, admission_id: int) -> dict:
+        async with httpx.AsyncClient() as client:
+            # Garder une trace des actions effectuées pour le rollback
+            actions_done = {
+                "reservation_cancelled": False,
+                "chambre_status_updated": False,
+                "admission_deleted": False,
+            }
+
+            try:
+                # 1. Récupérer l'admission
+                admission = await self.admissions_repository.get_admission_by_id(
+                    db, admission_id
+                )
+                if not admission:
+                    raise HTTPException(
+                        status_code=status.HTTP_404_NOT_FOUND,
+                        detail="admission_not_found",
+                    )
+
+                # 2. Si non ambulatoire, annuler la réservation
+                if not admission.ambulatoire and admission.ref_reservation:
+                    # Annuler la réservation
+                    response = await client.delete(
+                        f"{CHAMBRES_SERVICE}/chambres/{admission.ref_reservation}/{admission.ref_chambre}/cancel"
+                    )
+                    if response.status_code not in (200, 404):
+                        raise HTTPException(
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="failed_to_cancel_reservation",
+                        )
+                    actions_done["reservation_cancelled"] = True
+                    actions_done["chambre_status_updated"] = True
+
+                # 3. Supprimer l'admission
+                await self.admissions_repository.delete_admission(db, admission_id)
+                actions_done["admission_deleted"] = True
+
+                db.commit()
+                return {"message": "admission_deleted"}
+
+            except Exception as e:
+                db.rollback()
+
+                # Compensation des actions effectuées en cas d'échec
+                try:
+                    if actions_done["reservation_cancelled"]:
+                        # Recréer la réservation
+                        reservation_data = {
+                            "patient": {
+                                "id_patient": admission.patient_id,
+                                "full_name": f"{admission.patient.prenom} {admission.patient.nom}",
+                            },
+                            "entree_prevue": str(admission.entree_le),
+                            "sortie_prevue": str(admission.sortie_prevue_le),
+                        }
+                        await client.post(
+                            f"{CHAMBRES_SERVICE}/chambres/{admission.ref_chambre}/reserver",
+                            json=reservation_data,
+                        )
+                except Exception as compensation_error:
+                    # Log l'échec de la compensation
+                    print(
+                        f"Failed to compensate actions for admission {admission_id}: {str(compensation_error)}"
+                    )
+
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"delete_admission_failed: {str(e)}",
+                )

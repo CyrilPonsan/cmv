@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.services.admissions import AdmissionService
 from app.dependancies.db_session import get_db
 from app.schemas.patients import CreateAdmission
+from app.services.patients import PatientsService, get_patients_service
 
 
 # Création du routeur FastAPI
@@ -18,6 +19,7 @@ router = APIRouter()
 @router.post("/admissions")
 async def create_admission(
     data: Annotated[CreateAdmission, Body()],  # Données de l'admission à créer
+    patients_service: PatientsService = Depends(get_patients_service),
     db: Session = Depends(get_db),  # Injection de la session de base de données
 ):
     """

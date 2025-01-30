@@ -12,7 +12,7 @@ export const regexPassword =
 
 export const regexNumber = /^[0-9]*$/
 
-export const regexGeneric = /^[a-zA-Z0-9\s,.'\-+éàè?î!\/âôê_ûù]{1,}$/
+export const regexGeneric = /^[a-zA-Z0-9\s,.'\-+éàè?î!\/âôê_ûù()+]{1,}$/
 
 export const regexOptionalGeneric = /^[a-zA-Z0-9\s,.'\-+éîàè?!â_@.ôêûù]{0,}$/
 

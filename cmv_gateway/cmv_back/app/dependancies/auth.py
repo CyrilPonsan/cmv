@@ -46,7 +46,7 @@ credentials_exception = HTTPException(
 )
 
 not_authenticated_exception = HTTPException(
-    status_code=status.HTTP_401_UNAUTHORIZED,
+    status_code=status.HTTP_403_FORBIDDEN,
     detail="not_authenticated",
 )
 

@@ -103,6 +103,7 @@ services:
       - db_patients
     environment:
       PATIENTS_DATABASE_URL: ${PATIENTS_DATABASE_URL}
+      CHAMBRES_SERVICE: ${CHAMBRES_SERVICE}
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
       AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}

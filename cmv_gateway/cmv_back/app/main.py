@@ -32,7 +32,9 @@ app = FastAPI()
 app.include_router(api.router)
 
 # Configuration CORS - Liste des origines autorisées
-origins = []
+origins = [
+    "http://localhost:5173",
+]
 
 # Ajout du middleware CORS avec les paramètres de sécurité
 app.add_middleware(

@@ -72,14 +72,13 @@ async def update_chambre_status(
 
 
 @router.delete(
-    "/{reservation_id}/{chambre_id}/{patient_id}/cancel",
+    "/{reservation_id}/{chambre_id}/cancel",
     status_code=200,
     response_model=SuccessWithMessage,
 )
 async def cancel_reservation(
     chambre_id: int,
     reservation_id: int | None = None,
-    patient_id: int | None = None,
     service_chambre=Depends(get_chambres_service),
     db: Session = Depends(get_db),
 ):
@@ -101,5 +100,4 @@ async def cancel_reservation(
         db=db,
         reservation_id=reservation_id,
         chambre_id=chambre_id,
-        patient_id=patient_id,
     )
