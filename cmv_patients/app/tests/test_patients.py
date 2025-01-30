@@ -25,7 +25,7 @@ async def test_get_patients_wrong_token(ac, wrong_internal_token, patients):
     response = await ac.get("/api/patients/", headers=headers)
 
     # Vérification que l'accès est refusé avec le bon code d'erreur
-    assert response.status_code == 401
+    assert response.status_code == 403
     assert response.json() == {"detail": "not_authorized"}
 
 
@@ -212,7 +212,7 @@ async def test_get_patient_detail_wrong_token(ac, wrong_internal_token, patients
     # Tentative d'accès avec token invalide
     response = await ac.get("/api/patients/detail/1", headers=headers)
     # Vérification que l'accès est refusé
-    assert response.status_code == 401
+    assert response.status_code == 403
     assert response.json() == {"detail": "not_authorized"}
 
 
@@ -291,7 +291,7 @@ async def test_create_patient_wrong_token(ac, wrong_internal_token):
     headers = {"Authorization": f"Bearer {wrong_internal_token}"}
     response = await ac.post("/api/patients/", headers=headers, json=patient_data)
 
-    assert response.status_code == 401
+    assert response.status_code == 403
     assert response.json() == {"detail": "not_authorized"}
 
 
@@ -420,7 +420,7 @@ async def test_update_patient_wrong_token(ac, wrong_internal_token):
     headers = {"Authorization": f"Bearer {wrong_internal_token}"}
     response = await ac.put("/api/patients/1", headers=headers, json=patient_data)
 
-    assert response.status_code == 401
+    assert response.status_code == 403
     assert response.json() == {"detail": "not_authorized"}
 
 
