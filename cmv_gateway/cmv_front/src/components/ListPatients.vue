@@ -39,16 +39,12 @@ const {
   lazyState, // Mode lazy-loadin
   loading, // État de chargement
   isLoading, // État de chargement des requêtes HTTP
-  getData, // Fonction de récupération des données
   showDeleteDialog, // Affichage de la boîte de dialogue de suppression
   onCancel, // Annulation de la suppression
   onConfirm, // Confirmation de la suppression
   selectedPatient, // Patient sélectionné pour la suppression
   dialogVisible // Visibilité de la boîte de dialogue
 } = useListPatients()
-
-// Chargement initial des données au montage du composant
-onMounted(() => getData())
 </script>
 
 <template>
