@@ -2,7 +2,7 @@ pipeline {
     agent any
     tools {
         nodejs 'nodejs'
-        python 'python3'
+        python 'python3.13'
     }
 
     environment {
