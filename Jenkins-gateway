@@ -2,7 +2,6 @@ pipeline {
     agent any
     tools {
         nodejs 'nodejs'
-        pythonInstallation 'python3.13' 
     }
 
     environment {
@@ -23,6 +22,13 @@ pipeline {
                 checkout scm
                 script {
                     echo "Current branch is ${BRANCH_NAME}"
+                    // Retrieve the Python installation directory
+                    def pythonHome = tool name: 'python3.13', type: 'jenkins.plugins.shiningpanda.tools.PythonInstallation'
+                    
+                    // Add Python's bin directory to the PATH
+                    withEnv(["PATH+PYTHON=${pythonHome}/bin"]) {
+                        sh 'python --version'  // This will now use the correct Python installation
+                    }
                 }
             }
         }
