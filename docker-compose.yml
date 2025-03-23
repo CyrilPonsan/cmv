@@ -56,7 +56,7 @@ services:
     depends_on:
       - db_gateway
     environment:
-      GATEWAY_DATABASE_URL: ${GATEWAY_POSTGRES_URL}
+      GATEWAY_DATABASE_URL: ${GATEWAY_DATABASE_URL}
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
       PATIENTS_SERVICE: ${PATIENTS_SERVICE}
