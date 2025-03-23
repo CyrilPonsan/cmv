@@ -110,14 +110,18 @@ stage('Check Python') {
                         
                         # Install or update dependencies
                         pip install -r /home/${EC2_USER}/cmv_gateway/cmv_back/requirements.txt
-                        pip install gunicorn
+                        pip install gunicorn uvicorn
                         
                         # Stop existing Gunicorn process if running
                         pkill -f "gunicorn" || true
                         
-                        # Start Gunicorn in the background
+                        # Start Gunicorn in the background with uvicorn workers for FastAPI
                         cd /home/${EC2_USER}/cmv_gateway/cmv_back
-                        nohup gunicorn --workers 3 --bind 0.0.0.0:8001 app.main:app > /home/${EC2_USER}/gunicorn.log 2>&1 &
+                        nohup gunicorn --workers 3 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8001 app.main:app > /home/${EC2_USER}/gunicorn.log 2>&1 &
+                        
+                        # Verify the process is running
+                        sleep 2
+                        ps aux | grep gunicorn
                     """
 
                     // Copy backend and frontend files to EC2
