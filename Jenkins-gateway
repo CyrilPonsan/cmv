@@ -131,8 +131,15 @@ stage('Check Python') {
                             
                             # Extract the archive on EC2 and run deployment commands
                             ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR ${EC2_USER}@${EC2_SERVER} << EOF
-                            tar -xzf /home/${EC2_USER}/cmv_gateway_deploy.tar.gz -C /home/${EC2_USER}/
+                            # Make sure the target directory exists
+                            mkdir -p /home/${EC2_USER}/cmv_gateway
+                            
+                            # Extract to the correct directory
+                            tar -xzf /home/${EC2_USER}/cmv_gateway_deploy.tar.gz -C /home/${EC2_USER}/cmv_gateway
+                            
+                            # Remove the archive
                             rm /home/${EC2_USER}/cmv_gateway_deploy.tar.gz
+                            
                             ${remoteCommands}
 EOF
                         """
