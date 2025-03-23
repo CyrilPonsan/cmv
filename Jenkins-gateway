@@ -63,7 +63,7 @@ stage('Check Python') {
             steps {
                 sh '''
                 # Create static directory in backend if it doesn't exist
-                mkdir -p cmv_gateway/cmv_back/app/dist
+                mkdir -p cmv_gateway/cmv_back/dist
                 
                 # Copy built frontend files to backend static directory
                 cp -r cmv_gateway/cmv_front/dist/* cmv_gateway/cmv_back/app/dist/
