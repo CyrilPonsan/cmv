@@ -30,8 +30,8 @@ pipeline {
 stage('Check Python') {
             steps {
                 sh 'echo $PATH'
-                sh 'which python3.13'
-                sh 'python3.13 --version'
+                sh 'which python3.11'
+                sh 'python3.11 --version'
             }
         }
         stage('Install Frontend Dependencies') {
@@ -63,10 +63,10 @@ stage('Check Python') {
             steps {
                 sh '''
                 # Create static directory in backend if it doesn't exist
-                mkdir -p cmv_gateway/cmv_back/static
+                mkdir -p cmv_gateway/cmv_back/app/dist
                 
                 # Copy built frontend files to backend static directory
-                cp -r cmv_gateway/cmv_front/dist/* cmv_gateway/cmv_back/static/
+                cp -r cmv_gateway/cmv_front/dist/* cmv_gateway/cmv_back/app/dist/
                 '''
             }
         }
@@ -102,7 +102,7 @@ stage('Check Python') {
                         
                         # Create virtual environment if it doesn't exist
                         if [ ! -d "/home/${EC2_USER}/cmv_gateway/venv" ]; then
-                            python3.13 -m venv /home/${EC2_USER}/cmv_gateway/venv
+                            python3.11 -m venv /home/${EC2_USER}/cmv_gateway/venv
                         fi
                         
                         # Activate virtual environment
