@@ -70,24 +70,9 @@ stage('Check Python') {
                 '''
             }
         }
-        stage('Install Backend Dependencies') {
-            steps {
-                dir('cmv_gateway/cmv_back') {
-                    sh '''
-                    # Create and activate virtual environment
-                    python3.13 -m venv venv
-                    . venv/bin/activate
-                    
-                    # Install dependencies
-                    pip install -r requirements.txt
-                    pip install gunicorn
-                    '''
-                }
-            }
-        }
         stage('Run Backend Tests') {
             steps {
-                dir('cmv_gateway/cmv_back') {
+                dir('cmv_back') {
                     script {
                         sh '''
                         # Monter les services avec docker-compose
