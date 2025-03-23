@@ -75,7 +75,7 @@ stage('Check Python') {
                 dir('cmv_gateway/cmv_back') {
                     sh '''
                     # Create and activate virtual environment
-                    ${pythonHome}/bin/python -m venv venv
+                    python3.13 -m venv venv
                     . venv/bin/activate
                     
                     # Install dependencies
@@ -107,7 +107,7 @@ stage('Check Python') {
                         
                         # Create virtual environment if it doesn't exist
                         if [ ! -d "/home/${EC2_USER}/cmv_gateway/venv" ]; then
-                            ${pythonHome}/bin/python -m venv /home/${EC2_USER}/cmv_gateway/venv
+                            python3.13 -m venv /home/${EC2_USER}/cmv_gateway/venv
                         fi
                         
                         # Activate virtual environment
