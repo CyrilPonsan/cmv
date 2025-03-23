@@ -26,7 +26,9 @@ models.Base.metadata.create_all(bind=engine)
 logger = LoggerSetup()
 
 # Création de l'application FastAPI
-app = FastAPI()
+app = FastAPI(
+    root_path="",  # Set to your proxy path if needed, e.g., "/api"
+)
 
 # Inclusion des routes de l'API
 app.include_router(api.router)
@@ -34,6 +36,8 @@ app.include_router(api.router)
 # Configuration CORS - Liste des origines autorisées
 origins = [
     "http://localhost:5173",
+    "https://firizgoude.org",  # Add your domain
+    "http://firizgoude.org",  # Add HTTP version too
 ]
 
 # Ajout du middleware CORS avec les paramètres de sécurité
