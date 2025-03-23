@@ -25,7 +25,7 @@ pipeline {
                 }
             }
         }
-        stage('Install Dependencies') {
+        stage('Install Frontend Dependencies') {
             steps {
                 dir('cmv_gateway/cmv_front') {
                     sh """
@@ -36,6 +36,13 @@ pipeline {
                 }
             }
         }
+        stage('Build Frontend') {
+            steps {
+                dir('cmv_gateway/cmv_front') {
+                    sh 'npm run build'
+                }
+            }
+        }
         stage('Run Frontend Tests') {
             steps {
                 dir('cmv_gateway/cmv_front') {
@@ -43,67 +50,85 @@ pipeline {
                 }
             }
         }
+        stage('Copy Frontend to Backend') {
+            steps {
+                sh '''
+                # Create static directory in backend if it doesn't exist
+                mkdir -p cmv_gateway/cmv_back/static
+                
+                # Copy built frontend files to backend static directory
+                cp -r cmv_gateway/cmv_front/dist/* cmv_gateway/cmv_back/static/
+                '''
+            }
+        }
+        stage('Install Backend Dependencies') {
+            steps {
+                dir('cmv_gateway/cmv_back') {
+                    sh '''
+                    # Create and activate virtual environment
+                    python -m venv venv
+                    source venv/bin/activate
+                    
+                    # Install dependencies
+                    pip install -r requirements.txt
+                    pip install gunicorn
+                    '''
+                }
+            }
+        }
         stage('Run Backend Tests') {
             steps {
                 dir('cmv_gateway/cmv_back') {
-                    script {
-                        sh '''
-                        # Monter les services avec docker-compose
-                        docker-compose -f docker-compose.yml up --build -d
-
-                        # Arrêter et supprimer les services après les tests
-                        docker-compose -f docker-compose.yml down
-                        '''
-                    }
+                    sh '''
+                    # Activate virtual environment
+                    source venv/bin/activate
+                    
+                    # Run tests
+                    pytest
+                    '''
                 }
-            }
-        }
-        stage('Build Image') {
-            steps {
-                dir('cmv_gateway') {
-                    script {
-                        sh "echo 'Starting Docker build...'"
-                        sh "docker --version"
-                        sh "pwd"
-                        sh "ls -la"
-                        sh 'docker build --platform linux/amd64 -t "${IMAGE_GATEWAY}:latest" .'
-                        sh "echo 'Docker build completed.'"
-                    }
-                }
-            }
-        }
-        stage('Push to DockerHub') {
-            steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                sh "docker push ${IMAGE_GATEWAY}:latest"
             }
         }
         stage('Deploy to EC2') {
             steps {
                 script {
                     def remoteCommands = """
-                        # Arrêt et suppression de l'ancien container
-                        docker stop cmv_gateway || true
-                        docker rm cmv_gateway || true
-
-                        # Suppression de l'ancienne image
-                        docker image rm ${IMAGE_GATEWAY}:latest || true
-
-                        docker compose up -d
-
-
+                        # Create project directory if it doesn't exist
+                        mkdir -p /home/${EC2_USER}/cmv_gateway
+                        
+                        # Create virtual environment if it doesn't exist
+                        if [ ! -d "/home/${EC2_USER}/cmv_gateway/venv" ]; then
+                            python -m venv /home/${EC2_USER}/cmv_gateway/venv
+                        fi
+                        
+                        # Activate virtual environment
+                        source /home/${EC2_USER}/cmv_gateway/venv/bin/activate
+                        
+                        # Install or update dependencies
+                        pip install -r /home/${EC2_USER}/cmv_gateway/cmv_back/requirements.txt
+                        pip install gunicorn
+                        
+                        # Stop existing Gunicorn process if running
+                        pkill -f "gunicorn" || true
+                        
+                        # Start Gunicorn in the background
+                        cd /home/${EC2_USER}/cmv_gateway/cmv_back
+                        nohup gunicorn --workers 3 --bind 0.0.0.0:8001 app.main:app > /home/${EC2_USER}/gunicorn.log 2>&1 &
                     """
 
-                    // Exécution des commandes sur le serveur EC2
+                    // Copy backend and frontend files to EC2
                     sshagent(credentials: ['cmv-ssh-key']) {
                         sh """
-                            ssh -o StrictHostKeyChecking=no \
-                                -o UserKnownHostsFile=/dev/null \
-                                -o LogLevel=ERROR \
-                                ${EC2_USER}@${EC2_SERVER} << EOF
-
-                            IMAGE_NAME=${IMAGE_GATEWAY}
-                            IMAGE_TAG=${env.BUILD_NUMBER}
+                            # Create a tar archive of the backend and static files
+                            tar -czf cmv_gateway_deploy.tar.gz -C cmv_gateway cmv_back
+                            
+                            # Copy the archive to EC2
+                            scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR cmv_gateway_deploy.tar.gz ${EC2_USER}@${EC2_SERVER}:/home/${EC2_USER}/
+                            
+                            # Extract the archive on EC2 and run deployment commands
+                            ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR ${EC2_USER}@${EC2_SERVER} << EOF
+                            tar -xzf /home/${EC2_USER}/cmv_gateway_deploy.tar.gz -C /home/${EC2_USER}/
+                            rm /home/${EC2_USER}/cmv_gateway_deploy.tar.gz
                             ${remoteCommands}
 EOF
                         """
@@ -117,7 +142,8 @@ EOF
         always {
             script {
                 node {
-                    sh 'docker logout'
+                    // Clean up local files
+                    sh 'rm -f cmv_gateway_deploy.tar.gz || true'
                 }
             }
         }
