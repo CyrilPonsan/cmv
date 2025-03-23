@@ -72,14 +72,22 @@ stage('Check Python') {
         }
         stage('Run Backend Tests') {
             steps {
-                dir('cmv_back') {
+                dir('cmv_gateway/cmv_back') {
                     script {
                         sh '''
-                        # Monter les services avec docker-compose
-                        docker-compose -f docker-compose.yml up --build -d
-
+                        # Check Docker version
+                        docker --version
+                        
+                        # Use docker compose (without hyphen) instead of docker-compose
+                        echo "Starting Docker containers for tests..."
+                        docker compose -f docker-compose.yml up --build -d
+                        
+                        # Wait for containers to be ready
+                        sleep 5
+                        
                         # Arrêter et supprimer les services après les tests
-                        docker-compose -f docker-compose.yml down
+                        echo "Stopping Docker containers..."
+                        docker compose -f docker-compose.yml down
                         '''
                     }
                 }
