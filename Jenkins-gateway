@@ -22,14 +22,16 @@ pipeline {
                 checkout scm
                 script {
                     echo "Current branch is ${BRANCH_NAME}"
-                    // Retrieve the Python installation directory
-                    def pythonHome = tool name: 'python3.13', type: 'jenkins.plugins.shiningpanda.tools.PythonInstallation'
-                    
-                // Add Python's bin directory to the PATH
-                    withEnv(["PATH+PYTHON=${pythonHome}/bin"]) {
-                        sh 'python --version'  // This will now use the correct Python installation
-                        }
+
                 }
+            }
+        }
+
+        stage('Debug Python Path') {
+            steps {
+                sh 'echo $PATH'
+                sh 'which python3.13 || echo "Python not found in PATH"'
+                sh 'python3.13 --version || echo "Python command failed"'
             }
         }
         stage('Install Frontend Dependencies') {
@@ -73,7 +75,7 @@ pipeline {
                 dir('cmv_gateway/cmv_back') {
                     sh '''
                     # Create and activate virtual environment
-                    ${PYTHON_HOME}/bin/python -m venv venv
+                    ${pythonHome}/bin/python -m venv venv
                     . venv/bin/activate
                     
                     # Install dependencies
@@ -105,7 +107,7 @@ pipeline {
                         
                         # Create virtual environment if it doesn't exist
                         if [ ! -d "/home/${EC2_USER}/cmv_gateway/venv" ]; then
-                            python3 -m venv /home/${EC2_USER}/cmv_gateway/venv
+                            ${pythonHome}/bin/python -m venv /home/${EC2_USER}/cmv_gateway/venv
                         fi
                         
                         # Activate virtual environment
