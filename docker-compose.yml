@@ -11,6 +11,10 @@ volumes:
     driver: local
   db_patients:
     driver: local
+  cmv_chambres:
+    driver: local
+  db_chambres:
+    driver: local
   logs:
     driver: local
   redis:
@@ -41,29 +45,6 @@ services:
       POSTGRES_USER: ${GATEWAY_POSTGRES_USER}
       POSTGRES_PASSWORD: ${GATEWAY_POSTGRES_PASSWORD}
       POSTGRES_DB: ${GATEWAY_POSTGRES_DB}
-
-  api_gateway:
-    image: firizgoude/cmv_gateway:latest
-    pull_policy: always
-    restart: always
-    networks:
-      - cmv
-    volumes:
-      - logs:/app/app/logs
-    container_name: cmv_gateway
-    ports:
-      - "8001:8000"
-    depends_on:
-      - db_gateway
-    environment:
-      GATEWAY_DATABASE_URL: ${GATEWAY_DATABASE_URL}
-      SECRET_KEY: ${SECRET_KEY}
-      ALGORITHM: ${ALGORITHM}
-      PATIENTS_SERVICE: ${PATIENTS_SERVICE}
-      ACCESS_MAX_AGE: ${ACCESS_MAX_AGE}
-      REFRESH_MAX_AGE: ${REFRESH_MAX_AGE}
-    command: >
-      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
 
   db_patients:
     image: postgres:latest
