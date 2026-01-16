@@ -18,7 +18,6 @@ DATABASE_URL = os.getenv(
 
 # Configuration du hachage de mot de passe
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-hashed_password = pwd_context.hash("Abcdef@123456")
 
 # Configuration de l'engine SQLAlchemy
 engine = create_engine(DATABASE_URL)
@@ -38,6 +37,9 @@ def get_db():
 
 
 def create_fixtures(db: Session):
+    # Hachage du mot de passe par défaut
+    hashed_password = pwd_context.hash("Abcdef@123456")
+
     # Création des rôles
     roles = [
         {"name": "it", "label": "Service IT"},
