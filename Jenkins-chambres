@@ -55,7 +55,7 @@ pipeline {
 
                         # Suppression de l'ancienne image
                         docker image rm ${IMAGE_CHAMBRES}:latest || true
-
+                        $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
                         docker compose up -d
 
 
