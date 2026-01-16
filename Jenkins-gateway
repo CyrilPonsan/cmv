@@ -2,7 +2,6 @@ pipeline {
     agent any
     tools {
         nodejs 'nodejs'
-        python 'python3.11'
     }
 
     environment {
@@ -31,8 +30,8 @@ pipeline {
 stage('Check Python') {
             steps {
                 sh 'echo $PATH'
-                sh 'which python3.11'
-                sh 'python3.11 --version'
+                sh 'which python3.12'
+                sh 'python3.12 --version'
             }
         }
         stage('Install Frontend Dependencies') {
@@ -103,7 +102,7 @@ stage('Check Python') {
                         
                         # Create virtual environment if it doesn't exist
                         if [ ! -d "/home/${EC2_USER}/cmv_gateway/venv" ]; then
-                            python3.11 -m venv /home/${EC2_USER}/cmv_gateway/venv
+                            python3.12 -m venv /home/${EC2_USER}/cmv_gateway/venv
                         fi
                         
                         # Activate virtual environment
