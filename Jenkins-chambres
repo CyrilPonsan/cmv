@@ -59,8 +59,8 @@ pipeline {
 echo "${DOCKERHUB_CREDENTIALS_PSW}" | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
 
 # Arrêt et suppression
-docker stop cmv_patients || true
-docker rm cmv_patients || true
+docker stop cmv_chambres || true
+docker rm cmv_chambres || true
 docker image rm ${IMAGE_CHAMBRES}:latest || true
 
 # Déploiement
