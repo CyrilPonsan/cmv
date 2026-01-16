@@ -1,0 +1,98 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'nodejs'
+    }
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('cmv-dockerhub')
+        IMAGE_CHAMBRES = "firizgoude/cmv_chambres"
+        IMAGE_CHAMBRES_TAG = "chambres-${env.BUILD_NUMBER}"
+        BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
+        EC2_SERVER = credentials("ec2-host")
+        EC2_USER = credentials("ec2-username")
+        SSH_CREDENTIALS = credentials('cmv-ssh-key')
+        PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin" 
+    }
+
+    stages {
+        stage("Checkout") {
+            steps {
+                checkout scm
+                script {
+                    echo "Current branch is ${BRANCH_NAME}"
+                }
+            }
+        }
+        stage('Build Image') {
+            steps {
+                dir('cmv_chambres') {
+                    script {
+                        sh "echo 'Starting Docker build...'"
+                        sh "docker --version"
+                        sh "pwd"
+                        sh "ls -la"
+                        sh 'docker build --platform linux/amd64 -t "${IMAGE_CHAMBRES}:latest" .'
+                        sh "echo 'Docker build completed.'"
+                    }
+                }
+            }
+        }
+        stage('Push to DockerHub') {
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                sh "docker push ${IMAGE_CHAMBRES}:latest"
+            }
+        }
+        stage('Deploy to EC2') {
+            steps {
+                script {
+                    def remoteCommands = """
+                        # Arrêt et suppression de l'ancien container
+                        docker stop cmv_patients || true
+                        docker rm cmv_patients || true
+
+                        # Suppression de l'ancienne image
+                        docker image rm ${IMAGE_CHAMBRES}:latest || true
+
+                        docker compose up -d
+
+
+                    """
+
+                    // Exécution des commandes sur le serveur EC2
+                    sshagent(credentials: ['cmv-ssh-key']) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no \
+                                -o UserKnownHostsFile=/dev/null \
+                                -o LogLevel=ERROR \
+                                ${EC2_USER}@${EC2_SERVER} << EOF
+
+                            IMAGE_NAME=${IMAGE_CHAMBRES}
+                            IMAGE_TAG=${env.BUILD_NUMBER}
+                            ${remoteCommands}
+EOF
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                node {
+                    sh 'docker logout'
+                }
+            }
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Please check the logs.'
+        }
+    }
+}
