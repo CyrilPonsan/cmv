@@ -68,7 +68,7 @@ services:
       REFRESH_MAX_AGE: ${REFRESH_MAX_AGE}
       ENVIRONMENT: ${ENVIRONMENT}
     command: >
-      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
 
     develop:
       watch:
@@ -111,7 +111,7 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
     command: >
-      bash -c 'while !</dev/tcp/db_patients/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+      bash -c 'while !</dev/tcp/db_patients/5432; do sleep 1; done; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
 
     develop:
       watch:
@@ -149,7 +149,7 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
     command: >
-      bash -c 'while !</dev/tcp/db_chambres/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+      bash -c 'while !</dev/tcp/db_chambres/5432; do sleep 1; done; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
 
     develop:
       watch:
