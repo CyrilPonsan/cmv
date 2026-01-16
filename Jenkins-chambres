@@ -55,20 +55,20 @@ pipeline {
                                 -o LogLevel=ERROR \
                                 ${EC2_USER}@${EC2_SERVER} << 'EOF'
                             
-                            # Login DockerHub sur l'EC2
-                            echo "${DOCKERHUB_CREDENTIALS_PSW}" | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
-                            
-                            # Arrêt et suppression
-                            docker stop cmv_patients || true
-                            docker rm cmv_patients || true
-                            docker image rm ${IMAGE_CHAMBRES}:latest || true
-                            
-                            # Déploiement
-                            docker compose up -d
-                            
-                            # Logout (optionnel, pour la sécu)
-                            docker logout
-        EOF
+# Login DockerHub sur l'EC2
+echo "${DOCKERHUB_CREDENTIALS_PSW}" | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
+
+# Arrêt et suppression
+docker stop cmv_patients || true
+docker rm cmv_patients || true
+docker image rm ${IMAGE_CHAMBRES}:latest || true
+
+# Déploiement
+docker compose up -d
+
+# Logout (optionnel, pour la sécu)
+docker logout
+EOF
                         """
                     }
                 }
