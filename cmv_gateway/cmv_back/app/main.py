@@ -4,20 +4,23 @@ from fastapi.exception_handlers import (
     request_validation_exception_handler,
 )
 from pathlib import Path
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from sqlalchemy.orm import Session
 
-# Import des middlewares personnalisés
+
+from .dependancies.db_session import get_db
 from app.middleware.exceptions import ExceptionHandlerMiddleware
 from app.middleware.security_headers import SecurityHeadersMiddleware
 from .routers import api
 from .utils.logging_setup import LoggerSetup
 from .utils.database import engine
 from .sql import models
+from .utils.config import ENVIRONMENT
 
 # Création des tables dans la base de données
 models.Base.metadata.create_all(bind=engine)
@@ -94,3 +97,18 @@ try:
 except RuntimeError:
     # Message d'erreur si le répertoire de build n'existe pas
     print("No build directory found. Running in development mode.")
+
+
+@app.get("/fixtures")
+def fixtures(db: Session = Depends(get_db)) -> dict:
+    """
+    Endpoint pour exécuter les fixtures de test.
+    Utile pour initialiser la base de données avec des données de test.
+    """
+    if ENVIRONMENT != "test":
+        return {"message": "Fixtures can only be run in test environment."}
+
+    from app.utils.fixtures import create_fixtures
+
+    create_fixtures(db)
+    return {"message": "done"}

@@ -1,5 +1,5 @@
 # Imports des modules standards Python
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import uuid
 from typing import Optional, Annotated
 
@@ -46,7 +46,7 @@ credentials_exception = HTTPException(
 )
 
 not_authenticated_exception = HTTPException(
-    status_code=status.HTTP_403_FORBIDDEN,
+    status_code=status.HTTP_401_UNAUTHORIZED,
     detail="not_authenticated",
 )
 
@@ -156,7 +156,6 @@ async def get_current_user(
     """
     try:
         if not token:
-            print("#### no token ####")
             raise not_authenticated_exception
         # vérifie que le token ne soit pas blacklist
         is_blacklisted = await redis_client.get(f"blacklist:{token}")
