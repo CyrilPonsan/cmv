@@ -30,7 +30,7 @@ ENVIRONMENT = os.getenv("ENVIRONMENT")
 CHAMBRES_SERVICE = os.getenv("CHAMBRES_SERVICE")
 
 # Hôte du serveur Valkey (anciennement Redis)
-VALKEY_HOST = os.getenv("VALKEY_HOST", "localhost")
+VALKEY_HOST = os.getenv("VALKEY_HOST", "redis")
 
 # Port du serveur Valkey (anciennement Redis)
 VALKEY_PORT = os.getenv("VALKEY_PORT", "6379")
