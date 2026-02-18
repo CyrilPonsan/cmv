@@ -40,13 +40,14 @@ class XGBoostPredictionEngine:
     
     def __init__(self):
         self._model = None
+        # Ordre des features tel qu'attendu par le modèle XGBoost
         self._feature_order = [
-            "gender", "dialysisrenalendstage", "asthma", "irondef", "pneum",
-            "substancedependence", "psychologicaldisordermajor", "depress",
-            "psychother", "fibrosisandother", "malnutrition", "hemo",
+            "rcount", "gender", "dialysisrenalendstage", "asthma", "irondef", 
+            "pneum", "substancedependence", "psychologicaldisordermajor", 
+            "depress", "psychother", "fibrosisandother", "malnutrition", "hemo",
             "hematocrit", "neutrophils", "sodium", "glucose", "bloodureanitro",
-            "creatinine", "bmi", "pulse", "respiration", "rcount",
-            "secondarydiagnosisnonicd9"
+            "creatinine", "bmi", "pulse", "respiration", "secondarydiagnosisnonicd9",
+            "facid_B", "facid_C", "facid_D", "facid_E"
         ]
     
     def load_model(self, path: str) -> None:

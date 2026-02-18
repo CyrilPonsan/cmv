@@ -13,6 +13,6 @@ ALGORITHM = os.getenv("ALGORITHM")
 # Environnement d'exécution (development, production, etc.)
 ENVIRONMENT = os.getenv("ENVIRONMENT")
 # Chemin vers le fichier du modèle XGBoost (.json ou .joblib)
-MODEL_PATH = os.getenv("MODEL_PATH", "./models/xgboost_model.json")
+MODEL_PATH = os.getenv("MODEL_PATH", "../models/xgboost_model.json")
 # Activation de l'explicabilité SHAP (true/false)
 SHAP_ENABLED = os.getenv("SHAP_ENABLED", "false").lower() == "true"

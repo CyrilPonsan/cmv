@@ -8,7 +8,7 @@ This module provides explainability for predictions using SHAP
 from typing import Protocol
 import numpy as np
 
-from cmv_ml.app.utils.config import SHAP_ENABLED
+from app.utils.config import SHAP_ENABLED
 
 
 class ShapExplainerProtocol(Protocol):

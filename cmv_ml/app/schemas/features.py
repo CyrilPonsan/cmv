@@ -45,6 +45,12 @@ class PredictionFeatures(BaseModel):
     # Autres champs
     rcount: int = Field(ge=0)  # Nombre de visites précédentes
     secondarydiagnosisnonicd9: int = Field(ge=0)
+    
+    # Facility ID (one-hot encoded)
+    facid_B: Literal[0, 1] = 0
+    facid_C: Literal[0, 1] = 0
+    facid_D: Literal[0, 1] = 0
+    facid_E: Literal[0, 1] = 0
 
     model_config = {
         "json_schema_extra": {
@@ -73,6 +79,10 @@ class PredictionFeatures(BaseModel):
                     "respiration": 16.0,
                     "rcount": 0,
                     "secondarydiagnosisnonicd9": 0,
+                    "facid_B": 0,
+                    "facid_C": 0,
+                    "facid_D": 0,
+                    "facid_E": 0,
                 }
             ]
         }
