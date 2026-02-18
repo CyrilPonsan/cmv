@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/routers/patients.py
+# hypothesis_version: 6.151.9
+
+['/delete/{path:path}', '/patients', '/upload/{path:path}', '/{path:path}', 'delete', 'documents', 'get', 'patients', 'post', 'put']

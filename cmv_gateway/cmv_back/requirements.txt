@@ -16,6 +16,7 @@ pytest-asyncio
 pytest-mock
 pytest-httpx
 fakeredis
+hypothesis
 aiohttp
 python-multipart
 email-validator
