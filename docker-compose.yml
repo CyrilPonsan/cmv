@@ -32,6 +32,9 @@ services:
       - "6379:6379"
     volumes:
       - redis:/data
+    environment:
+      VALKEY_HOST: ${VALKEY_HOST}
+      VALKEY_PORT: ${VALKEY_PORT}
 
   db_gateway:
     image: postgres:latest
