@@ -29,6 +29,9 @@ ENVIRONMENT = os.getenv("ENVIRONMENT")
 # URL du service de gestion des chambres
 CHAMBRES_SERVICE = os.getenv("CHAMBRES_SERVICE")
 
+# URL du service ML de prédiction
+ML_SERVICE = os.getenv("ML_SERVICE")
+
 # Hôte du serveur Valkey (anciennement Redis)
 VALKEY_HOST = os.getenv("VALKEY_HOST", "redis")
 
