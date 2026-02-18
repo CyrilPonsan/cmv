@@ -28,3 +28,10 @@ ENVIRONMENT = os.getenv("ENVIRONMENT")
 
 # URL du service de gestion des chambres
 CHAMBRES_SERVICE = os.getenv("CHAMBRES_SERVICE")
+
+# Hôte du serveur Valkey (anciennement Redis)
+VALKEY_HOST = os.getenv("VALKEY_HOST", "localhost")
+
+# Port du serveur Valkey (anciennement Redis)
+VALKEY_PORT = os.getenv("VALKEY_PORT", "6379")
+

@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/routers/users.py
+# hypothesis_version: 6.151.9
+
+['/me', '/users', 'role', 'users']

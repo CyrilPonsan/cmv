@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/utils/config.py
+# hypothesis_version: 6.151.9
+
+['6379', 'ACCESS_MAX_AGE', 'ALGORITHM', 'CHAMBRES_SERVICE', 'ENVIRONMENT', 'GATEWAY_DATABASE_URL', 'PATIENTS_SERVICE', 'REFRESH_MAX_AGE', 'SECRET_KEY', 'VALKEY_HOST', 'VALKEY_PORT', 'localhost']

@@ -23,13 +23,15 @@ volumes:
 # The containers that compose the project
 services:
   redis:
-    image: redis:latest
+    image: valkey/valkey:latest
     restart: always
     container_name: redis-server
     networks:
       - cmv
     ports:
       - "6379:6379"
+    volumes:
+      - redis:/data
 
   db_gateway:
     image: postgres:latest

@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from app.sql import models
 from app.utils.config import ALGORITHM, SECRET_KEY
 import pytest
-from redis.asyncio import Redis
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -16,14 +15,6 @@ from app.main import app
 
 # URL de la base de données de test en mémoire
 DATABASE_URL = "sqlite:///:memory:"
-
-
-# Fixture pour le client Redis
-@pytest.fixture(scope="session")
-async def redis_client():
-    client = Redis.from_url("redis://redis:6379", decode_responses=True)
-    yield client
-    await client.aclose()
 
 
 # Fixture pour créer le moteur SQLAlchemy
