@@ -20,10 +20,17 @@ from .routers.predictions import (
 )
 from .services.prediction_engine import ModelNotLoadedError
 from .utils.config import MODEL_PATH, SHAP_ENABLED
+from .sql import models
+from .utils.database import engine
+
+
+# Création des tables dans la base de données
+models.Base.metadata.create_all(bind=engine)
 
 
 class PredictionError(Exception):
     """Erreur lors de l'inférence du modèle."""
+
     pass
 
 
@@ -31,7 +38,7 @@ class PredictionError(Exception):
 async def lifespan(app: FastAPI):
     """
     Gère le cycle de vie de l'application.
-    
+
     Startup: Charge le modèle XGBoost depuis le chemin configuré.
     Shutdown: Cleanup si nécessaire.
     """
@@ -42,7 +49,7 @@ async def lifespan(app: FastAPI):
         raise RuntimeError(f"Model file not found: {MODEL_PATH}")
     except Exception as e:
         raise RuntimeError(f"Failed to load model: {e}")
-    
+
     # Initialize SHAP explainer if enabled
     if SHAP_ENABLED:
         try:
@@ -50,10 +57,11 @@ async def lifespan(app: FastAPI):
         except Exception as e:
             # SHAP initialization failure is not fatal - log and continue
             import logging
+
             logging.warning(f"Failed to initialize SHAP explainer: {e}")
-    
+
     yield
-    
+
     # Shutdown: cleanup si nécessaire
     pass
 

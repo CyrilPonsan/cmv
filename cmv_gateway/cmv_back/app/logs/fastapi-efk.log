@@ -34,3 +34,7 @@
 2026-02-18 13:37:33,827 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
 2026-02-18 13:37:34,199 - CMV_GATEWAY - WARNING - home connection  FROM: None
 2026-02-18 13:37:34,205 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-02-18 21:44:56,662 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-02-18 21:45:04,136 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-18 21:45:04,502 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-02-18 21:45:10,881 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/13 FROM: None

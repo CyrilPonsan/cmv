@@ -90,6 +90,35 @@ const getServicesList = () => {
 const route = useRoute()
 const router = useRouter()
 
+const features = ref([
+  'gender',
+  'dialysisrenalendstage',
+  'asthma',
+  'irondef',
+  'pneum',
+  'substancedependence',
+  'psychologicaldisordermajor',
+  'depress',
+  'psychother',
+  'fibrosisandother',
+  'malnutrition',
+  'hemo'
+])
+
+const propsFeatures = ref<Record<string, number>>({})
+
+const postPrediction = () => {
+  console.log(propsFeatures.value)
+
+  const applyData = (data: any) => {
+    console.log(data)
+  }
+  sendRequest(
+    { path: '/ml/predictions/predict', method: 'POST', body: propsFeatures.value },
+    applyData
+  )
+}
+
 // Extraction de l'ID du patient depuis les paramètres de la route
 const patientId = route.params.patientId
 
@@ -192,6 +221,23 @@ onBeforeMount(() => {
         <Button fluid label="Annuler" @click="router.back()" severity="warn" />
         <Button fluid label="Créer une admission" @click="postAdmission" severity="success" />
       </span>
+    </Form>
+    <Form class="w-5/6 lg:w-[42rem]">
+      <div v-for="feature in features" :key="feature">
+        <label :for="feature">
+          <input
+            type="checkbox"
+            :name="feature"
+            :value="0"
+            @change="
+              propsFeatures[feature] =
+                $event.target && 'checked' in $event.target && $event.target.checked ? 1 : 0
+            "
+          />{{ ' ' }}
+          {{ feature }}
+        </label>
+      </div>
+      <Button label="Go prédiction" @click="postPrediction" severity="success" />
     </Form>
   </main>
 </template>

@@ -103,3 +103,5 @@
 
   File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 166, in update_patient
     PUT /api/patients/{patient_id} FROM: None
+2026-02-18 21:45:04,446 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-02-18 21:45:10,872 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 13 FROM: unknown
