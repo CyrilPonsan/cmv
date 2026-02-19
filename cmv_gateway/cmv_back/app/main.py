@@ -76,21 +76,6 @@ async def validation_exception_handler(request, exc):
     return await request_validation_exception_handler(request, exc)
 
 
-@app.get("/fixtures")
-def fixtures(db: Session = Depends(get_db)) -> dict:
-    """
-    Endpoint pour exécuter les fixtures de test.
-    Utile pour initialiser la base de données avec des données de test.
-    """
-    if ENVIRONMENT != "production":
-        return {"message": "Fixtures can only be run in test environment."}
-
-    from app.utils.fixtures import create_fixtures
-
-    create_fixtures(db)
-    return {"message": "done"}
-
-
 # Configuration pour servir l'application Vue en production
 try:
     # Définition du répertoire de build de l'app Vue
