@@ -82,7 +82,7 @@ def fixtures(db: Session = Depends(get_db)) -> dict:
     Endpoint pour exécuter les fixtures de test.
     Utile pour initialiser la base de données avec des données de test.
     """
-    if ENVIRONMENT != "test":
+    if ENVIRONMENT != "production":
         return {"message": "Fixtures can only be run in test environment."}
 
     from app.utils.fixtures import create_fixtures
