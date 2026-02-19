@@ -20,13 +20,16 @@ from .routers import api
 from .utils.logging_setup import LoggerSetup
 from .utils.database import engine
 from .sql import models
-from .utils.config import ENVIRONMENT
+from .utils.config import ENVIRONMENT, VALKEY_HOST
 
 # Création des tables dans la base de données
 models.Base.metadata.create_all(bind=engine)
 
 # Initialisation du logger
 logger = LoggerSetup()
+
+print("HELLO WORLD! Starting the application...")
+print(f"VALKEY_HOST: {VALKEY_HOST}")
 
 # Création de l'application FastAPI
 app = FastAPI(
