@@ -23,6 +23,8 @@ from .utils.config import MODEL_PATH, SHAP_ENABLED
 from .sql import models
 from .utils.database import engine
 
+print(f"MODEL PATH {MODEL_PATH}")
+
 
 # Création des tables dans la base de données
 models.Base.metadata.create_all(bind=engine)
