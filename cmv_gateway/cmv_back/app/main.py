@@ -39,8 +39,8 @@ app.include_router(api.router)
 # Configuration CORS - Liste des origines autorisées
 origins = [
     "http://localhost:5173",
-    "https://firizgoude.org",  # Add your domain
-    "http://firizgoude.org",  # Add HTTP version too
+    "https://clinique-montvert.fr",  # Add your domain
+    "http://clinique-montvert.fr",  # Add HTTP version too
 ]
 
 # Ajout du middleware CORS avec les paramètres de sécurité
@@ -76,6 +76,21 @@ async def validation_exception_handler(request, exc):
     return await request_validation_exception_handler(request, exc)
 
 
+@app.get("/fixtures")
+def fixtures(db: Session = Depends(get_db)) -> dict:
+    """
+    Endpoint pour exécuter les fixtures de test.
+    Utile pour initialiser la base de données avec des données de test.
+    """
+    if ENVIRONMENT != "test":
+        return {"message": "Fixtures can only be run in test environment."}
+
+    from app.utils.fixtures import create_fixtures
+
+    create_fixtures(db)
+    return {"message": "done"}
+
+
 # Configuration pour servir l'application Vue en production
 try:
     # Définition du répertoire de build de l'app Vue
@@ -97,18 +112,3 @@ try:
 except RuntimeError:
     # Message d'erreur si le répertoire de build n'existe pas
     print("No build directory found. Running in development mode.")
-
-
-@app.get("/fixtures")
-def fixtures(db: Session = Depends(get_db)) -> dict:
-    """
-    Endpoint pour exécuter les fixtures de test.
-    Utile pour initialiser la base de données avec des données de test.
-    """
-    if ENVIRONMENT != "test":
-        return {"message": "Fixtures can only be run in test environment."}
-
-    from app.utils.fixtures import create_fixtures
-
-    create_fixtures(db)
-    return {"message": "done"}
