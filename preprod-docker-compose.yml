@@ -66,6 +66,7 @@ services:
       ALGORITHM: ${ALGORITHM}
       PATIENTS_SERVICE: ${PATIENTS_SERVICE}
       CHAMBRES_SERVICE: ${CHAMBRES_SERVICE}
+      ML_SERVICE: ${ML_SERVICE}
       ACCESS_MAX_AGE: ${ACCESS_MAX_AGE}
       REFRESH_MAX_AGE: ${REFRESH_MAX_AGE}
       ENVIRONMENT: ${ENVIRONMENT}
@@ -202,7 +203,6 @@ services:
       watch:
         - path: ./cmv_ml
           action: rebuild
-
 
   nginx:
     image: nginx:latest

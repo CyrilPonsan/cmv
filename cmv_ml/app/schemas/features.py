@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 class PredictionFeatures(BaseModel):
     """
     Schema de validation des 22 features pour la prédiction.
-    
+
     Les features sont divisées en trois catégories:
     - Genre (binaire)
     - Comorbidités binaires (0/1)
@@ -16,42 +16,41 @@ class PredictionFeatures(BaseModel):
     """
 
     # Genre (0=F, 1=M)
-    gender: Literal[0, 1]
+    gender: Literal[0, 1] = 0
 
     # Comorbidités binaires (0/1)
-    dialysisrenalendstage: Literal[0, 1]
-    asthma: Literal[0, 1]
-    irondef: Literal[0, 1]
-    pneum: Literal[0, 1]
-    substancedependence: Literal[0, 1]
-    psychologicaldisordermajor: Literal[0, 1]
-    depress: Literal[0, 1]
-    psychother: Literal[0, 1]
-    fibrosisandother: Literal[0, 1]
-    malnutrition: Literal[0, 1]
-    hemo: Literal[0, 1]
+    dialysisrenalendstage: Literal[0, 1] = 0
+    asthma: Literal[0, 1] = 0
+    irondef: Literal[0, 1] = 0
+    pneum: Literal[0, 1] = 0
+    substancedependence: Literal[0, 1] = 0
+    psychologicaldisordermajor: Literal[0, 1] = 0
+    depress: Literal[0, 1] = 0
+    psychother: Literal[0, 1] = 0
+    fibrosisandother: Literal[0, 1] = 0
+    malnutrition: Literal[0, 1] = 0
+    hemo: Literal[0, 1] = 0
 
     # Variables continues (doivent être positives)
-    hematocrit: float = Field(gt=0)
-    neutrophils: float = Field(gt=0)
-    sodium: float = Field(gt=0)
-    glucose: float = Field(gt=0)
-    bloodureanitro: float = Field(gt=0)
-    creatinine: float = Field(gt=0)
-    bmi: float = Field(gt=0)
-    pulse: int = Field(gt=0)
-    respiration: float = Field(gt=0)
+    hematocrit: float = Field(default=1.0, gt=0)
+    neutrophils: float = Field(default=1.0, gt=0)
+    sodium: float = Field(default=1.0, gt=0)
+    glucose: float = Field(default=1.0, gt=0)
+    bloodureanitro: float = Field(default=1.0, gt=0)
+    creatinine: float = Field(default=1.0, gt=0)
+    bmi: float = Field(default=1.0, gt=0)
+    pulse: int = Field(default=1, gt=0)
+    respiration: float = Field(default=1.0, gt=0)
 
     # Autres champs
-    rcount: int = Field(ge=0)  # Nombre de visites précédentes
-    secondarydiagnosisnonicd9: int = Field(ge=0)
-    
+    rcount: int = Field(default=0, ge=0)  # Nombre de visites précédentes
+    secondarydiagnosisnonicd9: int = Field(default=0, ge=0)
+
     # Facility ID (one-hot encoded)
     facid_B: Literal[0, 1] = 0
     facid_C: Literal[0, 1] = 0
     facid_D: Literal[0, 1] = 0
     facid_E: Literal[0, 1] = 0
-
     model_config = {
         "json_schema_extra": {
             "examples": [

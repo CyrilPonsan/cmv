@@ -25,7 +25,7 @@ services:
       - redis:/data
 
   db_gateway:
-    image: postgres:latest
+    image: postgres:17
     restart: always
     container_name: db_gateway
     volumes:
@@ -40,7 +40,7 @@ services:
       POSTGRES_DB: ${GATEWAY_POSTGRES_DB}
 
   db_patients:
-    image: postgres:latest
+    image: postgres:17
     restart: always
     container_name: db_patients
     volumes:
@@ -55,7 +55,7 @@ services:
       POSTGRES_DB: ${PATIENTS_POSTGRES_DB}
 
   db_chambres:
-    image: postgres:latest
+    image: postgres:17
     restart: always
     container_name: db_chambres
     volumes:
