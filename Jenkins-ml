@@ -33,7 +33,7 @@ pipeline {
                         sh "docker --version"
                         sh "pwd"
                         sh "ls -la"
-                        sh 'docker build --platform linux/amd64 -t "${IMAGE_CHAMBRES}:latest" .'
+                        sh 'docker build --platform linux/amd64 -t "${IMAGE_ML}:latest" .'
                         sh "echo 'Docker build completed.'"
                     }
                 }
