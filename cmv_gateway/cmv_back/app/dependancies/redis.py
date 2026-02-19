@@ -2,10 +2,11 @@
 from redis import asyncio as aioredis
 
 # Import de la configuration Valkey
-from ..utils.config import VALKEY_HOST, VALKEY_PORT
+from app.utils.config import VALKEY_HOST, VALKEY_PORT
+
+print(f"HELLO VALKEY CONFIG: {VALKEY_HOST}:{VALKEY_PORT}")
 
 # Configuration du client Redis connecté à Valkey
 redis_client = aioredis.from_url(
-    f"redis://{VALKEY_HOST}:{VALKEY_PORT}",
-    decode_responses=True
+    f"redis://{VALKEY_HOST}:{VALKEY_PORT}", decode_responses=True
 )
