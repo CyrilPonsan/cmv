@@ -9,7 +9,7 @@
 import PageHeader from '@/components/PageHeader.vue'
 import useHttp from '@/composables/useHttp'
 import type Admission from '@/models/admission'
-import { Button, DatePicker, Message, Select, useToast } from 'primevue'
+import { Button, Checkbox, DatePicker, Message, Select, useToast } from 'primevue'
 import { Field, Form } from 'vee-validate'
 import { onBeforeMount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -30,6 +30,7 @@ const options = ref(['Ambulatoire', 'Non ambulatoire'])
 const servicesOptions = ref<string[]>([])
 const servicesList = ref<ServicesList[]>([])
 const service = ref<string>()
+const predictionResult = ref<number | null>(null)
 
 /**
  * Crée une nouvelle admission pour le patient
@@ -107,13 +108,23 @@ const features = ref([
 
 const propsFeatures = ref<Record<string, number>>({})
 
-const postPrediction = () => {
-  console.log(propsFeatures.value)
+type PredictionResponse = {
+  prediction_id: string
+  predicted_length_of_stay: number
+}
 
-  const applyData = (data: any) => {
-    console.log(data)
+const postPrediction = () => {
+  const applyData = (data: PredictionResponse) => {
+    const result = Math.ceil(data.predicted_length_of_stay)
+    predictionResult.value = result
+    toast.add({
+      severity: 'success',
+      summary: 'Prédiction réussie',
+      detail: `Durée de séjour prédite : ${result} jours`,
+      life: 3000
+    })
   }
-  sendRequest(
+  sendRequest<PredictionResponse>(
     { path: '/ml/predictions/predict', method: 'POST', body: propsFeatures.value },
     applyData
   )
@@ -222,22 +233,35 @@ onBeforeMount(() => {
         <Button fluid label="Créer une admission" @click="postAdmission" severity="success" />
       </span>
     </Form>
-    <Form class="w-5/6 lg:w-[42rem]">
-      <div v-for="feature in features" :key="feature">
-        <label :for="feature">
-          <input
-            type="checkbox"
-            :name="feature"
-            :value="0"
-            @change="
-              propsFeatures[feature] =
-                $event.target && 'checked' in $event.target && $event.target.checked ? 1 : 0
-            "
-          />{{ ' ' }}
-          {{ feature }}
-        </label>
+    <Form class="w-5/6 lg:w-[42rem] grid grid-cols-1 lg:grid-cols-2">
+      <div class="flex flex-col gap-y-2 items-start">
+        <div v-for="feature in features" :key="feature">
+          <label :for="feature" class="flex items-center gap-x-2">
+            <Checkbox
+              :name="feature"
+              :value="0"
+              @change="
+                propsFeatures[feature] =
+                  $event.target && 'checked' in $event.target && $event.target.checked ? 1 : 0
+              "
+            />{{ ' ' }} {{ feature }}s
+          </label>
+        </div>
+        <Button
+          class="mt-2"
+          label="Valider"
+          @click="postPrediction"
+          icon="pi pi-calculator"
+          severity="success"
+        />
       </div>
-      <Button label="Go prédiction" @click="postPrediction" severity="success" />
+      <span
+        v-if="predictionResult"
+        class="flex flex-col gap-y-2 justify-center items-center border border-primary/40 rounded-lg p-4"
+      >
+        <h2 class="text-sm font-semibold">Durée du séjour estimée à :</h2>
+        <p class="text-2xl font-bold">{{ predictionResult }} jours</p>
+      </span>
     </Form>
   </main>
 </template>
