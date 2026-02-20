@@ -20,7 +20,7 @@ type ServicesList = {
 }
 
 // Initialisation des composables
-const { sendRequest, error } = useHttp()
+const { sendRequest, isLoading, error } = useHttp()
 const toast = useToast()
 
 const entreeLe = ref(new Date())
@@ -261,6 +261,15 @@ onBeforeMount(() => {
       >
         <h2 class="text-sm font-semibold">Durée du séjour estimée à :</h2>
         <p class="text-2xl font-bold">{{ predictionResult }} jours</p>
+        <Button
+          label="Utilisercette prédiction"
+          type="button"
+          :loading="isLoading"
+          @click="
+            sortiePrevueLe = new Date(entreeLe.getTime() + predictionResult * 24 * 60 * 60 * 1000)
+          "
+          severity="success"
+        />
       </span>
     </Form>
   </main>
