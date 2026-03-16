@@ -32,19 +32,19 @@ class PredictionFeatures(BaseModel):
     hemo: Literal[0, 1] = 0
 
     # Variables continues (doivent être positives)
-    hematocrit: float = Field(default=1.0, gt=0)
-    neutrophils: float = Field(default=1.0, gt=0)
-    sodium: float = Field(default=1.0, gt=0)
-    glucose: float = Field(default=1.0, gt=0)
-    bloodureanitro: float = Field(default=1.0, gt=0)
-    creatinine: float = Field(default=1.0, gt=0)
-    bmi: float = Field(default=1.0, gt=0)
-    pulse: int = Field(default=1, gt=0)
-    respiration: float = Field(default=1.0, gt=0)
+    hematocrit: float = Field(default=None, gt=0)
+    neutrophils: float = Field(default=None, gt=0)
+    sodium: float = Field(default=None, gt=0)
+    glucose: float = Field(default=None, gt=0)
+    bloodureanitro: float = Field(default=None, gt=0)
+    creatinine: float = Field(default=None, gt=0)
+    bmi: float = Field(default=None, gt=0)
+    pulse: int = Field(default=None, gt=0)
+    respiration: float = Field(default=None, gt=0)
 
     # Autres champs
     rcount: int = Field(default=0, ge=0)  # Nombre de visites précédentes
-    secondarydiagnosisnonicd9: int = Field(default=0, ge=0)
+    secondarydiagnosisnonicd9: int = Field(default=None, ge=0)
 
     # Facility ID (one-hot encoded)
     facid_B: Literal[0, 1] = 0
