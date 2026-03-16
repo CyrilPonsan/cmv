@@ -1,6 +1,6 @@
 """Schema de validation des features pour la prédiction de durée d'hospitalisation."""
 
-from typing import Literal
+from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -32,19 +32,19 @@ class PredictionFeatures(BaseModel):
     hemo: Literal[0, 1] = 0
 
     # Variables continues (doivent être positives)
-    hematocrit: float = Field(default=None, gt=0)
-    neutrophils: float = Field(default=None, gt=0)
-    sodium: float = Field(default=None, gt=0)
-    glucose: float = Field(default=None, gt=0)
-    bloodureanitro: float = Field(default=None, gt=0)
-    creatinine: float = Field(default=None, gt=0)
-    bmi: float = Field(default=None, gt=0)
-    pulse: int = Field(default=None, gt=0)
-    respiration: float = Field(default=None, gt=0)
+    hematocrit: Optional[float] = Field(default=None, gt=0)
+    neutrophils: Optional[float] = Field(default=None, gt=0)
+    sodium: Optional[float] = Field(default=None, gt=0)
+    glucose: Optional[float] = Field(default=None, gt=0)
+    bloodureanitro: Optional[float] = Field(default=None, gt=0)
+    creatinine: Optional[float] = Field(default=None, gt=0)
+    bmi: Optional[float] = Field(default=None, gt=0)
+    pulse: Optional[int] = Field(default=None, gt=0)
+    respiration: Optional[float] = Field(default=None, gt=0)
 
     # Autres champs
-    rcount: int = Field(default=0, ge=0)  # Nombre de visites précédentes
-    secondarydiagnosisnonicd9: int = Field(default=None, ge=0)
+    rcount: Optional[int] = Field(default=0, ge=0)  # Nombre de visites précédentes
+    secondarydiagnosisnonicd9: Optional[int] = Field(default=None, ge=0)
 
     # Facility ID (one-hot encoded)
     facid_B: Literal[0, 1] = 0

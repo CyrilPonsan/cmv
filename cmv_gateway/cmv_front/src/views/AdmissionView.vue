@@ -109,15 +109,15 @@ const booleanFeatures = ref([
 
 // Variables continues avec leurs limites
 const continuousFeatures = ref([
-  { id: 'hematocrit', label: 'Hématocrite', min: 0.1, max: 60.0, step: 0.1, default: 40.0 },
-  { id: 'neutrophils', label: 'Neutrophiles', min: 0.1, max: 30.0, step: 0.1, default: 5.0 },
-  { id: 'sodium', label: 'Sodium', min: 100.0, max: 160.0, step: 0.5, default: 140.0 },
-  { id: 'glucose', label: 'Glucose', min: 50.0, max: 400.0, step: 1.0, default: 100.0 },
-  { id: 'bloodureanitro', label: 'BUN (Urée)', min: 1.0, max: 100.0, step: 0.5, default: 15.0 },
-  { id: 'creatinine', label: 'Créatinine', min: 0.1, max: 15.0, step: 0.1, default: 1.0 },
-  { id: 'bmi', label: 'BMI', min: 10.0, max: 60.0, step: 0.1, default: 25.0 },
-  { id: 'pulse', label: 'Pouls', min: 30, max: 200, step: 1, default: 75 },
-  { id: 'respiration', label: 'Respiration', min: 5.0, max: 40.0, step: 0.5, default: 15.0 }
+  { id: 'hematocrit', label: 'Hématocrite', min: 0.0, max: 60.0, step: 0.1, default: 0.0 },
+  { id: 'neutrophils', label: 'Neutrophiles', min: 0.0, max: 30.0, step: 0.1, default: 0.0 },
+  { id: 'sodium', label: 'Sodium', min: 0.0, max: 160.0, step: 0.5, default: 0.0 },
+  { id: 'glucose', label: 'Glucose', min: 0.0, max: 400.0, step: 1.0, default: 0.0 },
+  { id: 'bloodureanitro', label: 'BUN (Urée)', min: 0.0, max: 100.0, step: 0.5, default: 0.0 },
+  { id: 'creatinine', label: 'Créatinine', min: 0.0, max: 15.0, step: 0.1, default: 0.0 },
+  { id: 'bmi', label: 'BMI', min: 0.0, max: 60.0, step: 0.1, default: 0.0 },
+  { id: 'pulse', label: 'Pouls', min: 0, max: 200, step: 1, default: 0 },
+  { id: 'respiration', label: 'Respiration', min: 0.0, max: 40.0, step: 0.5, default: 0.0 }
 ])
 
 const propsFeatures = ref<Record<string, number | null>>({
@@ -140,9 +140,18 @@ type PredictionResponse = {
 }
 
 const postPrediction = () => {
-  // Préparation des données en retirant d'éventuels null
+  // Préparation des données: toutes les valeurs continues laissées à 0 par défaut
+  // deviennent 'null' pour que XGBoost utilise sa branche par défaut pour les NaN.
+  // Exception : rcount et secondarydiagnosisnonicd9 peuvent rester à 0.
   const cleanData = Object.fromEntries(
-    Object.entries(propsFeatures.value).filter(([_, v]) => v != null)
+    Object.entries(propsFeatures.value).map(([key, v]) => {
+      // Si la clé est une variable continue et la valeur est 0, on met null
+      const isContinuous = continuousFeatures.value.some((f) => f.id === key)
+      if (isContinuous && v === 0) {
+        return [key, null]
+      }
+      return [key, v]
+    }).filter(([_, v]) => v !== undefined) // On garde null mais on vire undefined au cas où
   )
 
   const applyData = (data: PredictionResponse) => {
