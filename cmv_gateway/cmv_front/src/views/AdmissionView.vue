@@ -164,10 +164,37 @@ const postPrediction = () => {
 // Extraction de l'ID du patient depuis les paramètres de la route
 const patientId = route.params.patientId
 
+// Réf vers le haut du formulaire pour l'autoscroll
+const formTopRef = ref<any>(null)
+
+const applyPrediction = () => {
+  if (predictionResult.value) {
+    // 1. Mettre à jour la date de sortie
+    sortiePrevueLe.value = new Date(entreeLe.value.getTime() + predictionResult.value * 24 * 60 * 60 * 1000)
+    // 2. Basculer sur 'Non ambulatoire' (puisqu'il y a un séjour calculé)
+    ambulatoire.value = 'Non ambulatoire'
+    // 3. Scroller de manière douce vers le haut du formulaire
+    if (formTopRef.value) {console.log("bingo", formTopRef.value)
+      if (formTopRef.value.$el) {
+        formTopRef.value.$el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      } else {
+        formTopRef.value.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }
+  }
+}
+
+// Initialisation des valurs par défaut pour les sliders/continus
+onBeforeMount(() => {
+  getServicesList()
+  continuousFeatures.value.forEach((feature) => {
+    propsFeatures.value[feature.id] = feature.default
+  })
+})
 </script>
 
 <template>
-  <main class="min-w-screen flex flex-col gap-y-8 text-xs p-2">
+  <main ref="formTopRef" class="min-w-screen flex flex-col gap-y-8 text-xs p-2">
     <PageHeader title="Espace Administratif" description="Créer une admission pour un patient" />
     <Form class="flex flex-col gap-y-8 w-5/6 lg:w-[42rem]">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -293,10 +320,7 @@ const patientId = route.params.patientId
               <label for="rcount" class="text-xs">Nombre de visites prec.</label>
               <InputNumber v-model="propsFeatures['rcount']" inputId="rcount" :min="0" :max="50" class="w-full" showButtons />
             </div>
-            <div class="flex flex-col gap-y-2 flex-1">
-              <label for="secondarydiagnose" class="text-xs">Diagnostiques second.</label>
-              <InputNumber v-model="propsFeatures['secondarydiagnosisnonicd9']" inputId="secondarydiagnose" :min="0" :max="20" class="w-full" showButtons />
-            </div>  
+
           </div>
         </div>
 
@@ -335,7 +359,7 @@ const patientId = route.params.patientId
           <Button
             label="Appliquer l'estimation"
             icon="pi pi-check"
-            @click="sortiePrevueLe = new Date(entreeLe.getTime() + predictionResult * 24 * 60 * 60 * 1000)"
+            @click="applyPrediction"
             severity="success"
             outlined
           />
