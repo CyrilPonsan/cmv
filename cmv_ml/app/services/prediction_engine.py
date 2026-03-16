@@ -118,8 +118,8 @@ class XGBoostPredictionEngine:
         return self._execute_prediction(feature_array)
     
     def _features_to_array(self, features: dict) -> np.ndarray:
-        """Convert features dictionary to numpy array in correct order."""
-        values = [features[name] for name in self._feature_order]
+        """Convert features dictionary to numpy array in correct order, replacing None with np.nan."""
+        values = [features[name] if features[name] is not None else np.nan for name in self._feature_order]
         return np.array([values], dtype=np.float32)
     
     def _execute_prediction(self, feature_array: np.ndarray) -> float:
