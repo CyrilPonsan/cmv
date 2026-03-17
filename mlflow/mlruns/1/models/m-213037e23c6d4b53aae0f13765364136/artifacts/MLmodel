@@ -1,0 +1,47 @@
+artifact_path: /Users/cyril/projets/cmv/mlflow/mlruns/1/models/m-213037e23c6d4b53aae0f13765364136/artifacts
+flavors:
+  python_function:
+    data: model.ubj
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.xgboost
+    python_version: 3.12.13
+  xgboost:
+    code: null
+    data: model.ubj
+    model_class: xgboost.sklearn.XGBRegressor
+    model_format: ubj
+    xgb_version: 3.2.0
+is_signature_from_type_hint: false
+mlflow_version: 3.10.1
+model_id: m-213037e23c6d4b53aae0f13765364136
+model_size_bytes: 485489
+model_uuid: m-213037e23c6d4b53aae0f13765364136
+prompts: null
+run_id: 57abb4b39dcb4a7d90d07b1062868783
+signature:
+  inputs: '[{"type": "long", "name": "rcount", "required": true}, {"type": "long",
+    "name": "gender", "required": true}, {"type": "long", "name": "dialysisrenalendstage",
+    "required": true}, {"type": "long", "name": "asthma", "required": true}, {"type":
+    "long", "name": "irondef", "required": true}, {"type": "long", "name": "pneum",
+    "required": true}, {"type": "long", "name": "substancedependence", "required":
+    true}, {"type": "long", "name": "psychologicaldisordermajor", "required": true},
+    {"type": "long", "name": "depress", "required": true}, {"type": "long", "name":
+    "psychother", "required": true}, {"type": "long", "name": "fibrosisandother",
+    "required": true}, {"type": "long", "name": "malnutrition", "required": true},
+    {"type": "long", "name": "hemo", "required": true}, {"type": "double", "name":
+    "hematocrit", "required": true}, {"type": "double", "name": "neutrophils", "required":
+    true}, {"type": "double", "name": "sodium", "required": true}, {"type": "double",
+    "name": "glucose", "required": true}, {"type": "double", "name": "bloodureanitro",
+    "required": true}, {"type": "double", "name": "creatinine", "required": true},
+    {"type": "double", "name": "bmi", "required": true}, {"type": "long", "name":
+    "pulse", "required": true}, {"type": "double", "name": "respiration", "required":
+    true}, {"type": "long", "name": "secondarydiagnosisnonicd9", "required": true},
+    {"type": "boolean", "name": "facid_B", "required": true}, {"type": "boolean",
+    "name": "facid_C", "required": true}, {"type": "boolean", "name": "facid_D", "required":
+    true}, {"type": "boolean", "name": "facid_E", "required": true}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "float32", "shape": [-1]}}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2026-03-16 15:26:10.588542'
