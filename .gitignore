@@ -13,3 +13,4 @@ cmv_patients/tmp/
 cmv_gateway/cmv_back/app/logs/**
 /cmv_chambres/app/logs/**
 materiel/LengthOfStay.csv
+mlflow/mlruns/

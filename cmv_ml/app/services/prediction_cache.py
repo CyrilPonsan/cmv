@@ -12,7 +12,7 @@ class PredictionCache:
     Les entrées expirent automatiquement après le TTL configuré.
     """
     
-    def __init__(self, ttl_minutes: int = 30):
+    def __init__(self, ttl_minutes: int = 1):
         """Initialise le cache avec un TTL configurable.
         
         Args:
