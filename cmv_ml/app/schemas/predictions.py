@@ -9,7 +9,7 @@ from pydantic import BaseModel
 class PredictionResponse(BaseModel):
     """
     Réponse de l'endpoint /predict.
-    
+
     Contient l'identifiant unique de la prédiction, la durée d'hospitalisation
     prédite, et optionnellement les valeurs SHAP pour l'explicabilité.
     """
@@ -22,7 +22,7 @@ class PredictionResponse(BaseModel):
 class ValidatedPredictionSchema(BaseModel):
     """
     Schema d'une prédiction validée.
-    
+
     Représente les métadonnées d'une prédiction après validation par l'utilisateur.
     Conforme RGPD: ne contient aucune donnée médicale (features).
     """
@@ -33,10 +33,21 @@ class ValidatedPredictionSchema(BaseModel):
     user_id: int
 
 
+class ClosedPredictionSchema(BaseModel):
+    """
+    Schema d'une prédiction fermée.
+
+    Représente les métadonnées d'une prédiction après validation par l'utilisateur.
+    Conforme RGPD: ne contient aucune donnée médicale (features).
+    """
+
+    adid: str
+
+
 class PaginatedPredictions(BaseModel):
     """
     Réponse paginée des prédictions validées.
-    
+
     Utilisée par l'endpoint GET /predictions pour retourner l'historique
     des prédictions avec support de pagination.
     """

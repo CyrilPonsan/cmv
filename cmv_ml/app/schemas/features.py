@@ -1,5 +1,6 @@
 """Schema de validation des features pour la prédiction de durée d'hospitalisation."""
 
+import uuid
 from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
@@ -14,6 +15,10 @@ class PredictionFeatures(BaseModel):
     - Comorbidités binaires (0/1)
     - Variables continues (valeurs positives)
     """
+
+    # Metadatas
+    adid: str
+    id_prediction: Optional[uuid.UUID] | None = Field(default=None)
 
     # Genre (0=F, 1=M)
     gender: Literal[0, 1] = 0
@@ -44,45 +49,6 @@ class PredictionFeatures(BaseModel):
 
     # Autres champs
     rcount: Optional[int] = Field(default=0, ge=0)  # Nombre de visites précédentes
-    secondarydiagnosisnonicd9: Optional[int] = Field(default=None, ge=0)
-
-    # Facility ID (one-hot encoded)
-    facid_B: Literal[0, 1] = 0
-    facid_C: Literal[0, 1] = 0
-    facid_D: Literal[0, 1] = 0
-    facid_E: Literal[0, 1] = 0
-    model_config = {
-        "json_schema_extra": {
-            "examples": [
-                {
-                    "gender": 1,
-                    "dialysisrenalendstage": 0,
-                    "asthma": 0,
-                    "irondef": 0,
-                    "pneum": 0,
-                    "substancedependence": 0,
-                    "psychologicaldisordermajor": 0,
-                    "depress": 0,
-                    "psychother": 0,
-                    "fibrosisandother": 0,
-                    "malnutrition": 0,
-                    "hemo": 0,
-                    "hematocrit": 38.5,
-                    "neutrophils": 65.0,
-                    "sodium": 140.0,
-                    "glucose": 100.0,
-                    "bloodureanitro": 15.0,
-                    "creatinine": 1.0,
-                    "bmi": 25.0,
-                    "pulse": 72,
-                    "respiration": 16.0,
-                    "rcount": 0,
-                    "secondarydiagnosisnonicd9": 0,
-                    "facid_B": 0,
-                    "facid_C": 0,
-                    "facid_D": 0,
-                    "facid_E": 0,
-                }
-            ]
-        }
-    }
+    prediction: Optional[float] = Field(
+        default=None, ge=0
+    )  # Durée prédite d'hospitalisation

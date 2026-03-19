@@ -38,3 +38,5 @@ VALKEY_HOST = os.getenv("VALKEY_HOST", "redis")
 # Port du serveur Valkey (anciennement Redis)
 VALKEY_PORT = os.getenv("VALKEY_PORT", "6379")
 
+# Secret utilisé pour pseudonymiser les données des patients
+HMAC = os.getenv("HMAC", "changeMeRightNow")

@@ -8,14 +8,18 @@ Seules les métadonnées de prédiction validées sont stockées.
 from datetime import datetime, timezone
 from uuid import UUID, uuid4
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
+from typing_extensions import Annotated
+
+from app.schemas.schemas import SuccessWithMessage
 
 from ..dependancies.auth import check_authorization
 from ..dependancies.db_session import get_db
 from ..repositories.predictions_crud import predictions_repository
 from ..schemas.features import PredictionFeatures
 from ..schemas.predictions import (
+    ClosedPredictionSchema,
     PaginatedPredictions,
     PredictionResponse,
     ValidatedPredictionSchema,
@@ -26,8 +30,8 @@ from ..services.prediction_engine import (
     XGBoostPredictionEngine,
 )
 from ..services.shap_explainer import (
-    XGBoostShapExplainer,
     ShapDisabledError,
+    XGBoostShapExplainer,
     create_shap_explainer,
 )
 from ..utils.config import SHAP_ENABLED
@@ -59,6 +63,15 @@ def initialize_shap_explainer() -> None:
         )
 
 
+@router.put("/predict", response_model=SuccessWithMessage)
+async def update_prediction(
+    data: Annotated[ClosedPredictionSchema, Body()],
+    current_user: dict = Depends(check_authorization),
+    db: Session = Depends(get_db),
+):
+    return predictions_repository.update_prediction(db, data.adid)
+
+
 @router.post("/predict", response_model=PredictionResponse)
 async def predict(
     features: PredictionFeatures,
@@ -66,12 +79,16 @@ async def predict(
         False, description="Inclure les valeurs SHAP pour l'explicabilité"
     ),
     current_user: dict = Depends(check_authorization),
+    db: Session = Depends(get_db),
 ) -> PredictionResponse:
     """
     Prédit la durée d'hospitalisation à partir des features médicales.
 
-    ⚠️ **RGPD**: Les données médicales (features) ne sont PAS stockées.
-    Elles sont traitées uniquement en mémoire pendant la prédiction.
+    ⚠️ **RGPD**: Les données médicales (features) sont stockées de manière pseudonymisées
+    et provisoire (le temps de l'admission). Une fois la date de sortie (véritable) du patient
+    est connue, l'enregistrement est mis à jour, les dates et la référence hashée du patient
+    sont supprimées pour enregistrer la durée du séjour en lieu et place.
+
 
     Args:
         features: Les 22 features médicales du patient
@@ -123,6 +140,13 @@ async def predict(
             except Exception:
                 # SHAP calculation failed, return prediction without SHAP values
                 shap_values = None
+
+        features.id_prediction = prediction_id
+        features.prediction = predicted_value
+
+        result = predictions_repository.create_prediction(db=db, features=features)
+
+        print(result["message"])
 
         return PredictionResponse(
             prediction_id=prediction_id,

@@ -1,13 +1,14 @@
 # Import des modules nécessaires
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Request, File, Form, UploadFile
+from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
+
+from app.dependancies.auth import get_current_user, get_dynamic_permissions
 
 # Import des dépendances et services
 from app.dependancies.httpx_client import get_http_client
-from app.services.patients import get_patients_service
 from app.schemas.user import User
-from app.dependancies.auth import get_current_user, get_dynamic_permissions
+from app.services.patients import get_patients_service
 
 # Configuration du routeur pour les patients
 router = APIRouter(
@@ -54,6 +55,24 @@ async def read_patients(
         path=path,
         internal_token=internal_token,
         client=client,
+        request=request,
+    )
+
+
+# Clôture une admission
+@router.post("/close/{path:path}")
+async def close_admission(
+    request: Request,
+    path: str,
+    internal_token: Annotated[str, Depends(get_dynamic_permissions("put", "ml"))],
+    current_user: Annotated[User, Depends(get_current_user)],
+    patients_service=Depends(get_patients_service),
+):
+    """Clôture une admission"""
+    return await patients_service.close_admission(
+        current_user=current_user,
+        path=path,
+        internal_token=internal_token,
         request=request,
     )
 

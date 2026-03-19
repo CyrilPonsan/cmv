@@ -7,9 +7,12 @@
 
 // Import des dépendances nécessaires
 import type Admission from '@/models/admission'
-import { Fieldset } from 'primevue'
+import { Button, Fieldset } from 'primevue'
 import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 // Props du composant
 const { admission } = defineProps<{ admission: Admission }>()
@@ -31,7 +34,7 @@ const legend = computed(() => {
 
 <template>
   <!-- Conteneur principal utilisant le composant Fieldset avec la légende calculée -->
-  <Fieldset class="text-xs" :legend="legend">
+  <Fieldset class="text-xs relative" :legend="legend">
     <!-- Grille pour l'affichage des informations -->
     <div class="grid grid-cols-4 gap-4 text-xs">
       <!-- Colonne des libellés -->
@@ -49,6 +52,16 @@ const legend = computed(() => {
         <span>{{ d(admission.entree_le, 'short') }}</span>
         <span v-if="admission.sortie_prevue_le">{{ d(admission.sortie_prevue_le, 'short') }}</span>
         <span v-if="admission.sorti_le">{{ d(admission.sorti_le, 'short') }}</span>
+        <div class="absolute bottom-1 right-1">
+          <Button
+            label="Modifier"
+            icon="pi pi-pencil"
+            severity="primary"
+            text
+            rounded
+            @click="router.push(`/admissions/update/${admission.id_admission}`)"
+          />
+        </div>
       </div>
     </div>
   </Fieldset>

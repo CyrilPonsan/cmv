@@ -1,27 +1,51 @@
 # Import des dépendances FastAPI pour la gestion des erreurs HTTP
-from fastapi import HTTPException, status
-
 # Import du client HTTP asynchrone
 import httpx
+from fastapi import HTTPException, status
 
 # Import de la session SQLAlchemy pour interagir avec la base de données
 from sqlalchemy.orm import Session
 
-# Import de la configuration du service des chambres
-from app.utils.config import CHAMBRES_SERVICE
+from app.repositories.admissions_crud import PgAdmissionsRepository
+
+# Import du schéma Pydantic pour la création d'une admission
+from app.schemas.patients import CloseAdmission, CreateAdmission
 
 # Import des modèles SQLAlchemy pour les admissions et patients
 from app.sql.models import Admission, Patient
 
-# Import du schéma Pydantic pour la création d'une admission
-from app.schemas.patients import CreateAdmission
+# Import de la configuration du service des chambres
+from app.utils.config import CHAMBRES_SERVICE
+
+
+def get_admissions_repository():
+    return PgAdmissionsRepository()
+
+
+def get_admissions_service():
+    return AdmissionService(get_admissions_repository())
 
 
 class AdmissionService:
-    def __init__(self, db: Session):
-        self.db = db
+    admissions_repository: PgAdmissionsRepository
 
-    async def create_admission(self, data: CreateAdmission):
+    def __init__(self, admissions_repository: PgAdmissionsRepository):
+        self.admissions_repository = admissions_repository
+
+    async def close_admission(
+        self, db: Session, admission_id: int, data: CloseAdmission
+    ):
+        admission = await self.admissions_repository.get_admission_by_id(
+            db, admission_id
+        )
+        if admission:
+            admission.sorti_le = data.sorti_le
+            await self.admissions_repository.update_admission(db, admission)
+
+    async def get_admission(self, db: Session, admission_id: int) -> Admission:
+        return await self.admissions_repository.get_admission_by_id(db, admission_id)
+
+    async def create_admission(self, db: Session, data: CreateAdmission):
         async with httpx.AsyncClient() as client:
             try:
                 # Etape 1 : Si non ambulatoire, réserve une chambre

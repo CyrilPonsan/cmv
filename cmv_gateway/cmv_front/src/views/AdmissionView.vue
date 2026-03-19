@@ -9,26 +9,31 @@
 import PageHeader from '@/components/PageHeader.vue'
 import useHttp from '@/composables/useHttp'
 import type Admission from '@/models/admission'
-import { Button, Checkbox, DatePicker, Message, Select, Slider, InputNumber, useToast } from 'primevue'
+import type Service from '@/models/service'
+import { useServiceStore } from '@/stores/service'
+import {
+  Button,
+  Checkbox,
+  DatePicker,
+  Message,
+  Select,
+  Slider,
+  InputNumber,
+  useToast
+} from 'primevue'
 import { Field, Form } from 'vee-validate'
 import { onBeforeMount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-type ServicesList = {
-  id_service: number
-  nom: string
-}
-
 // Initialisation des composables
 const { sendRequest, isLoading, error } = useHttp()
 const toast = useToast()
+const { servicesList, servicesOptions, getServicesList } = useServiceStore()
 
 const entreeLe = ref(new Date())
 const sortiePrevueLe = ref(new Date())
 const ambulatoire = ref<string>('Ambulatoire')
 const options = ref(['Ambulatoire', 'Non ambulatoire'])
-const servicesOptions = ref<string[]>([])
-const servicesList = ref<ServicesList[]>([])
 const service = ref<string>()
 const predictionResult = ref<number | null>(null)
 
@@ -55,7 +60,7 @@ const postAdmission = () => {
         ambulatoire: ambulatoire.value === 'Ambulatoire',
         entree_le: entreeLe.value,
         sortie_prevue_le: sortiePrevueLe.value,
-        service_id: servicesList.value.find((item) => item.nom === service.value)?.id_service
+        service_id: servicesList!.find((item) => item.nom === service.value)?.id_service
       }
     },
     applyData
@@ -72,20 +77,6 @@ watch(error, (newError) => {
     })
   }
 })
-
-const getServicesList = () => {
-  const applyData = (data: ServicesList[]) => {
-    servicesList.value = data
-    servicesOptions.value = data.map((service) => service.nom)
-  }
-  sendRequest<ServicesList[]>(
-    {
-      path: '/chambres/services/simple',
-      method: 'GET'
-    },
-    applyData
-  )
-}
 
 // Récupération des paramètres de la route
 const route = useRoute()
@@ -144,14 +135,16 @@ const postPrediction = () => {
   // deviennent 'null' pour que XGBoost utilise sa branche par défaut pour les NaN.
   // Exception : rcount et secondarydiagnosisnonicd9 peuvent rester à 0.
   const cleanData = Object.fromEntries(
-    Object.entries(propsFeatures.value).map(([key, v]) => {
-      // Si la clé est une variable continue et la valeur est 0, on met null
-      const isContinuous = continuousFeatures.value.some((f) => f.id === key)
-      if (isContinuous && v === 0) {
-        return [key, null]
-      }
-      return [key, v]
-    }).filter(([_, v]) => v !== undefined) // On garde null mais on vire undefined au cas où
+    Object.entries(propsFeatures.value)
+      .map(([key, v]) => {
+        // Si la clé est une variable continue et la valeur est 0, on met null
+        const isContinuous = continuousFeatures.value.some((f) => f.id === key)
+        if (isContinuous && v === 0) {
+          return [key, null]
+        }
+        return [key, v]
+      })
+      .filter(([_, v]) => v !== undefined) // On garde null mais on vire undefined au cas où
   )
 
   const applyData = (data: PredictionResponse) => {
@@ -164,8 +157,12 @@ const postPrediction = () => {
       life: 3000
     })
   }
+
+  // Ajout de l'ID du patient dans le payload pour traitement côté Gateway
+  const payload = { ...cleanData, adid: patientId }
+
   sendRequest<PredictionResponse>(
-    { path: '/ml/predictions/predict', method: 'POST', body: cleanData },
+    { path: '/ml/predictions/predict', method: 'POST', body: payload },
     applyData
   )
 }
@@ -179,11 +176,14 @@ const formTopRef = ref<any>(null)
 const applyPrediction = () => {
   if (predictionResult.value) {
     // 1. Mettre à jour la date de sortie
-    sortiePrevueLe.value = new Date(entreeLe.value.getTime() + predictionResult.value * 24 * 60 * 60 * 1000)
+    sortiePrevueLe.value = new Date(
+      entreeLe.value.getTime() + predictionResult.value * 24 * 60 * 60 * 1000
+    )
     // 2. Basculer sur 'Non ambulatoire' (puisqu'il y a un séjour calculé)
     ambulatoire.value = 'Non ambulatoire'
     // 3. Scroller de manière douce vers le haut du formulaire
-    if (formTopRef.value) {console.log("bingo", formTopRef.value)
+    if (formTopRef.value) {
+      console.log('bingo', formTopRef.value)
       if (formTopRef.value.$el) {
         formTopRef.value.$el.scrollIntoView({ behavior: 'smooth', block: 'start' })
       } else {
@@ -298,17 +298,24 @@ onBeforeMount(() => {
       </span>
     </Form>
 
-    <div class="w-full lg:w-[60rem] mt-8 bg-surface-50 dark:bg-surface-900 p-6 rounded-lg border border-surface-200 dark:border-surface-700">
+    <div
+      class="w-full lg:w-[60rem] mt-8 bg-surface-50 dark:bg-surface-900 p-6 rounded-lg border border-surface-200 dark:border-surface-700"
+    >
       <h3 class="text-lg font-bold mb-4">Outil d'Aide à la Décision (IA)</h3>
-      <p class="text-xs text-surface-500 mb-6">Prédiction de la durée du séjour basée sur le dossier du patient</p>
-      
+      <p class="text-xs text-surface-500 mb-6">
+        Prédiction de la durée du séjour basée sur le dossier du patient
+      </p>
+
       <Form class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
-        
         <!-- Colonne 1 : Antécédents (Booléens) -->
         <div class="flex flex-col gap-y-4 w-full">
           <h4 class="font-semibold text-primary">Antécédents / Pathologies</h4>
           <div class="grid grid-cols-2 gap-3">
-            <div v-for="feature in booleanFeatures" :key="feature" class="flex items-center gap-x-2">
+            <div
+              v-for="feature in booleanFeatures"
+              :key="feature"
+              class="flex items-center gap-x-2"
+            >
               <Checkbox
                 :name="feature"
                 :inputId="feature"
@@ -318,7 +325,13 @@ onBeforeMount(() => {
                 :falseValue="0"
               />
               <label :for="feature" class="cursor-pointer capitalize text-xs">
-                 {{ feature === 'dialysisrenalendstage' ? 'Dialysis' : feature === 'psychologicaldisordermajor' ? 'Psychol. Disorder' : feature }}
+                {{
+                  feature === 'dialysisrenalendstage'
+                    ? 'Dialysis'
+                    : feature === 'psychologicaldisordermajor'
+                      ? 'Psychol. Disorder'
+                      : feature
+                }}
               </label>
             </div>
           </div>
@@ -327,9 +340,15 @@ onBeforeMount(() => {
           <div class="flex flex-col gap-x-4">
             <div class="flex flex-col gap-y-2 flex-1">
               <label for="rcount" class="text-xs">Nombre de visites prec.</label>
-              <InputNumber v-model="propsFeatures['rcount']" inputId="rcount" :min="0" :max="50" class="w-full" showButtons />
+              <InputNumber
+                v-model="propsFeatures['rcount']"
+                inputId="rcount"
+                :min="0"
+                :max="50"
+                class="w-full"
+                showButtons
+              />
             </div>
-
           </div>
         </div>
 
@@ -340,17 +359,35 @@ onBeforeMount(() => {
             <div v-for="cf in continuousFeatures" :key="cf.id" class="flex flex-col gap-y-4">
               <div class="flex justify-between max-w-72 items-center text-xs">
                 <label :for="cf.id" class="font-medium">{{ cf.label }}</label>
-           
-                <InputNumber v-model="propsFeatures[cf.id]" :inputId="cf.id" :min="cf.min" :max="cf.max" :step="cf.step" class="max-w-8" inputClass="!text-right !text-xs !p-1" :minFractionDigits="cf.step < 1 ? 1 : 0" />
+
+                <InputNumber
+                  v-model="propsFeatures[cf.id]"
+                  :inputId="cf.id"
+                  :min="cf.min"
+                  :max="cf.max"
+                  :step="cf.step"
+                  class="max-w-8"
+                  inputClass="!text-right !text-xs !p-1"
+                  :minFractionDigits="cf.step < 1 ? 1 : 0"
+                />
               </div>
-              <Slider :modelValue="propsFeatures[cf.id] as number" @update:modelValue="propsFeatures[cf.id] = $event as number" :min="cf.min" :max="cf.max" :step="cf.step" class="w-full" />
+              <Slider
+                :modelValue="propsFeatures[cf.id] as number"
+                @update:modelValue="propsFeatures[cf.id] = $event as number"
+                :min="cf.min"
+                :max="cf.max"
+                :step="cf.step"
+                class="w-full"
+              />
             </div>
           </div>
         </div>
       </Form>
 
       <!-- Actions de la prédiction -->
-      <div class="flex items-center justify-between mt-8 border-t border-surface-200 dark:border-surface-700 pt-6">
+      <div
+        class="flex items-center justify-between mt-8 border-t border-surface-200 dark:border-surface-700 pt-6"
+      >
         <Button
           label="Estimer la durée du séjour"
           @click="postPrediction"
@@ -360,7 +397,10 @@ onBeforeMount(() => {
           class="w-64"
         />
 
-        <div v-if="predictionResult" class="flex items-center gap-x-6 bg-primary-50 dark:bg-primary-900/40 p-3 rounded-lg border border-primary-200 dark:border-primary-800">
+        <div
+          v-if="predictionResult"
+          class="flex items-center gap-x-6 bg-primary-50 dark:bg-primary-900/40 p-3 rounded-lg border border-primary-200 dark:border-primary-800"
+        >
           <div class="flex flex-col">
             <span class="text-xs text-surface-500">Durée estimée</span>
             <span class="text-2xl font-bold text-primary">{{ predictionResult }} jours</span>

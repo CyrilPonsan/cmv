@@ -1,10 +1,10 @@
-from datetime import datetime
 import re
+from datetime import datetime
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-from app.sql.models import Civilite, DocumentType
 from app.schemas.schemas import SuccessWithMessage
+from app.sql.models import Civilite, DocumentType
 
 from .regular_expression import generic_pattern
 
@@ -195,3 +195,7 @@ class PostPatientResponse(SuccessWithMessage):
 class PutPatientResponse(SuccessWithMessage):
     # Identifiant unique du patient
     id_patient: int
+
+
+class CloseAdmission(BaseModel):
+    sorti_le: datetime
