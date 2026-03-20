@@ -10,8 +10,12 @@ pipeline {
         IMAGE_CHAMBRES = "firizgoude/cmv_chambres"
         IMAGE_CHAMBRES_TAG = "chambres-${env.BUILD_NUMBER}"
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
-        EC2_SERVER = credentials("ec2-host")
-        EC2_USER = credentials("ec2-username")
+        // Gateway (bastion) pour le rebond SSH
+        GATEWAY_HOST = credentials("ec2-gateway-host")
+        GATEWAY_USER = credentials("ec2-gateway-username")
+        // Instance privée chambres
+        CHAMBRES_HOST = credentials("ec2-chambres-host")
+        CHAMBRES_USER = credentials("ec2-chambres-username")
         SSH_CREDENTIALS = credentials('cmv-ssh-key')
         PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin" 
     }
@@ -48,12 +52,14 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 script {
-                    sshagent(credentials: ['cmv-ssh-key']) {
+                    sshagent(credentials: ['cdk-key']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no \
                                 -o UserKnownHostsFile=/dev/null \
                                 -o LogLevel=ERROR \
-                                ${EC2_USER}@${EC2_SERVER} << 'EOF'
+                                -A \
+                                -J ${GATEWAY_USER}@${GATEWAY_HOST} \
+                                ${CHAMBRES_USER}@${CHAMBRES_HOST} << 'EOF'
                             
 # Login DockerHub sur l'EC2
 echo "${DOCKERHUB_CREDENTIALS_PSW}" | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
