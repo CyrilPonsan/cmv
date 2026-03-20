@@ -126,7 +126,7 @@
   - **Property 19: Database access control**
   - **Validates: Requirements 5.5**
 
-- [-] 8. Add credential security and output management
+- [x] 8. Add credential security and output management
   - Implement secure credential handling
   - Prevent admin credentials from appearing in outputs
   - Create stack outputs for connection details
@@ -137,35 +137,35 @@
   - **Property 13: Credential exposure prevention**
   - **Validates: Requirements 3.4**
 
-- [ ] 9. Create service configuration array and environment setup
+- [x] 9. Create service configuration array and environment setup
   - Define default service configurations for CMV application
   - Create environment variable template
   - Add configuration for gateway, patients, and chambres services
   - Set up Docker image references and port mappings
   - _Requirements: 1.1, 1.4_
 
-- [ ] 10. Implement deployment scripts and documentation
+- [x] 10. Implement deployment scripts and documentation
   - Create deployment script (deploy.sh)
   - Add environment variable setup instructions
   - Create README with usage examples
   - Add troubleshooting guide
   - _Requirements: 4.4, 4.5_
 
-- [ ] 11. Checkpoint - Ensure all tests pass
+- [x] 11. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 12. Create integration test suite
+- [x] 12. Create integration test suite
   - Set up test AWS environment configuration
   - Create end-to-end deployment test
   - Verify actual EC2 instances and database connectivity
   - Test security group rules in practice
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-- [ ]* 12.1 Write integration tests for network security
+- [x] 12.1 Write integration tests for network security
   - Test actual network connectivity between instances
   - Verify database access restrictions
   - Validate SSH key-based authentication
   - _Requirements: 5.1, 5.2, 5.4_
 
-- [ ] 13. Final checkpoint - Complete system validation
+- [x] 13. Final checkpoint - Complete system validation
   - Ensure all tests pass, ask the user if questions arise.

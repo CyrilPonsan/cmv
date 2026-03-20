@@ -362,7 +362,7 @@ describe('ServiceInstance Construct', () => {
     keyPair = stack.getKeyPair();
   });
 
-  test('creates EC2 instance with t2.micro instance type', () => {
+  test('creates EC2 instance with t3.micro instance type', () => {
     const serviceConfig: ServiceConfig = {
       name: 'test-service',
       hasDatabase: false,

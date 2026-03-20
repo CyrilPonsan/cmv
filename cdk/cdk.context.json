@@ -1,0 +1,23 @@
+{
+  "availability-zones:account=817135864581:region=us-east-1": [
+    "us-east-1a",
+    "us-east-1b",
+    "us-east-1c",
+    "us-east-1d",
+    "us-east-1e",
+    "us-east-1f"
+  ],
+  "ami:account=817135864581:filters.architecture.0=x86_64:filters.image-type.0=machine:filters.name.0=debian-12-amd64-*:filters.root-device-type.0=ebs:filters.state.0=available:filters.virtualization-type.0=hvm:owners.0=136693071363:region=us-east-1": "ami-09f28a87e74de5c5a",
+  "availability-zones:account=817135864581:region=eu-west-1": [
+    "eu-west-1a",
+    "eu-west-1b",
+    "eu-west-1c"
+  ],
+  "ami:account=817135864581:filters.architecture.0=x86_64:filters.image-type.0=machine:filters.name.0=debian-12-amd64-*:filters.root-device-type.0=ebs:filters.state.0=available:filters.virtualization-type.0=hvm:owners.0=136693071363:region=eu-west-1": "ami-08919f9401fc52bc9",
+  "availability-zones:account=817135864581:region=eu-north-1": [
+    "eu-north-1a",
+    "eu-north-1b",
+    "eu-north-1c"
+  ],
+  "ami:account=817135864581:filters.architecture.0=x86_64:filters.image-type.0=machine:filters.name.0=debian-12-amd64-*:filters.root-device-type.0=ebs:filters.state.0=available:filters.virtualization-type.0=hvm:owners.0=136693071363:region=eu-north-1": "ami-04eb84f6b6a3ebabe"
+}

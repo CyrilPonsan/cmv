@@ -11,8 +11,8 @@ export { ServiceInstance, ServiceInstanceProps } from './service-instance';
 // Export PostgreSQLSetup construct
 export { PostgreSQLSetup } from './postgresql-setup';
 
-// Export new security-related classes and functions
-export { CredentialSecurityError, validateCredentialSecurity, sanitizeConnectionString, createSecureDatabaseConfig };
+// Note: Security-related classes and functions (CredentialSecurityError, validateCredentialSecurity, 
+// sanitizeConnectionString, createSecureDatabaseConfig) are exported where they are defined below
 
 // Service Configuration Interface
 export interface ServiceConfig {
@@ -449,7 +449,7 @@ export class CmvInfrastructureStack extends cdk.Stack {
     // Get secure credentials if available
     const adminSecret = this.databaseSecrets.get('admin');
     const crudSecret = this.databaseSecrets.get('crud');
-    const useSecureCredentials = this.credentialSecurityConfig.useSecretsManager && adminSecret && crudSecret;
+    const useSecureCredentials = !!(this.credentialSecurityConfig.useSecretsManager && adminSecret && crudSecret);
 
     // Create service instance
     const serviceInstance = new ServiceInstance(this, constructId, {
@@ -772,6 +772,7 @@ export class CmvInfrastructureStack extends cdk.Stack {
       ipProtocol: ec2.IpProtocol.IPV4_ONLY,
       maxAzs: 2, // Use 2 availability zones for high availability
       ipAddresses: ec2.IpAddresses.cidr('10.0.0.0/16'),
+      restrictDefaultSecurityGroup: false, // Disable custom resource Lambda that can fail on bootstrap
       subnetConfiguration: [
         {
           cidrMask: 24,

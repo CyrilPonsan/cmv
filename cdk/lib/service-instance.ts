@@ -96,7 +96,13 @@ export class ServiceInstance extends Construct {
     }
 
     // Generate user data script
-    const userData = this.generateUserDataScript(props.serviceConfig, props.databaseConfig);
+    const userData = this.generateUserDataScript(
+      props.serviceConfig, 
+      props.databaseConfig,
+      props.useSecureCredentials,
+      props.adminSecret,
+      props.crudSecret
+    );
 
     // Determine subnet - use private subnet for non-public services, public for gateway
     const subnet = props.subnet || (props.serviceConfig.publicAccess 
@@ -105,7 +111,7 @@ export class ServiceInstance extends Construct {
 
     // Create EC2 instance
     this.instance = new ec2.Instance(this, 'Instance', {
-      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T2, ec2.InstanceSize.MICRO),
+      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MICRO),
       machineImage: debianAmi,
       vpc: props.vpc,
       vpcSubnets: {
@@ -171,7 +177,13 @@ export class ServiceInstance extends Construct {
     });
   }
 
-  private generateUserDataScript(serviceConfig: ServiceConfig, databaseConfig?: DatabaseConfig): ec2.UserData {
+  private generateUserDataScript(
+    serviceConfig: ServiceConfig, 
+    databaseConfig?: DatabaseConfig,
+    useSecureCredentials?: boolean,
+    adminSecret?: secretsmanager.Secret,
+    crudSecret?: secretsmanager.Secret
+  ): ec2.UserData {
     const userData = ec2.UserData.forLinux();
 
     // Base system setup
@@ -196,8 +208,8 @@ export class ServiceInstance extends Construct {
       'systemctl enable docker',
       'systemctl start docker',
       '',
-      '# Add debian user to docker group',
-      'usermod -aG docker debian',
+      '# Add admin user to docker group',
+      'usermod -aG docker admin',
       ''
     );
 
@@ -206,9 +218,9 @@ export class ServiceInstance extends Construct {
       const postgresSetup = new PostgreSQLSetup(this, 'PostgreSQLSetup', {
         databaseConfig: databaseConfig,
         userData: userData,
-        useSecureCredentials: props.useSecureCredentials,
-        adminSecret: props.adminSecret,
-        crudSecret: props.crudSecret,
+        useSecureCredentials: useSecureCredentials,
+        adminSecret: adminSecret,
+        crudSecret: crudSecret,
       });
     }
 
@@ -244,7 +256,7 @@ export class ServiceInstance extends Construct {
     // Create a simple health check script
     userData.addCommands(
       '# Create health check script',
-      'cat > /home/debian/health-check.sh << EOF',
+      'cat > /home/admin/health-check.sh << EOF',
       '#!/bin/bash',
       '# Health check script for service monitoring',
       'echo "Service: ' + serviceConfig.name + '"',
@@ -253,12 +265,12 @@ export class ServiceInstance extends Construct {
       serviceConfig.hasDatabase ? 'echo "PostgreSQL: $(systemctl is-active postgresql)"' : '',
       'EOF',
       '',
-      'chmod +x /home/debian/health-check.sh',
-      'chown debian:debian /home/debian/health-check.sh',
+      'chmod +x /home/admin/health-check.sh',
+      'chown admin:admin /home/admin/health-check.sh',
       '',
       '# Create service startup completion marker',
-      'touch /home/debian/service-ready',
-      'chown debian:debian /home/debian/service-ready',
+      'touch /home/admin/service-ready',
+      'chown admin:admin /home/admin/service-ready',
       '',
       '# Log completion',
       `echo "$(date): ${serviceConfig.name} service setup completed" >> /var/log/service-setup.log`

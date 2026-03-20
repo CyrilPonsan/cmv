@@ -27,8 +27,9 @@
     "typescript": "~5.9.3"
   },
   "dependencies": {
-    "@aws-cdk/assertions": "^1.203.0",
-    "aws-cdk-lib": "^2.234.1",
-    "constructs": "^10.0.0"
+    "@aws-cdk/cloud-assembly-schema": "^53.6.0",
+    "aws-cdk-lib": "^2.244.0",
+    "constructs": "^10.0.0",
+    "dotenv": "^17.3.1"
   }
 }
