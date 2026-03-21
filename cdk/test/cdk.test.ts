@@ -380,9 +380,9 @@ describe('ServiceInstance Construct', () => {
 
     const template = Template.fromStack(stack);
     
-    // Verify EC2 instance is created with t2.micro
+    // Verify EC2 instance is created with t3.micro
     template.hasResourceProperties('AWS::EC2::Instance', {
-      InstanceType: 't2.micro'
+      InstanceType: 't3.micro'
     });
 
     expect(serviceInstance.instance).toBeDefined();
@@ -408,7 +408,7 @@ describe('ServiceInstance Construct', () => {
     
     // Verify instance is created (AMI lookup is handled by CDK)
     template.hasResourceProperties('AWS::EC2::Instance', {
-      InstanceType: 't2.micro'
+      InstanceType: 't3.micro'
     });
   });
 
@@ -478,14 +478,14 @@ describe('ServiceInstance Construct', () => {
 
   test('generates user data script with Docker setup', () => {
     const serviceConfig: ServiceConfig = {
-      name: 'test-service',
-      hasDatabase: false,
-      ports: [8080],
+      name: 'chambres',
+      hasDatabase: true,
+      ports: [8003],
       publicAccess: false,
-      dockerImage: 'test/image:latest',
+      dockerImage: 'firizgoude/cmv_chambres:latest',
       environmentVars: {
-        NODE_ENV: 'production',
-        PORT: '8080'
+        SECRET_KEY: 'test',
+        ALGORITHM: 'HS256'
       }
     };
 
@@ -498,7 +498,7 @@ describe('ServiceInstance Construct', () => {
 
     const template = Template.fromStack(stack);
     
-    // Verify instance has user data containing Docker setup
+    // Verify instance has user data containing Docker setup and docker-compose
     const resources = template.toJSON().Resources;
     const instanceResource = Object.values(resources).find((resource: any) => 
       resource.Type === 'AWS::EC2::Instance'
@@ -506,45 +506,42 @@ describe('ServiceInstance Construct', () => {
     
     expect(instanceResource).toBeDefined();
     expect(instanceResource.Properties.UserData['Fn::Base64']).toContain('docker');
-    expect(instanceResource.Properties.UserData['Fn::Base64']).toContain('test/image:latest');
+    expect(instanceResource.Properties.UserData['Fn::Base64']).toContain('docker-compose.yml');
+    expect(instanceResource.Properties.UserData['Fn::Base64']).toContain('firizgoude/cmv_chambres:latest');
   });
 
-  test('generates user data script with PostgreSQL setup when hasDatabase is true', () => {
+  test('generates user data script with docker-compose for database services', () => {
     const serviceConfig: ServiceConfig = {
-      name: 'database-service',
+      name: 'patients',
       hasDatabase: true,
-      ports: [8080, 5432],
-      publicAccess: false
+      ports: [8002],
+      publicAccess: false,
+      dockerImage: 'firizgoude/cmv_patients:latest'
     };
 
-    const databaseConfig: DatabaseConfig = {
-      adminUsername: 'admin_user',
-      adminPassword: 'securepassword123',
-      crudUsername: 'crud_user',
-      crudPassword: 'anotherpassword456',
-      databaseName: 'test_db'
-    };
-
-    new ServiceInstance(stack, 'DatabaseServiceInstance', {
+    new ServiceInstance(stack, 'TestServiceInstance', {
       vpc,
       securityGroup,
       keyPair,
-      serviceConfig,
-      databaseConfig
+      serviceConfig
     });
 
     const template = Template.fromStack(stack);
     
-    // Verify instance is created with user data containing PostgreSQL setup
+    // Verify instance has user data containing docker-compose with postgres
     const resources = template.toJSON().Resources;
     const instanceResource = Object.values(resources).find((resource: any) => 
       resource.Type === 'AWS::EC2::Instance'
     ) as any;
     
     expect(instanceResource).toBeDefined();
-    expect(instanceResource.Properties.UserData['Fn::Base64']).toContain('postgresql');
-    expect(instanceResource.Properties.UserData['Fn::Base64']).toContain('admin_user');
-    expect(instanceResource.Properties.UserData['Fn::Base64']).toContain('crud_user');
+    const userData = instanceResource.Properties.UserData['Fn::Base64'];
+    expect(userData).toContain('docker-compose.yml');
+    expect(userData).toContain('postgres:latest');
+    expect(userData).toContain('DB_CRUD_USERNAME');
+    expect(userData).toContain('.env');
+    // Docker-compose should NOT be executed
+    expect(userData).not.toContain('docker compose up');
   });
 
   test('creates stack outputs for instance details', () => {

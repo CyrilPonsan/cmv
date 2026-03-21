@@ -195,22 +195,25 @@ describe('Integration: Full CMV Stack Deployment', () => {
   // ─── Database connectivity setup verification ─────────────────────
 
   describe('Database connectivity setup', () => {
-    test('all three services should have PostgreSQL setup in user data', () => {
+    test('all three services should have PostgreSQL in docker-compose', () => {
       const instances = template.findResources('AWS::EC2::Instance');
 
       Object.values(instances).forEach((inst: any) => {
         const userData = extractUserDataString(inst);
-        expect(userData).toContain('postgresql');
+        // Docker-compose files contain postgres:latest for each service
+        expect(userData).toContain('postgres');
+        expect(userData).toContain('docker-compose.yml');
       });
     });
 
-    test('user data should contain database credential retrieval from Secrets Manager', () => {
+    test('user data should contain .env with database credentials', () => {
       const instances = template.findResources('AWS::EC2::Instance');
 
       Object.values(instances).forEach((inst: any) => {
         const userData = extractUserDataString(inst);
-        // When secure credentials are enabled, user data fetches from Secrets Manager
-        expect(userData).toContain('secretsmanager');
+        // .env file is written with DB credentials
+        expect(userData).toContain('DB_CRUD_USERNAME');
+        expect(userData).toContain('.env');
       });
     });
 
@@ -671,11 +674,11 @@ describe('Integration: Network Security Verification', () => {
       });
     });
 
-    test('database instances have PostgreSQL setup in user data but no public-facing rules for 5432', () => {
+    test('database instances have docker-compose with postgres but no public-facing rules for 5432', () => {
       const instances = template.findResources('AWS::EC2::Instance');
       const securityGroups = template.findResources('AWS::EC2::SecurityGroup');
 
-      // Verify all instances with HasDatabase=true tag contain postgresql setup
+      // Verify all instances with HasDatabase=true tag contain postgres in docker-compose
       Object.values(instances).forEach((inst: any) => {
         const tags: { Key: string; Value: string }[] = inst.Properties.Tags || [];
         const hasDbTag = tags.find(
@@ -683,7 +686,7 @@ describe('Integration: Network Security Verification', () => {
         );
         if (hasDbTag) {
           const userData = extractUserDataString(inst);
-          expect(userData).toContain('postgresql');
+          expect(userData).toContain('postgres');
         }
       });
 

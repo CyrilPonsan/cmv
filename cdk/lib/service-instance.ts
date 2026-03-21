@@ -4,7 +4,7 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import { ServiceConfig, DatabaseConfig } from './cmv-infrastructure-stack';
-import { PostgreSQLSetup } from './postgresql-setup';
+
 
 export interface ServiceInstanceProps {
   vpc: ec2.Vpc;
@@ -121,7 +121,7 @@ export class ServiceInstance extends Construct {
       keyPair: props.keyPair,
       role: instanceRole,
       userData: userData,
-      userDataCausesReplacement: true,
+      userDataCausesReplacement: false,
       detailedMonitoring: false, // Cost optimization
       blockDevices: [
         {
@@ -335,46 +335,18 @@ export class ServiceInstance extends Construct {
       );
     }
 
-    // Docker service setup
-    if (serviceConfig.dockerImage) {
-      // Build environment variables string
-      let envVarsString = '';
-      if (serviceConfig.environmentVars) {
-        const envVars = Object.entries(serviceConfig.environmentVars)
-          .map(([key, value]) => `-e ${key}="${value}"`)
-          .join(' ');
-        envVarsString = envVars;
-      }
-
-      // Build port mappings string
-      const portMappings = serviceConfig.ports
-        .map(port => `-p ${port}:${port}`)
-        .join(' ');
-
-      userData.addCommands(
-        `# Pull Docker image: ${serviceConfig.dockerImage}`,
-        `docker pull ${serviceConfig.dockerImage}`,
-        '',
-        `# Run ${serviceConfig.name} service container`,
-        `docker run -d --name ${serviceConfig.name} --restart unless-stopped \\`,
-        `  ${portMappings} \\`,
-        `  ${envVarsString} \\`,
-        `  ${serviceConfig.dockerImage}`,
-        ''
-      );
-    }
+    // Write docker-compose.yml and .env for the service (NOT executed - Jenkins handles that)
+    this.writeDockerComposeFiles(userData, serviceConfig);
 
     // Create a simple health check script
     userData.addCommands(
       '# Create health check script',
-      'cat > /home/admin/health-check.sh << EOF',
+      'cat > /home/admin/health-check.sh << \'HEALTHEOF\'',
       '#!/bin/bash',
-      '# Health check script for service monitoring',
       'echo "Service: ' + serviceConfig.name + '"',
-      'echo "Status: $(systemctl is-active docker)"',
-      'echo "Container: $(docker ps --filter name=' + serviceConfig.name + ' --format "table {{.Names}}\\t{{.Status}}")"',
-      serviceConfig.hasDatabase ? 'echo "PostgreSQL: $(docker ps --filter name=postgres --format \\"table {{.Names}}\\\\t{{.Status}}\\")"' : '',
-      'EOF',
+      'echo "Docker: $(systemctl is-active docker)"',
+      'echo "Containers: $(docker ps --format \\"table {{.Names}}\\t{{.Status}}\\" 2>/dev/null || echo none)"',
+      'HEALTHEOF',
       '',
       'chmod +x /home/admin/health-check.sh',
       'chown admin:admin /home/admin/health-check.sh',
@@ -388,6 +360,246 @@ export class ServiceInstance extends Construct {
     );
 
     return userData;
+  }
+
+  /**
+   * Writes the appropriate docker-compose.yml and .env to /home/admin/ on the instance.
+   * Files are written but NOT executed — Jenkins handles docker compose up.
+   */
+  private writeDockerComposeFiles(userData: ec2.UserData, serviceConfig: ServiceConfig): void {
+    const name = serviceConfig.name;
+
+    // --- Compose content per service ---
+    const composeContent: Record<string, string> = {
+      gateway: [
+        'networks:',
+        '  cmv:',
+        '    driver: bridge',
+        '',
+        'volumes:',
+        '  db_gateway:',
+        '    driver: local',
+        '  logs:',
+        '    driver: local',
+        '',
+        'services:',
+        '  redis:',
+        '    image: valkey/valkey:latest',
+        '    restart: always',
+        '    container_name: redis-server',
+        '    networks:',
+        '      - cmv',
+        '    ports:',
+        '      - "6379:6379"',
+        '',
+        '  db_gateway:',
+        '    image: postgres:latest',
+        '    restart: always',
+        '    container_name: db_gateway',
+        '    volumes:',
+        '      - db_gateway:/var/lib/postgresql/data',
+        '    networks:',
+        '      - cmv',
+        '    ports:',
+        '      - "6001:5432"',
+        '    environment:',
+        '      POSTGRES_USER: ${DB_CRUD_USERNAME}',
+        '      POSTGRES_PASSWORD: ${DB_CRUD_PASSWORD}',
+        '      POSTGRES_DB: ${GATEWAY_POSTGRES_DB}',
+        '',
+        '  api_gateway:',
+        '    image: firizgoude/cmv_gateway:latest',
+        '    pull_policy: always',
+        '    restart: always',
+        '    networks:',
+        '      - cmv',
+        '    volumes:',
+        '      - logs:/app/app/logs',
+        '    container_name: cmv_gateway',
+        '    ports:',
+        '      - "8001:8000"',
+        '    command: >',
+        "      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'",
+        '    depends_on:',
+        '      - db_gateway',
+        '      - redis',
+        '    environment:',
+        '      DATABASE_URL: postgresql://${DB_CRUD_USERNAME}:${DB_CRUD_PASSWORD}@db_gateway:5432/${GATEWAY_POSTGRES_DB}',
+        '      SECRET_KEY: ${SECRET_KEY}',
+        '      ALGORITHM: ${ALGORITHM}',
+        '      PATIENTS_SERVICE: ${PATIENTS_SERVICE}',
+        '      CHAMBRES_SERVICE: ${CHAMBRES_SERVICE}',
+        '      ACCESS_MAX_AGE: ${ACCESS_MAX_AGE}',
+        '      REFRESH_MAX_AGE: ${REFRESH_MAX_AGE}',
+      ].join('\n'),
+
+      patients: [
+        'networks:',
+        '  cmv:',
+        '    driver: bridge',
+        '',
+        'volumes:',
+        '  db_patients:',
+        '    driver: local',
+        '  logs:',
+        '    driver: local',
+        '',
+        'services:',
+        '  db_patients:',
+        '    image: postgres:latest',
+        '    restart: always',
+        '    container_name: db_patients',
+        '    volumes:',
+        '      - db_patients:/var/lib/postgresql/data',
+        '    networks:',
+        '      - cmv',
+        '    ports:',
+        '      - "6002:5432"',
+        '    environment:',
+        '      POSTGRES_USER: ${DB_CRUD_USERNAME}',
+        '      POSTGRES_PASSWORD: ${DB_CRUD_PASSWORD}',
+        '      POSTGRES_DB: ${PATIENTS_POSTGRES_DB}',
+        '',
+        '  api_patients:',
+        '    image: firizgoude/cmv_patients:latest',
+        '    pull_policy: always',
+        '    restart: always',
+        '    networks:',
+        '      - cmv',
+        '    volumes:',
+        '      - logs:/code/app/logs',
+        '    container_name: cmv_patients',
+        '    ports:',
+        '      - "8002:8000"',
+        '    command: >',
+        "      bash -c 'while !</dev/tcp/db_patients/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'",
+        '    depends_on:',
+        '      - db_patients',
+        '    environment:',
+        '      PATIENTS_DATABASE_URL: postgresql://${DB_CRUD_USERNAME}:${DB_CRUD_PASSWORD}@db_patients:5432/${PATIENTS_POSTGRES_DB}',
+        '      SECRET_KEY: ${SECRET_KEY}',
+        '      ALGORITHM: ${ALGORITHM}',
+        '      AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}',
+        '      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}',
+        '      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}',
+        '      AWS_REGION: ${AWS_REGION}',
+      ].join('\n'),
+
+      chambres: [
+        'networks:',
+        '  cmv:',
+        '    driver: bridge',
+        '',
+        'volumes:',
+        '  db_chambres:',
+        '    driver: local',
+        '  logs:',
+        '    driver: local',
+        '',
+        'services:',
+        '  db_chambres:',
+        '    image: postgres:latest',
+        '    restart: always',
+        '    container_name: db_chambres',
+        '    volumes:',
+        '      - db_chambres:/var/lib/postgresql/data',
+        '    networks:',
+        '      - cmv',
+        '    ports:',
+        '      - "6003:5432"',
+        '    environment:',
+        '      POSTGRES_USER: ${DB_CRUD_USERNAME}',
+        '      POSTGRES_PASSWORD: ${DB_CRUD_PASSWORD}',
+        '      POSTGRES_DB: ${CHAMBRES_POSTGRES_DB}',
+        '',
+        '  api_chambres:',
+        '    image: firizgoude/cmv_chambres:latest',
+        '    pull_policy: always',
+        '    restart: always',
+        '    networks:',
+        '      - cmv',
+        '    container_name: cmv_chambres',
+        '    ports:',
+        '      - "8003:8000"',
+        '    command: >',
+        "      bash -c 'while !</dev/tcp/db_chambres/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'",
+        '    depends_on:',
+        '      - db_chambres',
+        '    environment:',
+        '      CHAMBRES_DATABASE_URL: postgresql://${DB_CRUD_USERNAME}:${DB_CRUD_PASSWORD}@db_chambres:5432/${CHAMBRES_POSTGRES_DB}',
+        '      SECRET_KEY: ${SECRET_KEY}',
+        '      ALGORITHM: ${ALGORITHM}',
+      ].join('\n'),
+    };
+
+    // --- .env variables per service ---
+    const envVars: Record<string, Record<string, string>> = {
+      gateway: {
+        DB_CRUD_USERNAME: process.env.DB_CRUD_USERNAME || 'crud_user',
+        DB_CRUD_PASSWORD: process.env.DB_CRUD_PASSWORD || '',
+        GATEWAY_POSTGRES_DB: process.env.GATEWAY_POSTGRES_DB || 'cmv_gateway',
+        SECRET_KEY: process.env.SECRET_KEY || '',
+        ALGORITHM: process.env.ALGORITHM || 'HS256',
+        PATIENTS_SERVICE: process.env.PATIENTS_SERVICE || 'http://localhost:8002/api',
+        CHAMBRES_SERVICE: process.env.CHAMBRES_SERVICE || 'http://localhost:8003/api',
+        ACCESS_MAX_AGE: process.env.ACCESS_MAX_AGE || '30',
+        REFRESH_MAX_AGE: process.env.REFRESH_MAX_AGE || '1440',
+      },
+      patients: {
+        DB_CRUD_USERNAME: process.env.DB_CRUD_USERNAME || 'crud_user',
+        DB_CRUD_PASSWORD: process.env.DB_CRUD_PASSWORD || '',
+        PATIENTS_POSTGRES_DB: process.env.PATIENTS_POSTGRES_DB || 'cmv_patients',
+        SECRET_KEY: process.env.SECRET_KEY || '',
+        ALGORITHM: process.env.ALGORITHM || 'HS256',
+        AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME || '',
+        AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || '',
+        AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || '',
+        AWS_REGION: process.env.AWS_REGION || 'eu-west-1',
+      },
+      chambres: {
+        DB_CRUD_USERNAME: process.env.DB_CRUD_USERNAME || 'crud_user',
+        DB_CRUD_PASSWORD: process.env.DB_CRUD_PASSWORD || '',
+        CHAMBRES_POSTGRES_DB: process.env.CHAMBRES_POSTGRES_DB || 'cmv_chambres',
+        SECRET_KEY: process.env.SECRET_KEY || '',
+        ALGORITHM: process.env.ALGORITHM || 'HS256',
+      },
+    };
+
+    const compose = composeContent[name];
+    const env = envVars[name];
+
+    if (!compose || !env) {
+      userData.addCommands(`# No docker-compose template for service: ${name}`);
+      return;
+    }
+
+    // Write docker-compose.yml (quoted heredoc to prevent variable expansion)
+    userData.addCommands(
+      `# Write docker-compose.yml for ${name} service`,
+      "cat > /home/admin/docker-compose.yml << 'COMPOSEEOF'",
+      compose,
+      'COMPOSEEOF',
+      'chown admin:admin /home/admin/docker-compose.yml',
+      ''
+    );
+
+    // Write .env with actual values from CDK environment
+    const envLines = Object.entries(env)
+      .map(([key, value]) => `${key}=${value}`)
+      .join('\n');
+
+    userData.addCommands(
+      `# Write .env for ${name} service`,
+      "cat > /home/admin/.env << 'ENVEOF'",
+      envLines,
+      'ENVEOF',
+      'chown admin:admin /home/admin/.env',
+      'chmod 600 /home/admin/.env',
+      '',
+      '# Docker-compose files are ready but NOT started.',
+      '# Deployment is handled by Jenkins pipeline.',
+      ''
+    );
   }
 
   private capitalizeFirstLetter(str: string): string {

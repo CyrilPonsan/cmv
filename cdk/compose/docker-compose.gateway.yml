@@ -1,0 +1,59 @@
+networks:
+  cmv:
+    driver: bridge
+
+volumes:
+  db_gateway:
+    driver: local
+  logs:
+    driver: local
+
+services:
+  redis:
+    image: valkey/valkey:latest
+    restart: always
+    container_name: redis-server
+    networks:
+      - cmv
+    ports:
+      - "6379:6379"
+
+  db_gateway:
+    image: postgres:17
+    restart: always
+    container_name: db_gateway
+    volumes:
+      - db_gateway:/var/lib/postgresql/data
+    networks:
+      - cmv
+    ports:
+      - "6001:5432"
+    environment:
+      POSTGRES_USER: ${DB_CRUD_USERNAME}
+      POSTGRES_PASSWORD: ${DB_CRUD_PASSWORD}
+      POSTGRES_DB: ${GATEWAY_POSTGRES_DB}
+
+  api_gateway:
+    image: firizgoude/cmv_gateway:latest
+    pull_policy: always
+    restart: always
+    networks:
+      - cmv
+    volumes:
+      - logs:/app/app/logs
+    container_name: cmv_gateway
+    ports:
+      - "8001:8000"
+    command: >
+      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+    depends_on:
+      - db_gateway
+      - redis
+    environment:
+      DATABASE_URL: postgresql://${DB_CRUD_USERNAME}:${DB_CRUD_PASSWORD}@db_gateway:5432/${GATEWAY_POSTGRES_DB}
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+      PATIENTS_SERVICE: ${PATIENTS_SERVICE}
+      CHAMBRES_SERVICE: ${CHAMBRES_SERVICE}
+      ACCESS_MAX_AGE: ${ACCESS_MAX_AGE}
+      REFRESH_MAX_AGE: ${REFRESH_MAX_AGE}

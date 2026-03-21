@@ -55,9 +55,9 @@ SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLeve
 
 # Service definitions: name, database name, private IP env var
 SERVICES=(
-  "gateway:cmv_gateway"
-  "patients:cmv_patients"
-  "chambres:cmv_chambres"
+  "gateway:cmv_gateway:db_gateway"
+  "patients:cmv_patients:db_patients"
+  "chambres:cmv_chambres:db_chambres"
 )
 
 # --- Resolve IPs from CloudFormation outputs ---
@@ -76,10 +76,13 @@ fi
 
 info "Gateway public IP: ${GATEWAY_PUBLIC_IP}"
 
-# Fetch private IPs for each service
-declare -A SERVICE_IPS
+# Fetch private IPs for each service and store as simple variables
+IP_gateway=""
+IP_patients=""
+IP_chambres=""
+
 for svc_entry in "${SERVICES[@]}"; do
-  svc_name="${svc_entry%%:*}"
+  IFS=':' read -r svc_name db_name container_name <<< "$svc_entry"
   capitalized="$(echo "${svc_name:0:1}" | tr '[:lower:]' '[:upper:]')${svc_name:1}"
   
   ip=$(aws cloudformation describe-stacks \
@@ -92,7 +95,7 @@ for svc_entry in "${SERVICES[@]}"; do
     continue
   fi
   
-  SERVICE_IPS["$svc_name"]="$ip"
+  eval "IP_${svc_name}=${ip}"
   info "${svc_name} private IP: ${ip}"
 done
 
@@ -100,7 +103,8 @@ done
 configure_db_roles() {
   local svc_name="$1"
   local db_name="$2"
-  local target_ip="$3"
+  local container_name="$3"
+  local target_ip="$4"
 
   info "Configuring PostgreSQL roles on ${svc_name} (${target_ip})..."
 
@@ -164,12 +168,12 @@ GRANTSEOF
   # Execute via SSH jump through gateway
   ssh ${SSH_OPTS} -A -J ${GATEWAY_USER}@${GATEWAY_PUBLIC_IP} ${GATEWAY_USER}@${target_ip} << EOF
     # Run SQL commands on the postgres container
-    docker exec -i \$(docker ps -qf "name=postgres" -f "status=running" | head -1) psql -U postgres << 'SQL'
+    docker exec -i ${container_name} psql -U ${DB_CRUD_USERNAME} << 'SQL'
 ${sql_commands}
 SQL
 
     # Run DB-specific grants
-    docker exec -i \$(docker ps -qf "name=postgres" -f "status=running" | head -1) psql -U postgres -d ${db_name} << 'SQL'
+    docker exec -i ${container_name} psql -U ${DB_CRUD_USERNAME} -d ${db_name} << 'SQL'
 ${db_grants}
 SQL
 EOF
@@ -190,15 +194,18 @@ echo ""
 
 ERRORS=0
 for svc_entry in "${SERVICES[@]}"; do
-  svc_name="${svc_entry%%:*}"
-  db_name="${svc_entry##*:}"
+  IFS=':' read -r svc_name db_name container_name <<< "$svc_entry"
   
-  if [ -z "${SERVICE_IPS[$svc_name]:-}" ]; then
+  # Resolve IP from IP_<service> variable
+  ip_var="IP_${svc_name}"
+  target_ip="${!ip_var:-}"
+  
+  if [ -z "$target_ip" ]; then
     warn "Skipping ${svc_name} (no IP resolved)"
     continue
   fi
   
-  configure_db_roles "$svc_name" "$db_name" "${SERVICE_IPS[$svc_name]}" || ((ERRORS++))
+  configure_db_roles "$svc_name" "$db_name" "$container_name" "$target_ip" || ((ERRORS++))
   echo ""
 done
 
