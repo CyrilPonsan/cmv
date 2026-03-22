@@ -10,10 +10,10 @@ pipeline {
         IMAGE_GATEWAY_TAG = "gateway-${env.BUILD_NUMBER}"
         NPM_CACHE_DIR = "tmp/npm-cache"
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
-        EC2_SERVER = credentials("ec2-host")
-        EC2_USER = credentials("ec2-username")
+        EC2_SERVER = credentials("ec2-gateway-host")
+        EC2_USER = credentials("ec2-gateway-username")
         SSH_CREDENTIALS = credentials('cmv-ssh-key')
-        PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin" 
+        PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     }
 
     stages {
@@ -95,7 +95,7 @@ pipeline {
                     """
 
                     // Exécution des commandes sur le serveur EC2
-                    sshagent(credentials: ['cmv-ssh-key']) {
+                    sshagent(credentials: ['cdk-key']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no \
                                 -o UserKnownHostsFile=/dev/null \
