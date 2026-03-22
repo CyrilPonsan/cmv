@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # URL de connexion à la base de données
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("CHAMBRES_DATABASE_URL")
 
 # Clé secrète pour le chiffrement/déchiffrement
 SECRET_KEY = os.getenv("SECRET_KEY")
