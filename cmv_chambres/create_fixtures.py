@@ -12,7 +12,7 @@ load_dotenv()
 
 # Configuration de la base de données
 DATABASE_URL = os.getenv(
-    "CHAMBRES_DATABASE_URL",
+    "MIGRATION_DATABASE_URL",
     "postgresql://postgres:cmv_chambres@localhost:6002/cmv_chambres",
 )
 
