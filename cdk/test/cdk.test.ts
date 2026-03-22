@@ -537,7 +537,7 @@ describe('ServiceInstance Construct', () => {
     expect(instanceResource).toBeDefined();
     const userData = instanceResource.Properties.UserData['Fn::Base64'];
     expect(userData).toContain('docker-compose.yml');
-    expect(userData).toContain('postgres:latest');
+    expect(userData).toContain('postgres:17');
     expect(userData).toContain('DB_CRUD_USERNAME');
     expect(userData).toContain('.env');
     // Docker-compose should NOT be executed

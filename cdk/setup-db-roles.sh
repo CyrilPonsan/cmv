@@ -53,7 +53,7 @@ REGION="${CDK_DEFAULT_REGION:-eu-north-1}"
 GATEWAY_USER="admin"
 SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR"
 
-# Service definitions: name, database name, private IP env var
+# Service definitions: name:database:db_container
 SERVICES=(
   "gateway:cmv_gateway:db_gateway"
   "patients:cmv_patients:db_patients"
@@ -108,72 +108,51 @@ configure_db_roles() {
 
   info "Configuring PostgreSQL roles on ${svc_name} (${target_ip})..."
 
-  # Build the SQL commands
+  # Build the SQL commands — all identifiers are double-quoted for safety
   local sql_commands
   sql_commands=$(cat << SQLEOF
 -- Create database if not exists
-SELECT 'CREATE DATABASE ${db_name}' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '${db_name}')\\gexec
+SELECT 'CREATE DATABASE "${db_name}"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '${db_name}')\\gexec
 
--- Create admin role
-DO \\\$\\\$
-BEGIN
-  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '${DB_ADMIN_USERNAME}') THEN
-    CREATE USER ${DB_ADMIN_USERNAME} WITH PASSWORD '${DB_ADMIN_PASSWORD}';
-  ELSE
-    ALTER USER ${DB_ADMIN_USERNAME} WITH PASSWORD '${DB_ADMIN_PASSWORD}';
-  END IF;
-END
-\\\$\\\$;
-
--- Grant admin full privileges
-ALTER USER ${DB_ADMIN_USERNAME} CREATEDB CREATEROLE SUPERUSER;
-GRANT ALL PRIVILEGES ON DATABASE ${db_name} TO ${DB_ADMIN_USERNAME};
-
--- Create CRUD role
+-- Create CRUD role (limited privileges)
 DO \\\$\\\$
 BEGIN
   IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '${DB_CRUD_USERNAME}') THEN
-    CREATE USER ${DB_CRUD_USERNAME} WITH PASSWORD '${DB_CRUD_PASSWORD}';
+    CREATE USER "${DB_CRUD_USERNAME}" WITH PASSWORD '${DB_CRUD_PASSWORD}';
   ELSE
-    ALTER USER ${DB_CRUD_USERNAME} WITH PASSWORD '${DB_CRUD_PASSWORD}';
+    ALTER USER "${DB_CRUD_USERNAME}" WITH PASSWORD '${DB_CRUD_PASSWORD}';
   END IF;
 END
 \\\$\\\$;
 
--- Grant CRUD limited privileges
-GRANT CONNECT ON DATABASE ${db_name} TO ${DB_CRUD_USERNAME};
+-- Ensure CRUD user has no elevated privileges
+ALTER USER "${DB_CRUD_USERNAME}" NOSUPERUSER NOCREATEDB NOCREATEROLE;
+GRANT CONNECT ON DATABASE "${db_name}" TO "${DB_CRUD_USERNAME}";
 SQLEOF
 )
 
   # DB-specific grants (must run connected to the target database)
   local db_grants
   db_grants=$(cat << GRANTSEOF
--- Admin: full schema privileges
-GRANT ALL PRIVILEGES ON SCHEMA public TO ${DB_ADMIN_USERNAME};
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO ${DB_ADMIN_USERNAME};
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO ${DB_ADMIN_USERNAME};
-ALTER DEFAULT PRIVILEGES FOR USER ${DB_ADMIN_USERNAME} GRANT ALL PRIVILEGES ON TABLES TO ${DB_ADMIN_USERNAME};
-ALTER DEFAULT PRIVILEGES FOR USER ${DB_ADMIN_USERNAME} GRANT ALL PRIVILEGES ON SEQUENCES TO ${DB_ADMIN_USERNAME};
-
 -- CRUD: limited privileges (SELECT, INSERT, UPDATE, DELETE only)
-GRANT USAGE ON SCHEMA public TO ${DB_CRUD_USERNAME};
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO ${DB_CRUD_USERNAME};
-GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO ${DB_CRUD_USERNAME};
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO ${DB_CRUD_USERNAME};
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO ${DB_CRUD_USERNAME};
-REVOKE CREATE ON SCHEMA public FROM ${DB_CRUD_USERNAME};
+GRANT USAGE ON SCHEMA public TO "${DB_CRUD_USERNAME}";
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "${DB_CRUD_USERNAME}";
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO "${DB_CRUD_USERNAME}";
+ALTER DEFAULT PRIVILEGES FOR USER "${DB_ADMIN_USERNAME}" IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "${DB_CRUD_USERNAME}";
+ALTER DEFAULT PRIVILEGES FOR USER "${DB_ADMIN_USERNAME}" IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO "${DB_CRUD_USERNAME}";
+REVOKE CREATE ON SCHEMA public FROM "${DB_CRUD_USERNAME}";
 GRANTSEOF
 )
 
   # Execute via SSH jump through gateway
   ssh ${SSH_OPTS} -A -J ${GATEWAY_USER}@${GATEWAY_PUBLIC_IP} ${GATEWAY_USER}@${target_ip} << EOF
-    # Run SQL commands on the postgres container
-    docker exec -i ${container_name} psql -U ${DB_CRUD_USERNAME} << 'SQL'
+    # Run SQL commands on the postgres container (connect as admin - the superuser)
+    docker exec -i ${container_name} psql -U "${DB_ADMIN_USERNAME}" << 'SQL'
 ${sql_commands}
 SQL
 
     # Run DB-specific grants
-    docker exec -i ${container_name} psql -U ${DB_CRUD_USERNAME} -d ${db_name} << 'SQL'
+    docker exec -i ${container_name} psql -U "${DB_ADMIN_USERNAME}" -d "${db_name}" << 'SQL'
 ${db_grants}
 SQL
 EOF

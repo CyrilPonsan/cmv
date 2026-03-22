@@ -20,8 +20,8 @@ services:
     ports:
       - "6002:5432"
     environment:
-      POSTGRES_USER: ${DB_CRUD_USERNAME}
-      POSTGRES_PASSWORD: ${DB_CRUD_PASSWORD}
+      POSTGRES_USER: ${DB_ADMIN_USERNAME}
+      POSTGRES_PASSWORD: ${DB_ADMIN_PASSWORD}
       POSTGRES_DB: ${PATIENTS_POSTGRES_DB}
 
   api_patients:
@@ -36,11 +36,12 @@ services:
     ports:
       - "8002:8000"
     command: >
-      bash -c 'while !</dev/tcp/db_patients/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+      bash -c 'while !</dev/tcp/db_patients/5432; do sleep 1; done; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
     depends_on:
       - db_patients
     environment:
       PATIENTS_DATABASE_URL: postgresql://${DB_CRUD_USERNAME}:${DB_CRUD_PASSWORD}@db_patients:5432/${PATIENTS_POSTGRES_DB}
+      MIGRATION_DATABASE_URL: postgresql://${DB_ADMIN_USERNAME}:${DB_ADMIN_PASSWORD}@db_patients:5432/${PATIENTS_POSTGRES_DB}
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
       AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}
