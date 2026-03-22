@@ -51,6 +51,7 @@ services:
       - redis
     environment:
       DATABASE_URL: postgresql://${DB_CRUD_USERNAME}:${DB_CRUD_PASSWORD}@db_gateway:5432/${GATEWAY_POSTGRES_DB}
+      GATEWAY_DATABASE_URL: postgresql://${DB_CRUD_USERNAME}:${DB_CRUD_PASSWORD}@db_gateway:5432/${GATEWAY_POSTGRES_DB}
       MIGRATION_DATABASE_URL: postgresql://${DB_ADMIN_USERNAME}:${DB_ADMIN_PASSWORD}@db_gateway:5432/${GATEWAY_POSTGRES_DB}
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}

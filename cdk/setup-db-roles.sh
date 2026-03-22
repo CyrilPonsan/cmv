@@ -108,54 +108,55 @@ configure_db_roles() {
 
   info "Configuring PostgreSQL roles on ${svc_name} (${target_ip})..."
 
-  # Build the SQL commands — all identifiers are double-quoted for safety
-  local sql_commands
-  sql_commands=$(cat << SQLEOF
--- Create database if not exists
-SELECT 'CREATE DATABASE "${db_name}"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '${db_name}')\\gexec
+  # Build the SQL commands
+  local tmp_sql
+  tmp_sql=$(mktemp)
+  local tmp_grants
+  tmp_grants=$(mktemp)
 
--- Create CRUD role (limited privileges)
-DO \\\$\\\$
+  cat > "$tmp_sql" << ENDSQL
+-- Create database if not exists
+SELECT 'CREATE DATABASE "${db_name}"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '${db_name}')\gexec
+
+-- Create CRUD role if not exists
+DO \$\$
 BEGIN
   IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '${DB_CRUD_USERNAME}') THEN
-    CREATE USER "${DB_CRUD_USERNAME}" WITH PASSWORD '${DB_CRUD_PASSWORD}';
+    EXECUTE format('CREATE ROLE %I WITH LOGIN PASSWORD %L', '${DB_CRUD_USERNAME}', '${DB_CRUD_PASSWORD}');
   ELSE
-    ALTER USER "${DB_CRUD_USERNAME}" WITH PASSWORD '${DB_CRUD_PASSWORD}';
+    EXECUTE format('ALTER ROLE %I WITH PASSWORD %L', '${DB_CRUD_USERNAME}', '${DB_CRUD_PASSWORD}');
   END IF;
 END
-\\\$\\\$;
+\$\$;
 
--- Ensure CRUD user has no elevated privileges
-ALTER USER "${DB_CRUD_USERNAME}" NOSUPERUSER NOCREATEDB NOCREATEROLE;
+-- Ensure CRUD role has no elevated privileges
+ALTER ROLE "${DB_CRUD_USERNAME}" NOSUPERUSER NOCREATEDB NOCREATEROLE;
 GRANT CONNECT ON DATABASE "${db_name}" TO "${DB_CRUD_USERNAME}";
-SQLEOF
-)
+ENDSQL
 
-  # DB-specific grants (must run connected to the target database)
-  local db_grants
-  db_grants=$(cat << GRANTSEOF
+  cat > "$tmp_grants" << ENDSQL
 -- CRUD: limited privileges (SELECT, INSERT, UPDATE, DELETE only)
 GRANT USAGE ON SCHEMA public TO "${DB_CRUD_USERNAME}";
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "${DB_CRUD_USERNAME}";
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO "${DB_CRUD_USERNAME}";
-ALTER DEFAULT PRIVILEGES FOR USER "${DB_ADMIN_USERNAME}" IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "${DB_CRUD_USERNAME}";
-ALTER DEFAULT PRIVILEGES FOR USER "${DB_ADMIN_USERNAME}" IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO "${DB_CRUD_USERNAME}";
+ALTER DEFAULT PRIVILEGES FOR ROLE "${DB_ADMIN_USERNAME}" IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "${DB_CRUD_USERNAME}";
+ALTER DEFAULT PRIVILEGES FOR ROLE "${DB_ADMIN_USERNAME}" IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO "${DB_CRUD_USERNAME}";
 REVOKE CREATE ON SCHEMA public FROM "${DB_CRUD_USERNAME}";
-GRANTSEOF
-)
+ENDSQL
 
-  # Execute via SSH jump through gateway
-  ssh ${SSH_OPTS} -A -J ${GATEWAY_USER}@${GATEWAY_PUBLIC_IP} ${GATEWAY_USER}@${target_ip} << EOF
-    # Run SQL commands on the postgres container (connect as admin - the superuser)
-    docker exec -i ${container_name} psql -U "${DB_ADMIN_USERNAME}" << 'SQL'
-${sql_commands}
-SQL
+  # Copy SQL files to remote host via gateway jump
+  scp ${SSH_OPTS} -o "ProxyJump=${GATEWAY_USER}@${GATEWAY_PUBLIC_IP}" \
+    "$tmp_sql" "${GATEWAY_USER}@${target_ip}:/tmp/setup_roles.sql"
+  scp ${SSH_OPTS} -o "ProxyJump=${GATEWAY_USER}@${GATEWAY_PUBLIC_IP}" \
+    "$tmp_grants" "${GATEWAY_USER}@${target_ip}:/tmp/setup_grants.sql"
 
-    # Run DB-specific grants
-    docker exec -i ${container_name} psql -U "${DB_ADMIN_USERNAME}" -d "${db_name}" << 'SQL'
-${db_grants}
-SQL
-EOF
+  rm -f "$tmp_sql" "$tmp_grants"
+
+  # Execute SQL files on the remote host
+  ssh ${SSH_OPTS} -J ${GATEWAY_USER}@${GATEWAY_PUBLIC_IP} ${GATEWAY_USER}@${target_ip} \
+    "docker exec -i ${container_name} psql -U '${DB_ADMIN_USERNAME}' -d postgres < /tmp/setup_roles.sql && \
+     docker exec -i ${container_name} psql -U '${DB_ADMIN_USERNAME}' -d '${db_name}' < /tmp/setup_grants.sql && \
+     rm -f /tmp/setup_roles.sql /tmp/setup_grants.sql"
 
   if [ $? -eq 0 ]; then
     info "  ✓ ${svc_name}: roles configured successfully"
