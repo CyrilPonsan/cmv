@@ -1,12 +1,13 @@
 # Import des modules nécessaires
-from dotenv import load_dotenv
 import os
+
+from dotenv import load_dotenv
 
 # Chargement des variables d'environnement depuis le fichier .env
 load_dotenv()
 
 # URL de connexion à la base de données
-DATABASE_URL = os.getenv("GATEWAY_DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 # Clé secrète pour la génération des tokens JWT
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -37,4 +38,3 @@ VALKEY_HOST = os.getenv("VALKEY_HOST", "redis")
 
 # Port du serveur Valkey (anciennement Redis)
 VALKEY_PORT = os.getenv("VALKEY_PORT", "6379")
-

@@ -1,11 +1,12 @@
-from dotenv import load_dotenv
 import os
+
+from dotenv import load_dotenv
 
 # Charge les variables d'environnement depuis le fichier .env
 load_dotenv()
 
 # URL de connexion à la base de données des patients
-DATABASE_URL = os.getenv("PATIENTS_DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL")
 # Clé secrète pour la génération des tokens JWT
 SECRET_KEY = os.getenv("SECRET_KEY")
 # Algorithme utilisé pour la génération des tokens JWT
