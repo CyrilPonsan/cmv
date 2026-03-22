@@ -6,7 +6,6 @@ from sqlalchemy.orm import sessionmaker
 # Import des variables de configuration
 from .config import DATABASE_URL, ENVIRONMENT
 
-print(f"DATABASE_URL: {DATABASE_URL}")
 # Configuration de la base de données selon l'environnement
 if ENVIRONMENT == "test":
     # En environnement de test, utilisation d'une base SQLite en mémoire
