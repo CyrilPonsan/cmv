@@ -6,7 +6,10 @@ hospital length of stay predictions.
 """
 
 from typing import Protocol
+import json
 import numpy as np
+
+from app.services.imputation_service import ImputationService
 
 
 class PredictionEngineProtocol(Protocol):
@@ -40,6 +43,8 @@ class XGBoostPredictionEngine:
     
     def __init__(self):
         self._model = None
+        self._imputation_service: ImputationService | None = None
+        self._feature_means: dict[str, float] | None = None
         # Ordre des features tel qu'attendu par le modèle XGBoost
         self._feature_order = [
             "rcount", "gender", "dialysisrenalendstage", "asthma", "irondef", 
@@ -148,3 +153,32 @@ class XGBoostPredictionEngine:
     def is_loaded(self) -> bool:
         """Check if the model is loaded."""
         return self._model is not None
+
+    def load_feature_means(self, path: str) -> None:
+        """
+        Load feature means from a JSON file and instantiate the ImputationService.
+
+        Args:
+            path: Path to the feature_means.json file.
+
+        Raises:
+            FileNotFoundError: If the file does not exist.
+            json.JSONDecodeError: If the file contains invalid JSON.
+            ValueError: If required keys are missing or values are invalid
+                        (raised by ImputationService.__init__).
+        """
+        with open(path, "r") as f:
+            means = json.load(f)
+
+        self._imputation_service = ImputationService(means)
+        self._feature_means = self._imputation_service.feature_means
+
+    @property
+    def imputation_service(self) -> ImputationService | None:
+        """Read-only access to the ImputationService instance."""
+        return self._imputation_service
+
+    @property
+    def feature_means(self) -> dict[str, float] | None:
+        """Read-only access to the loaded feature means dict."""
+        return dict(self._feature_means) if self._feature_means is not None else None

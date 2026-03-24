@@ -7,6 +7,7 @@ de 22 features médicales, en utilisant un modèle XGBoost pré-entraîné.
 RGPD: Les données médicales ne sont JAMAIS persistées.
 """
 
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, status
@@ -51,6 +52,13 @@ async def lifespan(app: FastAPI):
         raise RuntimeError(f"Model file not found: {MODEL_PATH}")
     except Exception as e:
         raise RuntimeError(f"Failed to load model: {e}")
+
+    # Load feature means for imputation
+    try:
+        means_path = os.path.join(os.path.dirname(MODEL_PATH), "feature_means.json")
+        prediction_engine.load_feature_means(means_path)
+    except Exception as e:
+        raise RuntimeError(f"Failed to load feature means: {e}")
 
     # Initialize SHAP explainer if enabled
     if SHAP_ENABLED:
