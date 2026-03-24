@@ -1,11 +1,12 @@
-import time
+import configparser
+import logging
 import os
+import time
+
 import boto3
 from botocore.exceptions import ClientError
-from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-import logging
-import configparser
+from watchdog.observers import Observer
 
 # Set up logging
 logging.basicConfig(
@@ -80,6 +81,17 @@ class S3UploadHandler(FileSystemEventHandler):
             logger.error(f"S3 upload error for {file_path}: {str(e)}")
         except Exception as e:
             logger.error(f"Error uploading {file_path}: {str(e)}")
+
+
+def on_moved(self, event):
+    if event.is_directory:
+        return
+    if os.path.basename(event.dest_path).startswith(".tmp_"):
+        return
+    # Traiter le fichier renommé comme un nouveau fichier
+    self.on_created(
+        type("Event", (), {"is_directory": False, "src_path": event.dest_path})()
+    )
 
 
 def load_config():
