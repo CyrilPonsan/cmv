@@ -6,7 +6,6 @@ pipeline {
     }
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('cmv-dockerhub')
         IMAGE_PATIENTS = "firizgoude/cmv_patients"
         IMAGE_PATIENTS_TAG = "patients-${env.BUILD_NUMBER}"
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
@@ -47,50 +46,53 @@ pipeline {
         stage('Build Image') {
             steps {
                 dir('cmv_patients') {
-                    script {
-                        sh "echo 'Starting Docker build...'"
-                        sh "docker --version"
-                        sh "pwd"
-                        sh "ls -la"
-                        sh 'docker build --platform linux/amd64 -t "${IMAGE_PATIENTS}:latest" .'
-                        sh "echo 'Docker build completed.'"
-                    }
+                    sh 'docker build --platform linux/amd64 -t "$IMAGE_PATIENTS:latest" .'
                 }
             }
         }
         stage('Push to DockerHub') {
             steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                sh "docker push ${IMAGE_PATIENTS}:latest"
+                withCredentials([usernamePassword(
+                    credentialsId: 'cmv-dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                        set +x
+                        echo "$DOCKER_PASS" | docker login --quiet -u "$DOCKER_USER" --password-stdin
+                        docker push "$IMAGE_PATIENTS:latest"
+                    '''
+                }
             }
         }
         stage('Deploy to EC2') {
             steps {
-                script {
+                withCredentials([usernamePassword(
+                    credentialsId: 'cmv-dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
                     sshagent(credentials: ['cdk-key']) {
-                        sh """
+                        sh '''
+                            set +x
                             ssh -o StrictHostKeyChecking=no \
                                 -o UserKnownHostsFile=/dev/null \
                                 -o LogLevel=ERROR \
                                 -A \
-                                -J ${GATEWAY_USER}@${GATEWAY_HOST} \
-                                ${PATIENTS_USER}@${PATIENTS_HOST} << 'EOF'
+                                -J $GATEWAY_USER@$GATEWAY_HOST \
+                                $PATIENTS_USER@$PATIENTS_HOST << 'EOF'
 
-# Login DockerHub sur l'EC2
-echo "${DOCKERHUB_CREDENTIALS_PSW}" | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
+echo "$DOCKER_PASS" | docker login --quiet -u "$DOCKER_USER" --password-stdin
 
-# Arrêt et suppression
 docker stop cmv_patients || true
 docker rm cmv_patients || true
-docker image rm ${IMAGE_PATIENTS}:latest || true
+docker image rm "$IMAGE_PATIENTS:latest" || true
 
-# Déploiement
 docker compose up -d
 
-# Logout (optionnel, pour la sécu)
 docker logout
 EOF
-                        """
+                        '''
                     }
                 }
             }
@@ -99,17 +101,14 @@ EOF
 
     post {
         always {
-            script {
-                node {
-                    sh 'docker logout'
-                }
-            }
+            sh 'docker logout || true'
+            sh 'docker image rm "$IMAGE_PATIENTS:latest" || true'
         }
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Pipeline terminé avec succès.'
         }
         failure {
-            echo 'Pipeline failed. Please check the logs.'
+            echo 'Pipeline échoué. Vérifier les logs.'
         }
     }
 }

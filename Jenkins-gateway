@@ -5,7 +5,6 @@ pipeline {
     }
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('cmv-dockerhub')
         IMAGE_GATEWAY = "firizgoude/cmv_gateway"
         IMAGE_GATEWAY_TAG = "gateway-${env.BUILD_NUMBER}"
         NPM_CACHE_DIR = "tmp/npm-cache"
@@ -28,11 +27,11 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 dir('cmv_gateway/cmv_front') {
-                    sh """
-                    mkdir -p ${NPM_CACHE_DIR}
-                    npm config set cache ${NPM_CACHE_DIR}
+                    sh '''
+                    mkdir -p $NPM_CACHE_DIR
+                    npm config set cache $NPM_CACHE_DIR
                     npm ci --prefer-offline
-                    """
+                    '''
                 }
             }
         }
@@ -61,53 +60,42 @@ pipeline {
         stage('Build Image') {
             steps {
                 dir('cmv_gateway') {
-                    script {
-                        sh "echo 'Starting Docker build...'"
-                        sh "docker --version"
-                        sh "pwd"
-                        sh "ls -la"
-                        sh 'docker build --platform linux/amd64 -t "${IMAGE_GATEWAY}:latest" .'
-                        sh "echo 'Docker build completed.'"
-                    }
+                    sh 'docker build --platform linux/amd64 -t "$IMAGE_GATEWAY:latest" .'
                 }
             }
         }
         stage('Push to DockerHub') {
             steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                sh "docker push ${IMAGE_GATEWAY}:latest"
+                withCredentials([usernamePassword(
+                    credentialsId: 'cmv-dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                        set +x
+                        echo "$DOCKER_PASS" | docker login --quiet -u "$DOCKER_USER" --password-stdin
+                        docker push "$IMAGE_GATEWAY:latest"
+                    '''
+                }
             }
         }
         stage('Deploy to EC2') {
             steps {
-                script {
-                    def remoteCommands = """
-                        # Arrêt et suppression de l'ancien container
+                sshagent(credentials: ['cmv-ssh-key']) {
+                    sh '''
+                        set +x
+                        ssh -o StrictHostKeyChecking=no \
+                            -o UserKnownHostsFile=/dev/null \
+                            -o LogLevel=ERROR \
+                            $EC2_USER@$EC2_HOST << 'EOF'
+
                         docker stop cmv_gateway || true
                         docker rm cmv_gateway || true
-
-                        # Suppression de l'ancienne image
-                        docker image rm ${IMAGE_GATEWAY}:latest || true
+                        docker image rm "$IMAGE_GATEWAY:latest" || true
                         docker network create cmv || true
                         docker compose up -d
-
-
-                    """
-
-                    // Exécution des commandes sur le serveur EC2
-                    sshagent(credentials: ['cmv-ssh-key']) {
-                        sh """
-                            ssh -o StrictHostKeyChecking=no \
-                                -o UserKnownHostsFile=/dev/null \
-                                -o LogLevel=ERROR \
-                                ${EC2_USER}@${EC2_HOST} << EOF
-
-                            IMAGE_NAME=${IMAGE_GATEWAY}
-                            IMAGE_TAG=${env.BUILD_NUMBER}
-                            ${remoteCommands}
 EOF
-                        """
-                    }
+                    '''
                 }
             }
         }
@@ -115,17 +103,14 @@ EOF
 
     post {
         always {
-            script {
-                node {
-                    sh 'docker logout'
-                }
-            }
+            sh 'docker logout || true'
+            sh 'docker image rm "$IMAGE_GATEWAY:latest" || true'
         }
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Pipeline terminé avec succès.'
         }
         failure {
-            echo 'Pipeline failed. Please check the logs.'
+            echo 'Pipeline échoué. Vérifier les logs.'
         }
     }
 }
