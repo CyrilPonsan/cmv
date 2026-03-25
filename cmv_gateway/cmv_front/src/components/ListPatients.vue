@@ -49,8 +49,9 @@ const {
 
 <template>
   <!-- Table principale des patients avec pagination et tri -->
-  <div class="w-full overflow-x-auto">
+  <div class="w-full overflow-hidden">
   <DataTable
+  v-if="patientsList && patientsList.length > 0 "
     v-model:filters="filters"
     :value="patientsList"
     :lazy="true"

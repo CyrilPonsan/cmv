@@ -52,12 +52,14 @@ onBeforeMount(() => {
 <template>
   <!-- Composant Toast pour les notifications -->
   <Toast />
-  <div class="flex relative w-full">
-    <!-- Barre latérale affichée uniquement si l'utilisateur est connecté -->
-    <SidebarComponent v-if="isLoggedIn" />
-    <div class="flex-1 min-w-0 flex flex-col min-h-screen justify-between">
+  <div class="flex relative w-full overflow-hidden">
+    <!-- Barre latérale : toujours dans le flux pour éviter le layout shift -->
+    <SidebarComponent :class="isLoggedIn ? '' : 'invisible'" :aria-hidden="!isLoggedIn" />
+    <div class="flex-1 min-w-0 flex flex-col min-h-screen">
       <!-- Router view pour afficher les différentes pages -->
-      <RouterView />
+      <div class="flex-1">
+        <RouterView />
+      </div>
       <!-- Pied de page -->
       <footer class="w-full h-16 flex justify-center items-center bg-black">
         <h3 class="text-xs text-primary-500">
