@@ -52,10 +52,10 @@ onBeforeMount(() => {
 <template>
   <!-- Composant Toast pour les notifications -->
   <Toast />
-  <div class="flex relative">
+  <div class="flex relative w-full">
     <!-- Barre latérale affichée uniquement si l'utilisateur est connecté -->
     <SidebarComponent v-if="isLoggedIn" />
-    <div class="flex-1 flex flex-col min-h-screen justify-between">
+    <div class="flex-1 min-w-0 flex flex-col min-h-screen justify-between">
       <!-- Router view pour afficher les différentes pages -->
       <RouterView />
       <!-- Pied de page -->

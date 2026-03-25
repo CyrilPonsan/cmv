@@ -11,16 +11,16 @@ const userStore = useUserStore()
 <template>
   <!-- Conteneur principal de la sidebar -->
   <main
-    class="w-64 sticky top-0 left-0 h-screen bg-surface-900 flex flex-col justify-between items-center"
+    class="w-48 sticky top-0 left-0 h-screen bg-surface-900 flex flex-col justify-between items-center"
   >
     <!-- Section logo -->
     <section>
       <img
-        class="rounded-lg shadow-lg p-2"
-        width="256"
-        height="256"
-        src="@/assets/images/logo-cmv.webp"
-        alt="logo"
+        class="rounded-lg shadow-lg p-2 mt-8 h-36 w-36"
+          src="@/assets/images/logo.png"
+          width="144"
+          height="144"
+        alt="logo de la clinique"
       />
     </section>
 

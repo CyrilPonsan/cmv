@@ -49,6 +49,7 @@ const {
 
 <template>
   <!-- Table principale des patients avec pagination et tri -->
+  <div class="w-full overflow-x-auto">
   <DataTable
     v-model:filters="filters"
     :value="patientsList"
@@ -65,7 +66,7 @@ const {
     table-style="min-width: 50rem"
     paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
     :current-page-report-template="`${lazyState.first + 1} ${t('pagination.to')} ${lazyState.first + lazyState.rows} ${t('pagination.from')} ${totalRecords}`"
-    class="shadow-md min-w-full"
+    class="shadow-md w-full"
     @page="handlePage"
     @sort="handleSort"
   >
@@ -106,7 +107,7 @@ const {
 
     <!-- Information sur le nombre total de patients -->
     <template #paginatorstart>
-      <span class="flex items-center gap-x-2 font-bold">
+      <span class="min-w-0 flex-1 flex items-center gap-x-2 font-bold">
         {{ t('patients.home.total_patients', totalRecords) }}
       </span>
     </template>
@@ -114,6 +115,7 @@ const {
     <!-- Colonnes dynamiques générées à partir de la configuration -->
     <Column
       v-for="col of columns"
+      class="w-48"
       :key="col.field"
       :field="col.field"
       :header="t(`columns.patientsList.${col.header}`)"
@@ -175,6 +177,7 @@ const {
       </div>
     </template>
   </DataTable>
+  </div>
 
   <!-- Dialogue de confirmation de suppression -->
   <DeletePatientDialog
