@@ -113,7 +113,7 @@ stage('Push to DockerHub') {
         )]) {
             sh '''
                 set +x
-                echo "$DOCKER_PASS" | docker login --quiet -u "$DOCKER_USER" --password-stdin
+                echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
                 docker push "$IMAGE_GATEWAY:latest"
             '''
         }
@@ -201,7 +201,7 @@ withCredentials([usernamePassword(
                 -J $GATEWAY_USER@$GATEWAY_HOST \
                 $CHAMBRES_USER@$CHAMBRES_HOST << 'EOF'
 
-echo "$DOCKER_PASS" | docker login --quiet -u "$DOCKER_USER" --password-stdin
+echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
 
 docker stop cmv_chambres || true
 docker rm cmv_chambres || true
@@ -311,7 +311,7 @@ pipeline {
         stage('Push to DockerHub') {
             // ✅ withCredentials scoped
             // ✅ sh single-quotes
-            // ✅ docker login --quiet
+            // ✅ docker login 2>/dev/null
         }
         
         stage('Deploy to EC2') {
@@ -366,7 +366,7 @@ Les propriétés suivantes sont dérivées des critères d'acceptation du docume
 
 ### Property 3 : Docker login utilise le mode silencieux
 
-*Pour tout* Jenkinsfile et *pour toute* invocation de `docker login`, la commande doit inclure l'option `--quiet` pour supprimer la sortie verbose.
+*Pour tout* Jenkinsfile et *pour toute* invocation de `docker login`, la commande doit rediriger stderr vers `/dev/null` (`2>/dev/null`) pour supprimer la sortie verbose. Le flag `--quiet` n'est pas utilisé car il n'est pas supporté par les versions Docker CLI antérieures à 19.03.
 
 **Validates: Requirements 2.3**
 
@@ -454,7 +454,7 @@ Les tests génèrent des variations de contenu Jenkinsfile (noms de variables, n
 |---|---|---|
 | Property 1 | Property-based | Générer des noms de secrets variés, vérifier qu'aucun n'est interpolé par Groovy |
 | Property 2 | Property-based | Générer des blocs SSH avec heredocs, vérifier le quoting du délimiteur |
-| Property 3 | Property-based | Générer des commandes docker login, vérifier la présence de --quiet |
+| Property 3 | Property-based | Générer des commandes docker login, vérifier la présence de 2>/dev/null |
 | Property 4 | Property-based | Générer des Jenkinsfiles, vérifier withCredentials et absence dans environment |
 | Property 5 | Property-based | Générer des blocs sh avec secrets, vérifier set +x en début |
 | Property 6 | Property-based | Générer des heredocs quotés avec variables d'image, vérifier export/env |

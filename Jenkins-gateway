@@ -73,7 +73,7 @@ pipeline {
                 )]) {
                     sh '''
                         set +x
-                        echo "$DOCKER_PASS" | docker login --quiet -u "$DOCKER_USER" --password-stdin
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
                         docker push "$IMAGE_GATEWAY:latest"
                     '''
                 }

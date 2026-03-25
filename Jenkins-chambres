@@ -44,7 +44,7 @@ pipeline {
                 )]) {
                     sh '''
                         set +x
-                        echo "$DOCKER_PASS" | docker login --quiet -u "$DOCKER_USER" --password-stdin
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
                         docker push "$IMAGE_CHAMBRES:latest"
                     '''
                 }
@@ -67,7 +67,7 @@ pipeline {
                                 -J $GATEWAY_USER@$GATEWAY_HOST \
                                 $CHAMBRES_USER@$CHAMBRES_HOST << 'EOF'
 
-echo "$DOCKER_PASS" | docker login --quiet -u "$DOCKER_USER" --password-stdin
+echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
 
 docker stop cmv_chambres || true
 docker rm cmv_chambres || true

@@ -59,7 +59,7 @@ pipeline {
                 )]) {
                     sh '''
                         set +x
-                        echo "$DOCKER_PASS" | docker login --quiet -u "$DOCKER_USER" --password-stdin
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
                         docker push "$IMAGE_PATIENTS:latest"
                     '''
                 }
@@ -82,7 +82,7 @@ pipeline {
                                 -J $GATEWAY_USER@$GATEWAY_HOST \
                                 $PATIENTS_USER@$PATIENTS_HOST << 'EOF'
 
-echo "$DOCKER_PASS" | docker login --quiet -u "$DOCKER_USER" --password-stdin
+echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
 
 docker stop cmv_patients || true
 docker rm cmv_patients || true

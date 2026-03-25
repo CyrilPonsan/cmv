@@ -37,7 +37,7 @@ Ce document définit les exigences pour le renforcement de la sécurité des pip
 
 1. THE Pipeline SHALL supprimer les étapes `sh "echo 'Starting Docker build...'"` et `sh "echo 'Docker build completed.'"` redondantes dans les stages Build Image
 2. THE Pipeline SHALL supprimer les étapes de debug `sh "docker --version"`, `sh "pwd"`, et `sh "ls -la"` des stages Build Image
-3. WHEN une étape `docker login` est exécutée, THE Pipeline SHALL utiliser l'option `--quiet` ou rediriger la sortie pour éviter l'affichage de `+ docker login -u **** --password-stdin` dans les logs
+3. WHEN une étape `docker login` est exécutée, THE Pipeline SHALL rediriger la sortie stderr vers `/dev/null` (`2>/dev/null`) pour éviter l'affichage de `+ docker login -u **** --password-stdin` dans les logs (compatible avec toutes les versions de Docker CLI)
 4. THE Pipeline SHALL conserver uniquement les messages de log pertinents pour le suivi du déroulement du pipeline (succès/échec dans le bloc `post`)
 
 ### Exigence 3 : Sécuriser les connexions SSH dans les stages de déploiement
