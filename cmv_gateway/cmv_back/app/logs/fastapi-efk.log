@@ -1,17 +1,36 @@
-2025-01-20 13:29:31,231 - AFFRANCHISSEMENT - WARNING - not_authenticated FROM: None
-2025-01-20 13:29:31,254 - AFFRANCHISSEMENT - WARNING - refresh_token_expired FROM: None
-2025-01-20 13:29:38,065 - AFFRANCHISSEMENT - WARNING - home connection  FROM: None
-2025-01-20 13:29:38,251 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - patients FROM: None
-2025-01-20 13:29:48,711 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - patients FROM: None
-2025-01-20 13:29:50,568 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - patients/detail/32 FROM: None
-2025-01-21 08:37:27,613 - AFFRANCHISSEMENT - WARNING - not_authenticated FROM: None
-2025-01-21 08:37:27,618 - AFFRANCHISSEMENT - WARNING - refresh_token_expired FROM: None
-2025-01-21 08:37:29,256 - AFFRANCHISSEMENT - WARNING - home connection  FROM: None
-2025-01-21 08:37:29,462 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - patients FROM: None
-2025-01-21 08:37:31,554 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - patients/detail/32 FROM: None
-2025-01-21 08:37:34,381 - AFFRANCHISSEMENT - WARNING - home - 2 - DELETE - documents/delete/8 FROM: None
-2025-01-21 08:37:34,402 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - patients/detail/32 FROM: None
-2025-01-21 14:01:56,238 - AFFRANCHISSEMENT - WARNING - not_authenticated FROM: None
-2025-01-21 14:01:56,259 - AFFRANCHISSEMENT - WARNING - not_valid_token FROM: None
-2025-01-21 14:01:57,823 - AFFRANCHISSEMENT - WARNING - home connection  FROM: None
-2025-01-21 14:01:58,034 - AFFRANCHISSEMENT - WARNING - home - 2 - GET - patients FROM: None
+2026-02-18 13:22:36,527 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-18 13:22:36,718 - CMV_GATEWAY - WARNING - Failed connection attempt using : foo.user@test.fr FROM: None
+2026-02-18 13:22:36,718 - CMV_GATEWAY - WARNING - credentials FROM: None
+2026-02-18 13:22:36,908 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
+2026-02-18 13:22:37,099 - CMV_GATEWAY - WARNING - 1 validation error:
+  {'type': 'value_error', 'loc': ('body', 'username'), 'msg': 'value is not a valid email address: An email address must have an @-sign.', 'input': 'test', 'ctx': {'reason': 'An email address must have an @-sign.'}}
+
+  File "/Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/routers/auth.py", line 24, in login
+    POST /api/auth/login FROM: None
+2026-02-18 13:22:37,289 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
+2026-02-18 13:22:37,667 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-18 13:22:37,680 - CMV_GATEWAY - WARNING - home - 1 - GET - foo FROM: None
+2026-02-18 13:22:38,056 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-18 13:22:38,063 - CMV_GATEWAY - WARNING - home - 1 - GET - foo FROM: None
+2026-02-18 13:22:38,063 - CMV_GATEWAY - WARNING - Not Found FROM: None
+2026-02-18 13:22:38,067 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-02-18 13:22:38,442 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-18 13:22:38,448 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-02-18 13:37:32,301 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-18 13:37:32,491 - CMV_GATEWAY - WARNING - Failed connection attempt using : foo.user@test.fr FROM: None
+2026-02-18 13:37:32,491 - CMV_GATEWAY - WARNING - credentials FROM: None
+2026-02-18 13:37:32,681 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
+2026-02-18 13:37:32,871 - CMV_GATEWAY - WARNING - 1 validation error:
+  {'type': 'value_error', 'loc': ('body', 'username'), 'msg': 'value is not a valid email address: An email address must have an @-sign.', 'input': 'test', 'ctx': {'reason': 'An email address must have an @-sign.'}}
+
+  File "/Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/routers/auth.py", line 24, in login
+    POST /api/auth/login FROM: None
+2026-02-18 13:37:33,060 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
+2026-02-18 13:37:33,431 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-18 13:37:33,444 - CMV_GATEWAY - WARNING - home - 1 - GET - foo FROM: None
+2026-02-18 13:37:33,816 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-18 13:37:33,822 - CMV_GATEWAY - WARNING - home - 1 - GET - foo FROM: None
+2026-02-18 13:37:33,823 - CMV_GATEWAY - WARNING - Not Found FROM: None
+2026-02-18 13:37:33,827 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-02-18 13:37:34,199 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-18 13:37:34,205 - CMV_GATEWAY - WARNING - not_authenticated FROM: None

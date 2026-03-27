@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/schemas/regular_expression.py
+# hypothesis_version: 6.151.9
+
+["^[\\w\\sÀ-ÿ,\\'\\-\\.@]*$", '^\\d{5}$']

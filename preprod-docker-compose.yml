@@ -20,7 +20,7 @@ volumes:
 
 services:
   redis:
-    image: redis:latest
+    image: valkey/valkey:latest
     restart: always
     container_name: redis-server
     networks:
@@ -31,7 +31,7 @@ services:
       - redis:/data
 
   db_gateway:
-    image: postgres:latest
+    image: postgres:17
     restart: always
     container_name: db_gateway
     volumes:
@@ -68,7 +68,7 @@ services:
       REFRESH_MAX_AGE: ${REFRESH_MAX_AGE}
       ENVIRONMENT: ${ENVIRONMENT}
     command: >
-      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
 
     develop:
       watch:
@@ -76,7 +76,7 @@ services:
           action: rebuild
 
   db_patients:
-    image: postgres:latest
+    image: postgres:17
     restart: always
     container_name: db_patients
     volumes:
@@ -111,7 +111,7 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
     command: >
-      bash -c 'while !</dev/tcp/db_patients/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+      bash -c 'while !</dev/tcp/db_patients/5432; do sleep 1; done; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
 
     develop:
       watch:
@@ -119,7 +119,7 @@ services:
           action: rebuild
 
   db_chambres:
-    image: postgres:latest
+    image: postgres:17
     restart: always
     container_name: db_chambres
     volumes:
@@ -149,7 +149,7 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
     command: >
-      bash -c 'while !</dev/tcp/db_chambres/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+      bash -c 'while !</dev/tcp/db_chambres/5432; do sleep 1; done; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
 
     develop:
       watch:

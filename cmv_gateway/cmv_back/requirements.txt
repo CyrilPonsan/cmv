@@ -6,8 +6,8 @@ python-dotenv
 alembic
 cryptography
 python-jose
-passlib
-bcrypt
+passlib[bcrypt]
+bcrypt==4.1.3
 httpx
 fastapi_limiter
 faker
@@ -16,6 +16,7 @@ pytest-asyncio
 pytest-mock
 pytest-httpx
 fakeredis
+hypothesis
 aiohttp
 python-multipart
 email-validator

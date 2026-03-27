@@ -1,5 +1,6 @@
 import asyncio
 import pytest
+from unittest.mock import AsyncMock, patch
 from redis.asyncio import Redis
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy import create_engine
@@ -16,15 +17,19 @@ from app.main import app
 DATABASE_URL = "sqlite:///:memory:"
 
 
-@pytest.fixture(scope="session")
-def event_loop():
-    """Crée une boucle d'événements asyncio pour les tests."""
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
+@pytest.fixture(scope="function")
+def mock_redis():
+    """Mock du client Redis pour les tests."""
+    mock = AsyncMock()
+    mock.setex = AsyncMock(return_value=True)
+    mock.get = AsyncMock(return_value=None)
+    mock.delete = AsyncMock(return_value=True)
+    # Retourne True pour simuler qu'une session existe
+    mock.exists = AsyncMock(return_value=True)
+    return mock
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 async def redis_client():
     """Configure et fournit un client Redis pour les tests."""
     client = Redis.from_url("redis://redis:6379", decode_responses=True)
@@ -120,7 +125,7 @@ def mock_patients_service():
 
 
 @pytest.fixture(autouse=True)
-def override_dependency(db_session, mock_patients_service):
+def override_dependency(db_session, mock_patients_service, mock_redis):
     """
     Remplace les dépendances de l'application par des versions de test.
     Restaure les dépendances originales après les tests.
@@ -137,6 +142,13 @@ def override_dependency(db_session, mock_patients_service):
 
     app.dependency_overrides[get_db] = override_get_db
     app.dependency_overrides[get_patients_service] = override_get_patients_service
-    yield
+
+    # Patch les clients Redis utilisés dans auth.py (redis et redis_client)
+    with (
+        patch("app.dependancies.auth.redis", mock_redis),
+        patch("app.dependancies.auth.redis_client", mock_redis),
+    ):
+        yield
+
     del app.dependency_overrides[get_db]
     del app.dependency_overrides[get_patients_service]

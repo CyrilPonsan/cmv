@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/services/patients.py
+# hypothesis_version: 6.151.9
+
+[200, 201, '/', 'Authorization', 'Content-Disposition', 'Content-Type', 'X-Forwarded-For', 'X-Real-IP', 'application/json', 'application/pdf', 'content-disposition', 'content-type', 'data', 'detail', 'document_type', 'file', 'inline', 'server_issue', 'unknown']

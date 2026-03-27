@@ -56,7 +56,7 @@ Cette commande va créer plusieurs fichiers d'environnement avec des valeurs exe
 5. Installer les dépendances :
 
 ```bash
-npm run Install:app
+npm run install:app
 ```
 
 ## Tests frontend

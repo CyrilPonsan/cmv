@@ -1,6 +1,6 @@
 services:
   redis:
-    image: redis:latest
+    image: valkey/valkey:latest
     restart: always
     container_name: redis-server
     ports:

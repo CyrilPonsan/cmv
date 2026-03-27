@@ -4,11 +4,7 @@ from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from jose import jwt, JWTError
-from .redis import redis_client
 from ..utils.config import SECRET_KEY, ALGORITHM
-
-# Initialisation du client Redis
-redis = redis_client
 
 # Configuration du schéma OAuth2 avec l'URL du endpoint de token
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")

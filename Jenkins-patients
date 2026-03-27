@@ -63,30 +63,26 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 script {
-                    def remoteCommands = """
-                        # Arrêt et suppression de l'ancien container
-                        docker stop cmv_patients || true
-                        docker rm cmv_patients || true
-
-                        # Suppression de l'ancienne image
-                        docker image rm ${IMAGE_PATIENTS}:latest || true
-
-                        docker compose up -d
-
-
-                    """
-
-                    // Exécution des commandes sur le serveur EC2
                     sshagent(credentials: ['cmv-ssh-key']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no \
                                 -o UserKnownHostsFile=/dev/null \
                                 -o LogLevel=ERROR \
-                                ${EC2_USER}@${EC2_SERVER} << EOF
+                                ${EC2_USER}@${EC2_SERVER} << 'EOF'
+                            
+# Login DockerHub sur l'EC2
+echo "${DOCKERHUB_CREDENTIALS_PSW}" | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
 
-                            IMAGE_NAME=${IMAGE_PATIENTS}
-                            IMAGE_TAG=${env.BUILD_NUMBER}
-                            ${remoteCommands}
+# Arrêt et suppression
+docker stop cmv_patients || true
+docker rm cmv_patients || true
+docker image rm ${IMAGE_PATIENTS}:latest || true
+
+# Déploiement
+docker compose up -d
+
+# Logout (optionnel, pour la sécu)
+docker logout
 EOF
                         """
                     }

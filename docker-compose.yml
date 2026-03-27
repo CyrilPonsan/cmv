@@ -11,6 +11,10 @@ volumes:
     driver: local
   db_patients:
     driver: local
+  cmv_chambres:
+    driver: local
+  db_chambres:
+    driver: local
   logs:
     driver: local
   redis:
@@ -19,13 +23,18 @@ volumes:
 # The containers that compose the project
 services:
   redis:
-    image: redis:latest
+    image: valkey/valkey:latest
     restart: always
     container_name: redis-server
     networks:
       - cmv
     ports:
       - "6379:6379"
+    volumes:
+      - redis:/data
+    environment:
+      VALKEY_HOST: ${VALKEY_HOST}
+      VALKEY_PORT: ${VALKEY_PORT}
 
   db_gateway:
     image: postgres:latest
@@ -41,29 +50,6 @@ services:
       POSTGRES_USER: ${GATEWAY_POSTGRES_USER}
       POSTGRES_PASSWORD: ${GATEWAY_POSTGRES_PASSWORD}
       POSTGRES_DB: ${GATEWAY_POSTGRES_DB}
-
-  api_gateway:
-    image: firizgoude/cmv_gateway:latest
-    pull_policy: always
-    restart: always
-    networks:
-      - cmv
-    volumes:
-      - logs:/app/app/logs
-    container_name: cmv_gateway
-    ports:
-      - "8001:8000"
-    depends_on:
-      - db_gateway
-    environment:
-      GATEWAY_DATABASE_URL: ${GATEWAY_POSTGRES_URL}
-      SECRET_KEY: ${SECRET_KEY}
-      ALGORITHM: ${ALGORITHM}
-      PATIENTS_SERVICE: ${PATIENTS_SERVICE}
-      ACCESS_MAX_AGE: ${ACCESS_MAX_AGE}
-      REFRESH_MAX_AGE: ${REFRESH_MAX_AGE}
-    command: >
-      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
 
   db_patients:
     image: postgres:latest
@@ -105,3 +91,38 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
+
+  db_chambres:
+    image: postgres:latest
+    restart: always
+    container_name: db_chambres
+    volumes:
+      - db_chambres:/var/lib/postgresql/data
+    networks:
+      - cmv
+    ports:
+      - "6003:5432"
+    environment:
+      POSTGRES_USER: ${CHAMBRES_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${CHAMBRES_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${CHAMBRES_POSTGRES_DB}
+
+  api_chambres:
+    image: firizgoude/cmv_chambres:latest
+    pull_policy: always
+    restart: always
+    networks:
+      - cmv
+    container_name: cmv_chambres
+    ports:
+      - "8003:8000"
+    links:
+      - db_chambres
+    command: >
+      bash -c 'while !</dev/tcp/db_chambres/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+    depends_on:
+      - db_chambres
+    environment:
+      CHAMBRES_DATABASE_URL: ${CHAMBRES_DATABASE_URL}
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
