@@ -6,7 +6,6 @@ pipeline {
     }
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('cmv-dockerhub')
         IMAGE_ML = "firizgoude/cmv_ml"
         IMAGE_ML_TAG = "ml-${env.BUILD_NUMBER}"
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
@@ -17,7 +16,7 @@ pipeline {
         ML_HOST = credentials("ec2-ml-host")
         ML_USER = credentials("ec2-ml-username")
         SSH_CREDENTIALS = credentials('cmv-ssh-key')
-        PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin" 
+        PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     }
 
     stages {
@@ -32,50 +31,53 @@ pipeline {
         stage('Build Image') {
             steps {
                 dir('cmv_ml') {
-                    script {
-                        sh "echo 'Starting Docker build...'"
-                        sh "docker --version"
-                        sh "pwd"
-                        sh "ls -la"
-                        sh 'docker build --platform linux/amd64 -t "${IMAGE_ML}:latest" .'
-                        sh "echo 'Docker build completed.'"
-                    }
+                    sh 'docker build --platform linux/amd64 -t "$IMAGE_ML:latest" .'
                 }
             }
         }
         stage('Push to DockerHub') {
             steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                sh "docker push ${IMAGE_ML}:latest"
+                withCredentials([usernamePassword(
+                    credentialsId: 'cmv-dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                        set +x
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
+                        docker push "$IMAGE_ML:latest"
+                    '''
+                }
             }
         }
         stage('Deploy to EC2') {
             steps {
-                script {
+                withCredentials([usernamePassword(
+                    credentialsId: 'cmv-dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
                     sshagent(credentials: ['cdk-key']) {
-                        sh """
+                        sh '''
+                            set +x
                             ssh -o StrictHostKeyChecking=no \
                                 -o UserKnownHostsFile=/dev/null \
                                 -o LogLevel=ERROR \
                                 -A \
-                                -J ${GATEWAY_USER}@${GATEWAY_HOST} \
-                                ${ML_USER}@${ML_HOST} << 'EOF'
+                                -J $GATEWAY_USER@$GATEWAY_HOST \
+                                $ML_USER@$ML_HOST << 'EOF'
 
-# Login DockerHub sur l'EC2
-echo "${DOCKERHUB_CREDENTIALS_PSW}" | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
+echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
 
-# Arrêt et suppression
 docker stop cmv_ml || true
 docker rm cmv_ml || true
-docker image rm ${IMAGE_ML}:latest || true
+docker image rm "$IMAGE_ML:latest" || true
 
-# Déploiement
 docker compose up -d
 
-# Logout (optionnel, pour la sécu)
 docker logout
 EOF
-                        """
+                        '''
                     }
                 }
             }
@@ -84,17 +86,14 @@ EOF
 
     post {
         always {
-            script {
-                node {
-                    sh 'docker logout'
-                }
-            }
+            sh 'docker logout || true'
+            sh 'docker image rm "$IMAGE_ML:latest" || true'
         }
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Pipeline terminé avec succès.'
         }
         failure {
-            echo 'Pipeline failed. Please check the logs.'
+            echo 'Pipeline échoué. Vérifier les logs.'
         }
     }
 }
