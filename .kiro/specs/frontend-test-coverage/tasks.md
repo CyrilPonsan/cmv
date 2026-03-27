@@ -6,13 +6,13 @@ Implémentation incrémentale des tests unitaires et property-based pour le fron
 
 ## Tâches
 
-- [ ] 1. Installer fast-check et préparer l'environnement de test
+- [x] 1. Installer fast-check et préparer l'environnement de test
   - Exécuter `npm install -D fast-check` dans `cmv_gateway/cmv_front/`
   - Vérifier que l'import `import fc from 'fast-check'` fonctionne dans un fichier de test
   - _Exigences : toutes (prérequis pour les tests property-based)_
 
 - [ ] 2. Implémenter les tests du composable useHttp
-  - [ ] 2.1 Créer `src/tests/UseHttp.spec.ts` avec les tests unitaires
+  - [x] 2.1 Créer `src/tests/UseHttp.spec.ts` avec les tests unitaires
     - Mocker axios au niveau module avec `vi.mock('axios')`
     - Tester la requête réussie : `sendRequest` retourne les données, `isLoading` passe de true à false
     - Tester l'erreur serveur (status >= 500) : redirection vers "network-issue"
@@ -35,7 +35,7 @@ Implémentation incrémentale des tests unitaires et property-based pour le fron
     - **Valide : Exigences 1.5**
 
 - [ ] 3. Implémenter les tests du composable useLazyLoad
-  - [ ] 3.1 Créer `src/tests/UseLazyLoad.spec.ts` avec les tests unitaires
+  - [x] 3.1 Créer `src/tests/UseLazyLoad.spec.ts` avec les tests unitaires
     - Mocker useHttp pour intercepter les appels `sendRequest`
     - Tester les valeurs par défaut de `lazyState` (first: 0, rows: 10, sortField: "nom", sortOrder: 1)
     - Tester la mise à jour de `lazyState` via `onLazyLoad` avec un événement de pagination
@@ -58,7 +58,7 @@ Implémentation incrémentale des tests unitaires et property-based pour le fron
     - **Valide : Exigences 2.6**
 
 - [ ] 4. Implémenter les tests du composable useChambresList
-  - [ ] 4.1 Créer `src/tests/UseChambresList.spec.ts` avec les tests unitaires
+  - [x] 4.1 Créer `src/tests/UseChambresList.spec.ts` avec les tests unitaires
     - Mocker useHttp pour simuler les réponses de `/chambres/services`
     - Tester l'appel GET vers /chambres/services via `getChambres`
     - Tester le filtrage par préfixe insensible à la casse via `search`
@@ -72,7 +72,7 @@ Implémentation incrémentale des tests unitaires et property-based pour le fron
     - **Valide : Exigences 3.2, 3.4**
 
 - [ ] 5. Implémenter les tests du composable useListPatients
-  - [ ] 5.1 Créer `src/tests/UseListPatients.spec.ts` avec les tests unitaires
+  - [x] 5.1 Créer `src/tests/UseListPatients.spec.ts` avec les tests unitaires
     - Mocker useHttp et useLazyLoad
     - Tester `showDeleteDialog` : mise à jour de `selectedPatient` et `dialogVisible` à true
     - Tester `onCancel` : réinitialisation de `selectedPatient` à null et `dialogVisible` à false
@@ -86,7 +86,7 @@ Implémentation incrémentale des tests unitaires et property-based pour le fron
     - **Valide : Exigences 4.1**
 
 - [ ] 6. Implémenter les tests des composables usePatient et usePatientForm
-  - [ ] 6.1 Créer `src/tests/UsePatient.spec.ts` avec les tests unitaires
+  - [-] 6.1 Créer `src/tests/UsePatient.spec.ts` avec les tests unitaires
     - Mocker useHttp
     - Tester que `detailPatient` est null à l'initialisation
     - Tester l'appel GET vers `/patients/patients/detail/{id}` via `fetchPatientData`
@@ -96,7 +96,7 @@ Implémentation incrémentale des tests unitaires et property-based pour le fron
     - **Propriété 9 : Construction de l'URL fetchPatientData**
     - **Valide : Exigences 5.2**
 
-  - [ ] 6.3 Créer `src/tests/UsePatientForm.spec.ts` avec les tests unitaires
+  - [~] 6.3 Créer `src/tests/UsePatientForm.spec.ts` avec les tests unitaires
     - Mocker useHttp, vue-router, useToast
     - Tester l'initialisation : `civilites` contient ["Monsieur", "Madame", "Autre"], `isEditing` est false
     - Tester `onCreatePatient` : requête POST vers /patients/patients avec date formatée (heures à 12h)
@@ -109,12 +109,12 @@ Implémentation incrémentale des tests unitaires et property-based pour le fron
     - **Propriété 10 : Formatage de la date à midi lors de la création patient**
     - **Valide : Exigences 6.2**
 
-- [ ] 7. Checkpoint — Vérifier les tests des composables principaux
+- [~] 7. Checkpoint — Vérifier les tests des composables principaux
   - Exécuter `cd cmv_gateway/cmv_front && npx vitest --run` et s'assurer que tous les tests passent
   - Demander à l'utilisateur s'il y a des questions ou ajustements nécessaires
 
 - [ ] 8. Implémenter les tests des composables useDocuments, useDocumentManagement et useUploadDocument
-  - [ ] 8.1 Créer `src/tests/UseDocuments.spec.ts` avec les tests unitaires
+  - [~] 8.1 Créer `src/tests/UseDocuments.spec.ts` avec les tests unitaires
     - Mocker useToast et useI18n
     - Tester que `visible` est false à l'initialisation
     - Tester le toggle de `visible` via `toggleVisible`
@@ -125,7 +125,7 @@ Implémentation incrémentale des tests unitaires et property-based pour le fron
     - **Propriété 11 : Idempotence du double toggle de visibilité**
     - **Valide : Exigences 7.2**
 
-  - [ ] 8.3 Créer `src/tests/UseDocumentManagement.spec.ts` avec les tests unitaires
+  - [~] 8.3 Créer `src/tests/UseDocumentManagement.spec.ts` avec les tests unitaires
     - Mocker useHttp et useToast
     - Tester que `visible` est false et `documentToDelete` est null à l'initialisation
     - Tester `deleteDocument` : requête DELETE vers `/patients/delete/documents/delete/{id}`
@@ -136,7 +136,7 @@ Implémentation incrémentale des tests unitaires et property-based pour le fron
     - **Propriété 12 : Construction de l'URL de suppression de document**
     - **Valide : Exigences 8.2**
 
-  - [ ] 8.5 Créer `src/tests/UseUploadDocument.spec.ts` avec les tests unitaires
+  - [~] 8.5 Créer `src/tests/UseUploadDocument.spec.ts` avec les tests unitaires
     - Mocker useHttp et useToast
     - Tester que `documentTypes` contient 8 types et que `isValid` est false à l'initialisation
     - Tester que `isValid` passe à true quand fichier et type sont sélectionnés
@@ -150,21 +150,21 @@ Implémentation incrémentale des tests unitaires et property-based pour le fron
     - **Valide : Exigences 9.2**
 
 - [ ] 9. Implémenter les tests des vues simples et layout
-  - [ ] 9.1 Créer `src/tests/SimpleViews.spec.ts` avec les tests unitaires
+  - [~] 9.1 Créer `src/tests/SimpleViews.spec.ts` avec les tests unitaires
     - Mocker les composants enfants (LoginForm) et le routeur
     - Tester le rendu de LoginForm dans LoginView
     - Tester le message 404 et le lien de retour dans NotFound
     - Tester le message de problème serveur dans NetworkIssue
     - _Exigences : 10.1, 10.2, 10.3_
 
-  - [ ] 9.2 Créer `src/tests/LayoutViews.spec.ts` avec les tests unitaires
+  - [~] 9.2 Créer `src/tests/LayoutViews.spec.ts` avec les tests unitaires
     - Mocker RouterView
     - Tester la présence de RouterView dans AccueilLayout
     - Tester la présence de RouterView dans ChambresLayout
     - _Exigences : 11.1, 11.2_
 
 - [ ] 10. Implémenter les tests des vues métier
-  - [ ] 10.1 Créer `src/tests/BusinessViews.spec.ts` avec les tests unitaires
+  - [~] 10.1 Créer `src/tests/BusinessViews.spec.ts` avec les tests unitaires
     - Mocker les composants enfants (PageHeader, ListPatients, PatientDetail, DocumentsList, PatientForm, PatientDataDisclaimer, AutoComplete)
     - Mocker les composables associés (usePatient, useChambresList, useListPatients)
     - Tester AccueilView : rendu de PageHeader et ListPatients
@@ -174,12 +174,12 @@ Implémentation incrémentale des tests unitaires et property-based pour le fron
     - Tester AdmissionView : rendu du formulaire avec champs date d'entrée, date de sortie, ambulatoire et services
     - _Exigences : 12.1, 12.2, 12.3, 12.4, 12.5_
 
-- [ ] 11. Checkpoint — Vérifier les tests des vues
+- [~] 11. Checkpoint — Vérifier les tests des vues
   - Exécuter `cd cmv_gateway/cmv_front && npx vitest --run` et s'assurer que tous les tests passent
   - Demander à l'utilisateur s'il y a des questions ou ajustements nécessaires
 
 - [ ] 12. Implémenter les tests du store utilisateur
-  - [ ] 12.1 Créer `src/tests/UserStore.spec.ts` avec les tests unitaires
+  - [~] 12.1 Créer `src/tests/UserStore.spec.ts` avec les tests unitaires
     - Utiliser `createTestingPinia` de @pinia/testing
     - Tester l'état initial : `role` chaîne vide, `mode` "light", `authChecked` false
     - Tester `getUserInfos` succès : `role` mis à jour, `authChecked` passe à true
@@ -189,7 +189,7 @@ Implémentation incrémentale des tests unitaires et property-based pour le fron
     - _Exigences : 13.1, 13.2, 13.3, 13.4, 13.5_
 
 - [ ] 13. Implémenter les tests du routeur
-  - [ ] 13.1 Créer `src/tests/Router.spec.ts` avec les tests unitaires
+  - [~] 13.1 Créer `src/tests/Router.spec.ts` avec les tests unitaires
     - Mocker le store utilisateur pour simuler différents rôles
     - Tester l'affichage de LoginView pour un utilisateur non authentifié sur "/"
     - Tester la redirection vers /accueil pour un utilisateur avec rôle "home" sur "/"
@@ -207,7 +207,7 @@ Implémentation incrémentale des tests unitaires et property-based pour le fron
     - **Valide : Exigences 14.5**
 
 - [ ] 14. Implémenter les tests des utilitaires regex
-  - [ ] 14.1 Créer `src/tests/Regex.spec.ts` avec les tests unitaires
+  - [~] 14.1 Créer `src/tests/Regex.spec.ts` avec les tests unitaires
     - Tester `regexMail` avec des exemples concrets d'emails valides et invalides
     - Tester `regexPassword` avec des mots de passe conformes et non conformes (12+ chars, majuscule, minuscule, chiffre, caractère spécial)
     - Tester `regexGeneric` avec des chaînes alphanumériques valides (accents français inclus) et des chaînes contenant des caractères interdits
@@ -225,7 +225,7 @@ Implémentation incrémentale des tests unitaires et property-based pour le fron
     - **Propriété 18 : Validation regex générique**
     - **Valide : Exigences 15.3**
 
-- [ ] 15. Checkpoint final — Vérifier l'ensemble de la suite de tests
+- [~] 15. Checkpoint final — Vérifier l'ensemble de la suite de tests
   - Exécuter `cd cmv_gateway/cmv_front && npx vitest --run` et s'assurer que tous les tests passent
   - Demander à l'utilisateur s'il y a des questions ou ajustements nécessaires
 
