@@ -2,7 +2,7 @@
 from fastapi import APIRouter
 
 # Import des différents modules de routage
-from app.routers import chambres
+from app.routers import chambres, ml
 from . import auth, patients, users
 
 # Création du routeur principal avec préfixe /api
@@ -14,3 +14,4 @@ router.include_router(auth.router)  # Routes d'authentification
 router.include_router(chambres.router)  # Routes de gestion des chambres
 router.include_router(patients.router)  # Routes de gestion des patients
 router.include_router(users.router)  # Routes de gestion des utilisateurs
+router.include_router(ml.router)  # Routes de prédiction ML

@@ -1,6 +1,7 @@
 # Import des modules nécessaires
-from dotenv import load_dotenv
 import os
+
+from dotenv import load_dotenv
 
 # Chargement des variables d'environnement depuis le fichier .env
 load_dotenv()

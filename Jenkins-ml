@@ -1,0 +1,100 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'nodejs'
+    }
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('cmv-dockerhub')
+        IMAGE_ML = "firizgoude/cmv_ml"
+        IMAGE_ML_TAG = "ml-${env.BUILD_NUMBER}"
+        BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
+        // Gateway (bastion) pour le rebond SSH
+        GATEWAY_HOST = credentials("ec2-gateway-host")
+        GATEWAY_USER = credentials("ec2-gateway-username")
+        // Instance privée ML
+        ML_HOST = credentials("ec2-ml-host")
+        ML_USER = credentials("ec2-ml-username")
+        SSH_CREDENTIALS = credentials('cmv-ssh-key')
+        PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin" 
+    }
+
+    stages {
+        stage("Checkout") {
+            steps {
+                checkout scm
+                script {
+                    echo "Current branch is ${BRANCH_NAME}"
+                }
+            }
+        }
+        stage('Build Image') {
+            steps {
+                dir('cmv_ml') {
+                    script {
+                        sh "echo 'Starting Docker build...'"
+                        sh "docker --version"
+                        sh "pwd"
+                        sh "ls -la"
+                        sh 'docker build --platform linux/amd64 -t "${IMAGE_ML}:latest" .'
+                        sh "echo 'Docker build completed.'"
+                    }
+                }
+            }
+        }
+        stage('Push to DockerHub') {
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                sh "docker push ${IMAGE_ML}:latest"
+            }
+        }
+        stage('Deploy to EC2') {
+            steps {
+                script {
+                    sshagent(credentials: ['cdk-key']) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no \
+                                -o UserKnownHostsFile=/dev/null \
+                                -o LogLevel=ERROR \
+                                -A \
+                                -J ${GATEWAY_USER}@${GATEWAY_HOST} \
+                                ${ML_USER}@${ML_HOST} << 'EOF'
+
+# Login DockerHub sur l'EC2
+echo "${DOCKERHUB_CREDENTIALS_PSW}" | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
+
+# Arrêt et suppression
+docker stop cmv_ml || true
+docker rm cmv_ml || true
+docker image rm ${IMAGE_ML}:latest || true
+
+# Déploiement
+docker compose up -d
+
+# Logout (optionnel, pour la sécu)
+docker logout
+EOF
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                node {
+                    sh 'docker logout'
+                }
+            }
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Please check the logs.'
+        }
+    }
+}

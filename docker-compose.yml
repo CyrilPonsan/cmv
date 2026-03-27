@@ -8,12 +8,7 @@ volumes:
   db_gateway:
     driver: local
   cmv_patients:
-    driver: local
-  db_patients:
-    driver: local
   cmv_chambres:
-    driver: local
-  db_chambres:
     driver: local
   logs:
     driver: local
@@ -37,7 +32,7 @@ services:
       VALKEY_PORT: ${VALKEY_PORT}
 
   db_gateway:
-    image: postgres:latest
+    image: postgres:17
     restart: always
     container_name: db_gateway
     volumes:
@@ -51,20 +46,33 @@ services:
       POSTGRES_PASSWORD: ${GATEWAY_POSTGRES_PASSWORD}
       POSTGRES_DB: ${GATEWAY_POSTGRES_DB}
 
-  db_patients:
-    image: postgres:latest
+  api_gateway:
+    image: firizgoude/cmv_gateway:latest
+    pull_policy: always
     restart: always
-    container_name: db_patients
-    volumes:
-      - db_patients:/var/lib/postgresql/data
     networks:
       - cmv
+    volumes:
+      - logs:/app/app/logs
+    container_name: cmv_gateway
     ports:
-      - "6002:5432"
+      - "8001:8000"
+    links:
+      - db_gateway
+    command: >
+      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+    depends_on:
+      - db_gateway
     environment:
-      POSTGRES_USER: ${PATIENTS_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${PATIENTS_POSTGRES_PASSWORD}
-      POSTGRES_DB: ${PATIENTS_POSTGRES_DB}
+      GATEWAY_DATABASE_URL: ${GATEWAY_POSTGRES_URL}
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+      PATIENTS_SERVICE: ${PATIENTS_SERVICE}
+      CHAMBRES_SERVICE: ${CHAMBRES_SERVICE}
+      ML_SERVICE: ${ML_SERVICE}
+      ACCESS_MAX_AGE: ${ACCESS_MAX_AGE}
+      REFRESH_MAX_AGE: ${REFRESH_MAX_AGE}
+      ENVIRONMENT: ${ENVIRONMENT}
 
   api_patients:
     image: firizgoude/cmv_patients:latest
@@ -78,11 +86,11 @@ services:
     ports:
       - "8002:8000"
     links:
-      - db_patients
+      - db_gateway
     command: >
-      bash -c 'while !</dev/tcp/db_patients/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
     depends_on:
-      - db_patients
+      - db_gateway
     environment:
       PATIENTS_DATABASE_URL: ${PATIENTS_DATABASE_URL}
       SECRET_KEY: ${SECRET_KEY}
@@ -91,21 +99,7 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
-
-  db_chambres:
-    image: postgres:latest
-    restart: always
-    container_name: db_chambres
-    volumes:
-      - db_chambres:/var/lib/postgresql/data
-    networks:
-      - cmv
-    ports:
-      - "6003:5432"
-    environment:
-      POSTGRES_USER: ${CHAMBRES_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${CHAMBRES_POSTGRES_PASSWORD}
-      POSTGRES_DB: ${CHAMBRES_POSTGRES_DB}
+      CHAMBRES_SERVICE: ${CHAMBRES_SERVICE}
 
   api_chambres:
     image: firizgoude/cmv_chambres:latest
@@ -117,12 +111,34 @@ services:
     ports:
       - "8003:8000"
     links:
-      - db_chambres
+      - db_gateway
     command: >
-      bash -c 'while !</dev/tcp/db_chambres/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
     depends_on:
-      - db_chambres
+      - db_gateway
     environment:
       CHAMBRES_DATABASE_URL: ${CHAMBRES_DATABASE_URL}
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
+
+  api_ml:
+    image: firizgoude/cmv_ml:latest
+    pull_policy: always
+    restart: always
+    networks:
+      - cmv
+    container_name: cmv_ml
+    ports:
+      - "8004:8000"
+    links:
+      - db_gateway
+    command: >
+      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+    depends_on:
+      - db_gateway
+    environment:
+      ML_DATABASE_URL: ${ML_DATABASE_URL}
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+      MODEL_PATH: ${MODEL_PATH}
+      SHAP_ENABLED: ${SHAP_ENABLED}

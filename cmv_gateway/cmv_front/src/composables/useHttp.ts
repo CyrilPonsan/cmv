@@ -76,14 +76,14 @@ const useHttp = (): UseHttp => {
       }
 
       // Gestion des erreurs de rafraîchissement de token
-      if (error.response.status === 403 && originalRequest.url === `/auth/refresh`) {
+      if (error.response.status === 401 && originalRequest.url === `/auth/refresh`) {
         console.log('Error on refresh token request - logging out')
         userStore.logout()
         return Promise.reject(error)
       }
 
       // Tentative de rafraîchissement du token pour les autres erreurs d'AUTHentification
-      if (error.response.status === 403 && !originalRequest._retry) {
+      if (error.response.status === 401 && !originalRequest._retry) {
         console.log('Attempting to refresh token')
         originalRequest._retry = true
 

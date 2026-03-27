@@ -1,5 +1,6 @@
-from dotenv import load_dotenv
 import os
+
+from dotenv import load_dotenv
 
 # Charge les variables d'environnement depuis le fichier .env
 load_dotenv()

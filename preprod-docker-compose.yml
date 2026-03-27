@@ -13,6 +13,8 @@ volumes:
     driver: local
   db_chambres:
     driver: local
+  db_ml:
+    driver: local
   logs:
     driver: local
   redis:
@@ -64,6 +66,7 @@ services:
       ALGORITHM: ${ALGORITHM}
       PATIENTS_SERVICE: ${PATIENTS_SERVICE}
       CHAMBRES_SERVICE: ${CHAMBRES_SERVICE}
+      ML_SERVICE: ${ML_SERVICE}
       ACCESS_MAX_AGE: ${ACCESS_MAX_AGE}
       REFRESH_MAX_AGE: ${REFRESH_MAX_AGE}
       ENVIRONMENT: ${ENVIRONMENT}
@@ -154,6 +157,51 @@ services:
     develop:
       watch:
         - path: ./cmv_chambres
+          action: rebuild
+
+  db_ml:
+    image: postgres:17
+    restart: always
+    container_name: db_ml
+    volumes:
+      - db_ml:/var/lib/postgresql/data
+    networks:
+      - cmv
+    ports:
+      - "6004:5432"
+    environment:
+      POSTGRES_USER: ${ML_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${ML_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${ML_POSTGRES_DB}
+
+  api_ml:
+    build:
+      context: ./cmv_ml
+    restart: always
+    networks:
+      - cmv
+    volumes:
+      - logs:/code/app/logs
+      - ./cmv_ml/models:/code/app/models:ro
+    container_name: cmv_ml
+    ports:
+      - "8004:8000"
+    links:
+      - db_ml
+    command: >
+      bash -c 'while !</dev/tcp/db_ml/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+    depends_on:
+      - db_ml
+    environment:
+      ML_DATABASE_URL: ${ML_DATABASE_URL}
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+      MODEL_PATH: ${MODEL_PATH}
+      SHAP_ENABLED: ${SHAP_ENABLED}
+
+    develop:
+      watch:
+        - path: ./cmv_ml
           action: rebuild
 
   nginx:
