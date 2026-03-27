@@ -28,7 +28,7 @@ async def test_get_patients_not_found(
     httpx_mock.add_response(
         url="http://mock-patients-service/foo",
         json={"detail": "Not Found"},
-        status_code=403,
+        status_code=404,
     )
 
     headers = {"Cookie": f"access_token={auth_cookie}"}
