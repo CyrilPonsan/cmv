@@ -7,13 +7,17 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('cmv-dockerhub')
-        IMAGE_ML = "firizgoude/cmv_ml"
-        IMAGE_ML_TAG = "ml-${env.BUILD_NUMBER}"
+        IMAGE_CHAMBRES = "firizgoude/cmv_chambres"
+        IMAGE_CHAMBRES_TAG = "chambres-${env.BUILD_NUMBER}"
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
-        EC2_HOST = credentials("ec2-gateway-host")
-        EC2_USER = credentials("ec2-ml-username")
+        // Gateway (bastion) pour le rebond SSH
+        GATEWAY_HOST = credentials("ec2-gateway-host")
+        GATEWAY_USER = credentials("ec2-gateway-username")
+        // Instance privée chambres
+        CHAMBRES_HOST = credentials("ec2-chambres-host")
+        CHAMBRES_USER = credentials("ec2-chambres-username")
         SSH_CREDENTIALS = credentials('cmv-ssh-key')
-        PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin" 
+        PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     }
 
     stages {
@@ -27,13 +31,13 @@ pipeline {
         }
         stage('Build Image') {
             steps {
-                dir('cmv_ml') {
+                dir('cmv_chambres') {
                     script {
                         sh "echo 'Starting Docker build...'"
                         sh "docker --version"
                         sh "pwd"
                         sh "ls -la"
-                        sh 'docker build --platform linux/amd64 -t "${IMAGE_ML}:latest" .'
+                        sh 'docker build --platform linux/amd64 -t "${IMAGE_CHAMBRES}:latest" .'
                         sh "echo 'Docker build completed.'"
                     }
                 }
@@ -42,26 +46,28 @@ pipeline {
         stage('Push to DockerHub') {
             steps {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                sh "docker push ${IMAGE_ML}:latest"
+                sh "docker push ${IMAGE_CHAMBRES}:latest"
             }
         }
         stage('Deploy to EC2') {
             steps {
                 script {
-                    sshagent(credentials: ['cmv-ssh-key']) {
+                    sshagent(credentials: ['cdk-key']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no \
                                 -o UserKnownHostsFile=/dev/null \
                                 -o LogLevel=ERROR \
-                                ${EC2_USER}@${EC2_HOST} << 'EOF'
+                                -A \
+                                -J ${GATEWAY_USER}@${GATEWAY_HOST} \
+                                ${CHAMBRES_USER}@${CHAMBRES_HOST} << 'EOF'
 
 # Login DockerHub sur l'EC2
 echo "${DOCKERHUB_CREDENTIALS_PSW}" | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
 
 # Arrêt et suppression
-docker stop cmv_ml || true
-docker rm cmv_ml || true
-docker image rm ${IMAGE_ML}:latest || true
+docker stop cmv_chambres || true
+docker rm cmv_chambres || true
+docker image rm ${IMAGE_CHAMBRES}:latest || true
 
 # Déploiement
 docker compose up -d

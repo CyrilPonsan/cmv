@@ -3,7 +3,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class PredictionResponse(BaseModel):
@@ -17,6 +17,7 @@ class PredictionResponse(BaseModel):
     prediction_id: UUID
     predicted_length_of_stay: float
     shap_values: dict[str, float] | None = None
+    imputed_features: dict[str, float] = Field(default_factory=dict, description="Map of imputed feature names to the training-mean value used.")
 
 
 class ValidatedPredictionSchema(BaseModel):

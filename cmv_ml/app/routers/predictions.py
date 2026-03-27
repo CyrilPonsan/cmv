@@ -99,12 +99,15 @@ async def predict(
         # Convertir les features en dictionnaire
         features_dict = features.model_dump()
 
+        # Impute missing continuous features with training-set means
+        clean_features, imputed_features = prediction_engine.imputation_service.impute(features_dict)
+
         print(
-            f"Received prediction request from user {current_user.get('id_user')}: {features_dict}"
+            f"Received prediction request from user {current_user.get('id_user')}: {clean_features}"
         )
 
         # Exécuter la prédiction
-        predicted_value = prediction_engine.predict(features_dict)
+        predicted_value = prediction_engine.predict(clean_features)
 
         # Générer un ID unique pour cette prédiction
         prediction_id = uuid4()
@@ -116,7 +119,7 @@ async def predict(
         shap_values = None
         if explain and SHAP_ENABLED and shap_explainer is not None:
             try:
-                shap_values = shap_explainer.explain(features_dict)
+                shap_values = shap_explainer.explain(clean_features)
             except ShapDisabledError:
                 # SHAP is disabled, return prediction without SHAP values
                 shap_values = None
@@ -128,6 +131,7 @@ async def predict(
             prediction_id=prediction_id,
             predicted_length_of_stay=predicted_value,
             shap_values=shap_values,
+            imputed_features=imputed_features,
         )
 
     except ModelNotLoadedError:
