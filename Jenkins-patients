@@ -9,12 +9,8 @@ pipeline {
         IMAGE_PATIENTS = "firizgoude/cmv_patients"
         IMAGE_PATIENTS_TAG = "patients-${env.BUILD_NUMBER}"
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
-        // Gateway (bastion) pour le rebond SSH
-        GATEWAY_HOST = credentials("ec2-gateway-host")
-        GATEWAY_USER = credentials("ec2-gateway-username")
-        // Instance privée patients
-        PATIENTS_HOST = credentials("ec2-patients-host")
-        PATIENTS_USER = credentials("ec2-patients-username")
+        EC2_HOST = credentials("ec2-gateway-host")
+        EC2_USER = credentials("ec2-gateway-username")
         SSH_CREDENTIALS = credentials('cmv-ssh-key')
         PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     }
