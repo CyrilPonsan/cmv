@@ -16,7 +16,7 @@ from app.repositories.user_crud import PgUserRepository
 from app.schemas.user import User
 from ..utils.logging_setup import LoggerSetup
 from .redis import redis_client
-from ..utils.config import SECRET_KEY, ALGORITHM
+from ..utils.config import SECRET_KEY, ALGORITHM, PATIENTS_SECRET_KEY, CHAMBRES_SECRET_KEY, ML_SECRET_KEY
 from .db_session import get_db
 
 # Initialisation des clients Redis et du logger
@@ -205,10 +205,19 @@ def get_dynamic_permissions(action: str, resource: str) -> str:
             "exp": datetime.now() + timedelta(seconds=15),  # Durée de vie courte
             "source": "api_gateway",
         }
-        return jwt.encode(internal_payload, SECRET_KEY or "", algorithm=ALGORITHM or "")
+        secret_key = get_service_secret_key(resource)
+        return jwt.encode(internal_payload, secret_key or "", algorithm=ALGORITHM or "")
 
     return get_permissions
 
+def get_service_secret_key(resource: str):
+    match resource:
+        case "patients":
+            return PATIENTS_SECRET_KEY
+        case "chambres":
+            return CHAMBRES_SECRET_KEY
+        case "ml":
+            return ML_SECRET_KEY
 
 async def check_permissions(
     db: Session,

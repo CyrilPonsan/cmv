@@ -1,4 +1,6 @@
 # Import des gestionnaires d'exceptions FastAPI
+from contextlib import asynccontextmanager
+
 from fastapi.exception_handlers import (
     http_exception_handler,
     request_validation_exception_handler,
@@ -21,6 +23,7 @@ from .utils.logging_setup import LoggerSetup
 from .utils.database import engine
 from .sql import models
 from .utils.config import ENVIRONMENT, VALKEY_HOST
+from .utils.rate_limiter import init_rate_limiter, close_rate_limiter
 
 # Création des tables dans la base de données
 models.Base.metadata.create_all(bind=engine)
@@ -31,9 +34,22 @@ logger = LoggerSetup()
 print("HELLO WORLD! Starting the application...")
 print(f"VALKEY_HOST: {VALKEY_HOST}")
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Gestion du cycle de vie de l'application.
+
+    Initialise le rate limiter au démarrage et le ferme à l'arrêt.
+    """
+    await init_rate_limiter()
+    yield
+    await close_rate_limiter()
+
+
 # Création de l'application FastAPI
 app = FastAPI(
     root_path="",  # Set to your proxy path if needed, e.g., "/api"
+    lifespan=lifespan,
 )
 
 # Inclusion des routes de l'API

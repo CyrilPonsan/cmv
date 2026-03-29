@@ -11,6 +11,9 @@ from app.utils.config import GatewaySettings, WEAK_SECRETS
 VALID_PARAMS = {
     "GATEWAY_DATABASE_URL": "postgresql://postgres:pwd@localhost:6001/cmv_gateway",
     "SECRET_KEY": "une-cle-valide-de-32-caracteres-ok",
+    "PATIENTS_SECRET_KEY": "une-cle-patients-de-32-chars-ok!",
+    "CHAMBRES_SECRET_KEY": "une-cle-chambres-de-32-chars-ok!",
+    "ML_SECRET_KEY": "une-cle-ml-valide-de-32-chars-ok",
     "PATIENTS_SERVICE": "http://localhost:8002/api",
     "CHAMBRES_SERVICE": "http://localhost:8003/api",
     "ML_SERVICE": "http://localhost:8004",

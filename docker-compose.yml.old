@@ -14,21 +14,9 @@ volumes:
     driver: local
   redis:
     driver: local
-  caddy_data:
-    driver: local
 
 # The containers that compose the project
 services:
-  caddy_internal: 
-    image: caddy:2-alpine
-    restart: always
-    container_name: caddy_internal
-    networks:
-      - cmv
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile 
-      - caddy_data:/data
-
   redis:
     image: valkey/valkey:latest
     restart: always
@@ -68,14 +56,9 @@ services:
     links:
       - db_gateway
     command: >
-      bash -c '
-      while [ ! -f /caddy_data/caddy/pki/authorities/local/root.crt ]; do sleep 1; done; 
-      while !</dev/tcp/db_gateway/5432; do sleep 1; done; 
-      alembic upgrade head; 
-      uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
     depends_on:
       - db_gateway
-      - caddy_internal
     environment:
       GATEWAY_DATABASE_URL: ${GATEWAY_POSTGRES_URL}
       SECRET_KEY: ${SECRET_KEY}
@@ -86,8 +69,6 @@ services:
       ACCESS_MAX_AGE: ${ACCESS_MAX_AGE}
       REFRESH_MAX_AGE: ${REFRESH_MAX_AGE}
       ENVIRONMENT: ${ENVIRONMENT}
-      REQUESTS_CA_BUNDLE: /caddy_data/caddy/pki/authorities/local/root.crt
-      SSL_CERT_FILE: /caddy_data/caddy/pki/authorities/local/root.crt
 
   api_patients:
     image: firizgoude/cmv_patients:latest
