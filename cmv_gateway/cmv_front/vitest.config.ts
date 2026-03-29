@@ -6,7 +6,8 @@ import path from 'path'
 export default defineConfig({
   plugins: [vue()],
   test: {
-    globals: true
+    globals: true,
+    environment: 'happy-dom'
   },
 
   resolve: {

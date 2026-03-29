@@ -234,3 +234,67 @@ describe('UseChambresList', () => {
     })
   })
 })
+
+// Feature: frontend-test-coverage, Property 7: Filtrage par préfixe des services
+import fc from 'fast-check'
+
+/**
+ * Arbitrary: generates a list of mock services with random names.
+ */
+const arbServiceList = fc.array(
+  fc.record({
+    id_service: fc.integer({ min: 1, max: 1000 }),
+    nom: fc.string({ minLength: 1, maxLength: 30 }),
+    chambres: fc.constant([] as never[])
+  }),
+  { minLength: 1, maxLength: 20 }
+)
+
+describe('UseChambresList — Property-based tests', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockError.value = null
+    mockSendRequest.mockReset()
+  })
+
+  // **Validates: Requirements 3.2**
+  it('search: should return only services whose name starts with the query (case-insensitive)', () => {
+    fc.assert(
+      fc.property(arbServiceList, fc.string({ minLength: 0, maxLength: 10 }), (services: { id_service: number; nom: string; chambres: never[] }[], query: string) => {
+        simulateGetChambres(services)
+        const { search, list } = useChambresList()
+
+        search({ query } as any)
+
+        const expected = services.filter((s: { nom: string }) =>
+          s.nom.toLowerCase().startsWith(query.toLowerCase())
+        )
+
+        if (expected.length > 0) {
+          // When matches exist, list should contain exactly the matching services
+          expect(list.value).toEqual(expected)
+        } else {
+          // When no matches, list resets to the full initial list
+          expect(list.value).toEqual(services)
+        }
+      }),
+      { numRuns: 100 }
+    )
+  })
+
+  // **Validates: Requirements 3.4**
+  it('searchBySelect: should return only services whose name starts with the value (case-sensitive)', () => {
+    fc.assert(
+      fc.property(arbServiceList, fc.string({ minLength: 0, maxLength: 10 }), (services: { id_service: number; nom: string; chambres: never[] }[], value: string) => {
+        simulateGetChambres(services)
+        const { searchBySelect, list } = useChambresList()
+
+        searchBySelect({ value } as any)
+
+        const expected = services.filter((s: { nom: string }) => s.nom.startsWith(value))
+        expect(list.value).toEqual(expected)
+      }),
+      { numRuns: 100 }
+    )
+  })
+})

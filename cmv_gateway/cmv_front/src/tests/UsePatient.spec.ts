@@ -2,10 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { ref } from 'vue'
 
 // --- Mock vue-router ---
-const mockPush = vi.fn()
 vi.mock('vue-router', () => ({
-  useRouter: () => ({ push: mockPush }),
-  useRoute: () => ({ name: 'test' })
+  useRouter: () => ({ push: vi.fn() }),
+  useRoute: () => ({ params: { id: '1' } })
 }))
 
 // --- Mock user store ---
@@ -37,9 +36,9 @@ describe('UsePatient', () => {
     mockSendRequest.mockReset()
   })
 
-  // --- Requirement 5.1: detailPatient is null at initialization ---
+  // --- Requirement 5.1: detailPatient is null on initialization ---
   describe('initialization', () => {
-    it('should have detailPatient as null at initialization', () => {
+    it('should have detailPatient as null initially', () => {
       const { detailPatient } = usePatient()
       expect(detailPatient.value).toBeNull()
     })
@@ -58,17 +57,19 @@ describe('UsePatient', () => {
       )
     })
 
-    it('should update detailPatient when data is received', () => {
+    it('should update detailPatient when the request succeeds', () => {
       const mockPatient = {
-        id_patient: 7,
+        id_patient: 42,
         nom: 'Dupont',
         prenom: 'Jean',
         civilite: 'Monsieur',
         date_de_naissance: '1990-01-15',
-        adresse: '1 rue de Paris',
+        adresse: '1 rue de la Paix',
         code_postal: '75001',
         ville: 'Paris',
-        telephone: '0601020304'
+        telephone: '0601020304',
+        documents: [],
+        latest_admission: null
       }
 
       mockSendRequest.mockImplementation((req: any, applyData: (data: any) => void) => {
@@ -76,20 +77,38 @@ describe('UsePatient', () => {
       })
 
       const { fetchPatientData, detailPatient } = usePatient()
-      fetchPatientData(7)
+      fetchPatientData(42)
 
       expect(detailPatient.value).toEqual(mockPatient)
     })
+  })
+})
 
-    it('should construct the correct URL with the given patient ID', () => {
-      const { fetchPatientData } = usePatient()
+// Feature: frontend-test-coverage, Property 9: Construction de l'URL fetchPatientData
+import fc from 'fast-check'
 
-      fetchPatientData(123)
+describe('UsePatient - Property-Based Tests', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockSendRequest.mockReset()
+  })
 
-      expect(mockSendRequest).toHaveBeenCalledWith(
-        { path: '/patients/patients/detail/123' },
-        expect.any(Function)
-      )
-    })
+  // **Validates: Requirements 5.2**
+  it('Property 9: fetchPatientData(id) must trigger a request to /patients/patients/detail/{id} for any positive integer', () => {
+    fc.assert(
+      fc.property(fc.integer({ min: 1, max: 1_000_000 }), (patientId) => {
+        mockSendRequest.mockReset()
+        const { fetchPatientData } = usePatient()
+
+        fetchPatientData(patientId)
+
+        expect(mockSendRequest).toHaveBeenCalledOnce()
+        expect(mockSendRequest).toHaveBeenCalledWith(
+          { path: `/patients/patients/detail/${patientId}` },
+          expect.any(Function)
+        )
+      }),
+      { numRuns: 100 }
+    )
   })
 })

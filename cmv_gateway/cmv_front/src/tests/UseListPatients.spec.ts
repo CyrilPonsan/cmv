@@ -238,3 +238,40 @@ describe('UseListPatients', () => {
     })
   })
 })
+
+// Feature: frontend-test-coverage, Property 8: showDeleteDialog met à jour l'état du dialogue
+// **Validates: Requirements 4.1**
+import fc from 'fast-check'
+
+describe('UseListPatients — Property-Based Tests', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockHttpError.value = null
+    mockSendRequest.mockReset()
+    mockGetData.mockReset()
+    mockToastAdd.mockReset()
+  })
+
+  it('Property 8: showDeleteDialog sets selectedPatient and dialogVisible for any patient', () => {
+    const arbPatient = fc.record({
+      id_patient: fc.integer({ min: 1, max: 1_000_000 }),
+      nom: fc.string({ minLength: 1, maxLength: 50 }),
+      prenom: fc.string({ minLength: 1, maxLength: 50 }),
+      date_de_naissance: fc.date({ min: new Date('1900-01-01'), max: new Date('2024-12-31') })
+        .map((d) => d.toISOString().slice(0, 10)),
+      telephone: fc.stringMatching(/^0[0-9]{9}$/)
+    })
+
+    fc.assert(
+      fc.property(arbPatient, (patient) => {
+        const { showDeleteDialog, selectedPatient, dialogVisible } = useListPatients()
+
+        showDeleteDialog(patient)
+
+        expect(selectedPatient.value).toEqual(patient)
+        expect(dialogVisible.value).toBe(true)
+      }),
+      { numRuns: 100 }
+    )
+  })
+})

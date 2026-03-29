@@ -265,3 +265,148 @@ describe('UseHttp', () => {
     })
   })
 })
+
+// ============================================================
+// Property-Based Tests (fast-check)
+// ============================================================
+import fc from 'fast-check'
+
+// Feature: frontend-test-coverage, Property 1: Transition isLoading sur requête réussie
+describe('Property-Based: Transition isLoading sur requête réussie', () => {
+  /**
+   * **Validates: Requirements 1.1**
+   *
+   * For any valid HTTP response data, when sendRequest is called and the request succeeds,
+   * isLoading must transition to true during the request then back to false after resolution,
+   * and the returned data must match the response.
+   */
+  it('isLoading should be true during request and false after, with data matching response', async () => {
+    await fc.assert(
+      fc.asyncProperty(
+        fc.jsonValue(),
+        async (responseData) => {
+          vi.clearAllMocks()
+
+          // Re-setup interceptor mock for fresh useHttp instance
+          mockInterceptorUse.mockImplementation((onFulfilled: any, onRejected: any) => {
+            return 0
+          })
+
+          // Track isLoading value captured during the request (while "in flight")
+          let isLoadingDuringRequest: boolean | undefined
+
+          // We need to create useHttp first, then set up the mock to capture its isLoading
+          const httpInstance = useHttp()
+          const { sendRequest, isLoading } = httpInstance
+
+          // Now set up mockRequest to capture isLoading during execution
+          mockRequest.mockImplementation(() => {
+            // At this point, sendRequest has already set isLoading to true
+            isLoadingDuringRequest = isLoading.value
+            return Promise.resolve({ data: responseData })
+          })
+
+          // Before the request
+          expect(isLoading.value).toBe(false)
+
+          // Execute the request
+          const result = await sendRequest({ path: '/test', method: 'get' })
+
+          // isLoading was true during the request
+          expect(isLoadingDuringRequest).toBe(true)
+
+          // isLoading is false after resolution
+          expect(isLoading.value).toBe(false)
+
+          // Returned data matches the response
+          expect(result).toEqual(responseData)
+        }
+      ),
+      { numRuns: 100 }
+    )
+  })
+})
+
+// Feature: frontend-test-coverage, Property 2: Redirection sur erreur serveur (status >= 500)
+describe('Property-Based: Redirection sur erreur serveur (status >= 500)', () => {
+  /**
+   * **Validates: Requirements 1.2**
+   *
+   * For any HTTP status code >= 500, when sendRequest receives a response with that status,
+   * the router must be called with the route "network-issue".
+   */
+  it('should redirect to network-issue for any status code >= 500', async () => {
+    await fc.assert(
+      fc.asyncProperty(
+        fc.integer({ min: 500, max: 599 }),
+        async (statusCode) => {
+          vi.clearAllMocks()
+
+          // Re-setup interceptor mock to capture the error callback
+          let capturedErrorCallback: (error: any) => any = () => {}
+          mockInterceptorUse.mockImplementation((_onFulfilled: any, onRejected: any) => {
+            capturedErrorCallback = onRejected
+            return 0
+          })
+
+          // Create a fresh useHttp instance to register the interceptor
+          useHttp()
+
+          // Simulate a server error with the generated status code
+          const serverError = {
+            response: { status: statusCode, data: { detail: `Server error ${statusCode}` } },
+            config: { url: '/test-endpoint', _retry: false }
+          }
+
+          await capturedErrorCallback(serverError).catch(() => {})
+
+          // The router must be called with the route "network-issue"
+          expect(mockPush).toHaveBeenCalledWith({ name: 'network-issue' })
+        }
+      ),
+      { numRuns: 100 }
+    )
+  })
+})
+
+// Feature: frontend-test-coverage, Property 3: Capture du message d'erreur API
+describe('Property-Based: Capture du message d\'erreur API', () => {
+  /**
+   * **Validates: Requirements 1.5**
+   *
+   * For any HTTP error response containing a `detail` field,
+   * the `error` ref of useHttp must contain exactly the value of that `detail` field.
+   */
+  it('error ref should contain exactly the detail value from any error response', async () => {
+    await fc.assert(
+      fc.asyncProperty(
+        fc.string({ minLength: 1 }),
+        async (detailMessage) => {
+          vi.clearAllMocks()
+
+          // Re-setup interceptor mock for fresh useHttp instance
+          mockInterceptorUse.mockImplementation((_onFulfilled: any, _onRejected: any) => {
+            return 0
+          })
+
+          // Mock the request to reject with an error containing the detail field
+          mockRequest.mockRejectedValueOnce({
+            response: { data: { detail: detailMessage } }
+          })
+
+          const { sendRequest, error } = useHttp()
+
+          // error should be null before the request
+          expect(error.value).toBeNull()
+
+          // Execute the request and catch the expected error
+          await sendRequest({ path: '/test', method: 'get' }).catch(() => {})
+
+          // error ref must contain exactly the detail value
+          expect(error.value).toBe(detailMessage)
+        }
+      ),
+      { numRuns: 100 }
+    )
+  })
+})

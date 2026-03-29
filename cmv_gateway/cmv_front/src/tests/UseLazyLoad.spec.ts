@@ -246,3 +246,88 @@ describe('UseLazyLoad', () => {
     })
   })
 })
+
+// Feature: frontend-test-coverage, Property 4: Mise à jour de lazyState par pagination
+// **Validates: Requirements 2.2**
+import fc from 'fast-check'
+
+describe('UseLazyLoad — Property-Based Tests', () => {
+  it('Property 4: onLazyLoad updates lazyState.first and lazyState.rows to match event values', () => {
+    fc.assert(
+      fc.property(
+        fc.nat({ max: 10000 }),
+        fc.integer({ min: 1, max: 500 }),
+        (first, rows) => {
+          const { lazyState, onLazyLoad } = useLazyLoad('/test')
+
+          onLazyLoad({ first, rows, sortField: 'nom', sortOrder: 1 })
+
+          expect(lazyState.value.first).toBe(first)
+          expect(lazyState.value.rows).toBe(rows)
+        }
+      ),
+      { numRuns: 100 }
+    )
+  })
+
+  // Feature: frontend-test-coverage, Property 5: Réinitialisation de first lors du tri
+  // **Validates: Requirements 2.3**
+  it('Property 5: onSort resets lazyState.first to 0 for any non-zero first', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 1, max: 10000 }),
+        fc.integer({ min: 1, max: 500 }),
+        fc.constantFrom('nom', 'prenom', 'date_de_naissance'),
+        fc.constantFrom(1 as const, -1 as const),
+        (first, rows, sortField, sortOrder) => {
+          const { lazyState, onLazyLoad, onSort } = useLazyLoad('/test')
+
+          // Set lazyState to a non-zero first via onLazyLoad
+          onLazyLoad({ first, rows, sortField, sortOrder })
+          expect(lazyState.value.first).toBe(first)
+
+          // Call onSort — first must be reset to 0
+          onSort({ first, rows, sortField, sortOrder })
+          expect(lazyState.value.first).toBe(0)
+        }
+      ),
+      { numRuns: 100 }
+    )
+  })
+
+  // Feature: frontend-test-coverage, Property 6: Construction correcte des paramètres URL de getData
+  // **Validates: Requirements 2.6**
+  it('Property 6: getData constructs URL with correct page, limit, field and order parameters', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 0, max: 100 }),   // pageIndex (multiplied by rows to get first)
+        fc.integer({ min: 1, max: 500 }),    // rows
+        fc.constantFrom('nom', 'prenom', 'date_de_naissance', 'email'),
+        fc.constantFrom(1 as const, -1 as const),
+        (pageIndex, rows, sortField, sortOrder) => {
+          const first = pageIndex * rows
+          const { onLazyLoad, getData } = useLazyLoad('/test-endpoint')
+
+          // Set lazyState to the generated values
+          onLazyLoad({ first, rows, sortField, sortOrder })
+
+          // Clear any calls from the watcher triggered by onLazyLoad
+          mockSendRequest.mockClear()
+
+          // Call getData and verify URL construction
+          getData()
+
+          const expectedPage = first / rows + 1
+          const expectedOrder = sortOrder === 1 ? 'asc' : 'desc'
+          const expectedPath = `/test-endpoint?page=${expectedPage}&limit=${rows}&field=${sortField}&order=${expectedOrder}`
+
+          expect(mockSendRequest).toHaveBeenCalledWith(
+            { path: expectedPath },
+            expect.any(Function)
+          )
+        }
+      ),
+      { numRuns: 100 }
+    )
+  })
+})
