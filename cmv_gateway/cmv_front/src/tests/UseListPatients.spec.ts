@@ -257,8 +257,10 @@ describe('UseListPatients — Property-Based Tests', () => {
       id_patient: fc.integer({ min: 1, max: 1_000_000 }),
       nom: fc.string({ minLength: 1, maxLength: 50 }),
       prenom: fc.string({ minLength: 1, maxLength: 50 }),
-      date_de_naissance: fc.date({ min: new Date('1900-01-01'), max: new Date('2024-12-31') })
-        .map((d) => d.toISOString().slice(0, 10)),
+      date_de_naissance: fc.integer({
+        min: new Date('1900-01-01').getTime(),
+        max: new Date('2024-12-31').getTime()
+      }).map((ts) => new Date(ts).toISOString().slice(0, 10)),
       telephone: fc.stringMatching(/^0[0-9]{9}$/)
     })
 

@@ -61,11 +61,9 @@ pipeline {
                         sh '''
                             set +x
                             ssh -o StrictHostKeyChecking=no \
-                                -o UserKnownHostsFile=/dev/null \
-                                -o LogLevel=ERROR \
-                                -A \
-                                -J $GATEWAY_USER@$GATEWAY_HOST \
-                                $CHAMBRES_USER@$CHAMBRES_HOST << 'EOF'
+                            -o UserKnownHostsFile=/dev/null \
+                            -o LogLevel=ERROR \
+                            $EC2_USER@$EC2_HOST << 'EOF'
 
 echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
 
