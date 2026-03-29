@@ -1,18 +1,18 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
-from datetime import datetime
 import os
-from dotenv import load_dotenv
+from datetime import datetime
 
 # Import des modèles nécessaires
 from app.sql.models import Base, Chambre, Service, Status
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session, sessionmaker
 
 # Chargement des variables d'environnement
 load_dotenv()
 
 # Configuration de la base de données
 DATABASE_URL = os.getenv(
-    "MIGRATION_DATABASE_URL",
+    "CHAMBRES_DATABASE_URL",
     "postgresql://postgres:cmv_chambres@localhost:6002/cmv_chambres",
 )
 

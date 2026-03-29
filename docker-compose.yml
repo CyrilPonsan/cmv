@@ -7,14 +7,9 @@ volumes:
     driver: local
   db_gateway:
     driver: local
-  cmv_patients:
-  cmv_chambres:
-    driver: local
   logs:
     driver: local
   redis:
-    driver: local
-  caddy_data:
     driver: local
 
 # The containers that compose the project
@@ -65,10 +60,11 @@ services:
     depends_on:
       - db_gateway
     environment:
-      GATEWAY_DATABASE_URL: ${GATEWAY_POSTGRES_URL}
+      GATEWAY_DATABASE_URL: ${GATEWAY_DATABASE_URL}
       SECRET_KEY: ${SECRET_KEY}
       PATIENTS_SECRET_KEY: ${PATIENTS_SECRET_KEY}
       CHAMBRES_SECRET_KEY: ${CHAMBRES_SECRET_KEY}
+      ML_SECRET_KEY: ${ML_SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
       PATIENTS_SERVICE: ${PATIENTS_SERVICE}
       CHAMBRES_SERVICE: ${CHAMBRES_SERVICE}
@@ -135,46 +131,7 @@ services:
       - db_gateway
     environment:
       ML_DATABASE_URL: ${ML_DATABASE_URL}
-      SECRET_KEY: ${SECRET_KEY}
+      SECRET_KEY: ${ML_SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
       MODEL_PATH: ${MODEL_PATH}
       SHAP_ENABLED: ${SHAP_ENABLED}
-
-  db_patients:
-    image: postgres:17
-    restart: always
-    container_name: db_patients
-    volumes:
-      - db_patients:/var/lib/postgresql/data
-    networks:
-      - cmv
-    environment:
-      POSTGRES_USER: ${PATIENTS_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${PATIENTS_POSTGRES_PASSWORD}
-      POSTGRES_DB: ${PATIENTS_POSTGRES_DB}
-
-  db_chambres:
-    image: postgres:17
-    restart: always
-    container_name: db_chambres
-    volumes:
-      - db_chambres:/var/lib/postgresql/data
-    networks:
-      - cmv
-    environment:
-      POSTGRES_USER: ${CHAMBRES_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${CHAMBRES_POSTGRES_PASSWORD}
-      POSTGRES_DB: ${CHAMBRES_POSTGRES_DB}
-
-  db_ml:
-    image: postgres:17
-    restart: always
-    container_name: db_ml
-    volumes:
-      - db_ml:/var/lib/postgresql/data
-    networks:
-      - cmv
-    environment:
-      POSTGRES_USER: ${ML_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${ML_POSTGRES_PASSWORD}
-      POSTGRES_DB: ${ML_POSTGRES_DB}
