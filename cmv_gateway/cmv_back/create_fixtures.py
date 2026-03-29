@@ -1,18 +1,18 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
-from passlib.context import CryptContext
 import os
-from dotenv import load_dotenv
 
 # Import des modèles nécessaires
-from app.sql.models import Base, Role, User, Permission
+from app.sql.models import Base, Permission, Role, User
+from dotenv import load_dotenv
+from passlib.context import CryptContext
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session, sessionmaker
 
 # Chargement des variables d'environnement
 load_dotenv()
 
 # Configuration de la base de données
 DATABASE_URL = os.getenv(
-    "MIGRATION_DATABASE_URL",
+    "GATEWAY_DATABASE_URL",
     "postgresql://postgres:cmv_gateway@localhost:6001/cmv_gateway",
 )
 

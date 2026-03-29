@@ -1,6 +1,6 @@
 services:
   redis:
-    image: redis:latest
+    image: valkey/valkey:latest
     ports:
       - "6379:6379"
 

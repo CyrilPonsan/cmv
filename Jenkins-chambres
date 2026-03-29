@@ -9,12 +9,8 @@ pipeline {
         IMAGE_CHAMBRES = "firizgoude/cmv_chambres"
         IMAGE_CHAMBRES_TAG = "chambres-${env.BUILD_NUMBER}"
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
-        // Gateway (bastion) pour le rebond SSH
-        GATEWAY_HOST = credentials("ec2-gateway-host")
-        GATEWAY_USER = credentials("ec2-gateway-username")
-        // Instance privée chambres
-        CHAMBRES_HOST = credentials("ec2-chambres-host")
-        CHAMBRES_USER = credentials("ec2-chambres-username")
+        EC2_HOST = credentials("ec2-gateway-host")
+        EC2_USER = credentials("ec2-gateway-username")
         SSH_CREDENTIALS = credentials('cmv-ssh-key')
         PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     }
@@ -61,11 +57,9 @@ pipeline {
                         sh '''
                             set +x
                             ssh -o StrictHostKeyChecking=no \
-                                -o UserKnownHostsFile=/dev/null \
-                                -o LogLevel=ERROR \
-                                -A \
-                                -J $GATEWAY_USER@$GATEWAY_HOST \
-                                $CHAMBRES_USER@$CHAMBRES_HOST << 'EOF'
+                            -o UserKnownHostsFile=/dev/null \
+                            -o LogLevel=ERROR \
+                            $EC2_USER@$EC2_HOST << 'EOF'
 
 echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
 
