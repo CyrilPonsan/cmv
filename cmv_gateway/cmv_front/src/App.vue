@@ -52,9 +52,9 @@ onBeforeMount(() => {
 <template>
   <!-- Composant Toast pour les notifications -->
   <Toast />
-  <div class="flex relative w-full overflow-hidden">
+  <div class="flex relative min-w-screen overflow-hidden">
     <!-- Barre latérale : toujours dans le flux pour éviter le layout shift -->
-    <SidebarComponent :class="isLoggedIn ? '' : 'invisible'" :aria-hidden="!isLoggedIn" />
+    <SidebarComponent :class="isLoggedIn ? '' : 'hidden'" :aria-hidden="!isLoggedIn" />
     <div class="flex-1 min-w-0 flex flex-col min-h-screen">
       <!-- Router view pour afficher les différentes pages -->
       <div class="flex-1">

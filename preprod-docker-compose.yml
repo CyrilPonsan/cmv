@@ -23,7 +23,6 @@ volumes:
 
 # The containers that compose the project
 services:
-
   redis:
     image: valkey/valkey:latest
     restart: always
@@ -40,6 +39,8 @@ services:
     image: postgres:17
     restart: always
     container_name: db_gateway
+    ports:
+      - "6001:5432"
     volumes:
       - db_gateway:/var/lib/postgresql/data
     networks:
@@ -53,6 +54,8 @@ services:
     image: postgres:17
     restart: always
     container_name: db_patients
+    ports:
+      - "6002:5432"
     volumes:
       - db_patients:/var/lib/postgresql/data
     networks:
@@ -66,6 +69,8 @@ services:
     image: postgres:17
     restart: always
     container_name: db_chambres
+    ports:
+      - "6003:5432"
     volumes:
       - db_chambres:/var/lib/postgresql/data
     networks:
@@ -79,6 +84,8 @@ services:
     image: postgres:17
     restart: always
     container_name: db_ml
+    ports:
+      - "6004:5432"
     volumes:
       - db_ml:/var/lib/postgresql/data
     networks:
@@ -103,8 +110,8 @@ services:
       - db_gateway
     command: >
       bash -c '
-      while !</dev/tcp/db_gateway/5432; do sleep 1; done; 
-      alembic upgrade head; 
+      while !</dev/tcp/db_gateway/5432; do sleep 1; done;
+      alembic upgrade head;
       uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
     depends_on:
       - db_gateway
@@ -183,7 +190,7 @@ services:
         - path: ./cmv_chambres
           action: rebuild
 
-  api_ml:  
+  api_ml:
     build:
       context: ./cmv_ml
     restart: always

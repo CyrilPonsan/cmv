@@ -57,19 +57,19 @@ def main():
 
     # Gateway fixtures
     run_command(
-        'docker exec cmv_gateway python3 create_fixtures.py',
+        'docker exec -e MIGRATION_DATABASE_URL=postgresql://postgres:cmv_gateway@db_gateway:5432/cmv_gateway cmv_gateway python3 create_fixtures.py',
         "Fixtures Gateway (users, roles, permissions)"
     )
 
     # Patients fixtures
     run_command(
-        'docker exec cmv_patients python3 create_fixtures_patients.py',
+        'docker exec -e MIGRATION_DATABASE_URL=postgresql://postgres:cmv_patients@db_patients:5432/cmv_patients cmv_patients python3 create_fixtures_patients.py',
         "Fixtures Patients"
     )
 
     # Chambres fixtures
     run_command(
-        'docker exec cmv_chambres python3 create_fixtures_chambres.py',
+        'docker exec -e MIGRATION_DATABASE_URL=postgresql://postgres:cmv_chambres@db_chambres:5432/cmv_chambres cmv_chambres python3 create_fixtures_chambres.py',
         "Fixtures Chambres (services, chambres)"
     )
 

@@ -66,7 +66,7 @@ export const useUserStore = defineStore('user', () => {
    * envoie une requête à l'api pour récupérer le role de l'utilisateur
    */
   const getUserInfos = () => {
-    const applyData = (data: any) => {
+    const applyData = (data: { role: string }) => {
       role.value = data.role
       authChecked.value = true
     }
