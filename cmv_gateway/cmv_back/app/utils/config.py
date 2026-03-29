@@ -1,7 +1,6 @@
 """Configuration du microservice Gateway avec validation Pydantic."""
 
 from typing import Literal
-
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -44,6 +43,9 @@ class GatewaySettings(BaseSettings):
     # Valkey
     VALKEY_HOST: str = "redis"
     VALKEY_PORT: int = 6379
+    PATIENTS_SECRET_KEY: str
+    CHAMBRES_SECRET_KEY: str
+    ML_SECRET_KEY: str
 
     @field_validator("GATEWAY_DATABASE_URL")
     @classmethod
@@ -88,3 +90,6 @@ CHAMBRES_SERVICE = settings.CHAMBRES_SERVICE
 ML_SERVICE = settings.ML_SERVICE
 VALKEY_HOST = settings.VALKEY_HOST
 VALKEY_PORT = settings.VALKEY_PORT
+PATIENTS_SECRET_KEY = settings.PATIENTS_SECRET_KEY
+CHAMBRES_SECRET_KEY = settings.CHAMBRES_SECRET_KEY
+ML_SECRET_KEY = settings.ML_SECRET_KEY

@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/main.py
+# hypothesis_version: 6.151.9
+
+[429, 600, '/assets', '/{catchall:path}', 'Authorization', 'Content-Disposition', 'Content-Type', 'DELETE', 'GET', 'POST', 'PUT', 'assets', 'dist', 'index.html']

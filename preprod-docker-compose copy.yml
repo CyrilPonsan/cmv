@@ -7,34 +7,30 @@ volumes:
     driver: local
   db_gateway:
     driver: local
+  cmv_patients:
+    driver: local
   db_patients:
     driver: local
   db_chambres:
     driver: local
   db_ml:
     driver: local
-  cmv_patients:
-  cmv_chambres:
-    driver: local
   logs:
     driver: local
   redis:
     driver: local
 
-# The containers that compose the project
 services:
-
   redis:
     image: valkey/valkey:latest
     restart: always
     container_name: redis-server
     networks:
       - cmv
+    ports:
+      - "6379:6379"
     volumes:
       - redis:/data
-    environment:
-      VALKEY_HOST: ${VALKEY_HOST}
-      VALKEY_PORT: ${VALKEY_PORT}
 
   db_gateway:
     image: postgres:17
@@ -44,49 +40,12 @@ services:
       - db_gateway:/var/lib/postgresql/data
     networks:
       - cmv
+    ports:
+      - "6001:5432"
     environment:
       POSTGRES_USER: ${GATEWAY_POSTGRES_USER}
       POSTGRES_PASSWORD: ${GATEWAY_POSTGRES_PASSWORD}
       POSTGRES_DB: ${GATEWAY_POSTGRES_DB}
-
-  db_patients:
-    image: postgres:17
-    restart: always
-    container_name: db_patients
-    volumes:
-      - db_patients:/var/lib/postgresql/data
-    networks:
-      - cmv
-    environment:
-      POSTGRES_USER: ${PATIENTS_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${PATIENTS_POSTGRES_PASSWORD}
-      POSTGRES_DB: ${PATIENTS_POSTGRES_DB}
-
-  db_chambres:
-    image: postgres:17
-    restart: always
-    container_name: db_chambres
-    volumes:
-      - db_chambres:/var/lib/postgresql/data
-    networks:
-      - cmv
-    environment:
-      POSTGRES_USER: ${CHAMBRES_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${CHAMBRES_POSTGRES_PASSWORD}
-      POSTGRES_DB: ${CHAMBRES_POSTGRES_DB}
-
-  db_ml:
-    image: postgres:17
-    restart: always
-    container_name: db_ml
-    volumes:
-      - db_ml:/var/lib/postgresql/data
-    networks:
-      - cmv
-    environment:
-      POSTGRES_USER: ${ML_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${ML_POSTGRES_PASSWORD}
-      POSTGRES_DB: ${ML_POSTGRES_DB}
 
   api_gateway:
     build:
@@ -99,22 +58,11 @@ services:
     container_name: cmv_gateway
     ports:
       - "8001:8000"
-    links:
-      - db_gateway
-    command: >
-      bash -c '
-      while !</dev/tcp/db_gateway/5432; do sleep 1; done; 
-      alembic upgrade head; 
-      uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
     depends_on:
       - db_gateway
-      - redis
     environment:
       GATEWAY_DATABASE_URL: ${GATEWAY_POSTGRES_URL}
       SECRET_KEY: ${SECRET_KEY}
-      PATIENTS_SECRET_KEY: ${PATIENTS_SECRET_KEY}
-      CHAMBRES_SECRET_KEY: ${CHAMBRES_SECRET_KEY}
-      ML_SECRET_KEY: ${ML_SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
       PATIENTS_SERVICE: ${PATIENTS_SERVICE}
       CHAMBRES_SERVICE: ${CHAMBRES_SERVICE}
@@ -122,13 +70,28 @@ services:
       ACCESS_MAX_AGE: ${ACCESS_MAX_AGE}
       REFRESH_MAX_AGE: ${REFRESH_MAX_AGE}
       ENVIRONMENT: ${ENVIRONMENT}
-      VALKEY_HOST: redis
-      VALKEY_PORT: ${VALKEY_PORT}
+    command: >
+      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
 
     develop:
       watch:
         - path: ./cmv_gateway
           action: rebuild
+
+  db_patients:
+    image: postgres:17
+    restart: always
+    container_name: db_patients
+    volumes:
+      - db_patients:/var/lib/postgresql/data
+    networks:
+      - cmv
+    ports:
+      - "6002:5432"
+    environment:
+      POSTGRES_USER: ${PATIENTS_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${PATIENTS_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${PATIENTS_POSTGRES_DB}
 
   api_patients:
     build:
@@ -136,29 +99,42 @@ services:
     restart: always
     networks:
       - cmv
-    volumes:
-      - logs:/code/app/logs
     container_name: cmv_patients
-    links:
-      - db_patients
-    command: >
-      bash -c 'while !</dev/tcp/db_patients/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+    ports:
+      - "8002:8000"
     depends_on:
       - db_patients
     environment:
       PATIENTS_DATABASE_URL: ${PATIENTS_DATABASE_URL}
-      SECRET_KEY: ${PATIENTS_SECRET_KEY}
+      CHAMBRES_SERVICE: ${CHAMBRES_SERVICE}
+      SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
       AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
-      CHAMBRES_SERVICE: ${CHAMBRES_SERVICE}
+    command: >
+      bash -c 'while !</dev/tcp/db_patients/5432; do sleep 1; done; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
 
     develop:
       watch:
         - path: ./cmv_patients
           action: rebuild
+
+  db_chambres:
+    image: postgres:17
+    restart: always
+    container_name: db_chambres
+    volumes:
+      - db_chambres:/var/lib/postgresql/data
+    networks:
+      - cmv
+    ports:
+      - "6003:5432"
+    environment:
+      POSTGRES_USER: ${CHAMBRES_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${CHAMBRES_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${CHAMBRES_POSTGRES_DB}
 
   api_chambres:
     build:
@@ -167,29 +143,49 @@ services:
     networks:
       - cmv
     container_name: cmv_chambres
-    links:
-      - db_chambres
-    command: >
-      bash -c 'while !</dev/tcp/db_chambres/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+    ports:
+      - "8003:8000"
     depends_on:
       - db_chambres
     environment:
       CHAMBRES_DATABASE_URL: ${CHAMBRES_DATABASE_URL}
-      SECRET_KEY: ${CHAMBRES_SECRET_KEY}
+      SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
+    command: >
+      bash -c 'while !</dev/tcp/db_chambres/5432; do sleep 1; done; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
 
     develop:
       watch:
         - path: ./cmv_chambres
           action: rebuild
 
-  api_ml:  
+  db_ml:
+    image: postgres:17
+    restart: always
+    container_name: db_ml
+    volumes:
+      - db_ml:/var/lib/postgresql/data
+    networks:
+      - cmv
+    ports:
+      - "6004:5432"
+    environment:
+      POSTGRES_USER: ${ML_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${ML_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${ML_POSTGRES_DB}
+
+  api_ml:
     build:
       context: ./cmv_ml
     restart: always
     networks:
       - cmv
+    volumes:
+      - logs:/code/app/logs
+      - ./cmv_ml/models:/code/app/models:ro
     container_name: cmv_ml
+    ports:
+      - "8004:8000"
     links:
       - db_ml
     command: >
@@ -198,7 +194,7 @@ services:
       - db_ml
     environment:
       ML_DATABASE_URL: ${ML_DATABASE_URL}
-      SECRET_KEY: ${ML_SECRET_KEY}
+      SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
       MODEL_PATH: ${MODEL_PATH}
       SHAP_ENABLED: ${SHAP_ENABLED}
