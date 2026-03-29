@@ -31,7 +31,7 @@ class PatientsSettings(BaseSettings):
     ALGORITHM: str = "HS256"
 
     # Environnement
-    ENVIRONMENT: Literal["dev", "staging", "production"] = "dev"
+    ENVIRONMENT: Literal["dev", "staging", "production", "test"] = "dev"
 
     # AWS — tous obligatoires
     AWS_BUCKET_NAME: str
@@ -55,9 +55,7 @@ class PatientsSettings(BaseSettings):
     @classmethod
     def validate_service_urls(cls, v: str) -> str:
         if not v.startswith(("http://", "https://")):
-            raise ValueError(
-                "L'URL de service doit commencer par http:// ou https://"
-            )
+            raise ValueError("L'URL de service doit commencer par http:// ou https://")
         return v
 
     def model_post_init(self, __context) -> None:
