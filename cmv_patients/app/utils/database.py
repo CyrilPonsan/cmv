@@ -17,6 +17,8 @@ else:
         raise ValueError("DATABASE_URL must be set")
     engine = create_engine(DATABASE_URL)
 
+print(f"DATA BASE : {ENVIRONMENT} {DATABASE_URL}")
+
 # Création de la factory de sessions de base de données
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

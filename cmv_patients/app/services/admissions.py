@@ -1,35 +1,65 @@
 # Import des dépendances FastAPI pour la gestion des erreurs HTTP
-from fastapi import HTTPException, status
 
 # Import du client HTTP asynchrone
 import httpx
+from fastapi import HTTPException, status
 
 # Import de la session SQLAlchemy pour interagir avec la base de données
 from sqlalchemy.orm import Session
 
-# Import de la configuration du service des chambres
-from app.utils.config import CHAMBRES_SERVICE
+# Import du schéma Pydantic pour la création d'une admission
+from app.schemas.patients import CreateAdmission
+from app.schemas.user import InternalPayload
 
 # Import des modèles SQLAlchemy pour les admissions et patients
 from app.sql.models import Admission, Patient
 
-# Import du schéma Pydantic pour la création d'une admission
-from app.schemas.patients import CreateAdmission
+# Import de la configuration du service des chambres
+from app.utils.config import CHAMBRES_SERVICE
 
 
 class AdmissionService:
     def __init__(self, db: Session):
         self.db = db
 
-    async def create_admission(self, data: CreateAdmission):
+    async def test_security(
+        self, data: CreateAdmission, internal_payload: InternalPayload
+    ):
         async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"{CHAMBRES_SERVICE}/chambres/{data.service_id}",
+                headers={
+                    "Authorization": f"Bearer {internal_payload}",
+                },
+            )
+            if response.status_code != 200:
+                raise HTTPException(
+                    status_code=response.status_code, detail=response.text
+                )
+            chambre = response.json()
+            print(chambre)
+        return {"chambre": chambre["id_chambre"]}
+
+    async def create_admission(
+        self, data: CreateAdmission, internal_payload: InternalPayload, request
+    ):
+        async with httpx.AsyncClient() as client:
+            client_ip = request.headers.get("X-Real-IP") or request.headers.get(
+                "X-Forwarded-For", "unknown"
+            )
+            request = request
             try:
                 # Etape 1 : Si non ambulatoire, réserve une chambre
                 chambre = None
                 chambre_data = None
                 if not data.ambulatoire:
                     response = await client.get(
-                        f"{CHAMBRES_SERVICE}/chambres/{data.service_id}"
+                        f"{CHAMBRES_SERVICE}/chambres/{data.service_id}",
+                        headers={
+                            "Authorization": f"Bearer {internal_payload}",
+                            "X-Real-IP": client_ip,
+                            "X-Forwarded-For": client_ip,
+                        },
                     )
                     if response.status_code != 200:
                         raise HTTPException(
@@ -60,6 +90,11 @@ class AdmissionService:
 
                     response = await client.post(
                         f"{CHAMBRES_SERVICE}/chambres/{chambre['id_chambre']}/reserver",
+                        headers={
+                            "Authorization": f"Bearer {internal_payload}",
+                            "X-Real-IP": client_ip,
+                            "X-Forwarded-For": client_ip,
+                        },
                         json=reservation_data,
                     )
                     if response.status_code != 201:
@@ -94,10 +129,20 @@ class AdmissionService:
                 if chambre_data:
                     await client.delete(
                         f"{CHAMBRES_SERVICE}/chambres/{chambre_data['reservation_id']}/{chambre_data['id_chambre']}/{chambre_data['patient_id']}/cancel",
+                        headers={
+                            "Authorization": f"Bearer {internal_payload}",
+                            "X-Real-IP": client_ip,
+                            "X-Forwarded-For": client_ip,
+                        },
                     )
                 elif chambre is not None:
                     await client.put(
                         f"{CHAMBRES_SERVICE}/chambres/{chambre['id_chambre']}",
+                        headers={
+                            "Authorization": f"Bearer {internal_payload}",
+                            "X-Real-IP": client_ip,
+                            "X-Forwarded-For": client_ip,
+                        },
                     )
 
                 self.db.rollback()

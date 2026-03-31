@@ -1,0 +1,146 @@
+{
+  "/CdkEc2Stack/SsmParameterValue:--aws--service--debian--release--12--latest--amd64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SsmParameterValueawsservicedebianrelease12latestamd64C96584B6F00A464EAD1953AFF4B05118Parameter"
+    }
+  ],
+  "/CdkEc2Stack/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    }
+  ],
+  "/CdkEc2Stack/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    }
+  ],
+  "/CdkEc2Stack/Vpc/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Vpc8378EB38"
+    }
+  ],
+  "/CdkEc2Stack/Vpc/IGW": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcIGWD7BA715C"
+    }
+  ],
+  "/CdkEc2Stack/Vpc/VPCGW": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcVPCGWBF912B6E"
+    }
+  ],
+  "/CdkEc2Stack/EbsEncryptionKey/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EbsEncryptionKey9149E0DA"
+    }
+  ],
+  "/CdkEc2Stack/SecurityGroupMedium/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SecurityGroupMedium8E444907"
+    }
+  ],
+  "/CdkEc2Stack/SecurityGroupSmall/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SecurityGroupSmall3ABC4979"
+    }
+  ],
+  "/CdkEc2Stack/Ec2InstanceMedium/InstanceProfile": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Ec2InstanceMediumInstanceProfileD6620237"
+    }
+  ],
+  "/CdkEc2Stack/Ec2InstanceMedium/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Ec2InstanceMedium831E7A42"
+    }
+  ],
+  "/CdkEc2Stack/Ec2InstanceSmall/InstanceProfile": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Ec2InstanceSmallInstanceProfile2A3F9D48"
+    }
+  ],
+  "/CdkEc2Stack/Ec2InstanceSmall/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Ec2InstanceSmallEA2BB207"
+    }
+  ],
+  "/CdkEc2Stack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    }
+  ],
+  "/CdkEc2Stack/Vpc/PublicSubnet1/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet1Subnet5C2D37C4"
+    }
+  ],
+  "/CdkEc2Stack/Vpc/PublicSubnet1/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet1RouteTable6C95E38E"
+    }
+  ],
+  "/CdkEc2Stack/Vpc/PublicSubnet1/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet1RouteTableAssociation97140677"
+    }
+  ],
+  "/CdkEc2Stack/Vpc/PublicSubnet1/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet1DefaultRoute3DA9E72A"
+    }
+  ],
+  "/CdkEc2Stack/Vpc/PublicSubnet2/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet2Subnet691E08A3"
+    }
+  ],
+  "/CdkEc2Stack/Vpc/PublicSubnet2/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet2RouteTable94F7E489"
+    }
+  ],
+  "/CdkEc2Stack/Vpc/PublicSubnet2/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet2RouteTableAssociationDD5762D8"
+    }
+  ],
+  "/CdkEc2Stack/Vpc/PublicSubnet2/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet2DefaultRoute97F91067"
+    }
+  ],
+  "/CdkEc2Stack/Ec2InstanceMedium/InstanceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Ec2InstanceMediumInstanceRoleDAD0193D"
+    }
+  ],
+  "/CdkEc2Stack/Ec2InstanceSmall/InstanceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Ec2InstanceSmallInstanceRole67A57E51"
+    }
+  ]
+}

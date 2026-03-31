@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-from sqlalchemy.orm import Session
+
 from app.sql.models import Admission
+from sqlalchemy.orm import Session
 
 
 class AdmissionsCrud(ABC):
@@ -19,9 +20,9 @@ class AdmissionsCrud(ABC):
 
 class PgAdmissionsRepository(AdmissionsCrud):
     async def create_admission(self, db: Session, admission: Admission) -> Admission:
-        self.db.add(admission)
-        self.db.commit()
-        self.db.refresh(admission)
+        db.add(admission)
+        db.commit()
+        db.refresh(admission)
 
         return admission
 

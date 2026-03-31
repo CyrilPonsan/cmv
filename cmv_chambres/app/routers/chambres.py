@@ -1,14 +1,15 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Body
-from sqlalchemy.orm import Session
-
+from app.dependancies.auth import check_authorization
 from app.dependancies.db_session import get_db
 from app.schemas.reservation import CreateReservation
-from app.services.chambres import get_chambres_service
-from app.schemas.services import ChambreAvailable
 from app.schemas.schemas import SuccessWithMessage
+from app.schemas.services import ChambreAvailable
+from app.schemas.user import InternalPayload
+from app.services.chambres import get_chambres_service
 from app.sql.models import Status
+from fastapi import APIRouter, Body, Depends
+from sqlalchemy.orm import Session
 
 # Création du routeur pour les endpoints liés aux chambres
 router = APIRouter(
@@ -20,6 +21,7 @@ router = APIRouter(
 @router.get("/{service_id}", response_model=ChambreAvailable)
 async def get_available_room(
     service_id: int,
+    payload: Annotated[InternalPayload, Depends(check_authorization)],
     service_chambre=Depends(get_chambres_service),
     db: Session = Depends(get_db),
 ):
@@ -41,6 +43,7 @@ async def get_available_room(
 async def rerserver_chambre(
     chambre_id: int,
     data: Annotated[CreateReservation, Body()],
+    # payload: Annotated[InternalPayload, Depends(check_authorization)],
     service_chambre=Depends(get_chambres_service),
     db: Session = Depends(get_db),
 ):
@@ -64,6 +67,7 @@ async def rerserver_chambre(
 @router.put("/{chambre_id}", response_model=SuccessWithMessage)
 async def update_chambre_status(
     chambre_id: int,
+    # payload: Annotated[InternalPayload, Depends(check_authorization)],
     service_chambre=Depends(get_chambres_service),
     db: Session = Depends(get_db),
 ):
@@ -78,6 +82,7 @@ async def update_chambre_status(
 )
 async def cancel_reservation(
     chambre_id: int,
+    # payload: Annotated[InternalPayload, Depends(check_authorization)],
     reservation_id: int | None = None,
     service_chambre=Depends(get_chambres_service),
     db: Session = Depends(get_db),
