@@ -1,6 +1,5 @@
 # Import des modules nécessaires
 import httpx
-
 from fastapi import HTTPException, Request
 
 from app.utils.config import CHAMBRES_SERVICE, ENVIRONMENT
@@ -31,7 +30,11 @@ class ChambresService:
         self.url_api_chambres = url_api_chambres
 
     async def get_chambres(
-        self, path: str, request: Request, client: httpx.AsyncClient
+        self,
+        path: str,
+        request: Request,
+        client: httpx.AsyncClient,
+        internal_token: str,
     ):
         """
         Récupère les informations des chambres depuis l'API
@@ -54,7 +57,7 @@ class ChambresService:
         # Envoi de la requête à l'API
         response = await client.get(
             url,
-            # headers={"Authorization": f"Bearer {internal_token}"},
+            headers={"Authorization": f"Bearer {internal_token}"},
             follow_redirects=True,
         )
         if response.status_code == 200:

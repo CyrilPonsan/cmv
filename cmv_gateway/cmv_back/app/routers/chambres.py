@@ -1,9 +1,15 @@
 # Import des modules nécessaires de FastAPI
+
+
 from fastapi import APIRouter, Depends, Request
+from typing_extensions import Annotated
+
+from app.dependancies.auth import get_current_user, get_dynamic_permissions
+from app.dependancies.httpx_client import get_http_client
+from app.schemas.user import User
 
 # Import des services et dépendances
 from app.services.chambres import get_chambres_service
-from app.dependancies.httpx_client import get_http_client
 
 # Création du routeur pour les chambres avec préfixe et tag
 router = APIRouter(prefix="/chambres", tags=["chambres"])
@@ -13,6 +19,8 @@ router = APIRouter(prefix="/chambres", tags=["chambres"])
 async def read_all_chambres(
     path: str,  # Chemin de la requête
     request: Request,  # Requête HTTP entrante
+    current_user: Annotated[User, Depends(get_current_user)],
+    internal_token: Annotated[str, Depends(get_dynamic_permissions("get", "chambres"))],
     chambres_service=Depends(get_chambres_service),  # Service de gestion des chambres
     client=Depends(get_http_client),  # Client HTTP pour les requêtes externes
 ):
@@ -21,5 +29,5 @@ async def read_all_chambres(
     Transmet la requête au service approprié avec les paramètres nécessaires.
     """
     return await chambres_service.get_chambres(
-        path=path, request=request, client=client
+        path=path, request=request, client=client, internal_token=internal_token
     )

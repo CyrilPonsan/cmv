@@ -1,11 +1,14 @@
 # Import des modules nécessaires
+# Import des dépendances et services
+from typing import Annotated
+
+from app.dependancies.auth import check_authorization
+from app.dependancies.db_session import get_db
+from app.schemas.services import ServicesList, ServicesListItem
+from app.schemas.user import InternalPayload
+from app.services.services import get_service_service
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-
-# Import des dépendances et services
-from app.dependancies.db_session import get_db
-from app.services.services import get_service_service
-from app.schemas.services import ServicesList, ServicesListItem
 
 # Création du routeur pour les endpoints liés aux services
 router = APIRouter(prefix="/services", tags=["services"])
@@ -28,7 +31,10 @@ async def read_simple_services(db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=list[ServicesListItem])
-async def read_all_services(db: Session = Depends(get_db)):
+async def read_all_services(
+    payload: Annotated[InternalPayload, Depends(check_authorization)],
+    db: Session = Depends(get_db),
+):
     """
     Récupère la liste de tous les services disponibles.
 
