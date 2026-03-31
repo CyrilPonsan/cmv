@@ -77,17 +77,17 @@ Implémentation incrémentale du projet AWS CDK TypeScript dans `cdk/`. On comme
     - Pour chaque sous-ensemble de variables obligatoires manquantes (généré aléatoirement), vérifier qu'une erreur est levée nommant la variable absente
     - **Validates: Requirements 2.4**
 
-  - [~] 4.5 Write property test: VPC structure invariant
+  - [ ] 4.5 Write property test: VPC structure invariant
     - **Property 3: VPC structure invariant**
     - Synthétiser la stack avec des configurations valides variées, vérifier la présence du VPC, du sous-réseau public, et que les deux instances le référencent
     - **Validates: Requirements 3.1, 3.2, 3.3**
 
-  - [~] 4.6 Write property test: KMS encryption invariant
+  - [ ] 4.6 Write property test: KMS encryption invariant
     - **Property 4: KMS encryption invariant**
     - Synthétiser la stack, vérifier que la clé KMS existe et que les deux volumes EBS la référencent
     - **Validates: Requirements 4.1, 4.2**
 
-  - [~] 4.7 Write property test: Security groups invariant
+  - [ ] 4.7 Write property test: Security groups invariant
     - **Property 5: Security groups invariant**
     - Synthétiser la stack, vérifier deux SGs distincts dans le VPC, chacun associé à son instance
     - **Validates: Requirements 7.3, 7.4, 7.5**
