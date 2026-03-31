@@ -28,6 +28,7 @@ class PatientsSettings(BaseSettings):
 
     # JWT — SECRET_KEY obligatoire, ALGORITHM avec défaut
     SECRET_KEY: str
+    CHAMBRES_SECRET_KEY: str
     ALGORITHM: str = "HS256"
 
     # Environnement
@@ -60,12 +61,15 @@ class PatientsSettings(BaseSettings):
 
     def model_post_init(self, __context) -> None:
         if self.ENVIRONMENT == "production":
-            if len(self.SECRET_KEY) < 32:
-                raise ValueError(
-                    "SECRET_KEY doit avoir au moins 32 caractères en production"
-                )
-            if self.SECRET_KEY in WEAK_SECRETS:
-                raise ValueError("SECRET_KEY utilise une valeur faible connue")
+            self.check_key(self.SECRET_KEY)
+            self.check_key(self.CHAMBRES_SECRET_KEY)
+
+    def check_key(self, key: str) -> bool:
+        if len(key) < 32:
+            raise ValueError("KEY doit avoir au moins 32 caractères en production")
+        if key in WEAK_SECRETS:
+            raise ValueError("KEY utilise une valeur faible connue")
+        return True
 
 
 # Singleton — instancié une seule fois au démarrage
@@ -81,3 +85,4 @@ AWS_ACCESS_KEY_ID = settings.AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY = settings.AWS_SECRET_ACCESS_KEY
 AWS_REGION = settings.AWS_REGION
 CHAMBRES_SERVICE = settings.CHAMBRES_SERVICE
+CHAMBRES_SECRET_KEY = settings.CHAMBRES_SECRET_KEY

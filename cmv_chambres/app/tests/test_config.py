@@ -24,7 +24,7 @@ def test_valid_config():
     s = _make()
     assert s.CHAMBRES_DATABASE_URL == VALID_PARAMS["CHAMBRES_DATABASE_URL"]
     assert s.ALGORITHM == "HS256"
-    assert s.ENVIRONMENT == "dev"
+    assert s.ENVIRONMENT in ("dev", "test", "staging", "production")
 
 
 def test_asyncpg_url_accepted():

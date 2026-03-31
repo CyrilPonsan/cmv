@@ -7,9 +7,17 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_get_simple_services(ac, services_and_chambres):
-    """Liste simplifiée des services, pas d'auth requise."""
+async def test_get_simple_services_no_token(ac, services_and_chambres):
+    """Liste simplifiée des services, auth requise → 401 sans token."""
     response = await ac.get("/api/services/simple")
+    assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_get_simple_services(ac, internal_token, services_and_chambres):
+    """Liste simplifiée des services avec token valide."""
+    headers = {"Authorization": f"Bearer {internal_token}"}
+    response = await ac.get("/api/services/simple", headers=headers)
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 2

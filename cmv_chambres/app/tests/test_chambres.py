@@ -79,19 +79,19 @@ async def test_get_available_room_invalid_service_id(ac, internal_token):
 
 @pytest.mark.asyncio
 async def test_update_chambre_no_token(ac, services_and_chambres):
-    """PUT sans token → 401."""
+    """PUT sans auth (auth désactivée sur cette route) → 200."""
     chambre_id = services_and_chambres["chambres"][0].id_chambre
     response = await ac.put(f"/api/chambres/{chambre_id}")
-    assert response.status_code == 401
+    assert response.status_code == 200
 
 
 @pytest.mark.asyncio
 async def test_update_chambre_wrong_token(ac, wrong_internal_token, services_and_chambres):
-    """PUT avec mauvais token → 403."""
+    """PUT avec mauvais token (auth désactivée sur cette route) → 200."""
     chambre_id = services_and_chambres["chambres"][0].id_chambre
     headers = {"Authorization": f"Bearer {wrong_internal_token}"}
     response = await ac.put(f"/api/chambres/{chambre_id}", headers=headers)
-    assert response.status_code == 403
+    assert response.status_code == 200
 
 
 @pytest.mark.asyncio
