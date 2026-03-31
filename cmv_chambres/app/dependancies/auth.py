@@ -1,10 +1,12 @@
 # Import des dépendances nécessaires
 from typing import Annotated
-from fastapi import HTTPException, status, Depends
+
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
 from passlib.context import CryptContext
-from jose import jwt, JWTError
-from ..utils.config import SECRET_KEY, ALGORITHM
+
+from ..utils.config import ALGORITHM, SECRET_KEY
 
 # Configuration du schéma OAuth2 avec l'URL du endpoint de token
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -45,8 +47,11 @@ def check_authorization(token: Annotated[str, Depends(oauth2_scheme)]) -> dict:
             detail="An error occurred while processing the token",
         )
 
+    source = payload.get("source")
+    print(f"SOURCE : {source}")
+
     # Vérification que le payload n'est pas vide
-    if not payload:
+    if not payload or (source != "api_patients" and source != "api_gateway"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="not_authorized"
         )

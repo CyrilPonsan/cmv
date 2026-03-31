@@ -31,7 +31,7 @@ class ChambresSettings(BaseSettings):
     ALGORITHM: str = "HS256"
 
     # Environnement
-    ENVIRONMENT: Literal["dev", "staging", "production"] = "dev"
+    ENVIRONMENT: Literal["dev", "staging", "production", "test"] = "dev"
 
     @field_validator("CHAMBRES_DATABASE_URL")
     @classmethod

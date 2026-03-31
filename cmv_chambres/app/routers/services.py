@@ -15,7 +15,10 @@ router = APIRouter(prefix="/services", tags=["services"])
 
 
 @router.get("/simple", response_model=list[ServicesList])
-async def read_simple_services(db: Session = Depends(get_db)):
+async def read_simple_services(
+    payload: Annotated[InternalPayload, Depends(check_authorization)],
+    db: Session = Depends(get_db),
+):
     """
     Récupère une liste simplifiée des services disponibles.
     Cette route retourne uniquement les informations de base des services,

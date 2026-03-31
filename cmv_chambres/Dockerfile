@@ -9,3 +9,4 @@ COPY . .
 
 # Ajoutez d'autres dépendances si nécessaire
 
+CMD ["pytest"]

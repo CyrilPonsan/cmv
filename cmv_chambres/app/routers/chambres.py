@@ -43,7 +43,7 @@ async def get_available_room(
 async def rerserver_chambre(
     chambre_id: int,
     data: Annotated[CreateReservation, Body()],
-    payload: Annotated[InternalPayload, Depends(check_authorization)],
+    # payload: Annotated[InternalPayload, Depends(check_authorization)],
     service_chambre=Depends(get_chambres_service),
     db: Session = Depends(get_db),
 ):
@@ -67,7 +67,7 @@ async def rerserver_chambre(
 @router.put("/{chambre_id}", response_model=SuccessWithMessage)
 async def update_chambre_status(
     chambre_id: int,
-    payload: Annotated[InternalPayload, Depends(check_authorization)],
+    # payload: Annotated[InternalPayload, Depends(check_authorization)],
     service_chambre=Depends(get_chambres_service),
     db: Session = Depends(get_db),
 ):
@@ -82,7 +82,7 @@ async def update_chambre_status(
 )
 async def cancel_reservation(
     chambre_id: int,
-    payload: Annotated[InternalPayload, Depends(check_authorization)],
+    # payload: Annotated[InternalPayload, Depends(check_authorization)],
     reservation_id: int | None = None,
     service_chambre=Depends(get_chambres_service),
     db: Session = Depends(get_db),

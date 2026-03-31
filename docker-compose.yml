@@ -97,6 +97,7 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
       CHAMBRES_SERVICE: ${CHAMBRES_SERVICE}
+      ENVIRONMENT: ${ENVIRONMENT}
 
   api_chambres:
     image: firizgoude/cmv_chambres:latest
@@ -115,6 +116,7 @@ services:
       CHAMBRES_DATABASE_URL: ${CHAMBRES_DATABASE_URL}
       SECRET_KEY: ${CHAMBRES_SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
+      ENVIRONMENT: ${ENVIRONMENT}
 
   api_ml:
     image: firizgoude/cmv_ml:latest
