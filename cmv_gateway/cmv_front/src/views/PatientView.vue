@@ -68,7 +68,7 @@ watchEffect(() => {
       <!-- Formulaire d'édition du patient -->
       <article
         v-if="isEditing && detailPatient"
-        class="rounded-lg flex flex-col gap-y-4 justify-center items-start"
+        class="rounded-lg flex flex-col gap-y-4 justify-center items-start xl:w-3/6"
       >
         <!-- Bascule l'affichage sur la vue détaillée des informations du patient -->
         <p
@@ -87,7 +87,7 @@ watchEffect(() => {
       </article>
 
       <!-- Détails du patient en mode lecture -->
-      <article v-if="detailPatient && !isEditing" class="w-full xl:w-4/6 p-4 rounded-lg">
+      <article v-if="detailPatient && !isEditing" class="w-full xl:w-3/6 p-4 rounded-lg">
         <!-- Titre et boutons d'action -->
         <div class="flex justify-between items-center gap-y-2 mb-4">
           <h2 class="text-lg font-bold">{{ t('patients.detail.h2') }}</h2>

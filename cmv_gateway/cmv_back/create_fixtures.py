@@ -67,6 +67,7 @@ def create_fixtures(db: Session):
     # Création des permissions
     permissions = [
         {"role": nurse_role, "action": "get", "resource": "chambres"},
+        {"role": home_role, "action": "post", "resource": "chambres"},
         {"role": nurse_role, "action": "get", "resource": "services"},
         {"role": home_role, "action": "get", "resource": "patients"},
         {"role": home_role, "action": "get", "resource": "documents"},
@@ -75,6 +76,7 @@ def create_fixtures(db: Session):
         {"role": home_role, "action": "post", "resource": "patients"},
         {"role": home_role, "action": "put", "resource": "patients"},
         {"role": home_role, "action": "delete", "resource": "patients"},
+        {"role": home_role, "action": "post", "resource": "ml"},
     ]
 
     db_permissions = []

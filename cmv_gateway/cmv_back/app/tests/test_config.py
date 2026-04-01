@@ -70,7 +70,8 @@ def test_default_values(monkeypatch):
     "CHAMBRES_SERVICE",
     "ML_SERVICE",
 ])
-def test_missing_required_field(missing_field):
+def test_missing_required_field(missing_field, monkeypatch):
+    monkeypatch.delenv(missing_field, raising=False)
     params = {**VALID_PARAMS}
     del params[missing_field]
     with pytest.raises(ValidationError) as exc_info:

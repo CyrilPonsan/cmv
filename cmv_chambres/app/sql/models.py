@@ -1,9 +1,9 @@
 # Import des modules nécessaires
-from datetime import datetime
 import enum
+from datetime import datetime
 
-from sqlalchemy import Enum, String, DateTime, Integer, ForeignKey
-from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..utils.database import Base
 
@@ -61,27 +61,6 @@ class Chambre(Base):
     )
 
 
-# Modèle SQLAlchemy pour représenter un patient
-class Patient(Base):
-    __tablename__ = "patient"
-
-    # Colonnes de la table
-    id_patient: Mapped[int] = mapped_column(
-        primary_key=True, index=True
-    )  # Identifiant unique du patient
-    ref_patient: Mapped[int] = mapped_column(
-        Integer, nullable=False, unique=True
-    )  # Référence externe unique du patient
-    full_name: Mapped[str] = mapped_column(
-        String, nullable=False
-    )  # Nom complet du patient
-
-    # Relation avec les réservations
-    reservations: Mapped[list["Reservation"]] = relationship(
-        "Reservation", back_populates="patient"
-    )
-
-
 # Modèle SQLAlchemy pour représenter une réservation (relation many-to-many entre Chambre et Patient)
 class Reservation(Base):
     __tablename__ = "reservation"
@@ -97,11 +76,10 @@ class Reservation(Base):
         DateTime, nullable=False
     )  # Date et heure prévues de sortie
 
-    # Relation avec le patient
-    patient_id: Mapped[int] = mapped_column(
-        ForeignKey("patient.id_patient", ondelete="CASCADE"), nullable=False
-    )
-    patient: Mapped["Patient"] = relationship("Patient", back_populates="reservations")
+    # Référence externe unique du patient
+    ref_patient: Mapped[int] = mapped_column(Integer, nullable=False, unique=True)
+    # Nom complet du patient
+    full_name: Mapped[str] = mapped_column(String, nullable=False)
 
     # Relation avec la chambre
     chambre_id: Mapped[int] = mapped_column(

@@ -1,6 +1,7 @@
 """Configuration du microservice Gateway avec validation Pydantic."""
 
 from typing import Literal
+
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -50,19 +51,17 @@ class GatewaySettings(BaseSettings):
     @field_validator("GATEWAY_DATABASE_URL")
     @classmethod
     def validate_db_url(cls, v: str) -> str:
+        if v == "sqlite:///:memory:":
+            return v
         if not v.startswith(("postgresql://", "postgresql+asyncpg://")):
-            raise ValueError(
-                "GATEWAY_DATABASE_URL doit être une URL PostgreSQL valide"
-            )
+            raise ValueError("GATEWAY_DATABASE_URL doit être une URL PostgreSQL valide")
         return v
 
     @field_validator("PATIENTS_SERVICE", "CHAMBRES_SERVICE", "ML_SERVICE")
     @classmethod
     def validate_service_urls(cls, v: str) -> str:
         if not v.startswith(("http://", "https://")):
-            raise ValueError(
-                "L'URL de service doit commencer par http:// ou https://"
-            )
+            raise ValueError("L'URL de service doit commencer par http:// ou https://")
         return v
 
     def model_post_init(self, __context) -> None:

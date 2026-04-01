@@ -1,16 +1,16 @@
-from datetime import datetime
 import enum
+from datetime import datetime
 
 from sqlalchemy import (
     Boolean,
-    ForeignKey,
-    String,
     DateTime,
     Enum,
-    func,
+    ForeignKey,
     Integer,
+    String,
+    func,
 )
-from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..utils.database import Base
 
@@ -62,15 +62,9 @@ class Admission(Base):
     sortie_prevue_le: Mapped[datetime] = mapped_column(
         DateTime, nullable=True
     )  # Date et heure de sortie prévue
-    ref_chambre: Mapped[int] = mapped_column(
-        Integer, nullable=True
-    )  # Référence de la chambre attribuée
     ref_reservation: Mapped[int] = mapped_column(
         Integer, nullable=True
     )  # Référence de la réservation
-    nom_chambre: Mapped[str] = mapped_column(
-        String, nullable=True
-    )  # Nom de la chambre attribuée
     created_at: Mapped[datetime] = mapped_column(
         DateTime(), server_default=func.now()
     )  # Date de création

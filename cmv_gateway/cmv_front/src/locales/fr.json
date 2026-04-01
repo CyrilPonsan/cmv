@@ -6,7 +6,7 @@
     "unknown_error": "Le serveur est injoignable, si le problème persiste, veuillez contacter l'assistance."
   },
   "app": {
-    "footer": "Projet de formation : toute ressemblance avec une clinique déjà existante ne serait que pure coïncidence.",
+    "footer": "Projet de formation : toute ressemblance avec une clinique ou des personnes existantes ne serait que pure coïncidence.",
     "sidebar": {
       "home": "Accueil",
       "rooms": "Chambres"

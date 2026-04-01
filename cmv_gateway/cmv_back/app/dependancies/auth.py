@@ -1,6 +1,6 @@
 # Imports des modules standards Python
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from typing import Annotated, Awaitable, Callable, Optional
 
 # Imports des dépendances FastAPI et autres frameworks
