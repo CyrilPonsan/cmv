@@ -76,10 +76,10 @@ class Reservation(Base):
         DateTime, nullable=False
     )  # Date et heure prévues de sortie
 
-    # Référence externe unique du patient
-    ref_patient: Mapped[int] = mapped_column(Integer, nullable=False, unique=True)
-    # Nom complet du patient
-    full_name: Mapped[str] = mapped_column(String, nullable=False)
+    # Réf avec le patient
+    ref: Mapped[int] = mapped_column(Integer,
+         nullable=False
+    )
 
     # Relation avec la chambre
     chambre_id: Mapped[int] = mapped_column(

@@ -2,7 +2,7 @@ from typing import Annotated
 
 from app.dependancies.auth import check_authorization
 from app.dependancies.db_session import get_db
-from app.schemas.reservation import CreateReservation
+from app.schemas.reservation import CreateReservation, ReservationResponse
 from app.schemas.schemas import SuccessWithMessage
 from app.schemas.services import ChambreAvailable
 from app.schemas.user import InternalPayload
@@ -39,11 +39,13 @@ async def get_available_room(
     return await service_chambre.get_available_room(db=db, service_id=service_id)
 
 
-@router.post("/{chambre_id}/reserver", status_code=201)
-async def rerserver_chambre(
-    chambre_id: int,
+@router.post(
+    "/{service_id}/reserver", status_code=201, response_model=ReservationResponse
+)
+async def reserver_chambre(
+    service_id: int,
     data: Annotated[CreateReservation, Body()],
-    # payload: Annotated[InternalPayload, Depends(check_authorization)],
+    payload: Annotated[InternalPayload, Depends(check_authorization)],
     service_chambre=Depends(get_chambres_service),
     db: Session = Depends(get_db),
 ):
@@ -60,7 +62,7 @@ async def rerserver_chambre(
         ReservationResponse: Les détails de la réservation créée
     """
     return await service_chambre.post_reservation(
-        db=db, chambre_id=chambre_id, reservation_data=data
+        db=db, service_id=service_id, reservation_data=data
     )
 
 

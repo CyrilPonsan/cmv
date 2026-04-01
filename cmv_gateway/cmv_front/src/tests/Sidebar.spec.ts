@@ -97,8 +97,8 @@ describe('SidebarComponent', () => {
   // Vérifie les classes CSS principales
   it('has correct CSS classes', () => {
     const main = wrapper.find('main')
-    expect(main.classes()).toContain('w-48')
-    expect(main.classes()).toContain('sticky')
+    expect(main.classes()).toContain('w-64')
+    expect(main.classes()).toContain('fixed')
     expect(main.classes()).toContain('bg-surface-900')
   })
 })

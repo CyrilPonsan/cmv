@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from app.utils.config import WEAK_SECRETS, ChambresSettings
+from app.utils.config import ChambresSettings, WEAK_SECRETS
 
 VALID_PARAMS = {
     "CHAMBRES_DATABASE_URL": "sqlite:///:memory:",
@@ -32,6 +32,11 @@ def test_asyncpg_url_accepted():
     assert s.CHAMBRES_DATABASE_URL.startswith("postgresql+asyncpg://")
 
 
+def test_sqlite_memory_accepted():
+    s = _make(CHAMBRES_DATABASE_URL="sqlite:///:memory:")
+    assert s.CHAMBRES_DATABASE_URL == "sqlite:///:memory:"
+
+
 # --- Variables obligatoires manquantes ---
 
 
@@ -48,15 +53,12 @@ def test_missing_required_field(missing, monkeypatch):
 # --- URL PostgreSQL invalide ---
 
 
-@pytest.mark.parametrize(
-    "bad_url",
-    [
-        "mysql://postgres:pwd@localhost/db",
-        "sqlite:///test.db",
-        "",
-        "not-a-url",
-    ],
-)
+@pytest.mark.parametrize("bad_url", [
+    "mysql://postgres:pwd@localhost/db",
+    "sqlite:///test.db",
+    "",
+    "not-a-url",
+])
 def test_invalid_db_url_rejected(bad_url):
     with pytest.raises(ValidationError, match="PostgreSQL"):
         _make(CHAMBRES_DATABASE_URL=bad_url)

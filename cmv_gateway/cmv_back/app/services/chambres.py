@@ -2,7 +2,7 @@
 import httpx
 from fastapi import HTTPException, Request
 
-from app.utils.config import CHAMBRES_SERVICE, ENVIRONMENT
+from app.utils.config import CHAMBRES_SERVICE, PATIENTS_SERVICE
 
 
 def get_chambres_service():
@@ -11,7 +11,9 @@ def get_chambres_service():
     Returns:
         ChambresService: Une nouvelle instance du service
     """
-    return ChambresService(url_api_chambres=CHAMBRES_SERVICE)
+    return ChambresService(
+        url_api_chambres=CHAMBRES_SERVICE, url_api_patients=PATIENTS_SERVICE
+    )
 
 
 class ChambresService:
@@ -20,6 +22,7 @@ class ChambresService:
     def __init__(
         self,
         url_api_chambres: str,
+        url_api_patients: str,
     ):
         """
         Initialise le service avec l'URL de l'API des chambres
@@ -28,6 +31,7 @@ class ChambresService:
         """
 
         self.url_api_chambres = url_api_chambres
+        self.url_api_patients = url_api_patients
 
     async def get_chambres(
         self,

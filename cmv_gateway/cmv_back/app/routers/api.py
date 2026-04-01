@@ -2,17 +2,15 @@
 import logging
 
 from fastapi import APIRouter, Depends, Request, Response
+from fastapi_limiter.depends import RateLimiter
 from redis.exceptions import RedisError
 
-from fastapi_limiter.depends import RateLimiter
-
-# Import des différents modules de routage
-from app.routers import chambres, ml
 from app.utils.rate_limiter import (
-    custom_identifier,
     custom_callback,
+    custom_identifier,
 )
-from . import auth, patients, users
+
+from . import auth, chambres, chambres_liste, ml, patients, users
 
 logger = logging.getLogger("CMV_GATEWAY")
 
@@ -35,7 +33,8 @@ async def global_rate_limit(request: Request, response: Response):
             await checker(request, response)
         except (RedisError, ConnectionError, TimeoutError, OSError) as e:
             logger.warning(
-                "Rate limiting global temporairement désactivé (Valkey indisponible): %s", e
+                "Rate limiting global temporairement désactivé (Valkey indisponible): %s",
+                e,
             )
 
 
@@ -53,3 +52,4 @@ router.include_router(chambres.router)  # Routes de gestion des chambres
 router.include_router(patients.router)  # Routes de gestion des patients
 router.include_router(users.router)  # Routes de gestion des utilisateurs
 router.include_router(ml.router)  # Routes de prédiction ML
+router.include_router(chambres_liste.router)  # Routes de gestion des chambres liste
