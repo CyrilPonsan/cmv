@@ -73,4 +73,5 @@ class PgChambresRepository:
         return ReservationResponse(
             reservation_id=new_reservation.id_reservation,
             chambre_id=chambre.id_chambre,
+            sortie_prevue_le=new_reservation.sortie_prevue,
         )

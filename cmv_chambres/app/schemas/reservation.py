@@ -15,3 +15,4 @@ class CreateReservation(BaseModel):
 class ReservationResponse(BaseModel):
     reservation_id: int  # Identifiant de la réservation
     chambre_id: int
+    sortie_prevue_le: datetime

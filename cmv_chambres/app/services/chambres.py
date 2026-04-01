@@ -107,6 +107,7 @@ class ChambresService:
         return ReservationResponse(
             reservation_id=reservation.reservation_id,
             chambre_id=chambre.id_chambre,
+            sortie_prevue_le=reservation.sortie_prevue_le,
         )
 
     async def cancel_reservation(
