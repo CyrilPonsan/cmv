@@ -5,30 +5,19 @@ from fastapi import HTTPException, Request
 from app.utils.config import CHAMBRES_SERVICE, PATIENTS_SERVICE
 
 
-def get_chambres_service():
-    """
-    Factory function pour créer une instance du service des chambres
-    Returns:
-        ChambresService: Une nouvelle instance du service
-    """
-    return ChambresService(
+def get_chambres_liste_service():
+
+    return ChambresListeService(
         url_api_chambres=CHAMBRES_SERVICE, url_api_patients=PATIENTS_SERVICE
     )
 
 
-class ChambresService:
-    """Service gérant les interactions avec l'API des chambres"""
-
+class ChambresListeService:
     def __init__(
         self,
         url_api_chambres: str,
         url_api_patients: str,
     ):
-        """
-        Initialise le service avec l'URL de l'API des chambres
-        Args:
-            url_api_chambres (str): URL de base de l'API des chambres
-        """
 
         self.url_api_chambres = url_api_chambres
         self.url_api_patients = url_api_patients
@@ -40,23 +29,12 @@ class ChambresService:
         client: httpx.AsyncClient,
         internal_token: str,
     ):
-        """
-        Récupère les informations des chambres depuis l'API
-        Args:
-            path (str): Chemin de la requête
-            request (Request): Requête FastAPI
-            client (httpx.AsyncClient): Client HTTP pour les requêtes
-        Returns:
-            dict: Données des chambres
-        Raises:
-            HTTPException: En cas d'erreur de l'API
-        """
+
         # Construction du chemin complet avec les paramètres de requête
         full_path = path
         if request.query_params:
             full_path = f"{path}?{request.query_params}"
         url = f"{self.url_api_chambres}/{full_path}"
-        print(f"URL: {url}")
 
         # Envoi de la requête à l'API
         response = await client.get(
@@ -65,6 +43,7 @@ class ChambresService:
             follow_redirects=True,
         )
         if response.status_code == 200:
+            print(f"Response: {response.json()}")
             return response.json()
         else:
             result = response.json()

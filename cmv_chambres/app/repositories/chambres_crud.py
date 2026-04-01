@@ -1,8 +1,8 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.schemas.reservation import CreateReservation
-from app.sql.models import Chambre, Patient, Reservation, Status
+from app.schemas.reservation import CreateReservation, ReservationResponse
+from app.sql.models import Chambre, Reservation, Status
 
 
 class PgChambresRepository:
@@ -31,27 +31,6 @@ class PgChambresRepository:
         db.refresh(chambre)
         return chambre
 
-    async def get_patient(self, db: Session, patient_id: int) -> Patient | None:
-        return db.query(Patient).filter(Patient.ref_patient == patient_id).first()
-
-    async def create_reservation(
-        self,
-        db: Session,
-        chambre: Chambre,
-        patient: Patient,
-        reservation: CreateReservation,
-    ) -> Reservation:
-        new_reservation = Reservation(
-            patient=patient,
-            chambre=chambre,
-            entree_prevue=reservation.entree_prevue,
-            sortie_prevue=reservation.sortie_prevue,
-        )
-        db.add(new_reservation)
-        db.commit()
-        db.refresh(new_reservation)
-        return new_reservation
-
     async def get_reservation_by_id(
         self, db: Session, reservation_id: int
     ) -> Reservation | None:
@@ -61,9 +40,7 @@ class PgChambresRepository:
             .first()
         )
 
-    async def cancel_reservation(
-        self, db: Session, reservation_id: int
-    ) -> Reservation:
+    async def cancel_reservation(self, db: Session, reservation_id: int) -> Reservation:
         reservation = (
             db.query(Reservation)
             .filter(Reservation.id_reservation == reservation_id)
@@ -78,7 +55,22 @@ class PgChambresRepository:
         db.commit()
         return reservation
 
-    async def get_reservations(
-        self, db: Session, patient_id: int
-    ) -> list[Reservation]:
-        return db.query(Reservation).filter(Reservation.patient_id == patient_id).all()
+    async def get_reservations(self, db: Session, patient_id: int) -> list[Reservation]:
+        return db.query(Reservation).filter(Reservation.ref == patient_id).all()
+
+    async def create_reservation(
+        self, db: Session, chambre: Chambre, reservation: CreateReservation
+    ) -> ReservationResponse:
+        new_reservation = Reservation(
+            chambre_id=chambre.id_chambre,
+            ref=reservation.patient_id,
+            entree_prevue=reservation.entree_prevue,
+            sortie_prevue=reservation.sortie_prevue,
+        )
+        db.add(new_reservation)
+        db.commit()
+        db.refresh(new_reservation)
+        return ReservationResponse(
+            reservation_id=new_reservation.id_reservation,
+            chambre_id=chambre.id_chambre,
+        )

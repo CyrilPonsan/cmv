@@ -113,3 +113,91 @@
 2026-04-01 05:23:26,088 - CMV_GATEWAY - WARNING - home connection  FROM: None
 2026-04-01 05:23:26,128 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
 2026-04-01 05:23:28,125 - CMV_GATEWAY - WARNING - 2 déconnection  FROM: None
+2026-04-01 06:27:33,064 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 06:27:33,179 - CMV_GATEWAY - WARNING - Vous n'êtes pas autorisé à accéder à cette ressource. FROM: None
+2026-04-01 06:27:33,428 - CMV_GATEWAY - WARNING - Vous n'êtes pas autorisé à accéder à cette ressource. FROM: None
+2026-04-01 06:27:57,206 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 06:29:21,850 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 06:36:28,833 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-04-01 06:36:28,849 - CMV_GATEWAY - WARNING - session_not_found FROM: None
+2026-04-01 06:42:08,089 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 06:42:08,617 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 06:42:20,235 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 06:42:20,784 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 06:43:41,034 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-04-01 06:43:41,227 - CMV_GATEWAY - WARNING - Vous n'êtes pas autorisé à accéder à cette ressource. FROM: None
+2026-04-01 06:48:13,171 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 06:48:13,735 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 06:48:20,702 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 06:48:21,140 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 06:49:10,545 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 06:49:10,985 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 06:49:47,547 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 06:49:48,028 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 06:50:09,345 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 06:50:09,810 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 06:50:28,192 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 06:50:28,627 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 06:50:55,601 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 06:50:56,155 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 06:52:23,440 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 06:57:07,806 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 06:57:07,810 - CMV_GATEWAY - WARNING - Impossible de déterminer l'IP du client pour le rate limiting
+2026-04-01 06:57:07,811 - CMV_GATEWAY - WARNING - Impossible de déterminer l'IP du client pour le rate limiting
+2026-04-01 06:57:07,843 - CMV_GATEWAY - WARNING - Vous n'êtes pas autorisé à accéder à cette ressource. FROM: None
+2026-04-01 06:57:08,098 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-04-01 06:57:08,233 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-01 06:57:16,080 - CMV_GATEWAY - WARNING - Vous n'êtes pas autorisé à accéder à cette ressource. FROM: None
+2026-04-01 06:57:18,692 - CMV_GATEWAY - WARNING - Vous n'êtes pas autorisé à accéder à cette ressource. FROM: None
+2026-04-01 06:57:19,709 - CMV_GATEWAY - WARNING - Vous n'êtes pas autorisé à accéder à cette ressource. FROM: None
+2026-04-01 06:58:21,127 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 06:58:21,676 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 06:58:56,837 - CMV_GATEWAY - WARNING - 2 déconnection  FROM: None
+2026-04-01 06:58:58,360 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-04-01 06:58:58,452 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-01 06:58:59,580 - CMV_GATEWAY - WARNING - Vous n'êtes pas autorisé à accéder à cette ressource. FROM: None
+2026-04-01 07:01:12,410 - CMV_GATEWAY - DEBUG - 
+2026-04-01 07:01:13,759 - CMV_GATEWAY - DEBUG - 
+2026-04-01 07:06:22,794 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 07:06:28,109 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-01 07:06:30,830 - CMV_GATEWAY - DEBUG - 
+2026-04-01 07:06:35,844 - CMV_GATEWAY - DEBUG - 
+2026-04-01 07:17:19,726 - CMV_GATEWAY - DEBUG - 
+2026-04-01 10:43:16,437 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-04-01 10:43:16,479 - CMV_GATEWAY - WARNING - session_not_found FROM: None
+2026-04-01 10:43:18,494 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-04-01 10:43:22,843 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-01 10:43:23,560 - CMV_GATEWAY - DEBUG - 
+2026-04-01 10:43:25,875 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-01 10:43:29,288 - CMV_GATEWAY - DEBUG - 
+2026-04-01 10:57:56,490 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 10:58:57,278 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-01 10:59:02,945 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-01 10:59:09,318 - CMV_GATEWAY - DEBUG - 
+2026-04-01 11:02:05,221 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 11:02:05,768 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 11:02:21,215 - CMV_GATEWAY - DEBUG - 
+2026-04-01 11:02:21,562 - CMV_GATEWAY - DEBUG - 
+2026-04-01 11:02:22,113 - CMV_GATEWAY - DEBUG - 
+2026-04-01 11:04:35,712 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 11:04:36,286 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 11:14:05,429 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 11:14:12,392 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 11:21:02,485 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 11:22:17,265 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 11:23:14,933 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 11:25:14,081 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 11:26:26,114 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-04-01 11:30:47,763 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 11:30:52,270 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-01 11:33:12,737 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 11:33:19,930 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-01 11:37:00,480 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 11:52:46,104 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 12:53:38,667 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-04-01 12:53:38,890 - CMV_GATEWAY - WARNING - session_not_found FROM: None
+2026-04-01 12:58:58,120 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-04-01 12:59:21,751 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 13:11:40,582 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 13:11:59,963 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 13:12:00,472 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.

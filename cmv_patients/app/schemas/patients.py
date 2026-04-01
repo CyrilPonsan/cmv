@@ -1,10 +1,10 @@
-from datetime import datetime
 import re
+from datetime import datetime
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-from app.sql.models import Civilite, DocumentType
 from app.schemas.schemas import SuccessWithMessage
+from app.sql.models import Civilite, DocumentType
 
 from .regular_expression import generic_pattern
 
@@ -106,6 +106,11 @@ class PatientsParams(BaseModel):
                 "La propriété 'field' doit être 'nom', 'prenom', 'date_de_naissance' ou 'email'."
             )
         return value
+
+
+# Modèle Pydantic pour la réponse d'une réservation
+class ReservationResponse(BaseModel):
+    reservation_id: int  # Identifiant de la réservation
 
 
 # Modèle utilisé pour les paramètres de recherche
