@@ -15,7 +15,8 @@
       "home": "Accueil",
       "change_mode": "Changer de mode",
       "logout": "Déconnexion"
-    }
+    },
+    "not_available":"Non disponible"
   },
   "columns": {
     "patientsList": {

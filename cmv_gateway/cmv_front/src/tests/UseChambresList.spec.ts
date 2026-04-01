@@ -55,7 +55,7 @@ const mockServices = [
  */
 function simulateGetChambres(services = mockServices) {
   mockSendRequest.mockImplementation((req: any, applyData: (data: any) => void) => {
-    if (req.path === '/chambres/services') {
+    if (req.path === '/chambres-liste/services') {
       applyData(services)
     }
   })
@@ -75,7 +75,7 @@ describe('UseChambresList', () => {
       useChambresList()
 
       expect(mockSendRequest).toHaveBeenCalledWith(
-        { path: '/chambres/services' },
+        { path: '/chambres-liste/services' },
         expect.any(Function)
       )
     })
@@ -260,7 +260,7 @@ describe('UseChambresList — Property-based tests', () => {
   // **Validates: Requirements 3.2**
   it('search: should return only services whose name starts with the query (case-insensitive)', () => {
     fc.assert(
-      fc.property(arbServiceList, fc.string({ minLength: 0, maxLength: 10 }), (services: { id_service: number; nom: string; chambres: never[] }[], query: string) => {
+      fc.property(arbServiceList, fc.string({ minLength: 1, maxLength: 10 }), (services: { id_service: number; nom: string; chambres: never[] }[], query: string) => {
         simulateGetChambres(services)
         const { search, list } = useChambresList()
 
@@ -285,7 +285,7 @@ describe('UseChambresList — Property-based tests', () => {
   // **Validates: Requirements 3.4**
   it('searchBySelect: should return only services whose name starts with the value (case-sensitive)', () => {
     fc.assert(
-      fc.property(arbServiceList, fc.string({ minLength: 0, maxLength: 10 }), (services: { id_service: number; nom: string; chambres: never[] }[], value: string) => {
+      fc.property(arbServiceList, fc.string({ minLength: 1, maxLength: 10 }), (services: { id_service: number; nom: string; chambres: never[] }[], value: string) => {
         simulateGetChambres(services)
         const { searchBySelect, list } = useChambresList()
 

@@ -23,6 +23,15 @@ async def test_get_chambre_wrong_token(ac, wrong_internal_token, services_and_ch
     assert response.json() == {"detail": "not_authorized"}
 
 
+@pytest.mark.asyncio
+async def test_get_chambre_bad_source(ac, bad_source_token, services_and_chambres):
+    """Token valide mais source non autorisée → 403."""
+    headers = {"Authorization": f"Bearer {bad_source_token}"}
+    response = await ac.get("/api/chambres/1", headers=headers)
+    assert response.status_code == 403
+    assert response.json() == {"detail": "not_authorized"}
+
+
 # ---- GET chambre disponible ----
 
 
@@ -40,11 +49,19 @@ async def test_get_available_room_success(ac, internal_token, services_and_chamb
 
 
 @pytest.mark.asyncio
+async def test_get_available_room_with_patients_token(ac, patients_token, services_and_chambres):
+    """Token avec source api_patients fonctionne aussi."""
+    service_id = services_and_chambres["services"][0].id_service
+    headers = {"Authorization": f"Bearer {patients_token}"}
+    response = await ac.get(f"/api/chambres/{service_id}", headers=headers)
+    assert response.status_code == 200
+
+
+@pytest.mark.asyncio
 async def test_get_available_room_none_available(ac, internal_token, db_session, services_and_chambres):
     """Quand toutes les chambres sont occupées, 404."""
     from app.sql.models import Chambre, Status
 
-    # Passer toutes les chambres du service 1 en occupées
     db_session.query(Chambre).filter(
         Chambre.service_id == services_and_chambres["services"][0].id_service
     ).update({"status": Status.OCCUPEE})
@@ -60,7 +77,7 @@ async def test_get_available_room_none_available(ac, internal_token, db_session,
 
 @pytest.mark.asyncio
 async def test_get_available_room_nonexistent_service(ac, internal_token, services_and_chambres):
-    """Service inexistant → 404 (pas de chambre libre)."""
+    """Service inexistant → 404."""
     headers = {"Authorization": f"Bearer {internal_token}"}
     response = await ac.get("/api/chambres/999", headers=headers)
     assert response.status_code == 404
@@ -74,7 +91,7 @@ async def test_get_available_room_invalid_service_id(ac, internal_token):
     assert response.status_code == 422
 
 
-# ---- PUT update chambre status ----
+# ---- PUT update chambre status (auth désactivée) ----
 
 
 @pytest.mark.asyncio
@@ -86,28 +103,17 @@ async def test_update_chambre_no_token(ac, services_and_chambres):
 
 
 @pytest.mark.asyncio
-async def test_update_chambre_wrong_token(ac, wrong_internal_token, services_and_chambres):
-    """PUT avec mauvais token (auth désactivée sur cette route) → 200."""
-    chambre_id = services_and_chambres["chambres"][0].id_chambre
-    headers = {"Authorization": f"Bearer {wrong_internal_token}"}
-    response = await ac.put(f"/api/chambres/{chambre_id}", headers=headers)
-    assert response.status_code == 200
-
-
-@pytest.mark.asyncio
-async def test_update_chambre_success(ac, internal_token, services_and_chambres):
-    """PUT avec token valide → 200 + chambre mise à jour."""
-    chambre_id = services_and_chambres["chambres"][1].id_chambre  # occupée
-    headers = {"Authorization": f"Bearer {internal_token}"}
-    response = await ac.put(f"/api/chambres/{chambre_id}", headers=headers)
+async def test_update_chambre_success(ac, services_and_chambres):
+    """PUT → 200 + chambre mise à jour."""
+    chambre_id = services_and_chambres["chambres"][1].id_chambre
+    response = await ac.put(f"/api/chambres/{chambre_id}")
 
     assert response.status_code == 200
     assert response.json() == {"success": True, "message": "Chambre mise à jour"}
 
 
 @pytest.mark.asyncio
-async def test_update_chambre_not_found(ac, internal_token, services_and_chambres):
+async def test_update_chambre_not_found(ac, services_and_chambres):
     """PUT sur chambre inexistante → 404."""
-    headers = {"Authorization": f"Bearer {internal_token}"}
-    response = await ac.put("/api/chambres/999", headers=headers)
+    response = await ac.put("/api/chambres/999")
     assert response.status_code == 404

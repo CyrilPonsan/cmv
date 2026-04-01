@@ -5,8 +5,7 @@
  */
 
 interface Patient {
-  id_patient: number
-  ref_patient: number
+  patient_id: number
   full_name: string
 }
 

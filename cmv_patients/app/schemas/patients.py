@@ -200,3 +200,11 @@ class PostPatientResponse(SuccessWithMessage):
 class PutPatientResponse(SuccessWithMessage):
     # Identifiant unique du patient
     id_patient: int
+
+
+class PatientsNames(BaseModel):
+    patient_id: int
+
+
+class PatientsNamesResponse(PatientsNames):
+    full_name: str

@@ -201,3 +201,23 @@
 2026-04-01 13:11:40,582 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
 2026-04-01 13:11:59,963 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
 2026-04-01 13:12:00,472 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-01 17:54:04,770 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-01 17:54:16,099 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-01 17:54:19,930 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/74 FROM: None
+2026-04-01 17:56:38,607 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-01 17:56:40,758 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/74 FROM: None
+2026-04-01 18:08:49,773 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-01 18:08:53,559 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-01 18:08:55,073 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/74 FROM: None
+2026-04-01 18:08:56,476 - CMV_GATEWAY - WARNING - home - 2 - GET - admissions/1 FROM: None
+2026-04-01 18:08:56,477 - CMV_GATEWAY - WARNING - Not Found FROM: None
+2026-04-01 18:11:06,505 - CMV_GATEWAY - WARNING - home - 2 - GET - admissions/1 FROM: None
+2026-04-01 18:11:06,507 - CMV_GATEWAY - WARNING - Not Found FROM: None
+2026-04-01 18:11:53,412 - CMV_GATEWAY - WARNING - home - 2 - GET - admissions/1 FROM: None
+2026-04-01 18:11:53,413 - CMV_GATEWAY - WARNING - Not Found FROM: None
+2026-04-01 18:11:54,764 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-01 18:12:02,107 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/74 FROM: None
+2026-04-01 18:12:04,484 - CMV_GATEWAY - WARNING - home - 2 - GET - admissions/1 FROM: None
+2026-04-01 18:12:04,485 - CMV_GATEWAY - WARNING - Not Found FROM: None
+2026-04-01 18:12:07,340 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/74 FROM: None
+2026-04-01 18:13:57,378 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
