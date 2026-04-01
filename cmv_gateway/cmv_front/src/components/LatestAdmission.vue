@@ -8,7 +8,6 @@
 // Import des dépendances nécessaires
 import type Admission from '@/models/admission'
 import { Button } from 'primevue'
-import { watchEffect } from 'vue'
 import AdmissionItem from './AdmissionItem.vue'
 
 // Props du composant
@@ -16,11 +15,6 @@ const { latestAdmission, patientId } = defineProps<{
   latestAdmission: Admission | null // La dernière admission du patient, null si aucune
   patientId: number // L'ID du patient
 }>()
-
-// Surveillance des changements de l'admission (à des fins de debug)
-watchEffect(() => {
-  console.log(latestAdmission)
-})
 </script>
 
 <template>

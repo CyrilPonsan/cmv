@@ -9,13 +9,9 @@ services:
       context: .
     depends_on:
       - redis
+    env_file:
+      - .env.test
     command: pytest -s app/tests/
-    environment:
-      - ENVIRONMENT=test
-      - DATABASE_URL={TEST_DATABASE_URL}
-      - PATIENTS_SECRET_KEY="cle_tres_secrete cle_tres_secrete cle_tres_secrete cle_tres_secrete2"
-      - CHAMBRES_SECRET_KEY="cle_tres_secrete cle_tres_secrete cle_tres_secrete cle_tres_secrete3"
-      - ML_SECRET_KEY="cle_tres_secrete cle_tres_secrete cle_tres_secrete cle_tres_secrete4"
 
     develop:
       watch:
