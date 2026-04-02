@@ -9,8 +9,8 @@ pipeline {
         IMAGE_ML = "firizgoude/cmv_ml"
         IMAGE_ML_TAG = "ml-${env.BUILD_NUMBER}"
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
-        EC2_HOST = credentials("ec2-gateway-host")
-        EC2_USER = credentials("ec2-ml-username")
+        EC2_HOST = credentials("ec2-host")
+        EC2_USER = credentials("ec2-username")
         SSH_CREDENTIALS = credentials('cmv-ssh-key')
         PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     }
