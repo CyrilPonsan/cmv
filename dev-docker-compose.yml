@@ -9,6 +9,8 @@ volumes:
     driver: local
   db_chambres:
     driver: local
+  db_ml:
+    driver: local
   redis:
     driver: local
 
@@ -68,3 +70,18 @@ services:
       POSTGRES_USER: ${CHAMBRES_POSTGRES_USER}
       POSTGRES_PASSWORD: ${CHAMBRES_POSTGRES_PASSWORD}
       POSTGRES_DB: ${CHAMBRES_POSTGRES_DB}
+
+  db_ml:
+    image: postgres:17
+    restart: always
+    container_name: db_ml 
+    ports:
+      - "6004:5432"
+    volumes:
+      - db_ml:/var/lib/postgresql/data
+    networks:
+      - cmv
+    environment:
+      POSTGRES_USER: ${ML_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${ML_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${ML_POSTGRES_DB}

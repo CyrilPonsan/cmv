@@ -67,7 +67,7 @@ docker stop cmv_ml || true
 docker rm cmv_ml || true
 docker image rm "$IMAGE_ML:latest" || true
 
-docker compose up -d
+cd /opt/cmv/app && docker compose up -d
 
 docker logout
 EOF

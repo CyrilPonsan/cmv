@@ -82,7 +82,7 @@ docker stop cmv_chambres || true
 docker rm cmv_chambres || true
 docker image rm "$IMAGE_CHAMBRES:latest" || true
 
-docker compose up -d
+cd /opt/cmv/app && docker compose up -d
 
 docker logout
 EOF

@@ -82,7 +82,7 @@ docker stop cmv_patients || true
 docker rm cmv_patients || true
 docker image rm "$IMAGE_PATIENTS:latest" || true
 
-docker compose up -d
+cd /opt/cmv/app && docker compose up -d
 
 docker logout
 EOF

@@ -24,9 +24,12 @@ from .utils.config import ENVIRONMENT, VALKEY_HOST
 from .utils.database import engine
 from .utils.logging_setup import LoggerSetup
 from .utils.rate_limiter import close_rate_limiter, init_rate_limiter
+from app.utils.config import ENVIRONMENT
 
-# Création des tables dans la base de données
-models.Base.metadata.create_all(bind=engine)
+
+# Les migrations sont gérées par alembic
+if ENVIRONMENT != "production":
+    models.Base.metadata.create_all(bind=engine)
 
 # Initialisation du logger
 logger = LoggerSetup()
