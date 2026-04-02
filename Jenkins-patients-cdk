@@ -9,12 +9,8 @@ pipeline {
         IMAGE_PATIENTS = "firizgoude/cmv_patients"
         IMAGE_PATIENTS_TAG = "patients-${env.BUILD_NUMBER}"
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
-        // Gateway (bastion) pour le rebond SSH
-        GATEWAY_HOST = credentials("cmv-gateway-host")
-        GATEWAY_USER = credentials("ec2-gateway-username")
-        // Instance privée patients
-        PATIENTS_HOST = credentials("ec2-patients-host")
-        PATIENTS_USER = credentials("ec2-patients-username")
+        EC2_HOST = credentials("cmv-gateway-host")
+        EC2_USER = credentials("ec2-username")
         SSH_CREDENTIALS = credentials('cdk-key')
         PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     }
@@ -76,11 +72,9 @@ pipeline {
                         sh '''
                             set +x
                             ssh -o StrictHostKeyChecking=no \
-                                -o UserKnownHostsFile=/dev/null \
-                                -o LogLevel=ERROR \
-                                -A \
-                                -J $GATEWAY_USER@$GATEWAY_HOST \
-                                $PATIENTS_USER@$PATIENTS_HOST << 'EOF'
+                            -o UserKnownHostsFile=/dev/null \
+                            -o LogLevel=ERROR \
+                            $EC2_USER@$EC2_HOST << 'EOF'
 
 echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
 
