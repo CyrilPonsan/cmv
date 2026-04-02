@@ -74,7 +74,7 @@ app.add_middleware(
 )
 
 # Ajout des middlewares de gestion des exceptions et de sécurité
-# app.add_middleware(ExceptionHandlerMiddleware)
+app.add_middleware(ExceptionHandlerMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 
 
