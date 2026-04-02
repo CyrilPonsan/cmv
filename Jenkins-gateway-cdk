@@ -94,3 +94,23 @@ pipeline {
                         docker image rm "$IMAGE_GATEWAY:latest" || true
                         docker network create cmv || true
                         docker compose up -d
+EOF
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker logout || true'
+            sh 'docker image rm "$IMAGE_GATEWAY:latest" || true'
+        }
+        success {
+            echo 'Pipeline terminé avec succès.'
+        }
+        failure {
+            echo 'Pipeline échoué. Vérifier les logs.'
+        }
+    }
+}
