@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_patients/app/repositories/patients_crud.py
+# hypothesis_version: 6.151.10
+
+[404, 'asc', 'data', 'desc', 'message', 'nom', 'patient_deleted', 'patient_not_found', 'total']
