@@ -16,12 +16,10 @@
 sudo mkdir -p /opt/s3-upload
 
 # Copier les scripts
-sudo cp materiel/dump_db.sh /opt/s3-upload/
 sudo cp materiel/db-backup.sh /opt/s3-upload/
 sudo cp materiel/s3_upload.py /opt/s3-upload/
 
 # Rendre les scripts exécutables
-sudo chmod +x /opt/s3-upload/dump_db.sh
 sudo chmod +x /opt/s3-upload/db-backup.sh
 ```
 
