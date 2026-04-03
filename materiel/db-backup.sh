@@ -1,5 +1,5 @@
 #!/bin/bash
-WATCH_DIR="/home/admin/"
+WATCH_DIR="/opt/s3-upload/backups"
 DATE=$(date +%Y%m%d_%H%M%S)
 RETENTION_DAYS=7
 
