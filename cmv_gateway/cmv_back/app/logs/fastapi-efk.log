@@ -1,5 +1,20 @@
-2026-04-02 00:45:47,222 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
-2026-04-02 00:45:47,360 - CMV_GATEWAY - WARNING - session_not_found FROM: None
-2026-04-02 14:46:30,905 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
-2026-04-02 19:33:42,779 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
-2026-04-02 19:54:31,282 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-04 18:36:04,924 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-04 18:36:32,304 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/74 FROM: None
+2026-04-04 18:36:42,053 - CMV_GATEWAY - WARNING - home - 2 - POST - documents/create/74 FROM: None
+2026-04-04 18:36:42,054 - CMV_GATEWAY - WARNING - not_authorized FROM: None
+2026-04-04 18:36:43,130 - CMV_GATEWAY - WARNING - home - 2 - POST - documents/create/74 FROM: None
+2026-04-04 18:36:43,131 - CMV_GATEWAY - WARNING - not_authorized FROM: None
+2026-04-04 18:36:43,321 - CMV_GATEWAY - WARNING - home - 2 - POST - documents/create/74 FROM: None
+2026-04-04 18:36:43,322 - CMV_GATEWAY - WARNING - not_authorized FROM: None
+2026-04-04 18:36:43,479 - CMV_GATEWAY - WARNING - home - 2 - POST - documents/create/74 FROM: None
+2026-04-04 18:36:43,480 - CMV_GATEWAY - WARNING - not_authorized FROM: None
+2026-04-04 18:36:43,634 - CMV_GATEWAY - WARNING - home - 2 - POST - documents/create/74 FROM: None
+2026-04-04 18:36:43,635 - CMV_GATEWAY - WARNING - not_authorized FROM: None
+2026-04-04 18:36:43,818 - CMV_GATEWAY - WARNING - home - 2 - POST - documents/create/74 FROM: None
+2026-04-04 18:36:43,818 - CMV_GATEWAY - WARNING - not_authorized FROM: None
+2026-04-04 19:18:41,758 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-04 19:18:50,656 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/103 FROM: None
+2026-04-04 19:20:16,519 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/103 FROM: None
+2026-04-04 19:22:04,568 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-04-04 19:22:04,685 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/103 FROM: None
+2026-04-04 19:23:04,935 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None

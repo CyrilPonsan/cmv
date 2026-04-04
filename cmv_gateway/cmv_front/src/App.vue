@@ -75,7 +75,7 @@ onBeforeMount(() => {
     </div>
   </div>
   <!-- Pied de page -->
-  <footer class="w-full h-16 flex justify-center items-center bg-black">
+  <footer class="z-10 absolute w-full h-16 flex justify-center items-center bg-black">
     <h3 class="text-xs text-primary-500">
       {{ t('app.footer') }}
     </h3>

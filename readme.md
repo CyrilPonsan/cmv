@@ -2,7 +2,7 @@
 
 ## Description
 
-Système d'information pour la clinique fictive Montvert : Ce dépôt inclue l'interface utilisateur, la partie back-end avec une architecture de microservices.
+Système d'information pour la clinique fictive Montvert : Ce dépôt inclut l'interface utilisateur, la partie back-end avec une architecture de microservices.
 
 ## Prérequis
 
