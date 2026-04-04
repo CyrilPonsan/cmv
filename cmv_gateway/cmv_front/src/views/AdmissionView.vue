@@ -52,7 +52,7 @@ const schemaAdmission = toTypedSchema(
     ambulatoire: z.enum(['Ambulatoire', 'Non ambulatoire']),
     entree_le: z.date(),
     sortie_prevue_le: z.date(),
-    services: z.string()
+    services: z.string().optional()
   })
 )
 
