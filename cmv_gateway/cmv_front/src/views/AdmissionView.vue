@@ -22,7 +22,7 @@ import {
   useToast
 } from 'primevue'
 import { Field, Form } from 'vee-validate'
-import { onBeforeMount, ref, watch } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useServices } from '@/stores/services'
 import { storeToRefs } from 'pinia'
@@ -45,7 +45,7 @@ const { servicesList, servicesOptions } = storeToRefs(store)
 
 const service = ref<string>()
 const predictionResult = ref<number | null>(null)
-const today = ref(new Date())
+const today = computed(() => new Date())
 
 const schemaAdmission = toTypedSchema(
   z.object({
@@ -227,9 +227,11 @@ const handleSubmit = (values: Record<string, unknown>) => {
     >
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <span class="flex flex-col gap-y-2">
-          <Field v-slot="{ field, errorMessage }" name="entree_le">
+          <Field v-slot="{ value, handleChange, errorMessage }" name="entree_le">
             <label for="entree_le">Date d'entrée</label>
             <DatePicker
+              :modelValue="value"
+              @update:modelValue="handleChange"
               showIcon
               fluid
               selectionMode="single"
@@ -238,7 +240,6 @@ const handleSubmit = (values: Record<string, unknown>) => {
               yearRange="1900:2024"
               locale="fr"
               iconDisplay="input"
-              v-bind="field"
               id="entree_le"
               name="entree_le"
               aria-label="date d'entrée de l'admission"
@@ -249,9 +250,11 @@ const handleSubmit = (values: Record<string, unknown>) => {
           </Field>
         </span>
         <span class="flex flex-col gap-y-2">
-          <Field v-slot="{ field, errorMessage }" name="sortie_prevue_le">
+          <Field v-slot="{ value, handleChange, errorMessage }" name="sortie_prevue_le">
             <label for="sortie_prevue_le">Sortie prévue le</label>
             <DatePicker
+              :modelValue="value"
+              @update:modelValue="handleChange"
               showIcon
               fluid
               selectionMode="single"
@@ -260,7 +263,6 @@ const handleSubmit = (values: Record<string, unknown>) => {
               yearRange="1900:2024"
               locale="fr"
               iconDisplay="input"
-              v-bind="field"
               id="sortie_prevue_le"
               name="sortie_prevue_le"
               aria-label="date de sortie prévue de l'admission"
