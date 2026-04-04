@@ -15,3 +15,5 @@
 2026-04-04 20:29:06,473 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 74 FROM: unknown
 2026-04-04 20:29:09,577 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 74 FROM: unknown
 2026-04-04 20:29:18,367 - CMV_PATIENTS - WARNING - Not Found FROM: unknown
+2026-04-04 20:41:13,087 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-04 20:41:16,379 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 85 FROM: unknown

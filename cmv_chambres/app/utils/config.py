@@ -45,7 +45,6 @@ class ChambresSettings(BaseSettings):
         return v
 
     def model_post_init(self, __context) -> None:
-        print(f"ENVIRONMENT: {self.SECRET_KEY}")
         if self.ENVIRONMENT == "production":
             if len(self.SECRET_KEY) < 32:
                 raise ValueError(

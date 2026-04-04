@@ -21,7 +21,7 @@ import {
   InputNumber,
   useToast
 } from 'primevue'
-import { Field, Form } from 'vee-validate'
+import { Field, useForm } from 'vee-validate'
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useServices } from '@/stores/services'
@@ -55,6 +55,15 @@ const schemaAdmission = toTypedSchema(
     services: z.string().optional()
   })
 )
+
+const { handleSubmit, setFieldValue } = useForm({
+  validationSchema: schemaAdmission,
+  initialValues: {
+    ambulatoire: 'Ambulatoire' as const,
+    entree_le: new Date(),
+    sortie_prevue_le: new Date()
+  }
+})
 
 /**
  * Crée une nouvelle admission pour le patient
@@ -182,15 +191,17 @@ const formTopRef = ref<any>(null)
 
 const applyPrediction = () => {
   if (predictionResult.value) {
-    // 1. Mettre à jour la date de sortie
-    sortiePrevueLe.value = new Date(
+    // 1. Mettre à jour la date de sortie via vee-validate
+    const newSortie = new Date(
       entreeLe.value.getTime() + predictionResult.value * 24 * 60 * 60 * 1000
     )
+    sortiePrevueLe.value = newSortie
+    setFieldValue('sortie_prevue_le', newSortie)
     // 2. Basculer sur 'Non ambulatoire' (puisqu'il y a un séjour calculé)
     ambulatoire.value = 'Non ambulatoire'
+    setFieldValue('ambulatoire', 'Non ambulatoire')
     // 3. Scroller de manière douce vers le haut du formulaire
     if (formTopRef.value) {
-      console.log('bingo', formTopRef.value)
       if (formTopRef.value.$el) {
         formTopRef.value.$el.scrollIntoView({ behavior: 'smooth', block: 'start' })
       } else {
@@ -207,24 +218,15 @@ onBeforeMount(() => {
   })
 })
 
-const handleSubmit = (values: Record<string, unknown>) => {
+const onSubmit = handleSubmit((values) => {
   postAdmission(values)
-}
+})
 </script>
 
 <template>
   <main ref="formTopRef" class="min-w-screen flex flex-col gap-y-8 text-xs p-2">
     <PageHeader title="Espace Administratif" description="Créer une admission pour un patient" />
-    <Form
-      class="flex flex-col gap-y-8 w-5/6 lg:w-[42rem]"
-      :validationSchema="schemaAdmission"
-      :initialValues="{
-        ambulatoire,
-        entree_le: today,
-        sortie_prevue_le: today
-      }"
-      @submit="handleSubmit"
-    >
+    <form class="flex flex-col gap-y-8 w-5/6 lg:w-[42rem]" @submit="onSubmit">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <span class="flex flex-col gap-y-2">
           <Field v-slot="{ value, handleChange, errorMessage }" name="entree_le">
@@ -315,9 +317,9 @@ const handleSubmit = (values: Record<string, unknown>) => {
         <Button fluid label="Annuler" @click="router.back()" severity="warn" />
         <Button fluid label="Créer une admission" type="submit" severity="success" />
       </span>
-    </Form>
+    </form>
 
-    <div
+    <form
       class="w-full lg:w-[60rem] mt-8 bg-surface-50 dark:bg-surface-900 p-6 rounded-lg border border-surface-200 dark:border-surface-700"
     >
       <h3 class="text-lg font-bold mb-4">Outil d'Aide à la Décision (IA)</h3>
@@ -325,7 +327,7 @@ const handleSubmit = (values: Record<string, unknown>) => {
         Prédiction de la durée du séjour basée sur le dossier du patient
       </p>
 
-      <Form class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
         <!-- Colonne 1 : Antécédents (Booléens) -->
         <div class="flex flex-col gap-y-4 w-full">
           <h4 class="font-semibold text-primary">Antécédents / Pathologies</h4>
@@ -401,7 +403,7 @@ const handleSubmit = (values: Record<string, unknown>) => {
             </div>
           </div>
         </div>
-      </Form>
+      </div>
 
       <!-- Actions de la prédiction -->
       <div
@@ -433,6 +435,6 @@ const handleSubmit = (values: Record<string, unknown>) => {
           />
         </div>
       </div>
-    </div>
+    </form>
   </main>
 </template>

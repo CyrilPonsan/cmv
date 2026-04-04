@@ -232,14 +232,14 @@ vi.mock('primevue/button', () => ({
 
 // ---- Mock vee-validate ----
 vi.mock('vee-validate', () => ({
-  Form: {
-    name: 'Form',
-    template: '<form data-testid="form"><slot /></form>'
-  },
+  useForm: () => ({
+    handleSubmit: (fn: Function) => (e: Event) => { e?.preventDefault?.(); fn({}) },
+    setFieldValue: vi.fn()
+  }),
   Field: {
     name: 'Field',
     props: ['name'],
-    template: '<div data-testid="field"><slot :field="{}" :errorMessage="null" /></div>'
+    template: '<div data-testid="field"><slot :value="null" :handleChange="() => {}" :errorMessage="null" /></div>'
   }
 }))
 

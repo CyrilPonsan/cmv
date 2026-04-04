@@ -30,3 +30,27 @@
 2026-04-04 20:29:09,580 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/74 FROM: None
 2026-04-04 20:29:18,368 - CMV_GATEWAY - WARNING - home - 2 - GET - admissions/13 FROM: None
 2026-04-04 20:29:18,369 - CMV_GATEWAY - WARNING - Not Found FROM: None
+2026-04-04 20:40:55,068 - CMV_GATEWAY - WARNING - Rate limiting global temporairement désactivé (Valkey indisponible): Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
+2026-04-04 20:40:55,071 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
+2026-04-04 20:40:55,093 - CMV_GATEWAY - WARNING - Rate limiting global temporairement désactivé (Valkey indisponible): Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
+2026-04-04 20:40:55,095 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
+2026-04-04 20:40:57,442 - CMV_GATEWAY - WARNING - Rate limiting global temporairement désactivé (Valkey indisponible): Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
+2026-04-04 20:40:57,442 - CMV_GATEWAY - WARNING - Rate limiting login temporairement désactivé (Valkey indisponible): Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
+2026-04-04 20:40:57,454 - CMV_GATEWAY - DEBUG - (psycopg2.OperationalError) server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+
+[SQL: SELECT "user".id_user AS user_id_user, "user".username AS user_username, "user".password AS user_password, "user".prenom AS user_prenom, "user".nom AS user_nom, "user".is_active AS user_is_active, "user".service AS user_service, "user".created_at AS user_created_at, "user".updated_at AS user_updated_at, "user".role_id AS user_role_id 
+FROM "user" 
+WHERE "user".username = %(username_1)s 
+ LIMIT %(param_1)s]
+[parameters: {'username_1': 'accueil@cmv.fr', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-04-04 20:41:12,293 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-04 20:41:13,101 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-04 20:41:16,389 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/85 FROM: None
+2026-04-04 20:41:21,218 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-04 20:41:22,862 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-04 20:41:23,158 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-04 20:41:23,366 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-04 20:41:23,560 - CMV_GATEWAY - DEBUG - All connection attempts failed
