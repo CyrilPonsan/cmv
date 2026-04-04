@@ -224,6 +224,8 @@ def get_service_secret_key(resource: str):
     match resource:
         case "patients":
             return PATIENTS_SECRET_KEY
+        case "documents":
+            return PATIENTS_SECRET_KEY
         case "chambres":
             return CHAMBRES_SECRET_KEY
         case "ml":

@@ -657,69 +657,15 @@ def test_prop_reserve_then_cancel_roundtrip(db_session, data):
         st.sampled_from([Status.LIBRE, Status.OCCUPEE, Status.NETTOYAGE]),
         min_size=1,
         max_size=5,
-    ).filter(lambda lst: any(s == Status.LIBRE for s in lst))
+    )
 )
 @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
-def test_prop_available_room_selection_with_free(db_session, statuses):
+def test_prop_available_room_selection(db_session, statuses):
     """**Validates: Requirements 8.1, 8.2, 8.3**
 
     Pour tout Service_Hospitalier contenant au moins une Chambre LIBRE,
     get_available_room doit retourner exactement une Chambre avec le statut
     LIBRE appartenant à ce service.
-    """
-    service = ChambresService(PgChambresRepository())
-    loop = asyncio.get_event_loop()
-
-    # --- setup: service + chambres with mixed statuses (at least one LIBRE) ---
-    svc = Service(nom=f"Svc_{uuid.uuid4().hex[:8]}")
-    db_session.add(svc)
-    db_session.flush()
-
-    chambres = []
-    for i, s in enumerate(statuses):
-        ch = Chambre(
-            nom=f"CH_{uuid.uuid4().hex[:12]}",
-            status=s,
-            dernier_nettoyage=datetime.now(),
-            service_id=svc.id_service,
-        )
-        db_session.add(ch)
-        chambres.append(ch)
-    db_session.commit()
-
-    # --- act ---
-    result = loop.run_until_complete(
-        service.get_available_room(db_session, svc.id_service)
-    )
-
-    # --- assert 1: returned exactly one Chambre ---
-    assert isinstance(result, Chambre)
-
-    # --- assert 2: returned Chambre has status LIBRE ---
-    assert result.status == Status.LIBRE
-
-    # --- assert 3: returned Chambre belongs to the correct service ---
-    assert result.service_id == svc.id_service
-
-    # --- cleanup ---
-    for ch in chambres:
-        db_session.delete(ch)
-    db_session.delete(svc)
-    db_session.commit()
-
-
-# Feature: chambres-saga-tests, Property 8: Sélection de chambre disponible
-@given(
-    statuses=st.lists(
-        non_libre_statuses,
-        min_size=1,
-        max_size=5,
-    )
-)
-@settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
-def test_prop_available_room_selection_all_occupied(db_session, statuses):
-    """**Validates: Requirements 8.1, 8.2, 8.3**
-
     Pour tout Service_Hospitalier dont toutes les Chambres sont OCCUPEE ou
     NETTOYAGE, get_available_room doit lever une HTTPException(404,
     "no_room_available").
@@ -727,7 +673,9 @@ def test_prop_available_room_selection_all_occupied(db_session, statuses):
     service = ChambresService(PgChambresRepository())
     loop = asyncio.get_event_loop()
 
-    # --- setup: service + chambres all non-LIBRE ---
+    has_libre = any(s == Status.LIBRE for s in statuses)
+
+    # --- setup: service + chambres with generated statuses ---
     svc = Service(nom=f"Svc_{uuid.uuid4().hex[:8]}")
     db_session.add(svc)
     db_session.flush()
@@ -744,17 +692,126 @@ def test_prop_available_room_selection_all_occupied(db_session, statuses):
         chambres.append(ch)
     db_session.commit()
 
-    # --- act: expect HTTPException 404 ---
-    with pytest.raises(HTTPException) as exc_info:
-        loop.run_until_complete(
+    if has_libre:
+        # --- case 1: at least one LIBRE room exists ---
+        result = loop.run_until_complete(
             service.get_available_room(db_session, svc.id_service)
         )
 
-    assert exc_info.value.status_code == 404
-    assert exc_info.value.detail == "no_room_available"
+        # returned exactly one Chambre with status LIBRE belonging to this service
+        assert isinstance(result, Chambre)
+        assert result.status == Status.LIBRE
+        assert result.service_id == svc.id_service
+    else:
+        # --- case 2: all rooms are OCCUPEE or NETTOYAGE ---
+        with pytest.raises(HTTPException) as exc_info:
+            loop.run_until_complete(
+                service.get_available_room(db_session, svc.id_service)
+            )
+
+        assert exc_info.value.status_code == 404
+        assert exc_info.value.detail == "no_room_available"
 
     # --- cleanup ---
     for ch in chambres:
         db_session.delete(ch)
     db_session.delete(svc)
     db_session.commit()
+
+
+# ---------------------------------------------------------------------------
+# 6.1 — Tests de validation Pydantic (via AsyncClient / routeur)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_reservation_missing_fields_returns_422(ac, internal_token):
+    """Validates: Requirements 9.1 — champs requis absents → HTTP 422."""
+    resp = await ac.post(
+        "/api/chambres/1/reserver",
+        json={},
+        headers={"Authorization": f"Bearer {internal_token}"},
+    )
+    assert resp.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_reservation_invalid_datetime_returns_422(ac, internal_token):
+    """Validates: Requirements 9.2 — types datetime invalides → HTTP 422."""
+    resp = await ac.post(
+        "/api/chambres/1/reserver",
+        json={
+            "patient_id": 1,
+            "entree_prevue": "not-a-datetime",
+            "sortie_prevue": "also-not-a-datetime",
+        },
+        headers={"Authorization": f"Bearer {internal_token}"},
+    )
+    assert resp.status_code == 422
+
+
+# ---------------------------------------------------------------------------
+# 6.2 — Tests d'authentification JWT
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_reservation_no_token_returns_401(ac):
+    """Validates: Requirements 10.1 — requête sans token JWT → HTTP 401 Not authenticated."""
+    resp = await ac.post(
+        "/api/chambres/1/reserver",
+        json={
+            "patient_id": 1,
+            "entree_prevue": "2026-06-01T10:00:00",
+            "sortie_prevue": "2026-06-05T10:00:00",
+        },
+    )
+    assert resp.status_code == 401
+    assert resp.json()["detail"] == "Not authenticated"
+
+
+@pytest.mark.asyncio
+async def test_reservation_invalid_token_returns_403(ac):
+    """Validates: Requirements 10.2 — token JWT invalide → HTTP 403 not_authorized."""
+    resp = await ac.post(
+        "/api/chambres/1/reserver",
+        json={
+            "patient_id": 1,
+            "entree_prevue": "2026-06-01T10:00:00",
+            "sortie_prevue": "2026-06-05T10:00:00",
+        },
+        headers={"Authorization": "Bearer invalid.garbage.token"},
+    )
+    assert resp.status_code == 403
+    assert resp.json()["detail"] == "not_authorized"
+
+
+@pytest.mark.asyncio
+async def test_reservation_valid_sources_accepted(
+    ac, internal_token, patients_token, services_and_chambres
+):
+    """Validates: Requirements 10.3 — sources api_patients et api_gateway sont acceptées."""
+    service_id = services_and_chambres["services"][0].id_service
+    body = {
+        "patient_id": 100,
+        "entree_prevue": "2026-07-01T10:00:00",
+        "sortie_prevue": "2026-07-05T10:00:00",
+    }
+
+    # api_gateway source (internal_token)
+    resp_gw = await ac.post(
+        f"/api/chambres/{service_id}/reserver",
+        json=body,
+        headers={"Authorization": f"Bearer {internal_token}"},
+    )
+    assert resp_gw.status_code != 401
+    assert resp_gw.status_code != 403
+
+    # api_patients source (patients_token)
+    resp_pt = await ac.post(
+        f"/api/chambres/{service_id}/reserver",
+        json=body,
+        headers={"Authorization": f"Bearer {patients_token}"},
+    )
+    assert resp_pt.status_code != 401
+    assert resp_pt.status_code != 403

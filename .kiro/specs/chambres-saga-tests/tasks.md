@@ -66,32 +66,32 @@ Implémentation des tests unitaires et property-based pour le côté participant
 - [x] 4. Checkpoint — Vérifier les tests de réservation et d'annulation
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Implémenter les tests round-trip et sélection de chambre
+- [x] 5. Implémenter les tests round-trip et sélection de chambre
   - [x] 5.1 Écrire le test property-based pour le round-trip réservation → annulation
     - **Propriété 7 : Round-trip réservation → annulation**
     - Vérifier que le cycle complet remet la Chambre à LIBRE, supprime la Reservation, et laisse le nombre total de Reservations identique au nombre initial.
     - `@settings(max_examples=100)`
     - **Valide : Exigences 7.1, 7.2, 7.3**
 
-  - [-] 5.2 Écrire le test property-based pour la sélection de chambre disponible
+  - [x] 5.2 Écrire le test property-based pour la sélection de chambre disponible
     - **Propriété 8 : Sélection de chambre disponible**
     - Vérifier que `get_available_room` retourne une Chambre LIBRE du bon service, ou lève HTTPException 404 si aucune n'est LIBRE.
     - `@settings(max_examples=100)`
     - **Valide : Exigences 8.1, 8.2, 8.3**
 
-- [ ] 6. Implémenter les tests de validation et d'authentification
-  - [~] 6.1 Implémenter les tests de validation Pydantic
+- [x] 6. Implémenter les tests de validation et d'authentification
+  - [x] 6.1 Implémenter les tests de validation Pydantic
     - `test_reservation_missing_fields_returns_422` : vérifier HTTP 422 quand les champs requis sont absents
     - `test_reservation_invalid_datetime_returns_422` : vérifier HTTP 422 quand les types datetime sont invalides
     - _Exigences : 9.1, 9.2_
 
-  - [~] 6.2 Implémenter les tests d'authentification JWT
+  - [x] 6.2 Implémenter les tests d'authentification JWT
     - `test_reservation_no_token_returns_401` : vérifier HTTP 401 avec détail `Not authenticated` sans token
     - `test_reservation_invalid_token_returns_403` : vérifier HTTP 403 avec détail `not_authorized` avec token invalide
     - `test_reservation_valid_sources_accepted` : vérifier que les sources `api_patients` et `api_gateway` sont acceptées
     - _Exigences : 10.1, 10.2, 10.3_
 
-- [~] 7. Checkpoint final — Vérifier l'ensemble des tests
+- [x] 7. Checkpoint final — Vérifier l'ensemble des tests
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
