@@ -36,6 +36,8 @@ class ChambresSettings(BaseSettings):
     @field_validator("CHAMBRES_DATABASE_URL")
     @classmethod
     def validate_db_url(cls, v: str) -> str:
+        if v == "sqlite:///:memory:":
+            return v
         if not v.startswith(("postgresql://", "postgresql+asyncpg://")):
             raise ValueError(
                 "CHAMBRES_DATABASE_URL doit être une URL PostgreSQL valide"

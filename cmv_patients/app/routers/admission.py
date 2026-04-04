@@ -11,8 +11,7 @@ from app.schemas.patients import CreateAdmission
 from app.schemas.user import InternalPayload
 
 # Import des services et dépendances personnalisés
-from app.services.admissions import AdmissionService
-from app.services.patients import PatientsService, get_patients_service
+from app.services.admissions import get_admissions_service
 
 # Création du routeur FastAPI
 router = APIRouter()
@@ -23,7 +22,7 @@ async def create_admission(
     request: Request,
     data: Annotated[CreateAdmission, Body()],  # Données de l'admission à créer
     internal_payload: Annotated[InternalPayload, Depends(get_permissions)],
-    patients_service: PatientsService = Depends(get_patients_service),
+    admission_service=Depends(get_admissions_service),
     db: Session = Depends(get_db),  # Injection de la session de base de données
 ):
     """
@@ -36,8 +35,4 @@ async def create_admission(
     Returns:
         dict: Les détails de l'admission créée
     """
-    return await AdmissionService(db).create_admission(
-        data,
-        internal_payload,
-        request,
-    )
+    return await admission_service.create_admission(db, data, internal_payload, request)

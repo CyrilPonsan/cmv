@@ -9,8 +9,8 @@ pipeline {
         IMAGE_CHAMBRES = "firizgoude/cmv_chambres"
         IMAGE_CHAMBRES_TAG = "chambres-${env.BUILD_NUMBER}"
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
-        EC2_HOST = credentials("ec2-gateway-host")
-        EC2_USER = credentials("ec2-gateway-username")
+        EC2_HOST = credentials("ec2-host")
+        EC2_USER = credentials("ec2-username")
         SSH_CREDENTIALS = credentials('cmv-ssh-key')
         PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     }
@@ -68,7 +68,7 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    sshagent(credentials: ['cdk-key']) {
+                    sshagent(credentials: ['cmv-ssh-key']) {
                         sh '''
                             set +x
                             ssh -o StrictHostKeyChecking=no \

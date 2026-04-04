@@ -1,446 +1,56 @@
-2026-03-31 00:02:28,652 - CMV_GATEWAY - WARNING - home connection  FROM: None
-2026-03-31 00:02:28,865 - CMV_GATEWAY - WARNING - Failed connection attempt using : foo.user@test.fr FROM: None
-2026-03-31 00:02:28,870 - CMV_GATEWAY - WARNING - credentials FROM: None
-2026-03-31 00:02:29,076 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:29,305 - CMV_GATEWAY - WARNING - 1 validation error:
-  {'type': 'value_error', 'loc': ('body', 'username'), 'msg': 'value is not a valid email address: An email address must have an @-sign.', 'input': 'test', 'ctx': {'reason': 'An email address must have an @-sign.'}}
+2026-04-04 18:36:04,924 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-04 18:36:32,304 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/74 FROM: None
+2026-04-04 18:36:42,053 - CMV_GATEWAY - WARNING - home - 2 - POST - documents/create/74 FROM: None
+2026-04-04 18:36:42,054 - CMV_GATEWAY - WARNING - not_authorized FROM: None
+2026-04-04 18:36:43,130 - CMV_GATEWAY - WARNING - home - 2 - POST - documents/create/74 FROM: None
+2026-04-04 18:36:43,131 - CMV_GATEWAY - WARNING - not_authorized FROM: None
+2026-04-04 18:36:43,321 - CMV_GATEWAY - WARNING - home - 2 - POST - documents/create/74 FROM: None
+2026-04-04 18:36:43,322 - CMV_GATEWAY - WARNING - not_authorized FROM: None
+2026-04-04 18:36:43,479 - CMV_GATEWAY - WARNING - home - 2 - POST - documents/create/74 FROM: None
+2026-04-04 18:36:43,480 - CMV_GATEWAY - WARNING - not_authorized FROM: None
+2026-04-04 18:36:43,634 - CMV_GATEWAY - WARNING - home - 2 - POST - documents/create/74 FROM: None
+2026-04-04 18:36:43,635 - CMV_GATEWAY - WARNING - not_authorized FROM: None
+2026-04-04 18:36:43,818 - CMV_GATEWAY - WARNING - home - 2 - POST - documents/create/74 FROM: None
+2026-04-04 18:36:43,818 - CMV_GATEWAY - WARNING - not_authorized FROM: None
+2026-04-04 19:18:41,758 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-04 19:18:50,656 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/103 FROM: None
+2026-04-04 19:20:16,519 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/103 FROM: None
+2026-04-04 19:22:04,568 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-04-04 19:22:04,685 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/103 FROM: None
+2026-04-04 19:23:04,935 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-04 20:28:26,991 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-04 20:28:28,420 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-04-04 20:28:28,432 - CMV_GATEWAY - WARNING - session_not_found FROM: None
+2026-04-04 20:28:29,898 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-04-04 20:28:30,110 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-04 20:28:32,410 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/85 FROM: None
+2026-04-04 20:29:04,286 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-04 20:29:06,477 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/74 FROM: None
+2026-04-04 20:29:09,551 - CMV_GATEWAY - WARNING - home - 2 - POST - admissions FROM: None
+2026-04-04 20:29:09,580 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/74 FROM: None
+2026-04-04 20:29:18,368 - CMV_GATEWAY - WARNING - home - 2 - GET - admissions/13 FROM: None
+2026-04-04 20:29:18,369 - CMV_GATEWAY - WARNING - Not Found FROM: None
+2026-04-04 20:40:55,068 - CMV_GATEWAY - WARNING - Rate limiting global temporairement désactivé (Valkey indisponible): Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
+2026-04-04 20:40:55,071 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
+2026-04-04 20:40:55,093 - CMV_GATEWAY - WARNING - Rate limiting global temporairement désactivé (Valkey indisponible): Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
+2026-04-04 20:40:55,095 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
+2026-04-04 20:40:57,442 - CMV_GATEWAY - WARNING - Rate limiting global temporairement désactivé (Valkey indisponible): Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
+2026-04-04 20:40:57,442 - CMV_GATEWAY - WARNING - Rate limiting login temporairement désactivé (Valkey indisponible): Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
+2026-04-04 20:40:57,454 - CMV_GATEWAY - DEBUG - (psycopg2.OperationalError) server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
 
-  File "/Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/routers/auth.py", line 52, in login
-    POST /api/auth/login FROM: None
-2026-03-31 00:02:29,518 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,045 - CMV_GATEWAY - WARNING - home connection  FROM: None
-2026-03-31 00:02:30,059 - CMV_GATEWAY - WARNING - home - 1 - GET - foo FROM: None
-2026-03-31 00:02:30,456 - CMV_GATEWAY - WARNING - home connection  FROM: None
-2026-03-31 00:02:30,465 - CMV_GATEWAY - WARNING - home - 1 - GET - foo FROM: None
-2026-03-31 00:02:30,465 - CMV_GATEWAY - WARNING - Not Found FROM: None
-2026-03-31 00:02:30,471 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
-2026-03-31 00:02:30,690 - CMV_GATEWAY - WARNING - Impossible de déterminer l'IP du client pour le rate limiting
-2026-03-31 00:02:30,705 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,708 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,711 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,714 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,716 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,725 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,728 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,730 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,732 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,734 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,758 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,760 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,763 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,765 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,767 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,777 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,779 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,781 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,783 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,786 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,804 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,806 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,808 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,811 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,813 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,824 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,827 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,829 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,831 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,833 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,846 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,848 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,851 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,853 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,855 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,870 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,872 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,875 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,877 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,879 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,896 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,898 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,901 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,903 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,905 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,927 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,930 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,932 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,934 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,937 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:30,965 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:30,968 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:30,970 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:30,972 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:30,974 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:30,976 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:30,978 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:30,980 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:30,982 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:30,983 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:30,985 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:30,986 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:30,989 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:30,992 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:30,994 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:30,996 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:30,998 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,000 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,002 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,004 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,006 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,008 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,009 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,011 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,013 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,015 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,017 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,019 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,020 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,022 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,024 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,026 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,028 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,030 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,032 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,033 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,035 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,037 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,039 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,041 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,043 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,045 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,047 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,048 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,050 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,052 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,054 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,056 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,058 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,060 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,062 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,063 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,065 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,067 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,069 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,070 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,072 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,074 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,076 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,078 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,083 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,085 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,086 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,088 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,090 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,092 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,094 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,096 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,098 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,099 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,101 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,103 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,105 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,106 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,108 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,110 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,112 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,113 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,115 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,117 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,118 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,121 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,122 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,124 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,126 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,127 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,129 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,131 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,133 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,134 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,136 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,138 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,139 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,141 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,143 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,144 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,146 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,148 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,150 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,151 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,153 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,155 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,156 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,158 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,160 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,161 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,163 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,165 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,166 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,168 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,170 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,171 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,173 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,175 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,176 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,178 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,180 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,182 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,184 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,185 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,191 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,193 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,195 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,196 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,198 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,200 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,202 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,203 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,205 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,207 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,209 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,210 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,212 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,214 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,216 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,218 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,219 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,221 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,223 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,225 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,226 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,228 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,230 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,231 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,233 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,235 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,236 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,238 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,240 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,241 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,243 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,245 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,247 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,248 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,250 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,252 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,253 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,255 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,257 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,259 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,260 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,262 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,264 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,265 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,267 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,269 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,270 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,272 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,274 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,276 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,278 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,279 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,281 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,283 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,284 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,286 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,287 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,289 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,291 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,293 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,302 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,303 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,305 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,308 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,310 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,312 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,314 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,315 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,317 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,319 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,321 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,322 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,324 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,326 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,328 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,330 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,332 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,333 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,335 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,337 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,339 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,341 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,342 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,344 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,346 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,348 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,349 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,351 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,352 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,355 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,358 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,360 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,362 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,364 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,366 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,367 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,369 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,371 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,373 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,376 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,378 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,379 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,381 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,383 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,385 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,387 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,389 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,391 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,392 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,394 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,396 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,398 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,400 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,401 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,403 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,405 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,407 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,409 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,411 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,412 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,421 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,423 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,425 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,427 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,429 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,430 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,432 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,434 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,436 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,438 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,440 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,442 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,444 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,445 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,447 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,449 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,451 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,453 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,454 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,456 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,458 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,460 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,462 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,463 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,466 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,467 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,469 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,471 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,473 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,474 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,476 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,478 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,480 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,482 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,483 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,485 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,487 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,489 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,490 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,492 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,494 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,496 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,498 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,500 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,501 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,503 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,505 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,510 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,513 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,515 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,516 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,518 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,520 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,522 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,524 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,526 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,527 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,529 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,531 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,533 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,547 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,550 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,552 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,555 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,557 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,561 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,566 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,568 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,570 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,573 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,575 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,584 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,589 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,592 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,595 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,597 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,599 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,605 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,610 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,613 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,615 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,617 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,620 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,631 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,636 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,639 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,642 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,644 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,647 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,683 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,693 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,696 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,698 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,700 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,702 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,709 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,711 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,713 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,715 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,718 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,732 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,734 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,736 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,739 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,741 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,754 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,757 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,759 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,762 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,764 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,773 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,776 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,779 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,781 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,784 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,794 - CMV_GATEWAY - ERROR - Échec de connexion à Valkey pour le rate limiter: Connection refused. Démarrage en mode dégradé sans rate limiting.
-2026-03-31 00:02:31,799 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,801 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,803 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,805 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,807 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,809 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,811 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,813 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,815 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,818 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,823 - CMV_GATEWAY - WARNING - Rate limiting global temporairement désactivé (Valkey indisponible): Connection lost
-2026-03-31 00:02:31,824 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,829 - CMV_GATEWAY - WARNING - Rate limiting global temporairement désactivé (Valkey indisponible): Connection lost
-2026-03-31 00:02:31,830 - CMV_GATEWAY - DEBUG - Error Multiple exceptions: [Errno 61] Connect call failed ('::1', 6379, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 6379) connecting to localhost:6379.
-2026-03-31 00:02:31,834 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,837 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,839 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,842 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,844 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-03-31 00:02:31,850 - CMV_GATEWAY - WARNING - Impossible de déterminer l'IP du client pour le rate limiting
-2026-03-31 00:02:31,853 - CMV_GATEWAY - WARNING - Impossible de déterminer l'IP du client pour le rate limiting
-2026-03-31 00:02:32,253 - CMV_GATEWAY - WARNING - home connection  FROM: None
-2026-03-31 00:02:32,264 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+[SQL: SELECT "user".id_user AS user_id_user, "user".username AS user_username, "user".password AS user_password, "user".prenom AS user_prenom, "user".nom AS user_nom, "user".is_active AS user_is_active, "user".service AS user_service, "user".created_at AS user_created_at, "user".updated_at AS user_updated_at, "user".role_id AS user_role_id 
+FROM "user" 
+WHERE "user".username = %(username_1)s 
+ LIMIT %(param_1)s]
+[parameters: {'username_1': 'accueil@cmv.fr', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-04-04 20:41:12,293 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-04 20:41:13,101 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-04 20:41:16,389 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/85 FROM: None
+2026-04-04 20:41:21,218 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-04 20:41:22,862 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-04 20:41:23,158 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-04 20:41:23,366 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-04 20:41:23,560 - CMV_GATEWAY - DEBUG - All connection attempts failed

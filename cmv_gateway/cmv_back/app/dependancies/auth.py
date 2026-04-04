@@ -1,6 +1,6 @@
 # Imports des modules standards Python
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from typing import Annotated, Awaitable, Callable, Optional
 
 # Imports des dépendances FastAPI et autres frameworks
@@ -223,6 +223,8 @@ def get_dynamic_permissions(
 def get_service_secret_key(resource: str):
     match resource:
         case "patients":
+            return PATIENTS_SECRET_KEY
+        case "documents":
             return PATIENTS_SECRET_KEY
         case "chambres":
             return CHAMBRES_SECRET_KEY

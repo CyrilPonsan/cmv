@@ -7,12 +7,16 @@
 
 // Import des dépendances nécessaires
 import type Admission from '@/models/admission'
-import { Fieldset } from 'primevue'
+import { Fieldset, Button } from 'primevue'
 import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 
 // Props du composant
 const { admission } = defineProps<{ admission: Admission }>()
+
+// Récupération de la fonction de navigation
+const router = useRouter()
 
 // Récupération des fonctions d'internationalisation
 const { d } = useI18n()
@@ -42,14 +46,23 @@ const legend = computed(() => {
         <span v-if="admission.sortie_prevue_le">Sortie prévue le :</span>
         <span v-if="admission.sorti_le">Sorti(e) le :</span>
       </div>
+
       <!-- Colonne des valeurs -->
-      <div class="flex flex-col gap-y-2">
+      <div class="flex flex-1 flex-col gap-y-2">
         <span>{{ admission.ambulatoire ? 'Oui' : 'Non' }}</span>
         <span class="capitalize" v-if="!admission.ambulatoire">{{ admission.nom_chambre }}</span>
         <span>{{ d(admission.entree_le, 'short') }}</span>
         <span v-if="admission.sortie_prevue_le">{{ d(admission.sortie_prevue_le, 'short') }}</span>
         <span v-if="admission.sorti_le">{{ d(admission.sorti_le, 'short') }}</span>
       </div>
+      <div />
+      <div class="flex items-center">
+        <Button
+          label="Modifier"
+          @click="router.push(`/admissions/update/${admission.id_admission}`)"
+        />
+      </div>
     </div>
+    <div></div>
   </Fieldset>
 </template>

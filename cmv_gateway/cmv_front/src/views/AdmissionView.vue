@@ -8,7 +8,9 @@
 // Import des composables et composants nécessaires
 import PageHeader from '@/components/PageHeader.vue'
 import useHttp from '@/composables/useHttp'
+import { z } from 'zod'
 import type Admission from '@/models/admission'
+import { toTypedSchema } from '@vee-validate/zod'
 import {
   Button,
   Checkbox,
@@ -19,9 +21,11 @@ import {
   InputNumber,
   useToast
 } from 'primevue'
-import { Field, Form } from 'vee-validate'
-import { onBeforeMount, ref, watch } from 'vue'
+import { Field, useForm } from 'vee-validate'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useServices } from '@/stores/services'
+import { storeToRefs } from 'pinia'
 
 type ServicesList = {
   id_service: number
@@ -31,21 +35,41 @@ type ServicesList = {
 // Initialisation des composables
 const { sendRequest, isLoading, error } = useHttp()
 const toast = useToast()
+const store = useServices()
 
 const entreeLe = ref(new Date())
 const sortiePrevueLe = ref(new Date())
 const ambulatoire = ref<string>('Ambulatoire')
 const options = ref(['Ambulatoire', 'Non ambulatoire'])
-const servicesOptions = ref<string[]>([])
-const servicesList = ref<ServicesList[]>([])
+const { servicesList, servicesOptions } = storeToRefs(store)
+
 const service = ref<string>()
 const predictionResult = ref<number | null>(null)
+const today = computed(() => new Date())
+
+const schemaAdmission = toTypedSchema(
+  z.object({
+    ambulatoire: z.enum(['Ambulatoire', 'Non ambulatoire']),
+    entree_le: z.date(),
+    sortie_prevue_le: z.date(),
+    services: z.string().optional()
+  })
+)
+
+const { handleSubmit, setFieldValue } = useForm({
+  validationSchema: schemaAdmission,
+  initialValues: {
+    ambulatoire: 'Ambulatoire' as const,
+    entree_le: new Date(),
+    sortie_prevue_le: new Date()
+  }
+})
 
 /**
  * Crée une nouvelle admission pour le patient
  * Envoie une requête POST au serveur avec les données de l'admission
  */
-const postAdmission = () => {
+const postAdmission = (values: Record<string, unknown>) => {
   const applyData = (data: Admission) => {
     toast.add({
       severity: 'success',
@@ -61,9 +85,9 @@ const postAdmission = () => {
       method: 'POST',
       body: {
         patient_id: patientId,
-        ambulatoire: ambulatoire.value === 'Ambulatoire',
-        entree_le: entreeLe.value,
-        sortie_prevue_le: sortiePrevueLe.value,
+        ambulatoire: values.ambulatoire === 'Ambulatoire',
+        entree_le: values.entree_le,
+        sortie_prevue_le: values.sortie_prevue_le,
         service_id: servicesList.value.find((item) => item.nom === service.value)?.id_service
       }
     },
@@ -81,20 +105,6 @@ watch(error, (newError) => {
     })
   }
 })
-
-const getServicesList = () => {
-  const applyData = (data: ServicesList[]) => {
-    servicesList.value = data
-    servicesOptions.value = data.map((service) => service.nom)
-  }
-  sendRequest<ServicesList[]>(
-    {
-      path: '/chambres/services/simple',
-      method: 'GET'
-    },
-    applyData
-  )
-}
 
 // Récupération des paramètres de la route
 const route = useRoute()
@@ -181,15 +191,17 @@ const formTopRef = ref<any>(null)
 
 const applyPrediction = () => {
   if (predictionResult.value) {
-    // 1. Mettre à jour la date de sortie
-    sortiePrevueLe.value = new Date(
+    // 1. Mettre à jour la date de sortie via vee-validate
+    const newSortie = new Date(
       entreeLe.value.getTime() + predictionResult.value * 24 * 60 * 60 * 1000
     )
+    sortiePrevueLe.value = newSortie
+    setFieldValue('sortie_prevue_le', newSortie)
     // 2. Basculer sur 'Non ambulatoire' (puisqu'il y a un séjour calculé)
     ambulatoire.value = 'Non ambulatoire'
+    setFieldValue('ambulatoire', 'Non ambulatoire')
     // 3. Scroller de manière douce vers le haut du formulaire
     if (formTopRef.value) {
-      console.log('bingo', formTopRef.value)
       if (formTopRef.value.$el) {
         formTopRef.value.$el.scrollIntoView({ behavior: 'smooth', block: 'start' })
       } else {
@@ -201,22 +213,27 @@ const applyPrediction = () => {
 
 // Initialisation des valurs par défaut pour les sliders/continus
 onBeforeMount(() => {
-  getServicesList()
   continuousFeatures.value.forEach((feature) => {
     propsFeatures.value[feature.id] = feature.default
   })
+})
+
+const onSubmit = handleSubmit((values) => {
+  postAdmission(values)
 })
 </script>
 
 <template>
   <main ref="formTopRef" class="min-w-screen flex flex-col gap-y-8 text-xs p-2">
     <PageHeader title="Espace Administratif" description="Créer une admission pour un patient" />
-    <Form class="flex flex-col gap-y-8 w-5/6 lg:w-[42rem]">
+    <form class="flex flex-col gap-y-8 w-5/6 lg:w-[42rem]" @submit="onSubmit">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <span class="flex flex-col gap-y-2">
-          <Field v-slot="{ field, errorMessage }" name="date_entree">
-            <label for="date_entree">Date d'entrée</label>
+          <Field v-slot="{ value, handleChange, errorMessage }" name="entree_le">
+            <label for="entree_le">Date d'entrée</label>
             <DatePicker
+              :modelValue="value"
+              @update:modelValue="handleChange"
               showIcon
               fluid
               selectionMode="single"
@@ -225,11 +242,9 @@ onBeforeMount(() => {
               yearRange="1900:2024"
               locale="fr"
               iconDisplay="input"
-              v-bind="field"
-              id="date_entree"
-              name="date_entree"
+              id="entree_le"
+              name="entree_le"
               aria-label="date d'entrée de l'admission"
-              v-model="entreeLe"
             />
             <Message v-show="errorMessage" class="text-xs text-error" severity="error">
               {{ errorMessage }}
@@ -237,9 +252,11 @@ onBeforeMount(() => {
           </Field>
         </span>
         <span class="flex flex-col gap-y-2">
-          <Field v-slot="{ field, errorMessage }" name="date_sortie">
-            <label for="date_sortie">Sortie prévue le</label>
+          <Field v-slot="{ value, handleChange, errorMessage }" name="sortie_prevue_le">
+            <label for="sortie_prevue_le">Sortie prévue le</label>
             <DatePicker
+              :modelValue="value"
+              @update:modelValue="handleChange"
               showIcon
               fluid
               selectionMode="single"
@@ -248,11 +265,9 @@ onBeforeMount(() => {
               yearRange="1900:2024"
               locale="fr"
               iconDisplay="input"
-              v-bind="field"
-              id="date_sortie"
-              name="date_sortie"
+              id="sortie_prevue_le"
+              name="sortie_prevue_le"
               aria-label="date de sortie prévue de l'admission"
-              v-model="sortiePrevueLe"
             />
             <Message v-show="errorMessage" class="text-xs text-error" severity="error">
               {{ errorMessage }}
@@ -262,17 +277,17 @@ onBeforeMount(() => {
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <span class="flex flex-col gap-y-2">
-          <Field v-slot="{ field, errorMessage }" name="ambulatoire">
+          <Field v-slot="{ value, handleChange, errorMessage }" name="ambulatoire">
             <label for="ambulatoire">Ambulatoire</label>
             <Select
-              v-bind="field"
+              :modelValue="value"
+              @update:modelValue="handleChange"
               label="Type d'admission"
               placeholder="Ambulatoire"
-              name="civilite"
+              name="ambulatoire"
               :options="options"
               id="ambulatoire"
               aria-label="ambulatoire"
-              v-model="ambulatoire"
             />
             <Message v-show="errorMessage" class="text-xs text-error" severity="error">
               {{ errorMessage }}
@@ -280,17 +295,17 @@ onBeforeMount(() => {
           </Field>
         </span>
         <span class="flex flex-col gap-y-2">
-          <Field v-slot="{ field, errorMessage }" name="services">
+          <Field v-slot="{ value, handleChange, errorMessage }" name="services">
             <label for="services">Services</label>
             <Select
-              v-bind="field"
+              :modelValue="value"
+              @update:modelValue="handleChange"
               label="Services"
               placeholder="Services"
               name="services"
               :options="servicesOptions"
               id="services"
               aria-label="services"
-              v-model="service"
             />
             <Message v-show="errorMessage" class="text-xs text-error" severity="error">
               {{ errorMessage }}
@@ -300,11 +315,11 @@ onBeforeMount(() => {
       </div>
       <span class="w-full flex items-center gap-x-4">
         <Button fluid label="Annuler" @click="router.back()" severity="warn" />
-        <Button fluid label="Créer une admission" @click="postAdmission" severity="success" />
+        <Button fluid label="Créer une admission" type="submit" severity="success" />
       </span>
-    </Form>
+    </form>
 
-    <div
+    <form
       class="w-full lg:w-[60rem] mt-8 bg-surface-50 dark:bg-surface-900 p-6 rounded-lg border border-surface-200 dark:border-surface-700"
     >
       <h3 class="text-lg font-bold mb-4">Outil d'Aide à la Décision (IA)</h3>
@@ -312,7 +327,7 @@ onBeforeMount(() => {
         Prédiction de la durée du séjour basée sur le dossier du patient
       </p>
 
-      <Form class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
         <!-- Colonne 1 : Antécédents (Booléens) -->
         <div class="flex flex-col gap-y-4 w-full">
           <h4 class="font-semibold text-primary">Antécédents / Pathologies</h4>
@@ -388,7 +403,7 @@ onBeforeMount(() => {
             </div>
           </div>
         </div>
-      </Form>
+      </div>
 
       <!-- Actions de la prédiction -->
       <div
@@ -420,6 +435,6 @@ onBeforeMount(() => {
           />
         </div>
       </div>
-    </div>
+    </form>
   </main>
 </template>

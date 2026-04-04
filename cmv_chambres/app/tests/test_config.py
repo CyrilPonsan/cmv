@@ -5,10 +5,10 @@ from pydantic import ValidationError
 
 from app.utils.config import ChambresSettings, WEAK_SECRETS
 
-
 VALID_PARAMS = {
-    "CHAMBRES_DATABASE_URL": "postgresql://postgres:pwd@localhost:6003/cmv_chambres",
-    "SECRET_KEY": "une-cle-valide-de-32-caracteres-ok",
+    "CHAMBRES_DATABASE_URL": "sqlite:///:memory:",
+    "SECRET_KEY": "une-cle-valide-pour-les-tests",
+    "ENVIRONMENT": "test",
     "_env_file": None,
 }
 
@@ -32,11 +32,17 @@ def test_asyncpg_url_accepted():
     assert s.CHAMBRES_DATABASE_URL.startswith("postgresql+asyncpg://")
 
 
+def test_sqlite_memory_accepted():
+    s = _make(CHAMBRES_DATABASE_URL="sqlite:///:memory:")
+    assert s.CHAMBRES_DATABASE_URL == "sqlite:///:memory:"
+
+
 # --- Variables obligatoires manquantes ---
 
 
 @pytest.mark.parametrize("missing", ["CHAMBRES_DATABASE_URL", "SECRET_KEY"])
-def test_missing_required_field(missing):
+def test_missing_required_field(missing, monkeypatch):
+    monkeypatch.delenv(missing, raising=False)
     params = {**VALID_PARAMS}
     del params[missing]
     with pytest.raises(ValidationError) as exc_info:

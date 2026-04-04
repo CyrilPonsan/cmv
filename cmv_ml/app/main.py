@@ -23,12 +23,12 @@ from .services.prediction_engine import ModelNotLoadedError
 from .utils.config import MODEL_PATH, SHAP_ENABLED
 from .sql import models
 from .utils.database import engine
+from app.utils.config import ENVIRONMENT
 
-print(f"MODEL PATH {MODEL_PATH}")
 
-
-# Création des tables dans la base de données
-models.Base.metadata.create_all(bind=engine)
+# Les migrations sont gérées par alembic
+if ENVIRONMENT != "production":
+    models.Base.metadata.create_all(bind=engine)
 
 
 class PredictionError(Exception):

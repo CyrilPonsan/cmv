@@ -9,13 +9,9 @@ pipeline {
         IMAGE_ML = "firizgoude/cmv_ml"
         IMAGE_ML_TAG = "ml-${env.BUILD_NUMBER}"
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
-        // Gateway (bastion) pour le rebond SSH
-        GATEWAY_HOST = credentials("ec2-gateway-host")
-        GATEWAY_USER = credentials("ec2-gateway-username")
-        // Instance privée ML
-        ML_HOST = credentials("ec2-ml-host")
-        ML_USER = credentials("ec2-ml-username")
-        SSH_CREDENTIALS = credentials('cmv-ssh-key')
+        EC2_HOST = credentials("ec2-gateway-host")
+        EC2_USER = credentials("ec2-username")
+        SSH_CREDENTIALS = credentials('cdk-key')
         PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     }
 
@@ -63,9 +59,7 @@ pipeline {
                             ssh -o StrictHostKeyChecking=no \
                                 -o UserKnownHostsFile=/dev/null \
                                 -o LogLevel=ERROR \
-                                -A \
-                                -J $GATEWAY_USER@$GATEWAY_HOST \
-                                $ML_USER@$ML_HOST << 'EOF'
+                                $EC2_USER@$EC2_HOST << 'EOF'
 
 echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
 
@@ -73,7 +67,7 @@ docker stop cmv_ml || true
 docker rm cmv_ml || true
 docker image rm "$IMAGE_ML:latest" || true
 
-docker compose up -d
+cd /opt/cmv/app && docker compose up -d
 
 docker logout
 EOF

@@ -1,37 +1,40 @@
 # Import des gestionnaires d'exceptions FastAPI
 from contextlib import asynccontextmanager
+from pathlib import Path
 
+from fastapi import Depends, FastAPI
 from fastapi.exception_handlers import (
     http_exception_handler,
     request_validation_exception_handler,
 )
-from pathlib import Path
-from fastapi import FastAPI, Depends
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.exceptions import RequestValidationError
-from starlette.exceptions import HTTPException as StarletteHTTPException
 from sqlalchemy.orm import Session
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
-
-from .dependancies.db_session import get_db
 from app.middleware.exceptions import ExceptionHandlerMiddleware
 from app.middleware.security_headers import SecurityHeadersMiddleware
+
+from .dependancies.db_session import get_db
 from .routers import api
-from .utils.logging_setup import LoggerSetup
-from .utils.database import engine
 from .sql import models
 from .utils.config import ENVIRONMENT, VALKEY_HOST
-from .utils.rate_limiter import init_rate_limiter, close_rate_limiter
+from .utils.database import engine
+from .utils.logging_setup import LoggerSetup
+from .utils.rate_limiter import close_rate_limiter, init_rate_limiter
+from app.utils.config import ENVIRONMENT
 
-# Création des tables dans la base de données
-models.Base.metadata.create_all(bind=engine)
+
+# Les migrations sont gérées par alembic
+if ENVIRONMENT != "production":
+    models.Base.metadata.create_all(bind=engine)
 
 # Initialisation du logger
 logger = LoggerSetup()
 
-print("HELLO WORLD! Starting the application...")
+
 print(f"VALKEY_HOST: {VALKEY_HOST}")
 
 

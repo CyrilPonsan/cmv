@@ -6,7 +6,7 @@
  */
 
 // Import des composants Vue et des composables
-import { computed, onBeforeMount, watch } from 'vue'
+import { computed, onBeforeMount, ref, watch, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from './stores/user'
 import { useRoute, useRouter } from 'vue-router'
@@ -19,8 +19,15 @@ const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
 
+const roles = ref(['home', 'nurse'])
+
 // Computed property pour vérifier si l'utilisateur est connecté
-const isLoggedIn = computed(() => userStore.role.length > 0)
+const isLoggedIn = computed(() => roles.value.includes(userStore.role))
+const style = computed(() => {
+  return !isLoggedIn.value
+    ? 'flex-1 min-w-0 flex flex-col min-h-screen'
+    : 'ml-64 flex-1 min-w-0 flex flex-col min-h-screen'
+})
 
 // Surveillance des changements du rôle utilisateur pour la redirection
 watch(
@@ -43,6 +50,11 @@ watch(
   }
 )
 
+watchEffect(() => {
+  console.log(userStore.role.length)
+  console.log(style)
+})
+
 // Vérification de l'authentification au chargement
 onBeforeMount(() => {
   userStore.handshake()
@@ -52,20 +64,20 @@ onBeforeMount(() => {
 <template>
   <!-- Composant Toast pour les notifications -->
   <Toast />
-  <div class="flex relative min-w-screen overflow-hidden">
+  <div class="flex min-w-screen overflow-hidden">
     <!-- Barre latérale : toujours dans le flux pour éviter le layout shift -->
     <SidebarComponent :class="isLoggedIn ? '' : 'hidden'" :aria-hidden="!isLoggedIn" />
-    <div class="flex-1 min-w-0 flex flex-col min-h-screen">
+    <div :class="style">
       <!-- Router view pour afficher les différentes pages -->
       <div class="flex-1">
         <RouterView />
       </div>
-      <!-- Pied de page -->
-      <footer class="w-full h-16 flex justify-center items-center bg-black">
-        <h3 class="text-xs text-primary-500">
-          {{ t('app.footer') }}
-        </h3>
-      </footer>
     </div>
   </div>
+  <!-- Pied de page -->
+  <footer class="z-10 absolute w-full h-16 flex justify-center items-center bg-black">
+    <h3 class="text-xs text-primary-500">
+      {{ t('app.footer') }}
+    </h3>
+  </footer>
 </template>

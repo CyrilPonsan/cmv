@@ -9,8 +9,8 @@ pipeline {
         IMAGE_GATEWAY_TAG = "gateway-${env.BUILD_NUMBER}"
         NPM_CACHE_DIR = "tmp/npm-cache"
         BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
-        EC2_HOST = credentials("ec2-gateway-host")
-        EC2_USER = credentials("ec2-gateway-username")
+        EC2_HOST = credentials("ec2-host")
+        EC2_USER = credentials("ec2-username")
         SSH_CREDENTIALS = credentials('cmv-ssh-key')
         PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     }

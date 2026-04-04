@@ -1,65 +1,14 @@
-from abc import ABC, abstractmethod
+from typing import List
+
+from app.schemas.patients import CreatePatient, PatientsNames
+from app.sql.models import Admission, Patient
+from fastapi import HTTPException, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
-from app.schemas.patients import CreatePatient
-from app.sql.models import Admission, Patient
-from typing import List
-from fastapi import HTTPException, status
-
-
-# Classe abstraite définissant l'interface pour les opérations CRUD sur les patients
-class PatientCrud(ABC):
-    """Interface abstraite définissant les méthodes CRUD pour les patients"""
-
-    @abstractmethod
-    async def read_all_patients(
-        self,
-        db: Session,
-        page: int,
-        limit: int,
-        field: str,
-        order: str,
-    ) -> tuple[List[Patient], int]:
-        """Récupère tous les patients avec pagination"""
-        pass
-
-    @abstractmethod
-    async def create_patient(self, db: Session, patient: Patient) -> Patient:
-        """Crée un nouveau patient"""
-        pass
-
-    @abstractmethod
-    async def check_patient_exists(self, db: Session, patient: Patient) -> bool:
-        """Vérifie si un patient existe déjà"""
-        pass
-
-    @abstractmethod
-    async def search_patients(
-        self, db: Session, search: str, page: int, limit: int, field: str, order: str
-    ) -> dict:
-        """Recherche des patients selon des critères"""
-        pass
-
-    @abstractmethod
-    async def read_patient_by_id(self, db: Session, patient_id: int) -> Patient:
-        """Récupère un patient par son ID"""
-        pass
-
-    @abstractmethod
-    async def update_patient(
-        self, db: Session, patient_id: int, data: Patient
-    ) -> Patient:
-        """Met à jour les données d'un patient"""
-        pass
-
-    @abstractmethod
-    async def delete_patient(self, db: Session, patient_id: int):
-        """Supprime un patient"""
-        pass
 
 
 # Implémentation PostgreSQL du repository de patients
-class PgPatientsRepository(PatientCrud):
+class PgPatientsRepository:
     """Implémentation concrète du repository pour PostgreSQL"""
 
     async def read_all_patients(
@@ -82,6 +31,12 @@ class PgPatientsRepository(PatientCrud):
             dict: Dictionnaire contenant les données et le total
         """
         return self.paginate_and_order(db, Patient, page, limit, field, order)
+
+    async def get_patients_names(
+        self, db: Session, ids: list[PatientsNames]
+    ) -> list[Patient]:
+        patients_ids = [patient.patient_id for patient in ids]
+        return db.query(Patient).filter(Patient.id_patient.in_(patients_ids)).all()
 
     async def create_patient(self, db: Session, patient: CreatePatient) -> Patient:
         """

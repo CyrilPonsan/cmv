@@ -3,32 +3,16 @@ from datetime import datetime
 from pydantic import BaseModel, Field
 
 
-# Modèle Pydantic pour représenter un patient
-class Patient(BaseModel):
-    """
-    Schéma représentant un patient dans le système.
-    Contient les informations de base d'identification du patient.
-    """
-
-    id_patient: int  # Identifiant unique du patient
-    ref_patient: int  # Référence externe du patient
-    full_name: str  # Nom complet du patient
-
-    class Config:
-        from_attributes = True  # Permet la conversion depuis les attributs SQLAlchemy
-
-
 # Modèle Pydantic pour représenter une réservation
 class Reservation(BaseModel):
     """
     Schéma représentant une réservation de chambre.
-    Associe un patient à une période de séjour dans une chambre.
     """
 
-    id_reservation: int  # Identifiant unique de la réservation
-    patient: Patient  # Patient associé à la réservation
-    entree_prevue: datetime  # Date et heure prévues d'entrée
-    sortie_prevue: datetime  # Date et heure prévues de sortie
+    id_reservation: int
+    ref: int  # Référence du patient
+    entree_prevue: datetime
+    sortie_prevue: datetime
 
     class Config:
         from_attributes = True

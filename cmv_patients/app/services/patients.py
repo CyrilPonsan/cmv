@@ -1,13 +1,21 @@
-from fastapi import HTTPException, status
-import httpx
-from sqlalchemy.orm import Session
 import uuid
 from io import BytesIO
-import boto3
 
-from app.repositories.patients_crud import PgPatientsRepository
-from app.repositories.documents_crud import PgDocumentsRepository
+import boto3
+import httpx
+from fastapi import HTTPException, status
+from sqlalchemy.orm import Session
+
 from app.repositories.admissions_crud import PgAdmissionsRepository
+from app.repositories.documents_crud import PgDocumentsRepository
+from app.repositories.patients_crud import PgPatientsRepository
+from app.schemas.patients import (
+    CreateAdmission,
+    Patient,
+    PatientsNames,
+    PatientsNamesResponse,
+)
+from app.sql.models import Admission, DocumentType
 from app.utils.config import (
     AWS_ACCESS_KEY_ID,
     AWS_BUCKET_NAME,
@@ -15,8 +23,6 @@ from app.utils.config import (
     AWS_SECRET_ACCESS_KEY,
     CHAMBRES_SERVICE,
 )
-from app.schemas.patients import CreateAdmission, Patient
-from app.sql.models import Admission, DocumentType
 
 
 # Retourne une instance du repository pour accéder aux données des patients
@@ -95,6 +101,19 @@ class PatientsService:
         return await self.patients_repository.read_all_patients(
             db=db, page=page, limit=limit, field=field, order=order
         )
+
+    async def get_patients_names(
+        self, db: Session, ids: list[PatientsNames]
+    ) -> list[PatientsNamesResponse]:
+        response = await self.patients_repository.get_patients_names(db, ids)
+        result = []
+        for r in response:
+            result.append(
+                PatientsNamesResponse(
+                    patient_id=r.id_patient, full_name=f"{r.nom} {r.prenom}"
+                )
+            )
+        return result
 
     async def detail_patient(self, db: Session, patient_id: int):
         """

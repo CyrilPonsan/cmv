@@ -71,6 +71,23 @@ vi.mock('@/composables/useHttp', () => ({
   })
 }))
 
+// ---- Mock stores ----
+vi.mock('@/stores/services', () => ({
+  useServices: () => ({
+    servicesList: ref([]),
+    servicesOptions: ref([]),
+    fetchServices: vi.fn()
+  })
+}))
+
+vi.mock('pinia', async () => {
+  const actual = await vi.importActual('pinia')
+  return {
+    ...actual,
+    storeToRefs: (store: Record<string, unknown>) => store
+  }
+})
+
 // ---- Mock vue-i18n ----
 vi.mock('vue-i18n', () => ({
   useI18n: () => ({ t: (key: string) => key })
@@ -215,14 +232,14 @@ vi.mock('primevue/button', () => ({
 
 // ---- Mock vee-validate ----
 vi.mock('vee-validate', () => ({
-  Form: {
-    name: 'Form',
-    template: '<form data-testid="form"><slot /></form>'
-  },
+  useForm: () => ({
+    handleSubmit: (fn: Function) => (e: Event) => { e?.preventDefault?.(); fn({}) },
+    setFieldValue: vi.fn()
+  }),
   Field: {
     name: 'Field',
     props: ['name'],
-    template: '<div data-testid="field"><slot :field="{}" :errorMessage="null" /></div>'
+    template: '<div data-testid="field"><slot :value="null" :handleChange="() => {}" :errorMessage="null" /></div>'
   }
 }))
 
@@ -339,14 +356,14 @@ describe('BusinessViews', () => {
 
     it('should render the admission form with date d\'entrée field', () => {
       const wrapper = mountAdmission()
-      const dateEntreeLabel = wrapper.find('label[for="date_entree"]')
+      const dateEntreeLabel = wrapper.find('label[for="entree_le"]')
       expect(dateEntreeLabel.exists()).toBe(true)
       expect(dateEntreeLabel.text()).toContain("Date d'entrée")
     })
 
     it('should render the admission form with date de sortie field', () => {
       const wrapper = mountAdmission()
-      const dateSortieLabel = wrapper.find('label[for="date_sortie"]')
+      const dateSortieLabel = wrapper.find('label[for="sortie_prevue_le"]')
       expect(dateSortieLabel.exists()).toBe(true)
       expect(dateSortieLabel.text()).toContain('Sortie prévue le')
     })

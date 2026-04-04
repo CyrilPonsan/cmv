@@ -40,7 +40,7 @@ const useChambresList = (): UseChambresList => {
     }
     sendRequest(
       {
-        path: '/chambres/services'
+        path: '/chambres-liste/services'
       },
       applyData
     )
