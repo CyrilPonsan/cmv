@@ -156,3 +156,5 @@ class ChambresService:
 
         # Annule la réservation
         await self.chambres_repository.cancel_reservation(db, reservation_id)
+
+        return SuccessWithMessage(success=True, message="Réservation annulée")
