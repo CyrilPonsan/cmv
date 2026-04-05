@@ -77,7 +77,7 @@ class AuthService:
         self,
         user_id: str,
         response: Response,
-    ) -> dict:
+    ) -> tuple:
         """
         Crée une nouvelle session et génère les tokens d'accès et de rafraîchissement
 

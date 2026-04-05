@@ -165,4 +165,98 @@ describe('UserStore', () => {
       expect(mockPush).not.toHaveBeenCalled()
     })
   })
+
+  // --- Requirement 8.1, 8.2: toggleColorScheme ---
+  describe('toggleColorScheme', () => {
+    let htmlElement: HTMLElement
+
+    beforeEach(() => {
+      htmlElement = document.querySelector('html')!
+      htmlElement.classList.remove('dark')
+      localStorage.clear()
+      store.mode = 'light'
+    })
+
+    it('should add "dark" class to html, set mode to "dark" and update localStorage when toggling from light', () => {
+      store.toggleColorScheme()
+
+      expect(htmlElement.classList.contains('dark')).toBe(true)
+      expect(store.mode).toBe('dark')
+      expect(localStorage.getItem('color-scheme')).toBe('dark')
+    })
+
+    it('should remove "dark" class from html, set mode to "light" and clear localStorage when toggling from dark', () => {
+      // Start in dark mode
+      htmlElement.classList.add('dark')
+      store.mode = 'dark'
+      localStorage.setItem('color-scheme', 'dark')
+
+      store.toggleColorScheme()
+
+      expect(htmlElement.classList.contains('dark')).toBe(false)
+      expect(store.mode).toBe('light')
+      expect(localStorage.getItem('color-scheme')).toBeNull()
+    })
+  })
+
+  // --- Requirement 8.3, 8.4: updateColorScheme (tested via handshake since updateColorScheme is internal) ---
+  describe('updateColorScheme', () => {
+    let htmlElement: HTMLElement
+
+    beforeEach(() => {
+      htmlElement = document.querySelector('html')!
+      htmlElement.classList.remove('dark')
+      localStorage.clear()
+      store.mode = 'light'
+      mockSendRequest.mockReturnValue(Promise.resolve())
+    })
+
+    it('should set mode to "dark" and add "dark" class when localStorage contains "dark"', () => {
+      localStorage.setItem('color-scheme', 'dark')
+
+      // handshake calls updateColorScheme internally
+      store.handshake()
+
+      expect(store.mode).toBe('dark')
+      expect(htmlElement.classList.contains('dark')).toBe(true)
+    })
+
+    it('should keep mode as "light" when localStorage does not contain "color-scheme"', () => {
+      // handshake calls updateColorScheme internally
+      store.handshake()
+
+      expect(store.mode).toBe('light')
+      expect(htmlElement.classList.contains('dark')).toBe(false)
+    })
+  })
+
+  // --- Requirement 8.5: handshake ---
+  describe('handshake', () => {
+    beforeEach(() => {
+      const htmlElement = document.querySelector('html')!
+      htmlElement.classList.remove('dark')
+      localStorage.clear()
+      store.mode = 'light'
+    })
+
+    it('should execute updateColorScheme and getUserInfos', () => {
+      localStorage.setItem('color-scheme', 'dark')
+      mockSendRequest.mockImplementation(
+        (req: any, applyData?: (data: { role: string }) => void) => {
+          if (applyData) applyData({ role: 'home' })
+          return Promise.resolve()
+        }
+      )
+
+      store.handshake()
+
+      // updateColorScheme was executed: mode should be "dark"
+      expect(store.mode).toBe('dark')
+      // getUserInfos was executed: sendRequest called with /users/me
+      expect(mockSendRequest).toHaveBeenCalledWith(
+        { path: '/users/me' },
+        expect.any(Function)
+      )
+    })
+  })
 })

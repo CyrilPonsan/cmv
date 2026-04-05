@@ -16,7 +16,7 @@
       "change_mode": "Changer de mode",
       "logout": "Déconnexion"
     },
-    "not_available":"Non disponible"
+    "not_available": "Non disponible"
   },
   "columns": {
     "patientsList": {
@@ -203,7 +203,7 @@
       "title": "Espace administratif",
       "subtitle": "Liste des services et chambres",
       "button": {
-        "refresh-label": "rafraîchir la liste des chambres",
+        "refresh-label": "Rafraîchir la liste des chambres",
         "reset-search-label": "Réinitialiser la recherche de service"
       }
     }

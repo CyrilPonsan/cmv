@@ -1,19 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { shallowMount } from '@vue/test-utils'
 import { ref } from 'vue'
+import fc from 'fast-check'
 
 // ---- Mock composables ----
 
 const mockFetchPatientData = vi.fn()
+const mockDetailPatient = ref<any>({
+  id_patient: 1,
+  nom: 'Dupont',
+  prenom: 'Jean',
+  documents: [],
+  latest_admission: null
+})
 vi.mock('@/composables/usePatient', () => ({
   default: () => ({
-    detailPatient: ref({
-      id_patient: 1,
-      nom: 'Dupont',
-      prenom: 'Jean',
-      documents: [],
-      latest_admission: null
-    }),
+    detailPatient: mockDetailPatient,
     fetchPatientData: mockFetchPatientData
   })
 }))
@@ -42,18 +44,23 @@ vi.mock('@/composables/useListPatients', () => ({
   })
 }))
 
+const mockVisible = ref(false)
+const mockToggleVisible = vi.fn(() => {
+  mockVisible.value = !mockVisible.value
+})
 vi.mock('@/composables/useDocuments', () => ({
   default: () => ({
-    visible: ref(false),
-    toggleVisible: vi.fn(),
+    visible: mockVisible,
+    toggleVisible: mockToggleVisible,
     handleUploadSuccess: vi.fn()
   })
 }))
 
+const mockIsEditing = ref(false)
 vi.mock('@/composables/usePatientForm', () => ({
   default: () => ({
     civilites: ref(['Monsieur', 'Madame', 'Autre']),
-    isEditing: ref(false),
+    isEditing: mockIsEditing,
     isLoading: ref(false),
     onCreatePatient: vi.fn(),
     onUpdatePatient: vi.fn(),
@@ -62,11 +69,12 @@ vi.mock('@/composables/usePatientForm', () => ({
 }))
 
 const mockSendRequest = vi.fn()
+const mockError = ref<string | null>(null)
 vi.mock('@/composables/useHttp', () => ({
   default: () => ({
     sendRequest: mockSendRequest,
     isLoading: ref(false),
-    error: ref(null),
+    error: mockError,
     axiosInstance: {}
   })
 }))
@@ -103,8 +111,9 @@ vi.mock('vue-router', () => ({
 }))
 
 // ---- Mock PrimeVue toast ----
+const mockToastAdd = vi.fn()
 vi.mock('primevue/usetoast', () => ({
-  useToast: () => ({ add: vi.fn() })
+  useToast: () => ({ add: mockToastAdd })
 }))
 
 // ---- Mock child components ----
@@ -142,6 +151,7 @@ vi.mock('@/components/documents/DocumentsList.vue', () => ({
 vi.mock('@/components/documents/DocumentUploadDialog.vue', () => ({
   default: {
     name: 'DocumentUpload',
+    props: ['fullname', 'patientId', 'visible'],
     template: '<div data-testid="document-upload">DocumentUpload</div>'
   }
 }))
@@ -164,6 +174,7 @@ vi.mock('@/components/create-update-patient/PatientDataDisclaimer.vue', () => ({
 vi.mock('@/components/patient/PatientActions.vue', () => ({
   default: {
     name: 'PatientActions',
+    emits: ['toggle-editing'],
     template: '<div data-testid="patient-actions">PatientActions</div>'
   }
 }))
@@ -219,7 +230,7 @@ vi.mock('primevue', () => ({
     name: 'InputNumber',
     template: '<input type="number" data-testid="input-number" />'
   },
-  useToast: () => ({ add: vi.fn() })
+  useToast: () => ({ add: mockToastAdd })
 }))
 
 vi.mock('primevue/button', () => ({
@@ -231,10 +242,19 @@ vi.mock('primevue/button', () => ({
 }))
 
 // ---- Mock vee-validate ----
+const mockSetFieldValue = vi.fn()
 vi.mock('vee-validate', () => ({
   useForm: () => ({
-    handleSubmit: (fn: Function) => (e: Event) => { e?.preventDefault?.(); fn({}) },
-    setFieldValue: vi.fn()
+    handleSubmit: (fn: Function) => (e: Event) => {
+      e?.preventDefault?.();
+      fn({
+        ambulatoire: 'Ambulatoire',
+        entree_le: new Date('2025-01-15'),
+        sortie_prevue_le: new Date('2025-01-20'),
+        services: 'Cardiologie'
+      })
+    },
+    setFieldValue: mockSetFieldValue
   }),
   Field: {
     name: 'Field',
@@ -265,6 +285,16 @@ import AdmissionView from '@/views/AdmissionView.vue'
 describe('BusinessViews', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockError.value = null
+    mockDetailPatient.value = {
+      id_patient: 1,
+      nom: 'Dupont',
+      prenom: 'Jean',
+      documents: [],
+      latest_admission: null
+    }
+    mockIsEditing.value = false
+    mockVisible.value = false
   })
 
   /**
@@ -303,6 +333,68 @@ describe('BusinessViews', () => {
       const wrapper = shallowMount(PatientView)
       const documentsList = wrapper.findComponent({ name: 'DocumentsList' })
       expect(documentsList.exists()).toBe(true)
+    })
+
+    /**
+     * PatientView interactions — Validates: Requirements 10.1, 10.2, 10.3, 10.4, 10.5
+     */
+    it('should toggle to editing mode when PatientActions emits toggle-editing', async () => {
+      const wrapper = shallowMount(PatientView)
+      // Initially PatientDetail is shown, PatientForm is not
+      expect(wrapper.findComponent({ name: 'PatientDetail' }).exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'PatientForm' }).exists()).toBe(false)
+
+      // Emit toggle-editing from PatientActions
+      const patientActions = wrapper.findComponent({ name: 'PatientActions' })
+      await patientActions.vm.$emit('toggle-editing', true)
+      await wrapper.vm.$nextTick()
+
+      // PatientForm should now be shown, PatientDetail hidden
+      expect(wrapper.findComponent({ name: 'PatientForm' }).exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'PatientDetail' }).exists()).toBe(false)
+    })
+
+    it('should return to read mode when clicking "Retour aux informations du patient"', async () => {
+      // Start in editing mode
+      mockIsEditing.value = true
+      const wrapper = shallowMount(PatientView)
+
+      // PatientForm should be shown
+      expect(wrapper.findComponent({ name: 'PatientForm' }).exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'PatientDetail' }).exists()).toBe(false)
+
+      // Click the "Retour aux informations du patient" link
+      const backLink = wrapper.find('.text-primary-500.underline.cursor-pointer')
+      expect(backLink.exists()).toBe(true)
+      await backLink.trigger('click')
+      await wrapper.vm.$nextTick()
+
+      // PatientDetail should be shown again
+      expect(wrapper.findComponent({ name: 'PatientDetail' }).exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'PatientForm' }).exists()).toBe(false)
+    })
+
+    it('should update DocumentUpload visible prop when toggleVisible is called', async () => {
+      const wrapper = shallowMount(PatientView)
+      const docUpload = wrapper.findComponent({ name: 'DocumentUpload' })
+      expect(docUpload.exists()).toBe(true)
+      expect(docUpload.props('visible')).toBe(false)
+
+      // Call toggleVisible to flip the visible state
+      mockToggleVisible()
+      await wrapper.vm.$nextTick()
+
+      const docUploadAfter = wrapper.findComponent({ name: 'DocumentUpload' })
+      expect(docUploadAfter.props('visible')).toBe(true)
+    })
+
+    it('should not render PatientDetail, DocumentsList and DocumentUpload when detailPatient is null', async () => {
+      mockDetailPatient.value = null
+      const wrapper = shallowMount(PatientView)
+
+      expect(wrapper.findComponent({ name: 'PatientDetail' }).exists()).toBe(false)
+      expect(wrapper.findComponent({ name: 'DocumentsList' }).exists()).toBe(false)
+      expect(wrapper.findComponent({ name: 'DocumentUpload' }).exists()).toBe(false)
     })
   })
 
@@ -380,6 +472,170 @@ describe('BusinessViews', () => {
       const servicesLabel = wrapper.find('label[for="services"]')
       expect(servicesLabel.exists()).toBe(true)
       expect(servicesLabel.text()).toContain('Services')
+    })
+
+    /**
+     * AdmissionView interactions — Validates: Requirements 9.1, 9.2, 9.3, 9.5, 9.6
+     */
+    it('should call sendRequest with admission data when form is submitted', async () => {
+      const wrapper = mountAdmission()
+      const form = wrapper.find('form')
+      await form.trigger('submit')
+      await wrapper.vm.$nextTick()
+
+      expect(mockSendRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          path: '/patients/admissions',
+          method: 'POST',
+          body: expect.objectContaining({
+            patient_id: '42',
+            ambulatoire: true,
+            entree_le: expect.any(Date),
+            sortie_prevue_le: expect.any(Date)
+          })
+        }),
+        expect.any(Function)
+      )
+    })
+
+    it('should show success toast and navigate to patient page after successful admission creation', async () => {
+      mockSendRequest.mockImplementation((config: Record<string, unknown>, callback: Function) => {
+        if (config.path === '/patients/admissions') {
+          callback({ ambulatoire: true, nom_chambre: null })
+        }
+      })
+
+      const wrapper = mountAdmission()
+      const form = wrapper.find('form')
+      await form.trigger('submit')
+      await wrapper.vm.$nextTick()
+
+      expect(mockToastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          severity: 'success'
+        })
+      )
+      expect(mockPush).toHaveBeenCalledWith('/patient/42')
+    })
+
+    it('should call sendRequest with prediction path when "Estimer la durée du séjour" is clicked', async () => {
+      const wrapper = mountAdmission()
+      // shallowMount stubs Button components — find by component name and label prop
+      const buttons = wrapper.findAllComponents({ name: 'Button' })
+      const predictButton = buttons.find((b) => b.props('label') === 'Estimer la durée du séjour')
+      expect(predictButton).toBeDefined()
+      await predictButton!.trigger('click')
+      await wrapper.vm.$nextTick()
+
+      expect(mockSendRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          path: '/ml/predictions/predict',
+          method: 'POST'
+        }),
+        expect.any(Function)
+      )
+    })
+
+    it('should show error toast when submission fails', async () => {
+      const wrapper = mountAdmission()
+      await wrapper.vm.$nextTick()
+
+      mockError.value = 'Erreur lors de la création'
+      await wrapper.vm.$nextTick()
+
+      expect(mockToastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          severity: 'error',
+          detail: 'Erreur lors de la création'
+        })
+      )
+    })
+
+    it('should call router.back() when "Annuler" button is clicked', async () => {
+      const wrapper = mountAdmission()
+      const buttons = wrapper.findAllComponents({ name: 'Button' })
+      const cancelButton = buttons.find((b) => b.props('label') === 'Annuler')
+      expect(cancelButton).toBeDefined()
+      await cancelButton!.trigger('click')
+      await wrapper.vm.$nextTick()
+
+      expect(mockBack).toHaveBeenCalled()
+    })
+
+    // Feature: frontend-coverage-extension, Property 3: Arithmétique de date pour l'application de la prédiction
+    /**
+     * Property-based test: Date arithmetic for prediction application
+     * Validates: Requirements 9.4
+     *
+     * For any number of predicted days (1-365), when the prediction is applied,
+     * the exit date should equal entry date + predicted days, and ambulatoire
+     * should switch to "Non ambulatoire".
+     */
+    it('should correctly compute exit date = entry date + predicted days for any prediction (PBT)', async () => {
+      await fc.assert(
+        fc.asyncProperty(fc.integer({ min: 1, max: 365 }), async (predictedDays) => {
+          vi.clearAllMocks()
+
+          // Mock sendRequest to simulate a prediction response with the generated days
+          mockSendRequest.mockImplementation(
+            (config: Record<string, unknown>, callback: Function) => {
+              if (config.path === '/ml/predictions/predict') {
+                callback({ prediction_id: 'test-id', predicted_length_of_stay: predictedDays })
+              }
+            }
+          )
+
+          const wrapper = mountAdmission()
+          await wrapper.vm.$nextTick()
+
+          // Step 1: Click "Estimer la durée du séjour" to trigger postPrediction
+          const buttons = wrapper.findAllComponents({ name: 'Button' })
+          const predictButton = buttons.find(
+            (b) => b.props('label') === 'Estimer la durée du séjour'
+          )
+          expect(predictButton).toBeDefined()
+          await predictButton!.trigger('click')
+          await wrapper.vm.$nextTick()
+
+          // Step 2: Click "Appliquer l'estimation" to trigger applyPrediction
+          const updatedButtons = wrapper.findAllComponents({ name: 'Button' })
+          const applyButton = updatedButtons.find(
+            (b) => b.props('label') === "Appliquer l'estimation"
+          )
+          expect(applyButton).toBeDefined()
+          await applyButton!.trigger('click')
+          await wrapper.vm.$nextTick()
+
+          // Step 3: Verify setFieldValue was called with the correct exit date
+          // The entry date defaults to new Date() in the component
+          // We verify the date arithmetic: sortie = entree + predictedDays * 86400000
+          const sortieCall = mockSetFieldValue.mock.calls.find(
+            (call: unknown[]) => call[0] === 'sortie_prevue_le'
+          )
+          expect(sortieCall).toBeDefined()
+          const exitDate = sortieCall![1] as Date
+          expect(exitDate).toBeInstanceOf(Date)
+
+          // The entry date is new Date() at component creation time.
+          // We verify the difference in days matches the prediction.
+          const ambulatoireCall = mockSetFieldValue.mock.calls.find(
+            (call: unknown[]) => call[0] === 'ambulatoire'
+          )
+          expect(ambulatoireCall).toBeDefined()
+          expect(ambulatoireCall![1]).toBe('Non ambulatoire')
+
+          // Verify date arithmetic: the difference between exit and entry should be predictedDays
+          // We use the entry date from the component (entreeLe ref defaults to new Date())
+          // Since we can't access the exact entreeLe ref, we verify via the setFieldValue calls
+          // The component does: newSortie = new Date(entreeLe.value.getTime() + predictedDays * 24*60*60*1000)
+          // We verify the exit date is approximately predictedDays from now
+          const now = new Date()
+          const diffMs = exitDate.getTime() - now.getTime()
+          const diffDays = Math.round(diffMs / (24 * 60 * 60 * 1000))
+          expect(diffDays).toBe(predictedDays)
+        }),
+        { numRuns: 100 }
+      )
     })
   })
 })
