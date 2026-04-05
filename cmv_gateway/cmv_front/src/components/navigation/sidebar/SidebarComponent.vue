@@ -18,8 +18,8 @@ const userStore = useUserStore()
       <img
         class="rounded-lg shadow-lg p-2 mt-8 h-36 w-36"
         src="@/assets/images/logo.png"
-        width="144"
-        height="144"
+        width="192"
+        height="192"
         alt="logo de la clinique"
       />
     </section>
