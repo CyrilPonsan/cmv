@@ -43,9 +43,7 @@ const ambulatoire = ref<string>('Ambulatoire')
 const options = ref(['Ambulatoire', 'Non ambulatoire'])
 const { servicesList, servicesOptions } = storeToRefs(store)
 
-const service = ref<string>()
 const predictionResult = ref<number | null>(null)
-const today = computed(() => new Date())
 
 const schemaAdmission = toTypedSchema(
   z.object({
@@ -88,7 +86,7 @@ const postAdmission = (values: Record<string, unknown>) => {
         ambulatoire: values.ambulatoire === 'Ambulatoire',
         entree_le: values.entree_le,
         sortie_prevue_le: values.sortie_prevue_le,
-        service_id: servicesList.value.find((item) => item.nom === service.value)?.id_service
+        service_id: servicesList.value.find((item) => item.nom === values.services)?.id_service
       }
     },
     applyData
