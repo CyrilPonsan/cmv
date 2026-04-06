@@ -92,8 +92,8 @@ const mockUseUploadDocument = {
     return Promise.resolve()
   }),
   onSelect: vi.fn(),
-  selectedDocumentType: ref(null),
-  selectedFile: ref(null)
+  selectedDocumentType: ref<{ label: string; value: string } | null>(null),
+  selectedFile: ref<File | null>(null)
 }
 
 // Mock du composable useUploadDocument
@@ -209,7 +209,7 @@ describe('DocumentUploadDialog', () => {
 
     const submitButton = newWrapper.find('button[type="submit"]')
     expect(submitButton.exists()).toBe(true)
-    expect(submitButton.element.disabled).toBe(true)
+    expect((submitButton.element as HTMLButtonElement).disabled).toBe(true)
   })
 
   // Exigence 6.2 : selectedFile est réinitialisé à null après suppression du fichier via le bouton de suppression

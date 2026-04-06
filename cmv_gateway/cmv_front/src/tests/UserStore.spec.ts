@@ -3,13 +3,18 @@ import { ref } from 'vue'
 import { setActivePinia } from 'pinia'
 import { createTestingPinia } from '@pinia/testing'
 
-/** Safely remove a key from localStorage, compatible with all happy-dom versions */
-function safeStorageRemove(key: string) {
-  try {
-    localStorage.removeItem(key)
-  } catch {
-    try { delete (localStorage as any)[key] } catch { /* noop */ }
+// --- Polyfill localStorage for happy-dom environments missing Storage methods ---
+if (typeof localStorage.setItem !== 'function') {
+  const store: Record<string, string> = {}
+  const storage = {
+    getItem(key: string) { return key in store ? store[key] : null },
+    setItem(key: string, value: string) { store[key] = String(value) },
+    removeItem(key: string) { delete store[key] },
+    clear() { for (const k in store) delete store[k] },
+    get length() { return Object.keys(store).length },
+    key(index: number) { return Object.keys(store)[index] ?? null }
   }
+  Object.defineProperty(globalThis, 'localStorage', { value: storage, writable: true })
 }
 
 // --- Mock vue-router ---
@@ -182,7 +187,7 @@ describe('UserStore', () => {
     beforeEach(() => {
       htmlElement = document.querySelector('html')!
       htmlElement.classList.remove('dark')
-      safeStorageRemove('color-scheme')
+      localStorage.removeItem('color-scheme')
       store.mode = 'light'
     })
 
@@ -215,7 +220,7 @@ describe('UserStore', () => {
     beforeEach(() => {
       htmlElement = document.querySelector('html')!
       htmlElement.classList.remove('dark')
-      safeStorageRemove('color-scheme')
+      localStorage.removeItem('color-scheme')
       store.mode = 'light'
       mockSendRequest.mockReturnValue(Promise.resolve())
     })
@@ -244,7 +249,7 @@ describe('UserStore', () => {
     beforeEach(() => {
       const htmlElement = document.querySelector('html')!
       htmlElement.classList.remove('dark')
-      safeStorageRemove('color-scheme')
+      localStorage.removeItem('color-scheme')
       store.mode = 'light'
     })
 
