@@ -173,7 +173,7 @@ describe('UserStore', () => {
     beforeEach(() => {
       htmlElement = document.querySelector('html')!
       htmlElement.classList.remove('dark')
-      localStorage.clear()
+      localStorage.removeItem('color-scheme')
       store.mode = 'light'
     })
 
@@ -206,7 +206,7 @@ describe('UserStore', () => {
     beforeEach(() => {
       htmlElement = document.querySelector('html')!
       htmlElement.classList.remove('dark')
-      localStorage.clear()
+      localStorage.removeItem('color-scheme')
       store.mode = 'light'
       mockSendRequest.mockReturnValue(Promise.resolve())
     })
@@ -235,7 +235,7 @@ describe('UserStore', () => {
     beforeEach(() => {
       const htmlElement = document.querySelector('html')!
       htmlElement.classList.remove('dark')
-      localStorage.clear()
+      localStorage.removeItem('color-scheme')
       store.mode = 'light'
     })
 
