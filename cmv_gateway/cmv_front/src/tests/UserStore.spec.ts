@@ -3,6 +3,15 @@ import { ref } from 'vue'
 import { setActivePinia } from 'pinia'
 import { createTestingPinia } from '@pinia/testing'
 
+/** Safely remove a key from localStorage, compatible with all happy-dom versions */
+function safeStorageRemove(key: string) {
+  try {
+    localStorage.removeItem(key)
+  } catch {
+    try { delete (localStorage as any)[key] } catch { /* noop */ }
+  }
+}
+
 // --- Mock vue-router ---
 const mockPush = vi.fn()
 const mockRoute = { name: 'accueil', params: {} }
@@ -173,7 +182,7 @@ describe('UserStore', () => {
     beforeEach(() => {
       htmlElement = document.querySelector('html')!
       htmlElement.classList.remove('dark')
-      localStorage.removeItem('color-scheme')
+      safeStorageRemove('color-scheme')
       store.mode = 'light'
     })
 
@@ -206,7 +215,7 @@ describe('UserStore', () => {
     beforeEach(() => {
       htmlElement = document.querySelector('html')!
       htmlElement.classList.remove('dark')
-      localStorage.removeItem('color-scheme')
+      safeStorageRemove('color-scheme')
       store.mode = 'light'
       mockSendRequest.mockReturnValue(Promise.resolve())
     })
@@ -235,7 +244,7 @@ describe('UserStore', () => {
     beforeEach(() => {
       const htmlElement = document.querySelector('html')!
       htmlElement.classList.remove('dark')
-      localStorage.removeItem('color-scheme')
+      safeStorageRemove('color-scheme')
       store.mode = 'light'
     })
 
