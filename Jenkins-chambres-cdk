@@ -69,24 +69,24 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     sshagent(credentials: ['cdk-key']) {
-                        sh '''
+                        sh """
                             set +x
                             ssh -o StrictHostKeyChecking=no \
                             -o UserKnownHostsFile=/dev/null \
                             -o LogLevel=ERROR \
-                            $EC2_USER@$EC2_HOST << 'EOF'
-
-echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
+                            $EC2_USER@$EC2_HOST 'bash -s' << ENDSSH
+set +e
+echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin 2>/dev/null
 
 docker stop cmv_chambres || true
 docker rm cmv_chambres || true
-docker image rm "$IMAGE_CHAMBRES:latest" || true
+docker image rm "${IMAGE_CHAMBRES}:latest" || true
 
 cd /opt/cmv/app && docker compose up -d
 
 docker logout
-EOF
-                        '''
+ENDSSH
+                        """
                     }
                 }
             }
