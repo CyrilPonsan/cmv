@@ -73,17 +73,20 @@ async def update_chambre_status(
     service_chambre=Depends(get_chambres_service),
     db: Session = Depends(get_db),
 ):
-    await service_chambre.update_chambre_status(db, chambre_id, Status.LIBRE)
-    return {"success": True, "message": "Chambre mise à jour"}
+    chambre = await service_chambre.update_chambre_status(db, chambre_id, Status.LIBRE)
+    return {
+        "success": True,
+        "message": "Chambre mise à jour",
+        "service_id": chambre.service_id,
+    }
 
 
 @router.delete(
-    "/{reservation_id}/{chambre_id}/cancel",
+    "/{reservation_id}/cancel",
     status_code=200,
     response_model=SuccessWithMessage,
 )
 async def cancel_reservation(
-    chambre_id: int,
     # payload: Annotated[InternalPayload, Depends(check_authorization)],
     reservation_id: int | None = None,
     service_chambre=Depends(get_chambres_service),
@@ -106,5 +109,4 @@ async def cancel_reservation(
     return await service_chambre.cancel_reservation(
         db=db,
         reservation_id=reservation_id,
-        chambre_id=chambre_id,
     )

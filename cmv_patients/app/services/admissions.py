@@ -52,9 +52,13 @@ class AdmissionService:
                     ambulatoire=data.ambulatoire,
                     entree_le=data.entree_le,
                     sortie_prevue_le=data.sortie_prevue_le,
-                    ref_reservation=reservation["reservation_id"] if reservation else None,
+                    ref_reservation=reservation["reservation_id"]
+                    if reservation
+                    else None,
                 )
-                admission = await self.admissions_repository.create_admission(db, admission)
+                admission = await self.admissions_repository.create_admission(
+                    db, admission
+                )
                 return admission
 
             except HTTPException:
@@ -71,7 +75,9 @@ class AdmissionService:
                     detail=str(e),
                 )
 
-    async def delete_admission(self, db: Session, admission_id: int, internal_payload: str, request):
+    async def delete_admission(
+        self, db: Session, admission_id: int, internal_payload: str, request
+    ):
         client_ip = request.headers.get("X-Real-IP") or request.headers.get(
             "X-Forwarded-For", "unknown"
         )
@@ -81,7 +87,9 @@ class AdmissionService:
             "X-Forwarded-For": client_ip,
         }
 
-        admission = await self.admissions_repository.get_admission_by_id(db, admission_id)
+        admission = await self.admissions_repository.get_admission_by_id(
+            db, admission_id
+        )
         if not admission:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="admission_not_found"
@@ -138,7 +146,8 @@ class AdmissionService:
             )
         if response.status_code != 201:
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="reservation_failed"
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="reservation_failed",
             )
         return response.json()
 

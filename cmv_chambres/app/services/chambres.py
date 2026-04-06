@@ -111,7 +111,7 @@ class ChambresService:
         )
 
     async def cancel_reservation(
-        self, db: Session, reservation_id: int, chambre_id: int
+        self, db: Session, reservation_id: int
     ) -> SuccessWithMessage:
         """
         Annule une réservation et libère la chambre associée
@@ -124,14 +124,20 @@ class ChambresService:
         Returns:
             SuccessWithMessage: Message de succès ou d'erreur
         """
-
-        print("CANCEL RESERVATION")
-        print(f"chambre_id: {chambre_id}")
-        print(f"reservation_id: {reservation_id}")
+        reservation = None
+        # Vérifie que la réservation existe
+        reservation = await self.chambres_repository.get_reservation_by_id(
+            db=db, reservation_id=reservation_id
+        )
+        if not reservation:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="reservation_not_found",
+            )
 
         # Récupère la chambre associée
         chambre = await self.chambres_repository.get_chambre_by_id(
-            db=db, chambre_id=chambre_id
+            db=db, chambre_id=reservation.chambre.id_chambre
         )
 
         if not chambre:
@@ -142,17 +148,6 @@ class ChambresService:
 
         # Libère la chambre
         await self.update_chambre_status(db, chambre.id_chambre, Status.LIBRE)
-
-        # Vérifie que la réservation existe
-        if reservation_id:
-            reservation = await self.chambres_repository.get_reservation_by_id(
-                db=db, reservation_id=reservation_id
-            )
-            if not reservation:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="reservation_not_found",
-                )
 
         # Annule la réservation
         await self.chambres_repository.cancel_reservation(db, reservation_id)
