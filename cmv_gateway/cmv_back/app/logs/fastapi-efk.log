@@ -81,3 +81,5 @@
 2026-04-07 12:24:56,530 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/45 FROM: None
 2026-04-07 12:25:00,950 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/45 FROM: None
 2026-04-07 12:25:52,904 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/45 FROM: None
+2026-04-07 12:42:27,084 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/45 FROM: None
+2026-04-07 12:47:43,712 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.

@@ -235,3 +235,9 @@
 2026-04-07 12:24:56,526 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 45 FROM: unknown
 2026-04-07 12:25:00,947 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 45 FROM: unknown
 2026-04-07 12:25:52,898 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 45 FROM: unknown
+2026-04-07 12:30:39,985 - CMV_PATIENTS - WARNING - Method Not Allowed FROM: None
+2026-04-07 12:30:40,036 - CMV_PATIENTS - WARNING - Method Not Allowed FROM: None
+2026-04-07 12:30:40,041 - CMV_PATIENTS - WARNING - Method Not Allowed FROM: None
+2026-04-07 12:31:30,290 - CMV_PATIENTS - WARNING - patient_already_admitted FROM: None
+2026-04-07 12:31:30,308 - CMV_PATIENTS - WARNING - patient_not_found FROM: None
+2026-04-07 12:42:27,053 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 45 FROM: unknown
