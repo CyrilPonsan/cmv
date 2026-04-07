@@ -1,7 +1,7 @@
 import logging
 
 import httpx
-from fastapi import HTTPException, status
+from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.repositories.admissions_crud import PgAdmissionsRepository
