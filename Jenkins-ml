@@ -1,0 +1,93 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'nodejs'
+    }
+
+    environment {
+        IMAGE_ML = "firizgoude/cmv_ml"
+        IMAGE_ML_TAG = "ml-${env.BUILD_NUMBER}"
+        BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
+        EC2_HOST = credentials("ec2-host")
+        EC2_USER = credentials("ec2-username")
+        SSH_CREDENTIALS = credentials('cmv-ssh-key')
+        PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+    }
+
+    stages {
+        stage("Checkout") {
+            steps {
+                checkout scm
+                script {
+                    echo "Current branch is ${BRANCH_NAME}"
+                }
+            }
+        }
+        stage('Build Image') {
+            steps {
+                dir('cmv_ml') {
+                    sh 'docker build --platform linux/amd64 -t "$IMAGE_ML:latest" .'
+                }
+            }
+        }
+        stage('Push to DockerHub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'cmv-dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                        set +x
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
+                        docker push "$IMAGE_ML:latest"
+                    '''
+                }
+            }
+        }
+        stage('Deploy to EC2') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'cmv-dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sshagent(credentials: ['cmv-ssh-key']) {
+                        sh '''
+                            set +x
+                            ssh -o StrictHostKeyChecking=no \
+                                -o UserKnownHostsFile=/dev/null \
+                                -o LogLevel=ERROR \
+                                $EC2_USER@$EC2_HOST << 'EOF'
+
+echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
+
+docker stop cmv_ml || true
+docker rm cmv_ml || true
+docker image rm "$IMAGE_ML:latest" || true
+
+docker compose up -d
+
+docker logout
+EOF
+                        '''
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker logout || true'
+            sh 'docker image rm "$IMAGE_ML:latest" || true'
+        }
+        success {
+            echo 'Pipeline terminé avec succès.'
+        }
+        failure {
+            echo 'Pipeline échoué. Vérifier les logs.'
+        }
+    }
+}

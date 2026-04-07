@@ -51,6 +51,11 @@ const router = createRouter({
       path: '/admissions/create/:patientId',
       name: 'admissions-create',
       component: () => import('../views/AdmissionView.vue')
+    }, // Route pour mettre à jour une admission
+    {
+      path: '/admissions/update/:admissionId',
+      name: 'admissions-update',
+      component: () => import('../views/AdmissionUpdateView.vue')
     },
     // Route 404 - Page non trouvée
     {

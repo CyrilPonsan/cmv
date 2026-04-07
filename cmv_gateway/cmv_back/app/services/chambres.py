@@ -1,9 +1,8 @@
 # Import des modules nécessaires
 import httpx
-
 from fastapi import HTTPException, Request
 
-from app.utils.config import CHAMBRES_SERVICE
+from app.utils.config import CHAMBRES_SERVICE, PATIENTS_SERVICE
 
 
 def get_chambres_service():
@@ -12,8 +11,9 @@ def get_chambres_service():
     Returns:
         ChambresService: Une nouvelle instance du service
     """
-    print(CHAMBRES_SERVICE)
-    return ChambresService(url_api_chambres=CHAMBRES_SERVICE)
+    return ChambresService(
+        url_api_chambres=CHAMBRES_SERVICE, url_api_patients=PATIENTS_SERVICE
+    )
 
 
 class ChambresService:
@@ -22,16 +22,23 @@ class ChambresService:
     def __init__(
         self,
         url_api_chambres: str,
+        url_api_patients: str,
     ):
         """
         Initialise le service avec l'URL de l'API des chambres
         Args:
             url_api_chambres (str): URL de base de l'API des chambres
         """
+
         self.url_api_chambres = url_api_chambres
+        self.url_api_patients = url_api_patients
 
     async def get_chambres(
-        self, path: str, request: Request, client: httpx.AsyncClient
+        self,
+        path: str,
+        request: Request,
+        client: httpx.AsyncClient,
+        internal_token: str,
     ):
         """
         Récupère les informations des chambres depuis l'API
@@ -54,7 +61,7 @@ class ChambresService:
         # Envoi de la requête à l'API
         response = await client.get(
             url,
-            # headers={"Authorization": f"Bearer {internal_token}"},
+            headers={"Authorization": f"Bearer {internal_token}"},
             follow_redirects=True,
         )
         if response.status_code == 200:

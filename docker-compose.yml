@@ -7,10 +7,6 @@ volumes:
     driver: local
   db_gateway:
     driver: local
-  cmv_patients:
-    driver: local
-  db_patients:
-    driver: local
   logs:
     driver: local
   redis:
@@ -19,24 +15,25 @@ volumes:
 # The containers that compose the project
 services:
   redis:
-    image: redis:latest
+    image: valkey/valkey:latest
     restart: always
     container_name: redis-server
     networks:
       - cmv
-    ports:
-      - "6379:6379"
+    volumes:
+      - redis:/data
+    environment:
+      VALKEY_HOST: ${VALKEY_HOST}
+      VALKEY_PORT: ${VALKEY_PORT}
 
   db_gateway:
-    image: postgres:latest
+    image: postgres:17
     restart: always
     container_name: db_gateway
     volumes:
       - db_gateway:/var/lib/postgresql/data
     networks:
       - cmv
-    ports:
-      - "6001:5432"
     environment:
       POSTGRES_USER: ${GATEWAY_POSTGRES_USER}
       POSTGRES_PASSWORD: ${GATEWAY_POSTGRES_PASSWORD}
@@ -53,32 +50,28 @@ services:
     container_name: cmv_gateway
     ports:
       - "8001:8000"
+    links:
+      - db_gateway
+    command: >
+      bash -c '
+      while !</dev/tcp/db_gateway/5432; do sleep 1; done;
+      alembic upgrade head;
+      uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
     depends_on:
       - db_gateway
     environment:
-      GATEWAY_DATABASE_URL: ${GATEWAY_POSTGRES_URL}
+      GATEWAY_DATABASE_URL: ${GATEWAY_DATABASE_URL}
       SECRET_KEY: ${SECRET_KEY}
+      PATIENTS_SECRET_KEY: ${PATIENTS_SECRET_KEY}
+      CHAMBRES_SECRET_KEY: ${CHAMBRES_SECRET_KEY}
+      ML_SECRET_KEY: ${ML_SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
       PATIENTS_SERVICE: ${PATIENTS_SERVICE}
+      CHAMBRES_SERVICE: ${CHAMBRES_SERVICE}
+      ML_SERVICE: ${ML_SERVICE}
       ACCESS_MAX_AGE: ${ACCESS_MAX_AGE}
       REFRESH_MAX_AGE: ${REFRESH_MAX_AGE}
-    command: >
-      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
-
-  db_patients:
-    image: postgres:latest
-    restart: always
-    container_name: db_patients
-    volumes:
-      - db_patients:/var/lib/postgresql/data
-    networks:
-      - cmv
-    ports:
-      - "6002:5432"
-    environment:
-      POSTGRES_USER: ${PATIENTS_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${PATIENTS_POSTGRES_PASSWORD}
-      POSTGRES_DB: ${PATIENTS_POSTGRES_DB}
+      ENVIRONMENT: ${ENVIRONMENT}
 
   api_patients:
     image: firizgoude/cmv_patients:latest
@@ -89,19 +82,58 @@ services:
     volumes:
       - logs:/code/app/logs
     container_name: cmv_patients
-    ports:
-      - "8002:8000"
     links:
-      - db_patients
+      - db_gateway
     command: >
-      bash -c 'while !</dev/tcp/db_patients/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
     depends_on:
-      - db_patients
+      - db_gateway
     environment:
       PATIENTS_DATABASE_URL: ${PATIENTS_DATABASE_URL}
-      SECRET_KEY: ${SECRET_KEY}
+      SECRET_KEY: ${PATIENTS_SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
       AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
+      CHAMBRES_SERVICE: ${CHAMBRES_SERVICE}
+      ENVIRONMENT: ${ENVIRONMENT}
+
+  api_chambres:
+    image: firizgoude/cmv_chambres:latest
+    pull_policy: always
+    restart: always
+    networks:
+      - cmv
+    container_name: cmv_chambres
+    links:
+      - db_gateway
+    command: >
+      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; alembic upgrade head; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+    depends_on:
+      - db_gateway
+    environment:
+      CHAMBRES_DATABASE_URL: ${CHAMBRES_DATABASE_URL}
+      SECRET_KEY: ${CHAMBRES_SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+      ENVIRONMENT: ${ENVIRONMENT}
+
+  api_ml:
+    image: firizgoude/cmv_ml:latest
+    pull_policy: always
+    restart: always
+    networks:
+      - cmv
+    container_name: cmv_ml
+    links:
+      - db_gateway
+    command: >
+      bash -c 'while !</dev/tcp/db_gateway/5432; do sleep 1; done; uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'
+    depends_on:
+      - db_gateway
+    environment:
+      ML_DATABASE_URL: ${ML_DATABASE_URL}
+      SECRET_KEY: ${ML_SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+      MODEL_PATH: ${MODEL_PATH}
+      SHAP_ENABLED: ${SHAP_ENABLED}

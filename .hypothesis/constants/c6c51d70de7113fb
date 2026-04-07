@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_patients/app/schemas/patients.py
+# hypothesis_version: 6.151.10
+
+[255, 'Le nom du patient', 'Le prénom du patient', 'Le titre du patient', 'adresse', 'asc', 'civilite', 'code_postal', 'date_de_naissance', 'email', 'field', 'nom', 'prenom', 'search', 'telephone', 'ville']

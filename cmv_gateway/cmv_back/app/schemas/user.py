@@ -2,7 +2,7 @@
 import re
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, field_validator
 from fastapi import HTTPException, status
 
 from .regular_expression import password_pattern
@@ -19,21 +19,19 @@ class UserBase(BaseModel):
 
 # Modèle pour les rôles utilisateur
 class Role(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int  # Identifiant unique du rôle
     name: str  # Nom du rôle (ex: "admin", "user")
     label: str  # Libellé du rôle pour l'affichage
 
-    class Config:
-        from_attributes = True  # Permet la conversion automatique depuis l'ORM
-
 
 # Modèle complet d'utilisateur héritant du modèle de base
 class User(UserBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id_user: int  # Identifiant unique de l'utilisateur
     role: Role  # Rôle associé à l'utilisateur
-
-    class Config:
-        from_attributes = True  # Permet la conversion automatique depuis l'ORM
 
 
 # Modèle pour la validation des identifiants de connexion

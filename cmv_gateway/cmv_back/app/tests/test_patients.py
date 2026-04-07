@@ -12,7 +12,7 @@ async def test_get_patients(
         json={"message": "Test réussi !"},
         status_code=200,
     )
-
+    print(f"AUTH COOKIE : {auth_cookie}")
     headers = {"Cookie": f"access_token={auth_cookie}"}
     response = await ac.get("/api/patients/foo", headers=headers)
 

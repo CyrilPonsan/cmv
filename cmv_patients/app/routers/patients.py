@@ -3,21 +3,23 @@ from typing import Annotated
 from fastapi import APIRouter, Body, Depends, Query, Request
 from sqlalchemy.orm import Session
 
-from app.dependancies.auth import check_authorization
+from app.dependancies.auth import check_authorization, get_permissions
 from app.dependancies.db_session import get_db
 from app.schemas.patients import (
     CreatePatient,
+    DetailPatient,
+    PatientsNames,
+    PatientsNamesResponse,
     PatientsParams,
     PostPatientResponse,
     PutPatientResponse,
     ReadAllPatients,
     SearchPatientsParams,
-    DetailPatient,
 )
+from app.schemas.schemas import SuccessWithMessage
 from app.schemas.user import InternalPayload
 from app.services.patients import get_patients_service
 from app.utils.logging_setup import LoggerSetup
-from app.schemas.schemas import SuccessWithMessage
 
 # Création du router FastAPI pour les endpoints patients
 router = APIRouter(prefix="/patients", tags=["patients"])
@@ -193,6 +195,7 @@ async def delete_patient(
     request: Request,
     patient_id: int,
     payload: Annotated[InternalPayload, Depends(check_authorization)],
+    internal_payload: Annotated[str, Depends(get_permissions)],
     patients_service=Depends(get_patients_service),
     db: Session = Depends(get_db),
 ):
@@ -201,5 +204,21 @@ async def delete_patient(
         request,
     )
 
-    await patients_service.delete_patient(db=db, patient_id=patient_id)
+    await patients_service.delete_patient(
+        db=db,
+        patient_id=patient_id,
+        internal_payload=internal_payload,
+        request=request,
+    )
     return {"success": True, "message": "patient_deleted"}
+
+
+@router.post("/patients_names", response_model=list[PatientsNamesResponse])
+async def get_patients_names(
+    request: Request,
+    payload: Annotated[InternalPayload, Depends(check_authorization)],
+    data: Annotated[list[PatientsNames], Body()],
+    patients_service=Depends(get_patients_service),
+    db: Session = Depends(get_db),
+):
+    return await patients_service.get_patients_names(db=db, ids=data)

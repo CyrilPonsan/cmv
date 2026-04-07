@@ -1,101 +1,192 @@
-2025-01-29 00:10:07,877 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 13 FROM: unknown
-2025-01-29 00:15:17,606 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 00:15:17,614 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 00:15:21,443 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 42 FROM: unknown
-2025-01-29 00:25:14,959 - CMV_PATIENTS - WARNING - reservation_failed: (psycopg2.errors.NotNullViolation) null value in column "nom_chambre" of relation "admission" violates not-null constraint
-DETAIL:  Failing row contains (3, 2025-01-28 23:25:14.821, t, null, 2026-01-31 23:00:00, null, null, 2025-01-28 23:25:14.955921, 2025-01-28 23:25:14.955921, 42, null).
+2026-04-07 07:40:47,882 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 07:40:47,902 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 07:40:47,909 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 07:40:47,918 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 07:40:47,924 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 07:40:47,932 - CMV_PATIENTS - WARNING - 1 validation error:
+  {'type': 'int_parsing', 'loc': ('query', 'page'), 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': 'toto'}
 
-[SQL: INSERT INTO admission (entree_le, ambulatoire, sorti_le, sortie_prevue_le, ref_chambre, ref_reservation, nom_chambre, patient_id) VALUES (%(entree_le)s, %(ambulatoire)s, %(sorti_le)s, %(sortie_prevue_le)s, %(ref_chambre)s, %(ref_reservation)s, %(nom_chambre)s, %(patient_id)s) RETURNING admission.id_admission, admission.created_at, admission.updated_at]
-[parameters: {'entree_le': '2025-01-28 23:25:14.821000+00:00', 'ambulatoire': True, 'sorti_le': None, 'sortie_prevue_le': '2026-01-31 23:00:00+00:00', 'ref_chambre': None, 'ref_reservation': None, 'nom_chambre': None, 'patient_id': 42}]
-(Background on this error at: https://sqlalche.me/e/20/gkpj) FROM: unknown
-2025-01-29 00:25:19,790 - CMV_PATIENTS - WARNING - reservation_failed: (psycopg2.errors.NotNullViolation) null value in column "nom_chambre" of relation "admission" violates not-null constraint
-DETAIL:  Failing row contains (4, 2025-01-28 23:25:19.765, t, null, 2026-01-31 23:00:00, null, null, 2025-01-28 23:25:19.789644, 2025-01-28 23:25:19.789644, 42, null).
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 65, in read_patients
+    GET /api/patients/ FROM: None
+2026-04-07 07:40:47,966 - CMV_PATIENTS - WARNING - 1 validation error:
+  {'type': 'int_parsing', 'loc': ('query', 'limit'), 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': 'toto'}
 
-[SQL: INSERT INTO admission (entree_le, ambulatoire, sorti_le, sortie_prevue_le, ref_chambre, ref_reservation, nom_chambre, patient_id) VALUES (%(entree_le)s, %(ambulatoire)s, %(sorti_le)s, %(sortie_prevue_le)s, %(ref_chambre)s, %(ref_reservation)s, %(nom_chambre)s, %(patient_id)s) RETURNING admission.id_admission, admission.created_at, admission.updated_at]
-[parameters: {'entree_le': '2025-01-28 23:25:19.765000+00:00', 'ambulatoire': True, 'sorti_le': None, 'sortie_prevue_le': '2026-01-31 23:00:00+00:00', 'ref_chambre': None, 'ref_reservation': None, 'nom_chambre': None, 'patient_id': 42}]
-(Background on this error at: https://sqlalche.me/e/20/gkpj) FROM: unknown
-2025-01-29 00:25:24,175 - CMV_PATIENTS - WARNING - reservation_failed: (psycopg2.errors.NotNullViolation) null value in column "nom_chambre" of relation "admission" violates not-null constraint
-DETAIL:  Failing row contains (5, 2025-01-28 23:25:24.151, t, null, 2026-01-31 23:00:00, null, null, 2025-01-28 23:25:24.174178, 2025-01-28 23:25:24.174178, 42, null).
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 65, in read_patients
+    GET /api/patients/ FROM: None
+2026-04-07 07:40:47,972 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 07:40:47,978 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 07:40:47,985 - CMV_PATIENTS - WARNING - home - 1 - GET - search patients FROM: None
+2026-04-07 07:40:47,992 - CMV_PATIENTS - WARNING - home - 1 - GET - search patients FROM: None
+2026-04-07 07:40:47,998 - CMV_PATIENTS - WARNING - home - 1 - GET - search patients FROM: None
+2026-04-07 07:40:48,004 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 07:40:48,009 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 07:40:48,013 - CMV_PATIENTS - WARNING - home - 1 - GET - read patient 999 FROM: None
+2026-04-07 07:40:48,013 - CMV_PATIENTS - WARNING - patient_not_found FROM: None
+2026-04-07 07:40:48,019 - CMV_PATIENTS - WARNING - home - 1 - GET - read patient 1 FROM: None
+2026-04-07 07:40:48,023 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 07:40:48,026 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 07:40:48,029 - CMV_PATIENTS - WARNING - 8 validation errors:
+  {'type': 'missing', 'loc': ('body', 'civilite'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'prenom'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'nom'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'date_de_naissance'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'adresse'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'code_postal'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'ville'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'telephone'), 'msg': 'Field required', 'input': {}}
 
-[SQL: INSERT INTO admission (entree_le, ambulatoire, sorti_le, sortie_prevue_le, ref_chambre, ref_reservation, nom_chambre, patient_id) VALUES (%(entree_le)s, %(ambulatoire)s, %(sorti_le)s, %(sortie_prevue_le)s, %(ref_chambre)s, %(ref_reservation)s, %(nom_chambre)s, %(patient_id)s) RETURNING admission.id_admission, admission.created_at, admission.updated_at]
-[parameters: {'entree_le': '2025-01-28 23:25:24.151000+00:00', 'ambulatoire': True, 'sorti_le': None, 'sortie_prevue_le': '2026-01-31 23:00:00+00:00', 'ref_chambre': None, 'ref_reservation': None, 'nom_chambre': None, 'patient_id': 42}]
-(Background on this error at: https://sqlalche.me/e/20/gkpj) FROM: unknown
-2025-01-29 00:25:28,374 - CMV_PATIENTS - WARNING - reservation_failed: (psycopg2.errors.NotNullViolation) null value in column "nom_chambre" of relation "admission" violates not-null constraint
-DETAIL:  Failing row contains (6, 2025-01-28 23:25:28.336, t, null, 2026-01-31 23:00:00, null, null, 2025-01-28 23:25:28.371426, 2025-01-28 23:25:28.371426, 42, null).
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 31, in create_patient
+    POST /api/patients/ FROM: None
+2026-04-07 07:40:48,034 - CMV_PATIENTS - WARNING - 9 validation errors:
+  {'type': 'enum', 'loc': ('body', 'civilite'), 'msg': "Input should be 'Monsieur', 'Madame' or 'Autre'", 'input': '<hacked />', 'ctx': {'expected': "'Monsieur', 'Madame' or 'Autre'"}}
+  {'type': 'value_error', 'loc': ('body', 'prenom'), 'msg': "Value error, La propriété 'prenom' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'prenom' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'nom'), 'msg': "Value error, La propriété 'nom' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'nom' contient des caractères non autorisés.")}}
+  {'type': 'datetime_from_date_parsing', 'loc': ('body', 'date_de_naissance'), 'msg': 'Input should be a valid datetime or date, invalid character in year', 'input': '<hacked />', 'ctx': {'error': 'invalid character in year'}}
+  {'type': 'value_error', 'loc': ('body', 'adresse'), 'msg': "Value error, La propriété 'adresse' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'adresse' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'code_postal'), 'msg': "Value error, La propriété 'code_postal' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'code_postal' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'ville'), 'msg': "Value error, La propriété 'ville' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'ville' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'telephone'), 'msg': "Value error, La propriété 'telephone' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'telephone' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'email'), 'msg': 'value is not a valid email address: An email address must have an @-sign.', 'input': '<hacked />', 'ctx': {'reason': 'An email address must have an @-sign.'}}
 
-[SQL: INSERT INTO admission (entree_le, ambulatoire, sorti_le, sortie_prevue_le, ref_chambre, ref_reservation, nom_chambre, patient_id) VALUES (%(entree_le)s, %(ambulatoire)s, %(sorti_le)s, %(sortie_prevue_le)s, %(ref_chambre)s, %(ref_reservation)s, %(nom_chambre)s, %(patient_id)s) RETURNING admission.id_admission, admission.created_at, admission.updated_at]
-[parameters: {'entree_le': '2025-01-28 23:25:28.336000+00:00', 'ambulatoire': True, 'sorti_le': None, 'sortie_prevue_le': '2026-01-31 23:00:00+00:00', 'ref_chambre': None, 'ref_reservation': None, 'nom_chambre': None, 'patient_id': 42}]
-(Background on this error at: https://sqlalche.me/e/20/gkpj) FROM: unknown
-2025-01-29 00:39:37,742 - CMV_PATIENTS - WARNING - reservation_failed: 'PatientsService' object has no attribute 'db' FROM: unknown
-2025-01-29 00:39:42,097 - CMV_PATIENTS - WARNING - reservation_failed: 'PatientsService' object has no attribute 'db' FROM: unknown
-2025-01-29 00:57:39,102 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 00:57:39,114 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 00:57:41,488 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 13 FROM: unknown
-2025-01-29 00:57:58,112 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 00:57:58,121 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 00:58:02,101 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 13 FROM: unknown
-2025-01-29 00:59:04,757 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 42 FROM: unknown
-2025-01-29 00:59:09,190 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 00:59:09,198 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 00:59:11,873 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 41 FROM: unknown
-2025-01-29 00:59:23,406 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 00:59:23,412 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 00:59:27,733 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 41 FROM: unknown
-2025-01-29 00:59:27,742 - CMV_PATIENTS - WARNING - delete_admission_failed: 'PatientsService' object has no attribute 'admissions_repository' FROM: unknown
-2025-01-29 01:05:03,786 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 41 FROM: unknown
-2025-01-29 01:05:03,816 - CMV_PATIENTS - WARNING - delete_admission_failed: 'PatientsService' object has no attribute 'admissions_repository' FROM: unknown
-2025-01-29 01:05:51,001 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:05:51,012 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:05:54,601 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 41 FROM: unknown
-2025-01-29 01:05:54,628 - CMV_PATIENTS - WARNING - delete_admission_failed: 'PatientsService' object has no attribute 'admissions_repository' FROM: unknown
-2025-01-29 01:07:26,043 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:07:26,055 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:07:30,913 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 41 FROM: unknown
-2025-01-29 01:07:30,940 - CMV_PATIENTS - WARNING - delete_admission_failed: 'PgAdmissionsRepository' object has no attribute 'get_admission_by_id' FROM: unknown
-2025-01-29 01:09:07,527 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 41 FROM: unknown
-2025-01-29 01:09:07,558 - CMV_PATIENTS - WARNING - delete_admission_failed: 'PgAdmissionsRepository' object has no attribute 'delete_admission' FROM: unknown
-2025-01-29 01:11:14,062 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 41 FROM: unknown
-2025-01-29 01:11:14,134 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:11:51,609 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:11:51,643 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:11:59,771 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 4 FROM: unknown
-2025-01-29 01:12:32,722 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:12:32,730 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:12:38,809 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 4 FROM: unknown
-2025-01-29 01:12:38,859 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:16:15,542 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 25 FROM: unknown
-2025-01-29 01:16:34,379 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:16:34,386 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:16:38,539 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 25 FROM: unknown
-2025-01-29 01:16:38,639 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:18:24,591 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 20 FROM: unknown
-2025-01-29 01:18:28,742 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:18:28,750 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:18:33,419 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 20 FROM: unknown
-2025-01-29 01:18:33,501 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:20:23,924 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 30 FROM: unknown
-2025-01-29 01:20:27,922 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:20:27,949 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:20:36,218 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 30 FROM: unknown
-2025-01-29 01:20:36,229 - CMV_PATIENTS - WARNING - delete_admission_failed: 'Admission' object has no attribute 'ref_patient' FROM: unknown
-2025-01-29 01:22:22,013 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 30 FROM: unknown
-2025-01-29 01:22:22,022 - CMV_PATIENTS - WARNING - delete_admission_failed: 'Admission' object has no attribute 'ref_patient' FROM: unknown
-2025-01-29 01:22:41,307 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 30 FROM: unknown
-2025-01-29 01:22:41,369 - CMV_PATIENTS - WARNING - delete_admission_failed: 400: failed_to_cancel_reservation FROM: unknown
-2025-01-29 01:33:19,688 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 30 FROM: unknown
-2025-01-29 01:33:19,765 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:35:23,544 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 5 FROM: unknown
-2025-01-29 01:35:34,984 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:35:34,992 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:35:38,920 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 5 FROM: unknown
-2025-01-29 01:35:38,973 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:39:06,610 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 31 FROM: unknown
-2025-01-29 01:39:17,532 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:39:17,543 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:39:20,186 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 31 FROM: unknown
-2025-01-29 01:39:20,280 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:39:43,222 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 12 FROM: unknown
-2025-01-29 01:40:09,582 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:40:09,590 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
-2025-01-29 01:40:12,860 - CMV_PATIENTS - WARNING - home - 2 - DELETE - delete patient 12 FROM: unknown
-2025-01-29 01:40:12,959 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 31, in create_patient
+    POST /api/patients/ FROM: None
+2026-04-07 07:40:48,040 - CMV_PATIENTS - WARNING - home - 1 - POST - create patient FROM: None
+2026-04-07 07:40:48,046 - CMV_PATIENTS - WARNING - home - 1 - POST - create patient FROM: None
+2026-04-07 07:40:48,048 - CMV_PATIENTS - WARNING - home - 1 - POST - create patient FROM: None
+2026-04-07 07:40:48,049 - CMV_PATIENTS - WARNING - patient_already_exists FROM: None
+2026-04-07 07:40:48,052 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 07:40:48,055 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 07:40:48,061 - CMV_PATIENTS - WARNING - home - 1 - PUT - update patient 999 FROM: None
+2026-04-07 07:40:48,062 - CMV_PATIENTS - WARNING - patient_not_found FROM: None
+2026-04-07 07:40:48,065 - CMV_PATIENTS - WARNING - 9 validation errors:
+  {'type': 'enum', 'loc': ('body', 'civilite'), 'msg': "Input should be 'Monsieur', 'Madame' or 'Autre'", 'input': '<hacked />', 'ctx': {'expected': "'Monsieur', 'Madame' or 'Autre'"}}
+  {'type': 'value_error', 'loc': ('body', 'prenom'), 'msg': "Value error, La propriété 'prenom' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'prenom' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'nom'), 'msg': "Value error, La propriété 'nom' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'nom' contient des caractères non autorisés.")}}
+  {'type': 'datetime_from_date_parsing', 'loc': ('body', 'date_de_naissance'), 'msg': 'Input should be a valid datetime or date, invalid character in year', 'input': '<hacked />', 'ctx': {'error': 'invalid character in year'}}
+  {'type': 'value_error', 'loc': ('body', 'adresse'), 'msg': "Value error, La propriété 'adresse' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'adresse' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'code_postal'), 'msg': "Value error, La propriété 'code_postal' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'code_postal' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'ville'), 'msg': "Value error, La propriété 'ville' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'ville' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'telephone'), 'msg': "Value error, La propriété 'telephone' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'telephone' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'email'), 'msg': 'value is not a valid email address: An email address must have an @-sign.', 'input': '<hacked />', 'ctx': {'reason': 'An email address must have an @-sign.'}}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 168, in update_patient
+    PUT /api/patients/{patient_id} FROM: None
+2026-04-07 07:40:48,068 - CMV_PATIENTS - WARNING - 8 validation errors:
+  {'type': 'missing', 'loc': ('body', 'civilite'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'prenom'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'nom'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'date_de_naissance'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'adresse'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'code_postal'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'ville'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'telephone'), 'msg': 'Field required', 'input': {}}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 168, in update_patient
+    PUT /api/patients/{patient_id} FROM: None
+2026-04-07 07:41:10,730 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 07:41:10,746 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 07:41:10,751 - CMV_PATIENTS - WARNING - home - 1 - POST - upload - 999 FROM: None
+2026-04-07 07:41:10,752 - CMV_PATIENTS - WARNING - patient_not_found FROM: None
+2026-04-07 07:41:10,761 - CMV_PATIENTS - WARNING - 1 validation error:
+  {'type': 'enum', 'loc': ('body', 'document_type'), 'msg': "Input should be 'health_insurance_card_certificate', 'authorization_for_care', 'authorization_for_treatment', 'authorization_for_visit', 'authorization_for_overnight_stay', 'authorization_for_departure', 'authorization_for_disconnection' or 'miscellaneous'", 'input': 'INVALID_TYPE', 'ctx': {'expected': "'health_insurance_card_certificate', 'authorization_for_care', 'authorization_for_treatment', 'authorization_for_visit', 'authorization_for_overnight_stay', 'authorization_for_departure', 'authorization_for_disconnection' or 'miscellaneous'"}}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/documents.py", line 28, in create_document
+    POST /api/documents/create/{patient_id} FROM: None
+2026-04-07 07:41:10,767 - CMV_PATIENTS - WARNING - home - 1 - POST - upload - 1 FROM: None
+2026-04-07 07:41:10,773 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 07:41:10,776 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 07:41:10,780 - CMV_PATIENTS - WARNING - home - 1 - DELETE - delete - 999 FROM: None
+2026-04-07 07:41:10,780 - CMV_PATIENTS - WARNING - document_not_found FROM: None
+2026-04-07 07:41:10,786 - CMV_PATIENTS - WARNING - home - 1 - DELETE - delete - 1 FROM: None
+2026-04-07 07:41:10,789 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 07:41:10,791 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 07:41:10,795 - CMV_PATIENTS - WARNING - home - 1 - GET - download - 999 FROM: None
+2026-04-07 07:41:10,796 - CMV_PATIENTS - WARNING - document_not_found FROM: None
+2026-04-07 07:41:10,801 - CMV_PATIENTS - WARNING - home - 1 - GET - download - 1 FROM: None
+2026-04-07 07:41:10,829 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 07:41:10,834 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 07:41:10,840 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 07:41:10,848 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 07:41:10,854 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 07:41:10,860 - CMV_PATIENTS - WARNING - 1 validation error:
+  {'type': 'int_parsing', 'loc': ('query', 'page'), 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': 'toto'}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 65, in read_patients
+    GET /api/patients/ FROM: None
+2026-04-07 07:41:10,865 - CMV_PATIENTS - WARNING - 1 validation error:
+  {'type': 'int_parsing', 'loc': ('query', 'limit'), 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': 'toto'}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 65, in read_patients
+    GET /api/patients/ FROM: None
+2026-04-07 07:41:10,870 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 07:41:10,876 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 07:41:10,882 - CMV_PATIENTS - WARNING - home - 1 - GET - search patients FROM: None
+2026-04-07 07:41:10,888 - CMV_PATIENTS - WARNING - home - 1 - GET - search patients FROM: None
+2026-04-07 07:41:10,894 - CMV_PATIENTS - WARNING - home - 1 - GET - search patients FROM: None
+2026-04-07 07:41:10,899 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 07:41:10,904 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 07:41:10,907 - CMV_PATIENTS - WARNING - home - 1 - GET - read patient 999 FROM: None
+2026-04-07 07:41:10,908 - CMV_PATIENTS - WARNING - patient_not_found FROM: None
+2026-04-07 07:41:10,913 - CMV_PATIENTS - WARNING - home - 1 - GET - read patient 1 FROM: None
+2026-04-07 07:41:10,916 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 07:41:10,919 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 07:41:10,923 - CMV_PATIENTS - WARNING - 8 validation errors:
+  {'type': 'missing', 'loc': ('body', 'civilite'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'prenom'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'nom'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'date_de_naissance'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'adresse'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'code_postal'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'ville'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'telephone'), 'msg': 'Field required', 'input': {}}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 31, in create_patient
+    POST /api/patients/ FROM: None
+2026-04-07 07:41:10,927 - CMV_PATIENTS - WARNING - 9 validation errors:
+  {'type': 'enum', 'loc': ('body', 'civilite'), 'msg': "Input should be 'Monsieur', 'Madame' or 'Autre'", 'input': '<hacked />', 'ctx': {'expected': "'Monsieur', 'Madame' or 'Autre'"}}
+  {'type': 'value_error', 'loc': ('body', 'prenom'), 'msg': "Value error, La propriété 'prenom' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'prenom' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'nom'), 'msg': "Value error, La propriété 'nom' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'nom' contient des caractères non autorisés.")}}
+  {'type': 'datetime_from_date_parsing', 'loc': ('body', 'date_de_naissance'), 'msg': 'Input should be a valid datetime or date, invalid character in year', 'input': '<hacked />', 'ctx': {'error': 'invalid character in year'}}
+  {'type': 'value_error', 'loc': ('body', 'adresse'), 'msg': "Value error, La propriété 'adresse' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'adresse' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'code_postal'), 'msg': "Value error, La propriété 'code_postal' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'code_postal' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'ville'), 'msg': "Value error, La propriété 'ville' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'ville' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'telephone'), 'msg': "Value error, La propriété 'telephone' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'telephone' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'email'), 'msg': 'value is not a valid email address: An email address must have an @-sign.', 'input': '<hacked />', 'ctx': {'reason': 'An email address must have an @-sign.'}}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 31, in create_patient
+    POST /api/patients/ FROM: None
+2026-04-07 07:41:10,934 - CMV_PATIENTS - WARNING - home - 1 - POST - create patient FROM: None
+2026-04-07 07:41:10,939 - CMV_PATIENTS - WARNING - home - 1 - POST - create patient FROM: None
+2026-04-07 07:41:10,941 - CMV_PATIENTS - WARNING - home - 1 - POST - create patient FROM: None
+2026-04-07 07:41:10,941 - CMV_PATIENTS - WARNING - patient_already_exists FROM: None
+2026-04-07 07:41:10,944 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 07:41:10,947 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 07:41:10,953 - CMV_PATIENTS - WARNING - home - 1 - PUT - update patient 999 FROM: None
+2026-04-07 07:41:10,954 - CMV_PATIENTS - WARNING - patient_not_found FROM: None
+2026-04-07 07:41:10,957 - CMV_PATIENTS - WARNING - 9 validation errors:
+  {'type': 'enum', 'loc': ('body', 'civilite'), 'msg': "Input should be 'Monsieur', 'Madame' or 'Autre'", 'input': '<hacked />', 'ctx': {'expected': "'Monsieur', 'Madame' or 'Autre'"}}
+  {'type': 'value_error', 'loc': ('body', 'prenom'), 'msg': "Value error, La propriété 'prenom' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'prenom' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'nom'), 'msg': "Value error, La propriété 'nom' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'nom' contient des caractères non autorisés.")}}
+  {'type': 'datetime_from_date_parsing', 'loc': ('body', 'date_de_naissance'), 'msg': 'Input should be a valid datetime or date, invalid character in year', 'input': '<hacked />', 'ctx': {'error': 'invalid character in year'}}
+  {'type': 'value_error', 'loc': ('body', 'adresse'), 'msg': "Value error, La propriété 'adresse' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'adresse' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'code_postal'), 'msg': "Value error, La propriété 'code_postal' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'code_postal' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'ville'), 'msg': "Value error, La propriété 'ville' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'ville' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'telephone'), 'msg': "Value error, La propriété 'telephone' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'telephone' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'email'), 'msg': 'value is not a valid email address: An email address must have an @-sign.', 'input': '<hacked />', 'ctx': {'reason': 'An email address must have an @-sign.'}}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 168, in update_patient
+    PUT /api/patients/{patient_id} FROM: None
+2026-04-07 07:41:10,962 - CMV_PATIENTS - WARNING - 8 validation errors:
+  {'type': 'missing', 'loc': ('body', 'civilite'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'prenom'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'nom'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'date_de_naissance'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'adresse'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'code_postal'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'ville'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'telephone'), 'msg': 'Field required', 'input': {}}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 168, in update_patient
+    PUT /api/patients/{patient_id} FROM: None
+2026-04-07 09:32:39,439 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-07 09:32:42,794 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 97 FROM: unknown

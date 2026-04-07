@@ -16,6 +16,7 @@ export const useUserStore = defineStore('user', () => {
 
   const role = ref('')
   const mode = ref('light')
+  const authChecked = ref(false)
 
   /**
    * alterne ente le mode clair et le mode sombre
@@ -65,10 +66,13 @@ export const useUserStore = defineStore('user', () => {
    * envoie une requête à l'api pour récupérer le role de l'utilisateur
    */
   const getUserInfos = () => {
-    const applyData = (data: any) => {
+    const applyData = (data: { role: string }) => {
       role.value = data.role
+      authChecked.value = true
     }
-    http.sendRequest<{ role: string }>({ path: '/users/me' }, applyData)
+    http.sendRequest<{ role: string }>({ path: '/users/me' }, applyData).catch(() => {
+      authChecked.value = true
+    })
   }
 
   const signout = () => {
@@ -87,6 +91,7 @@ export const useUserStore = defineStore('user', () => {
   }
 
   return {
+    authChecked,
     getUserInfos,
     handshake,
     logout,

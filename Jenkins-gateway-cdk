@@ -1,0 +1,116 @@
+pipeline {
+    agent any
+    tools {
+        nodejs 'nodejs'
+    }
+
+    environment {
+        IMAGE_GATEWAY = "firizgoude/cmv_gateway"
+        IMAGE_GATEWAY_TAG = "gateway-${env.BUILD_NUMBER}"
+        NPM_CACHE_DIR = "tmp/npm-cache"
+        BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
+        EC2_HOST = credentials("ec2-gateway-host")
+        EC2_USER = credentials("ec2-username")
+        SSH_CREDENTIALS = credentials('cdk-key')
+        PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+    }
+
+    stages {
+        stage("Checkout") {
+            steps {
+                checkout scm
+                script {
+                    echo "Current branch is ${BRANCH_NAME}"
+                }
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                dir('cmv_gateway/cmv_front') {
+                    sh '''
+                    mkdir -p $NPM_CACHE_DIR
+                    npm config set cache $NPM_CACHE_DIR
+                    npm ci --prefer-offline
+                    '''
+                }
+            }
+        }
+        stage('Run Frontend Tests') {
+            steps {
+                dir('cmv_gateway/cmv_front') {
+                    sh 'npm run test:unit'
+                }
+            }
+        }
+        stage('Run Backend Tests') {
+            steps {
+                dir('cmv_gateway/cmv_back') {
+                    script {
+                        sh '''
+                        # Lancer les tests et propager l'exit code de pytest
+                        docker-compose -f docker-compose.yml up --build --abort-on-container-exit --exit-code-from test
+
+                        # Arrêter et supprimer les services après les tests
+                        docker-compose -f docker-compose.yml down
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Build Image') {
+            steps {
+                dir('cmv_gateway') {
+                    sh 'docker build --platform linux/amd64 -t "$IMAGE_GATEWAY:latest" .'
+                }
+            }
+        }
+        stage('Push to DockerHub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'cmv-dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                        set +x
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 2>/dev/null
+                        docker push "$IMAGE_GATEWAY:latest"
+                    '''
+                }
+            }
+        }
+        stage('Deploy to EC2') {
+            steps {
+                sshagent(credentials: ['cdk-key']) {
+                    sh """
+                        set +x
+                        ssh -o StrictHostKeyChecking=no \
+                            -o UserKnownHostsFile=/dev/null \
+                            -o LogLevel=ERROR \
+                            $EC2_USER@$EC2_HOST 'bash -s' << ENDSSH
+set +e
+docker stop cmv_gateway || true
+docker rm cmv_gateway || true
+docker image rm "${IMAGE_GATEWAY}:latest" || true
+docker network create cmv || true
+cd /opt/cmv/app && docker compose up -d
+ENDSSH
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker logout || true'
+            sh 'docker image rm "$IMAGE_GATEWAY:latest" || true'
+        }
+        success {
+            echo 'Pipeline terminé avec succès.'
+        }
+        failure {
+            echo 'Pipeline échoué. Vérifier les logs.'
+        }
+    }
+}

@@ -39,21 +39,19 @@ const {
   lazyState, // Mode lazy-loadin
   loading, // État de chargement
   isLoading, // État de chargement des requêtes HTTP
-  getData, // Fonction de récupération des données
   showDeleteDialog, // Affichage de la boîte de dialogue de suppression
   onCancel, // Annulation de la suppression
   onConfirm, // Confirmation de la suppression
   selectedPatient, // Patient sélectionné pour la suppression
   dialogVisible // Visibilité de la boîte de dialogue
 } = useListPatients()
-
-// Chargement initial des données au montage du composant
-onMounted(() => getData())
 </script>
 
 <template>
   <!-- Table principale des patients avec pagination et tri -->
+  <div class="w-full overflow-hidden">
   <DataTable
+  v-if="patientsList && patientsList.length > 0 "
     v-model:filters="filters"
     :value="patientsList"
     :lazy="true"
@@ -69,7 +67,7 @@ onMounted(() => getData())
     table-style="min-width: 50rem"
     paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
     :current-page-report-template="`${lazyState.first + 1} ${t('pagination.to')} ${lazyState.first + lazyState.rows} ${t('pagination.from')} ${totalRecords}`"
-    class="shadow-md min-w-full"
+    class="shadow-md w-full"
     @page="handlePage"
     @sort="handleSort"
   >
@@ -110,7 +108,7 @@ onMounted(() => getData())
 
     <!-- Information sur le nombre total de patients -->
     <template #paginatorstart>
-      <span class="flex items-center gap-x-2 font-bold">
+      <span class="min-w-0 flex-1 flex items-center gap-x-2 font-bold">
         {{ t('patients.home.total_patients', totalRecords) }}
       </span>
     </template>
@@ -118,6 +116,7 @@ onMounted(() => getData())
     <!-- Colonnes dynamiques générées à partir de la configuration -->
     <Column
       v-for="col of columns"
+      class="w-48"
       :key="col.field"
       :field="col.field"
       :header="t(`columns.patientsList.${col.header}`)"
@@ -179,6 +178,7 @@ onMounted(() => getData())
       </div>
     </template>
   </DataTable>
+  </div>
 
   <!-- Dialogue de confirmation de suppression -->
   <DeletePatientDialog

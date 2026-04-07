@@ -232,7 +232,7 @@ describe('LoginForm tests unitaires', () => {
     await new Promise((resolve) => setTimeout(resolve, 100))
 
     // Vérifier les messages d'erreur visibles
-    const errorMessages = wrapper.findAll('.p-message)')
+    const errorMessages = wrapper.findAll('.p-message')
     expect(errorMessages.length).toBeGreaterThan(0)
     expect(errorMessages.length).toBe(2)
     expect(errorMessages.at(0).text()).toBe('error.not_valid_email')

@@ -70,13 +70,7 @@ const useLogin = (): LoginReturn => {
     const applyData = (data: { success: boolean; message: string }) => {
       if (data.success) {
         // Affiche une notification de succès et récupère les informations utilisateur
-        toast.add({
-          severity: 'success',
-          life: 5000,
-          summary: t('success.connection_success'),
-          detail: t('success.connection_success_detail'),
-          closable: false
-        })
+
         userStore.getUserInfos()
       }
     }

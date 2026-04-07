@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/utils/config.py
+# hypothesis_version: 6.151.9
+
+[1440, 6379, '.env', '123456', 'CHAMBRES_SERVICE', 'GATEWAY_DATABASE_URL', 'HS256', 'ML_SERVICE', 'PATIENTS_SERVICE', 'changez-moi', 'cle_tres_secrete', 'dev', 'http://', 'https://', 'ignore', 'password', 'postgresql://', 'production', 'redis', 'secret', 'sqlite:///:memory:', 'staging', 'test', 'utf-8']

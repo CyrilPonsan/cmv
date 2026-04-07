@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_patients/app/services/patients.py
+# hypothesis_version: 6.151.10
+
+[200, 404, 'AWS Configuration:', 'ContentType', 'admission_deleted', 'admission_not_found', 'application/pdf', 'document_not_found', 'entree_prevue', 'message', 'patient_id', 'patient_not_found', 's3', 'service_id', 'sortie_prevue']

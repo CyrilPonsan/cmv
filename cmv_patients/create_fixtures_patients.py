@@ -1,12 +1,12 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
-from datetime import datetime
 import os
-from dotenv import load_dotenv
-from faker import Faker
+from datetime import datetime
 
 # Import des modèles nécessaires
 from app.sql.models import Base, Patient
+from dotenv import load_dotenv
+from faker import Faker
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session, sessionmaker
 
 # Chargement des variables d'environnement
 load_dotenv()
