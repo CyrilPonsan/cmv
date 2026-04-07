@@ -9,19 +9,17 @@ from app.repositories.admissions_crud import PgAdmissionsRepository
 from app.repositories.documents_crud import PgDocumentsRepository
 from app.repositories.patients_crud import PgPatientsRepository
 from app.schemas.patients import (
-    CreateAdmission,
     Patient,
     PatientsNames,
     PatientsNamesResponse,
 )
 from app.services.admissions import AdmissionService
-from app.sql.models import Admission, DocumentType
+from app.sql.models import DocumentType
 from app.utils.config import (
     AWS_ACCESS_KEY_ID,
     AWS_BUCKET_NAME,
     AWS_REGION,
     AWS_SECRET_ACCESS_KEY,
-    CHAMBRES_SERVICE,
 )
 
 
@@ -42,7 +40,10 @@ def get_admissions_repository():
 
 # Retourne une instance du service gérant les patients et leurs documents
 def get_patients_service():
-    from app.services.admissions import get_admissions_repository, get_admissions_service
+    from app.services.admissions import (
+        get_admissions_repository,
+        get_admissions_service,
+    )
 
     return PatientsService(
         patients_repository=get_patients_repository(),
@@ -445,4 +446,3 @@ class PatientsService:
         return await self.documents_repository.delete_document_by_id(
             db=db, document_id=document_id
         )
-

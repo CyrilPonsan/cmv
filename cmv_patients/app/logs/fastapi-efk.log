@@ -190,3 +190,43 @@
     PUT /api/patients/{patient_id} FROM: None
 2026-04-07 09:32:39,439 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
 2026-04-07 09:32:42,794 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 97 FROM: unknown
+2026-04-07 11:49:04,529 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-07 11:49:34,314 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-07 11:49:41,148 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-07 11:50:07,335 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-07 11:50:10,884 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 45 FROM: unknown
+2026-04-07 11:51:12,145 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 45 FROM: unknown
+2026-04-07 11:51:13,927 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 45 FROM: unknown
+2026-04-07 11:51:30,241 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 45 FROM: unknown
+2026-04-07 11:51:31,077 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-07 11:51:33,568 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 37 FROM: unknown
+2026-04-07 11:51:53,577 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 37 FROM: unknown
+2026-04-07 11:52:04,513 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-07 11:52:06,738 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 37 FROM: unknown
+2026-04-07 11:52:10,286 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-07 11:52:14,247 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 102 FROM: unknown
+2026-04-07 11:52:30,649 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 102 FROM: unknown
+2026-04-07 11:52:38,398 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-07 11:52:44,680 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 102 FROM: unknown
+2026-04-07 11:52:48,241 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 102 FROM: unknown
+2026-04-07 11:53:54,032 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 102 FROM: unknown
+2026-04-07 11:54:05,141 - CMV_PATIENTS - WARNING - Not Found FROM: unknown
+2026-04-07 11:54:20,455 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 102 FROM: unknown
+2026-04-07 11:54:35,750 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 102 FROM: unknown
+2026-04-07 11:55:55,761 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 102 FROM: unknown
+2026-04-07 12:02:08,114 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 102 FROM: unknown
+2026-04-07 12:02:26,278 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-07 12:02:33,739 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-07 12:02:35,653 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 45 FROM: unknown
+2026-04-07 12:02:37,022 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-07 12:03:03,508 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 45 FROM: unknown
+2026-04-07 12:03:33,965 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 45 FROM: unknown
+2026-04-07 12:03:36,587 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-07 12:14:47,868 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-07 12:14:50,487 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 45 FROM: unknown
+2026-04-07 12:17:26,728 - CMV_PATIENTS - WARNING - patient_already_admitted FROM: unknown
+2026-04-07 12:17:28,430 - CMV_PATIENTS - WARNING - patient_already_admitted FROM: unknown
+2026-04-07 12:17:29,007 - CMV_PATIENTS - WARNING - patient_already_admitted FROM: unknown
+2026-04-07 12:17:29,223 - CMV_PATIENTS - WARNING - patient_already_admitted FROM: unknown
+2026-04-07 12:17:29,415 - CMV_PATIENTS - WARNING - patient_already_admitted FROM: unknown
+2026-04-07 12:17:29,612 - CMV_PATIENTS - WARNING - patient_already_admitted FROM: unknown

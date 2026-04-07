@@ -9,12 +9,15 @@
 import type Admission from '@/models/admission'
 import { Button } from 'primevue'
 import AdmissionItem from './AdmissionItem.vue'
+import { useI18n } from 'vue-i18n'
 
 // Props du composant
 const { latestAdmission, patientId } = defineProps<{
   latestAdmission: Admission | null // La dernière admission du patient, null si aucune
   patientId: number // L'ID du patient
 }>()
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -29,15 +32,17 @@ const { latestAdmission, patientId } = defineProps<{
         icon="pi pi-plus"
         label="Créer une admission"
         variant="outlined"
+        v-show="latestAdmission === null"
       />
-      <!-- Bouton pour accéder à l'historique des admissions (visible uniquement s'il existe au moins une admission) -->
       <Button
-        v-if="latestAdmission !== null"
-        as="router-link"
-        to="/admissions/history"
-        icon="pi pi-history"
-        label="Historique des admissions"
+        icon="pi pi-plus"
+        label="Créer une admission"
         variant="outlined"
+        iconOnly
+        :disabled="true"
+        v-show="latestAdmission !== null"
+        v-tooltip.bottom="'Une admission existe déjà pour ce patient.'"
+        aria-label="Bouton désactiver car une admission est déjà en cours pours ce patient."
       />
     </span>
   </div>

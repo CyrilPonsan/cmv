@@ -6,3 +6,73 @@
 2026-04-07 09:32:42,809 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/97 FROM: None
 2026-04-07 09:32:47,920 - CMV_GATEWAY - DEBUG - All connection attempts failed
 2026-04-07 09:32:49,350 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-07 11:48:54,657 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-07 11:49:02,373 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-04-07 11:49:02,392 - CMV_GATEWAY - WARNING - refresh_token_expired FROM: None
+2026-04-07 11:49:04,303 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-04-07 11:49:04,549 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-07 11:49:34,320 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-07 11:49:41,151 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-07 11:50:07,340 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-07 11:50:10,906 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/45 FROM: None
+2026-04-07 11:51:12,153 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/45 FROM: None
+2026-04-07 11:51:13,931 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/45 FROM: None
+2026-04-07 11:51:30,245 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/45 FROM: None
+2026-04-07 11:51:31,082 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-07 11:51:33,572 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/37 FROM: None
+2026-04-07 11:51:40,190 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-07 11:51:41,672 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-07 11:51:41,942 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-07 11:51:42,112 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-07 11:51:42,271 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-07 11:51:42,436 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-07 11:51:42,611 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-07 11:51:42,838 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-07 11:51:53,554 - CMV_GATEWAY - WARNING - home - 2 - POST - admissions FROM: None
+2026-04-07 11:51:53,580 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/37 FROM: None
+2026-04-07 11:52:04,517 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-07 11:52:06,742 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/37 FROM: None
+2026-04-07 11:52:10,290 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-07 11:52:14,250 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/102 FROM: None
+2026-04-07 11:52:30,624 - CMV_GATEWAY - WARNING - home - 2 - POST - admissions FROM: None
+2026-04-07 11:52:30,652 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/102 FROM: None
+2026-04-07 11:52:38,402 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-07 11:52:44,686 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/102 FROM: None
+2026-04-07 11:52:48,247 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/102 FROM: None
+2026-04-07 11:53:54,038 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/102 FROM: None
+2026-04-07 11:54:05,142 - CMV_GATEWAY - WARNING - home - 2 - GET - admissions/22 FROM: None
+2026-04-07 11:54:05,143 - CMV_GATEWAY - WARNING - Not Found FROM: None
+2026-04-07 11:54:20,459 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/102 FROM: None
+2026-04-07 11:54:35,754 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/102 FROM: None
+2026-04-07 11:55:55,776 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/102 FROM: None
+2026-04-07 12:02:08,124 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/102 FROM: None
+2026-04-07 12:02:26,281 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-07 12:02:33,742 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-07 12:02:35,658 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/45 FROM: None
+2026-04-07 12:02:37,026 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-07 12:03:03,520 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/45 FROM: None
+2026-04-07 12:03:33,970 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/45 FROM: None
+2026-04-07 12:03:36,590 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-07 12:14:47,893 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-07 12:14:50,495 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/45 FROM: None
+2026-04-07 12:14:58,310 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-07 12:15:06,010 - CMV_GATEWAY - WARNING - home - 2 - POST - admissions FROM: None
+2026-04-07 12:15:06,011 - CMV_GATEWAY - DEBUG - Expecting value: line 1 column 1 (char 0)
+2026-04-07 12:17:03,780 - CMV_GATEWAY - WARNING - home - 2 - POST - admissions FROM: None
+2026-04-07 12:17:03,782 - CMV_GATEWAY - DEBUG - Expecting value: line 1 column 1 (char 0)
+2026-04-07 12:17:04,993 - CMV_GATEWAY - WARNING - home - 2 - POST - admissions FROM: None
+2026-04-07 12:17:04,994 - CMV_GATEWAY - DEBUG - Expecting value: line 1 column 1 (char 0)
+2026-04-07 12:17:05,221 - CMV_GATEWAY - WARNING - home - 2 - POST - admissions FROM: None
+2026-04-07 12:17:05,221 - CMV_GATEWAY - DEBUG - Expecting value: line 1 column 1 (char 0)
+2026-04-07 12:17:26,729 - CMV_GATEWAY - WARNING - home - 2 - POST - admissions FROM: None
+2026-04-07 12:17:26,730 - CMV_GATEWAY - WARNING - patient_already_admitted FROM: None
+2026-04-07 12:17:28,430 - CMV_GATEWAY - WARNING - home - 2 - POST - admissions FROM: None
+2026-04-07 12:17:28,431 - CMV_GATEWAY - WARNING - patient_already_admitted FROM: None
+2026-04-07 12:17:29,007 - CMV_GATEWAY - WARNING - home - 2 - POST - admissions FROM: None
+2026-04-07 12:17:29,008 - CMV_GATEWAY - WARNING - patient_already_admitted FROM: None
+2026-04-07 12:17:29,224 - CMV_GATEWAY - WARNING - home - 2 - POST - admissions FROM: None
+2026-04-07 12:17:29,224 - CMV_GATEWAY - WARNING - patient_already_admitted FROM: None
+2026-04-07 12:17:29,415 - CMV_GATEWAY - WARNING - home - 2 - POST - admissions FROM: None
+2026-04-07 12:17:29,416 - CMV_GATEWAY - WARNING - patient_already_admitted FROM: None
+2026-04-07 12:17:29,612 - CMV_GATEWAY - WARNING - home - 2 - POST - admissions FROM: None
+2026-04-07 12:17:29,613 - CMV_GATEWAY - WARNING - patient_already_admitted FROM: None
