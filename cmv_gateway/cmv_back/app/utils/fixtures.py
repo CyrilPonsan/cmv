@@ -1,4 +1,4 @@
-from passlib.context import CryptContext
+import bcrypt
 from sqlalchemy.orm import Session
 from faker import Faker
 
@@ -233,8 +233,7 @@ for object in objects:
     usernames.append(username)
 
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-hashed_password = pwd_context.hash("Abcd@1234")
+hashed_password = bcrypt.hashpw("Abcd@1234".encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
 # création des utilisateurs
