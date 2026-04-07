@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_patients/app/services/patients.py
+# hypothesis_version: 6.151.10
+
+['AWS Configuration:', 'ContentType', 'application/pdf', 'document_not_found', 'patient_not_found', 's3']

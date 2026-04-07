@@ -666,7 +666,7 @@ async def test_delete_returns_admission_deleted_message(
     # Mock the DELETE to Service_Chambres to return 200
     httpx_mock.add_response(
         method="DELETE",
-        url=f"{CHAMBRES_SERVICE}/chambres/{admission.ref_reservation}/0/cancel",
+        url=f"{CHAMBRES_SERVICE}/chambres/{admission.ref_reservation}/cancel",
         status_code=200,
         json={"message": "reservation_cancelled"},
     )
@@ -775,11 +775,10 @@ async def test_prop_delete_with_reservation_cancellation(
     admission_id = admission.id_admission
 
     # 2. Mock the DELETE to Service_Chambres to return 200
-    #    The service uses: {CHAMBRES_SERVICE}/chambres/{ref_reservation}/0/cancel
-    #    (chambre_id is hardcoded to 0 since it's not stored in the Admission model)
+    #    The service uses: {CHAMBRES_SERVICE}/chambres/{ref_reservation}/cancel
     httpx_mock.add_response(
         method="DELETE",
-        url=f"{CHAMBRES_SERVICE}/chambres/{reservation_id}/0/cancel",
+        url=f"{CHAMBRES_SERVICE}/chambres/{reservation_id}/cancel",
         status_code=200,
         json={"message": "reservation_cancelled"},
     )
@@ -799,7 +798,7 @@ async def test_prop_delete_with_reservation_cancellation(
     new_requests = httpx_mock.get_requests()[requests_before:]
     delete_requests = [r for r in new_requests if r.method == "DELETE"]
     assert len(delete_requests) == 1
-    expected_url = f"{CHAMBRES_SERVICE}/chambres/{reservation_id}/0/cancel"
+    expected_url = f"{CHAMBRES_SERVICE}/chambres/{reservation_id}/cancel"
     assert str(delete_requests[0].url) == expected_url
 
     # 5. Verify the admission is deleted from the DB (query by id returns None)
@@ -917,7 +916,7 @@ async def test_prop_cancel_failure_preserves_admission(
     # 2. Mock the DELETE to Service_Chambres to return the generated error status_code
     httpx_mock.add_response(
         method="DELETE",
-        url=f"{CHAMBRES_SERVICE}/chambres/{reservation_id}/0/cancel",
+        url=f"{CHAMBRES_SERVICE}/chambres/{reservation_id}/cancel",
         status_code=status_code,
     )
 

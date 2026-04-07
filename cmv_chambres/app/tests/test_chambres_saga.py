@@ -358,7 +358,7 @@ async def test_cancel_success_returns_200(ac, reservation_in_db, db_session):
     chambre_id = chambre.id_chambre
 
     resp = await ac.delete(
-        f"/api/chambres/{reservation_id}/{chambre_id}/cancel",
+        f"/api/chambres/{reservation_id}/cancel",
     )
 
     assert resp.status_code == 200
@@ -377,41 +377,25 @@ async def test_cancel_success_returns_200(ac, reservation_in_db, db_session):
 
 
 @pytest.mark.asyncio
-async def test_cancel_chambre_not_found_returns_404(ac, reservation_in_db):
-    """Validates: Requirements 5.1 — chambre_id inexistant → 404 chambre_not_found."""
-    reservation = reservation_in_db["reservation"]
-
+async def test_cancel_nonexistent_reservation_returns_404(ac):
+    """Validates: Requirements 5.1 — reservation_id inexistant → 404 reservation_not_found."""
     resp = await ac.delete(
-        f"/api/chambres/{reservation.id_reservation}/99999/cancel",
-    )
-
-    assert resp.status_code == 404
-    assert resp.json()["detail"] == "chambre_not_found"
-
-
-@pytest.mark.asyncio
-async def test_cancel_reservation_not_found_returns_404(
-    ac, service_with_free_room, db_session
-):
-    """Validates: Requirements 6.1, 6.2 — reservation_id inexistant → 404 reservation_not_found, chambre libérée."""
-    chambre = service_with_free_room["chambre"]
-    chambre_id = chambre.id_chambre
-    # Set chambre to OCCUPEE so we can verify it gets freed
-    chambre.status = Status.OCCUPEE
-    db_session.commit()
-
-    resp = await ac.delete(
-        f"/api/chambres/99999/{chambre_id}/cancel",
+        "/api/chambres/99999/cancel",
     )
 
     assert resp.status_code == 404
     assert resp.json()["detail"] == "reservation_not_found"
 
-    # Verify the chambre is still freed to LIBRE despite the error
-    updated_chambre = db_session.query(Chambre).filter(
-        Chambre.id_chambre == chambre_id
-    ).first()
-    assert updated_chambre.status == Status.LIBRE
+
+@pytest.mark.asyncio
+async def test_cancel_reservation_not_found_returns_404(ac):
+    """Validates: Requirements 6.1, 6.2 — reservation_id inexistant → 404 reservation_not_found."""
+    resp = await ac.delete(
+        "/api/chambres/99999/cancel",
+    )
+
+    assert resp.status_code == 404
+    assert resp.json()["detail"] == "reservation_not_found"
 
 
 # ---------------------------------------------------------------------------
@@ -460,7 +444,7 @@ def test_prop_cancel_deletes_and_frees(db_session, data):
 
     # --- act: cancel the reservation ---
     result = loop.run_until_complete(
-        service.cancel_reservation(db_session, reservation_id, chambre_id)
+        service.cancel_reservation(db_session, reservation_id)
     )
 
     # --- assert 1: Reservation deleted from DB ---
@@ -487,16 +471,15 @@ def test_prop_cancel_deletes_and_frees(db_session, data):
 
 # Feature: chambres-saga-tests, Property 5: Chambre introuvable
 @given(
-    fake_chambre_id=nonexistent_chambre_ids,
     fake_reservation_id=nonexistent_reservation_ids,
 )
 @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
-def test_prop_cancel_nonexistent_chambre(db_session, fake_chambre_id, fake_reservation_id):
+def test_prop_cancel_nonexistent_reservation(db_session, fake_reservation_id):
     """**Validates: Requirements 5.1, 5.2**
 
-    Pour tout chambre_id ne correspondant à aucune Chambre en base,
+    Pour tout reservation_id ne correspondant à aucune Reservation en base,
     cancel_reservation doit :
-    - lever une HTTPException(404, "chambre_not_found")
+    - lever une HTTPException(404, "reservation_not_found")
     - ne supprimer aucune Reservation
     """
     service = ChambresService(PgChambresRepository())
@@ -508,11 +491,11 @@ def test_prop_cancel_nonexistent_chambre(db_session, fake_chambre_id, fake_reser
     # --- act: expect HTTPException 404 ---
     with pytest.raises(HTTPException) as exc_info:
         loop.run_until_complete(
-            service.cancel_reservation(db_session, fake_reservation_id, fake_chambre_id)
+            service.cancel_reservation(db_session, fake_reservation_id)
         )
 
     assert exc_info.value.status_code == 404
-    assert exc_info.value.detail == "chambre_not_found"
+    assert exc_info.value.detail == "reservation_not_found"
 
     # --- assert: no Reservation deleted ---
     reservations_after = db_session.query(Reservation).count()
@@ -529,48 +512,30 @@ def test_prop_cancel_nonexistent_chambre(db_session, fake_chambre_id, fake_reser
 def test_prop_cancel_nonexistent_reservation_frees_room(db_session, fake_reservation_id):
     """**Validates: Requirements 6.1, 6.2**
 
-    Pour tout chambre_id valide correspondant à une Chambre existante et tout
-    reservation_id ne correspondant à aucune Reservation, cancel_reservation doit :
-    - mettre à jour le statut de la Chambre à LIBRE
-    - puis lever une HTTPException(404, "reservation_not_found")
+    Pour tout reservation_id ne correspondant à aucune Reservation,
+    cancel_reservation doit :
+    - lever une HTTPException(404, "reservation_not_found")
+    - ne supprimer aucune Reservation
     """
     service = ChambresService(PgChambresRepository())
     loop = asyncio.get_event_loop()
 
-    # --- setup: service + chambre OCCUPEE ---
-    svc = Service(nom=f"Svc_{uuid.uuid4().hex[:8]}")
-    db_session.add(svc)
-    db_session.flush()
+    # Count reservations before
+    reservations_before = db_session.query(Reservation).count()
 
-    chambre = Chambre(
-        nom=f"CH_{uuid.uuid4().hex[:12]}",
-        status=Status.OCCUPEE,
-        dernier_nettoyage=datetime.now(),
-        service_id=svc.id_service,
-    )
-    db_session.add(chambre)
-    db_session.commit()
-
-    chambre_id = chambre.id_chambre
-
-    # --- act: cancel with nonexistent reservation_id but valid chambre_id ---
+    # --- act: cancel with nonexistent reservation_id ---
     with pytest.raises(HTTPException) as exc_info:
         loop.run_until_complete(
-            service.cancel_reservation(db_session, fake_reservation_id, chambre_id)
+            service.cancel_reservation(db_session, fake_reservation_id)
         )
 
     # --- assert 1: HTTPException 404 reservation_not_found ---
     assert exc_info.value.status_code == 404
     assert exc_info.value.detail == "reservation_not_found"
 
-    # --- assert 2: Chambre status updated to LIBRE despite the error ---
-    db_session.refresh(chambre)
-    assert chambre.status == Status.LIBRE
-
-    # --- cleanup ---
-    db_session.delete(chambre)
-    db_session.delete(svc)
-    db_session.commit()
+    # --- assert 2: no Reservation deleted ---
+    reservations_after = db_session.query(Reservation).count()
+    assert reservations_after == reservations_before
 
 
 # ---------------------------------------------------------------------------
@@ -622,7 +587,7 @@ def test_prop_reserve_then_cancel_roundtrip(db_session, data):
 
     # --- act 2: cancel ---
     loop.run_until_complete(
-        service.cancel_reservation(db_session, reservation_id, chambre_id)
+        service.cancel_reservation(db_session, reservation_id)
     )
 
     # --- assert 1: Chambre status back to LIBRE ---

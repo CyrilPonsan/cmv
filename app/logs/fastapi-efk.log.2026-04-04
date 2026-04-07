@@ -1,0 +1,11 @@
+2026-04-03 20:20:56,349 - AFFRANCHISSEMENT - WARNING - Not authenticated FROM: None
+2026-04-03 20:20:56,359 - AFFRANCHISSEMENT - WARNING - not_authorized FROM: None
+2026-04-03 20:20:56,362 - AFFRANCHISSEMENT - WARNING - not_authorized FROM: None
+2026-04-03 20:20:56,375 - AFFRANCHISSEMENT - WARNING - no_room_available FROM: None
+2026-04-03 20:20:56,378 - AFFRANCHISSEMENT - WARNING - no_room_available FROM: None
+2026-04-03 20:20:56,381 - AFFRANCHISSEMENT - WARNING - 1 validation error:
+  {'type': 'int_parsing', 'loc': ('path', 'service_id'), 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': 'abc'}
+
+  File "/Users/cyril/projets/cmv/cmv_chambres/app/routers/chambres.py", line 21, in get_available_room
+    GET /api/chambres/{service_id} FROM: None
+2026-04-03 20:20:56,392 - AFFRANCHISSEMENT - WARNING - chambre_not_found FROM: None

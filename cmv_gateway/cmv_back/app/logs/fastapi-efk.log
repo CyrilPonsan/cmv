@@ -1,23 +1,8 @@
-2026-04-05 12:38:42,104 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
-2026-04-05 12:58:02,477 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
-2026-04-05 12:58:10,868 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
-2026-04-05 12:58:10,937 - CMV_GATEWAY - WARNING - session_not_found FROM: None
-2026-04-05 12:58:13,208 - CMV_GATEWAY - WARNING - home connection  FROM: None
-2026-04-05 12:58:13,466 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
-2026-04-05 12:58:15,690 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
-2026-04-05 13:01:33,691 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/74 FROM: None
-2026-04-05 13:07:52,819 - CMV_GATEWAY - WARNING - home - 2 - GET - admissions/13 FROM: None
-2026-04-05 13:07:52,820 - CMV_GATEWAY - WARNING - Not Found FROM: None
-2026-04-05 13:07:54,498 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
-2026-04-05 15:50:17,587 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
-2026-04-05 15:50:17,601 - CMV_GATEWAY - WARNING - session_not_found FROM: None
-2026-04-05 16:09:58,621 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
-2026-04-05 16:09:58,696 - CMV_GATEWAY - WARNING - session_not_found FROM: None
-2026-04-05 16:31:35,340 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
-2026-04-05 16:31:35,449 - CMV_GATEWAY - WARNING - session_not_found FROM: None
-2026-04-05 16:40:39,152 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
-2026-04-05 16:40:39,239 - CMV_GATEWAY - WARNING - session_not_found FROM: None
-2026-04-05 16:43:25,188 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
-2026-04-05 16:43:25,230 - CMV_GATEWAY - WARNING - session_not_found FROM: None
-2026-04-05 16:58:58,292 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
-2026-04-05 16:58:58,319 - CMV_GATEWAY - WARNING - session_not_found FROM: None
+2026-04-07 09:31:02,324 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-07 09:32:37,446 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-04-07 09:32:37,454 - CMV_GATEWAY - WARNING - refresh_token_expired FROM: None
+2026-04-07 09:32:39,186 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-04-07 09:32:39,469 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-07 09:32:42,809 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/97 FROM: None
+2026-04-07 09:32:47,920 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-07 09:32:49,350 - CMV_GATEWAY - DEBUG - All connection attempts failed

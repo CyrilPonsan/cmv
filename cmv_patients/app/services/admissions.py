@@ -1,15 +1,23 @@
+import logging
+
 import httpx
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.repositories.admissions_crud import PgAdmissionsRepository
+from app.repositories.outbox_crud import PgOutboxRepository
 from app.schemas.patients import CreateAdmission
+from app.services.saga_engine import SagaEngine
 from app.sql.models import Admission
 from app.utils.config import CHAMBRES_SERVICE
 
 
 def get_admissions_repository():
     return PgAdmissionsRepository()
+
+
+def get_outbox_repository():
+    return PgOutboxRepository()
 
 
 def get_admissions_service():
@@ -52,9 +60,13 @@ class AdmissionService:
                     ambulatoire=data.ambulatoire,
                     entree_le=data.entree_le,
                     sortie_prevue_le=data.sortie_prevue_le,
-                    ref_reservation=reservation["reservation_id"] if reservation else None,
+                    ref_reservation=reservation["reservation_id"]
+                    if reservation
+                    else None,
                 )
-                admission = await self.admissions_repository.create_admission(db, admission)
+                admission = await self.admissions_repository.create_admission(
+                    db, admission
+                )
                 return admission
 
             except HTTPException:
@@ -71,7 +83,17 @@ class AdmissionService:
                     detail=str(e),
                 )
 
-    async def delete_admission(self, db: Session, admission_id: int, internal_payload: str, request):
+    async def delete_admission(
+        self, db: Session, admission_id: int, internal_payload: str, request
+    ):
+        admission = await self.admissions_repository.get_admission_by_id(
+            db, admission_id
+        )
+        if not admission:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="admission_not_found"
+            )
+
         client_ip = request.headers.get("X-Real-IP") or request.headers.get(
             "X-Forwarded-For", "unknown"
         )
@@ -81,41 +103,18 @@ class AdmissionService:
             "X-Forwarded-For": client_ip,
         }
 
-        admission = await self.admissions_repository.get_admission_by_id(db, admission_id)
-        if not admission:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="admission_not_found"
+        async with httpx.AsyncClient() as http_client:
+            saga_engine = SagaEngine(
+                admissions_repository=self.admissions_repository,
+                outbox_repository=get_outbox_repository(),
+                logger=logging.getLogger("saga_engine"),
+                http_client=http_client,
             )
-
-        async with httpx.AsyncClient() as client:
-            try:
-                # Etape 1 : Annuler la réservation si non ambulatoire
-                if not admission.ambulatoire and admission.ref_reservation:
-                    response = await client.delete(
-                        f"{CHAMBRES_SERVICE}/chambres/{admission.ref_reservation}/0/cancel",
-                        headers=headers,
-                    )
-                    if response.status_code not in (200, 404):
-                        raise HTTPException(
-                            status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="failed_to_cancel_reservation",
-                        )
-
-                # Etape 2 : Supprimer l'admission
-                await self.admissions_repository.delete_admission(db, admission_id)
-                db.commit()
-                return {"message": "admission_deleted"}
-
-            except HTTPException:
-                db.rollback()
-                raise
-
-            except Exception as e:
-                db.rollback()
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"delete_admission_failed: {str(e)}",
-                )
+            return await saga_engine.execute_delete_admission(
+                db=db,
+                admission=admission,
+                headers=headers,
+            )
 
     # --- Méthodes privées ---
 
@@ -138,7 +137,8 @@ class AdmissionService:
             )
         if response.status_code != 201:
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="reservation_failed"
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="reservation_failed",
             )
         return response.json()
 
