@@ -76,3 +76,8 @@
 2026-04-07 12:17:29,416 - CMV_GATEWAY - WARNING - patient_already_admitted FROM: None
 2026-04-07 12:17:29,612 - CMV_GATEWAY - WARNING - home - 2 - POST - admissions FROM: None
 2026-04-07 12:17:29,613 - CMV_GATEWAY - WARNING - patient_already_admitted FROM: None
+2026-04-07 12:24:47,383 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-07 12:24:49,247 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/45 FROM: None
+2026-04-07 12:24:56,530 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/45 FROM: None
+2026-04-07 12:25:00,950 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/45 FROM: None
+2026-04-07 12:25:52,904 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/45 FROM: None

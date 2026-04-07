@@ -230,3 +230,8 @@
 2026-04-07 12:17:29,223 - CMV_PATIENTS - WARNING - patient_already_admitted FROM: unknown
 2026-04-07 12:17:29,415 - CMV_PATIENTS - WARNING - patient_already_admitted FROM: unknown
 2026-04-07 12:17:29,612 - CMV_PATIENTS - WARNING - patient_already_admitted FROM: unknown
+2026-04-07 12:24:47,361 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-07 12:24:49,241 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 45 FROM: unknown
+2026-04-07 12:24:56,526 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 45 FROM: unknown
+2026-04-07 12:25:00,947 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 45 FROM: unknown
+2026-04-07 12:25:52,898 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 45 FROM: unknown
