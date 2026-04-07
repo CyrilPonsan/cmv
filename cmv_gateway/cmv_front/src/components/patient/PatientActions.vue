@@ -22,6 +22,14 @@ const { t } = useI18n()
   <span class="flex gap-x-4 items-center">
     <!-- Bouton d'édition du patient -->
     <Button
+      label="Retour"
+      as="router-link"
+      :to="`..`"
+      variant="text"
+      v-tooltip.bottom="'Retour à la liste des patients'"
+    />
+
+    <Button
       :label="t('patients.detail.button.edit')"
       icon="pi pi-pencil"
       variant="outlined"
