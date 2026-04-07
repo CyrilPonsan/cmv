@@ -1,36 +1,230 @@
-2026-02-17 14:55:41,873 - CMV_GATEWAY - WARNING - home connection  FROM: None
-2026-02-17 14:55:42,144 - CMV_GATEWAY - WARNING - Failed connection attempt using : foo.user@test.fr FROM: None
-2026-02-17 14:55:42,145 - CMV_GATEWAY - WARNING - credentials FROM: None
-2026-02-17 14:55:42,371 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-02-17 14:55:42,581 - CMV_GATEWAY - WARNING - 1 validation error:
-  {'type': 'value_error', 'loc': ('body', 'username'), 'msg': 'value is not a valid email address: An email address must have an @-sign.', 'input': 'test', 'ctx': {'reason': 'An email address must have an @-sign.'}}
+2026-04-07 00:45:43,621 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 00:45:43,635 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 00:45:43,641 - CMV_PATIENTS - WARNING - home - 1 - POST - upload - 999 FROM: None
+2026-04-07 00:45:43,642 - CMV_PATIENTS - WARNING - patient_not_found FROM: None
+2026-04-07 00:45:43,651 - CMV_PATIENTS - WARNING - 1 validation error:
+  {'type': 'enum', 'loc': ('body', 'document_type'), 'msg': "Input should be 'health_insurance_card_certificate', 'authorization_for_care', 'authorization_for_treatment', 'authorization_for_visit', 'authorization_for_overnight_stay', 'authorization_for_departure', 'authorization_for_disconnection' or 'miscellaneous'", 'input': 'INVALID_TYPE', 'ctx': {'expected': "'health_insurance_card_certificate', 'authorization_for_care', 'authorization_for_treatment', 'authorization_for_visit', 'authorization_for_overnight_stay', 'authorization_for_departure', 'authorization_for_disconnection' or 'miscellaneous'"}}
 
-  File "/Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/routers/auth.py", line 24, in login
-    POST /api/auth/login FROM: None
-2026-02-17 14:55:42,780 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-02-17 14:55:43,165 - CMV_GATEWAY - WARNING - home connection  FROM: None
-2026-02-17 14:55:43,182 - CMV_GATEWAY - WARNING - home - 1 - GET - foo FROM: None
-2026-02-17 14:55:43,579 - CMV_GATEWAY - WARNING - home connection  FROM: None
-2026-02-17 14:55:43,586 - CMV_GATEWAY - WARNING - home - 1 - GET - foo FROM: None
-2026-02-17 14:55:43,587 - CMV_GATEWAY - WARNING - Not Found FROM: None
-2026-02-17 14:55:43,592 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
-2026-02-17 14:55:44,004 - CMV_GATEWAY - WARNING - home connection  FROM: None
-2026-02-17 14:55:44,011 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
-2026-02-17 16:01:29,003 - CMV_GATEWAY - WARNING - home connection  FROM: None
-2026-02-17 16:01:29,201 - CMV_GATEWAY - WARNING - Failed connection attempt using : foo.user@test.fr FROM: None
-2026-02-17 16:01:29,201 - CMV_GATEWAY - WARNING - credentials FROM: None
-2026-02-17 16:01:29,397 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-02-17 16:01:29,596 - CMV_GATEWAY - WARNING - 1 validation error:
-  {'type': 'value_error', 'loc': ('body', 'username'), 'msg': 'value is not a valid email address: An email address must have an @-sign.', 'input': 'test', 'ctx': {'reason': 'An email address must have an @-sign.'}}
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/documents.py", line 28, in create_document
+    POST /api/documents/create/{patient_id} FROM: None
+2026-04-07 00:45:43,659 - CMV_PATIENTS - WARNING - home - 1 - POST - upload - 1 FROM: None
+2026-04-07 00:45:43,665 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 00:45:43,669 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 00:45:43,672 - CMV_PATIENTS - WARNING - home - 1 - DELETE - delete - 999 FROM: None
+2026-04-07 00:45:43,673 - CMV_PATIENTS - WARNING - document_not_found FROM: None
+2026-04-07 00:45:43,679 - CMV_PATIENTS - WARNING - home - 1 - DELETE - delete - 1 FROM: None
+2026-04-07 00:45:43,683 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 00:45:43,687 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 00:45:43,691 - CMV_PATIENTS - WARNING - home - 1 - GET - download - 999 FROM: None
+2026-04-07 00:45:43,692 - CMV_PATIENTS - WARNING - document_not_found FROM: None
+2026-04-07 00:45:43,698 - CMV_PATIENTS - WARNING - home - 1 - GET - download - 1 FROM: None
+2026-04-07 00:45:43,735 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 00:45:43,743 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 00:45:43,750 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 00:45:43,759 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 00:45:43,766 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 00:45:43,774 - CMV_PATIENTS - WARNING - 1 validation error:
+  {'type': 'int_parsing', 'loc': ('query', 'page'), 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': 'toto'}
 
-  File "/Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/routers/auth.py", line 24, in login
-    POST /api/auth/login FROM: None
-2026-02-17 16:01:29,792 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
-2026-02-17 16:01:30,182 - CMV_GATEWAY - WARNING - home connection  FROM: None
-2026-02-17 16:01:30,199 - CMV_GATEWAY - WARNING - home - 1 - GET - foo FROM: None
-2026-02-17 16:01:30,581 - CMV_GATEWAY - WARNING - home connection  FROM: None
-2026-02-17 16:01:30,588 - CMV_GATEWAY - WARNING - home - 1 - GET - foo FROM: None
-2026-02-17 16:01:30,588 - CMV_GATEWAY - WARNING - Not Found FROM: None
-2026-02-17 16:01:30,592 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
-2026-02-17 16:01:30,977 - CMV_GATEWAY - WARNING - home connection  FROM: None
-2026-02-17 16:01:30,984 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 65, in read_patients
+    GET /api/patients/ FROM: None
+2026-04-07 00:45:43,781 - CMV_PATIENTS - WARNING - 1 validation error:
+  {'type': 'int_parsing', 'loc': ('query', 'limit'), 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': 'toto'}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 65, in read_patients
+    GET /api/patients/ FROM: None
+2026-04-07 00:45:43,789 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 00:45:43,797 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 00:45:43,806 - CMV_PATIENTS - WARNING - home - 1 - GET - search patients FROM: None
+2026-04-07 00:45:43,815 - CMV_PATIENTS - WARNING - home - 1 - GET - search patients FROM: None
+2026-04-07 00:45:43,822 - CMV_PATIENTS - WARNING - home - 1 - GET - search patients FROM: None
+2026-04-07 00:45:43,828 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 00:45:43,834 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 00:45:43,839 - CMV_PATIENTS - WARNING - home - 1 - GET - read patient 999 FROM: None
+2026-04-07 00:45:43,840 - CMV_PATIENTS - WARNING - patient_not_found FROM: None
+2026-04-07 00:45:43,846 - CMV_PATIENTS - WARNING - home - 1 - GET - read patient 1 FROM: None
+2026-04-07 00:45:43,850 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 00:45:43,854 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 00:45:43,859 - CMV_PATIENTS - WARNING - 8 validation errors:
+  {'type': 'missing', 'loc': ('body', 'civilite'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'prenom'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'nom'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'date_de_naissance'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'adresse'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'code_postal'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'ville'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'telephone'), 'msg': 'Field required', 'input': {}}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 31, in create_patient
+    POST /api/patients/ FROM: None
+2026-04-07 00:45:43,864 - CMV_PATIENTS - WARNING - 9 validation errors:
+  {'type': 'enum', 'loc': ('body', 'civilite'), 'msg': "Input should be 'Monsieur', 'Madame' or 'Autre'", 'input': '<hacked />', 'ctx': {'expected': "'Monsieur', 'Madame' or 'Autre'"}}
+  {'type': 'value_error', 'loc': ('body', 'prenom'), 'msg': "Value error, La propriété 'prenom' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'prenom' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'nom'), 'msg': "Value error, La propriété 'nom' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'nom' contient des caractères non autorisés.")}}
+  {'type': 'datetime_from_date_parsing', 'loc': ('body', 'date_de_naissance'), 'msg': 'Input should be a valid datetime or date, invalid character in year', 'input': '<hacked />', 'ctx': {'error': 'invalid character in year'}}
+  {'type': 'value_error', 'loc': ('body', 'adresse'), 'msg': "Value error, La propriété 'adresse' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'adresse' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'code_postal'), 'msg': "Value error, La propriété 'code_postal' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'code_postal' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'ville'), 'msg': "Value error, La propriété 'ville' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'ville' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'telephone'), 'msg': "Value error, La propriété 'telephone' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'telephone' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'email'), 'msg': 'value is not a valid email address: An email address must have an @-sign.', 'input': '<hacked />', 'ctx': {'reason': 'An email address must have an @-sign.'}}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 31, in create_patient
+    POST /api/patients/ FROM: None
+2026-04-07 00:45:43,873 - CMV_PATIENTS - WARNING - home - 1 - POST - create patient FROM: None
+2026-04-07 00:45:43,882 - CMV_PATIENTS - WARNING - home - 1 - POST - create patient FROM: None
+2026-04-07 00:45:43,885 - CMV_PATIENTS - WARNING - home - 1 - POST - create patient FROM: None
+2026-04-07 00:45:43,886 - CMV_PATIENTS - WARNING - patient_already_exists FROM: None
+2026-04-07 00:45:43,890 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 00:45:43,894 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 00:45:43,901 - CMV_PATIENTS - WARNING - home - 1 - PUT - update patient 999 FROM: None
+2026-04-07 00:45:43,902 - CMV_PATIENTS - WARNING - patient_not_found FROM: None
+2026-04-07 00:45:43,907 - CMV_PATIENTS - WARNING - 9 validation errors:
+  {'type': 'enum', 'loc': ('body', 'civilite'), 'msg': "Input should be 'Monsieur', 'Madame' or 'Autre'", 'input': '<hacked />', 'ctx': {'expected': "'Monsieur', 'Madame' or 'Autre'"}}
+  {'type': 'value_error', 'loc': ('body', 'prenom'), 'msg': "Value error, La propriété 'prenom' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'prenom' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'nom'), 'msg': "Value error, La propriété 'nom' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'nom' contient des caractères non autorisés.")}}
+  {'type': 'datetime_from_date_parsing', 'loc': ('body', 'date_de_naissance'), 'msg': 'Input should be a valid datetime or date, invalid character in year', 'input': '<hacked />', 'ctx': {'error': 'invalid character in year'}}
+  {'type': 'value_error', 'loc': ('body', 'adresse'), 'msg': "Value error, La propriété 'adresse' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'adresse' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'code_postal'), 'msg': "Value error, La propriété 'code_postal' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'code_postal' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'ville'), 'msg': "Value error, La propriété 'ville' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'ville' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'telephone'), 'msg': "Value error, La propriété 'telephone' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'telephone' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'email'), 'msg': 'value is not a valid email address: An email address must have an @-sign.', 'input': '<hacked />', 'ctx': {'reason': 'An email address must have an @-sign.'}}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 168, in update_patient
+    PUT /api/patients/{patient_id} FROM: None
+2026-04-07 00:45:43,915 - CMV_PATIENTS - WARNING - 8 validation errors:
+  {'type': 'missing', 'loc': ('body', 'civilite'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'prenom'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'nom'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'date_de_naissance'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'adresse'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'code_postal'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'ville'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'telephone'), 'msg': 'Field required', 'input': {}}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 168, in update_patient
+    PUT /api/patients/{patient_id} FROM: None
+2026-04-07 09:01:01,129 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 09:01:01,135 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 09:01:01,140 - CMV_PATIENTS - WARNING - home - 1 - POST - upload - 999 FROM: None
+2026-04-07 09:01:01,140 - CMV_PATIENTS - WARNING - patient_not_found FROM: None
+2026-04-07 09:01:01,160 - CMV_PATIENTS - WARNING - 1 validation error:
+  {'type': 'enum', 'loc': ('body', 'document_type'), 'msg': "Input should be 'health_insurance_card_certificate', 'authorization_for_care', 'authorization_for_treatment', 'authorization_for_visit', 'authorization_for_overnight_stay', 'authorization_for_departure', 'authorization_for_disconnection' or 'miscellaneous'", 'input': 'INVALID_TYPE', 'ctx': {'expected': "'health_insurance_card_certificate', 'authorization_for_care', 'authorization_for_treatment', 'authorization_for_visit', 'authorization_for_overnight_stay', 'authorization_for_departure', 'authorization_for_disconnection' or 'miscellaneous'"}}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/documents.py", line 28, in create_document
+    POST /api/documents/create/{patient_id} FROM: None
+2026-04-07 09:01:01,172 - CMV_PATIENTS - WARNING - home - 1 - POST - upload - 1 FROM: None
+2026-04-07 09:01:01,177 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 09:01:01,182 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 09:01:01,186 - CMV_PATIENTS - WARNING - home - 1 - DELETE - delete - 999 FROM: None
+2026-04-07 09:01:01,186 - CMV_PATIENTS - WARNING - document_not_found FROM: None
+2026-04-07 09:01:01,192 - CMV_PATIENTS - WARNING - home - 1 - DELETE - delete - 1 FROM: None
+2026-04-07 09:01:01,196 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 09:01:01,199 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 09:01:01,203 - CMV_PATIENTS - WARNING - home - 1 - GET - download - 999 FROM: None
+2026-04-07 09:01:01,203 - CMV_PATIENTS - WARNING - document_not_found FROM: None
+2026-04-07 09:01:01,209 - CMV_PATIENTS - WARNING - home - 1 - GET - download - 1 FROM: None
+2026-04-07 09:01:01,243 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 09:01:01,248 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 09:01:01,254 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 09:01:01,261 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 09:01:01,267 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 09:01:01,273 - CMV_PATIENTS - WARNING - 1 validation error:
+  {'type': 'int_parsing', 'loc': ('query', 'page'), 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': 'toto'}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 65, in read_patients
+    GET /api/patients/ FROM: None
+2026-04-07 09:01:01,279 - CMV_PATIENTS - WARNING - 1 validation error:
+  {'type': 'int_parsing', 'loc': ('query', 'limit'), 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': 'toto'}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 65, in read_patients
+    GET /api/patients/ FROM: None
+2026-04-07 09:01:01,284 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 09:01:01,290 - CMV_PATIENTS - WARNING - home - 1 - GET - read patients FROM: None
+2026-04-07 09:01:01,296 - CMV_PATIENTS - WARNING - home - 1 - GET - search patients FROM: None
+2026-04-07 09:01:01,302 - CMV_PATIENTS - WARNING - home - 1 - GET - search patients FROM: None
+2026-04-07 09:01:01,308 - CMV_PATIENTS - WARNING - home - 1 - GET - search patients FROM: None
+2026-04-07 09:01:01,314 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 09:01:01,319 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 09:01:01,322 - CMV_PATIENTS - WARNING - home - 1 - GET - read patient 999 FROM: None
+2026-04-07 09:01:01,323 - CMV_PATIENTS - WARNING - patient_not_found FROM: None
+2026-04-07 09:01:01,327 - CMV_PATIENTS - WARNING - home - 1 - GET - read patient 1 FROM: None
+2026-04-07 09:01:01,331 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 09:01:01,333 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 09:01:01,337 - CMV_PATIENTS - WARNING - 8 validation errors:
+  {'type': 'missing', 'loc': ('body', 'civilite'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'prenom'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'nom'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'date_de_naissance'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'adresse'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'code_postal'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'ville'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'telephone'), 'msg': 'Field required', 'input': {}}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 31, in create_patient
+    POST /api/patients/ FROM: None
+2026-04-07 09:01:01,341 - CMV_PATIENTS - WARNING - 9 validation errors:
+  {'type': 'enum', 'loc': ('body', 'civilite'), 'msg': "Input should be 'Monsieur', 'Madame' or 'Autre'", 'input': '<hacked />', 'ctx': {'expected': "'Monsieur', 'Madame' or 'Autre'"}}
+  {'type': 'value_error', 'loc': ('body', 'prenom'), 'msg': "Value error, La propriété 'prenom' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'prenom' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'nom'), 'msg': "Value error, La propriété 'nom' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'nom' contient des caractères non autorisés.")}}
+  {'type': 'datetime_from_date_parsing', 'loc': ('body', 'date_de_naissance'), 'msg': 'Input should be a valid datetime or date, invalid character in year', 'input': '<hacked />', 'ctx': {'error': 'invalid character in year'}}
+  {'type': 'value_error', 'loc': ('body', 'adresse'), 'msg': "Value error, La propriété 'adresse' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'adresse' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'code_postal'), 'msg': "Value error, La propriété 'code_postal' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'code_postal' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'ville'), 'msg': "Value error, La propriété 'ville' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'ville' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'telephone'), 'msg': "Value error, La propriété 'telephone' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'telephone' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'email'), 'msg': 'value is not a valid email address: An email address must have an @-sign.', 'input': '<hacked />', 'ctx': {'reason': 'An email address must have an @-sign.'}}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 31, in create_patient
+    POST /api/patients/ FROM: None
+2026-04-07 09:01:01,348 - CMV_PATIENTS - WARNING - home - 1 - POST - create patient FROM: None
+2026-04-07 09:01:01,352 - CMV_PATIENTS - WARNING - home - 1 - POST - create patient FROM: None
+2026-04-07 09:01:01,355 - CMV_PATIENTS - WARNING - home - 1 - POST - create patient FROM: None
+2026-04-07 09:01:01,355 - CMV_PATIENTS - WARNING - patient_already_exists FROM: None
+2026-04-07 09:01:01,358 - CMV_PATIENTS - WARNING - Not authenticated FROM: None
+2026-04-07 09:01:01,361 - CMV_PATIENTS - WARNING - not_authorized FROM: None
+2026-04-07 09:01:01,367 - CMV_PATIENTS - WARNING - home - 1 - PUT - update patient 999 FROM: None
+2026-04-07 09:01:01,367 - CMV_PATIENTS - WARNING - patient_not_found FROM: None
+2026-04-07 09:01:01,371 - CMV_PATIENTS - WARNING - 9 validation errors:
+  {'type': 'enum', 'loc': ('body', 'civilite'), 'msg': "Input should be 'Monsieur', 'Madame' or 'Autre'", 'input': '<hacked />', 'ctx': {'expected': "'Monsieur', 'Madame' or 'Autre'"}}
+  {'type': 'value_error', 'loc': ('body', 'prenom'), 'msg': "Value error, La propriété 'prenom' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'prenom' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'nom'), 'msg': "Value error, La propriété 'nom' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'nom' contient des caractères non autorisés.")}}
+  {'type': 'datetime_from_date_parsing', 'loc': ('body', 'date_de_naissance'), 'msg': 'Input should be a valid datetime or date, invalid character in year', 'input': '<hacked />', 'ctx': {'error': 'invalid character in year'}}
+  {'type': 'value_error', 'loc': ('body', 'adresse'), 'msg': "Value error, La propriété 'adresse' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'adresse' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'code_postal'), 'msg': "Value error, La propriété 'code_postal' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'code_postal' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'ville'), 'msg': "Value error, La propriété 'ville' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'ville' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'telephone'), 'msg': "Value error, La propriété 'telephone' contient des caractères non autorisés.", 'input': '<hacked />', 'ctx': {'error': ValueError("La propriété 'telephone' contient des caractères non autorisés.")}}
+  {'type': 'value_error', 'loc': ('body', 'email'), 'msg': 'value is not a valid email address: An email address must have an @-sign.', 'input': '<hacked />', 'ctx': {'reason': 'An email address must have an @-sign.'}}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 168, in update_patient
+    PUT /api/patients/{patient_id} FROM: None
+2026-04-07 09:01:01,374 - CMV_PATIENTS - WARNING - 8 validation errors:
+  {'type': 'missing', 'loc': ('body', 'civilite'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'prenom'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'nom'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'date_de_naissance'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'adresse'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'code_postal'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'ville'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'telephone'), 'msg': 'Field required', 'input': {}}
+
+  File "/Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py", line 168, in update_patient
+    PUT /api/patients/{patient_id} FROM: None
+2026-04-07 09:23:05,897 - AFFRANCHISSEMENT - WARNING - no_room_available FROM: None
+2026-04-07 09:23:05,901 - AFFRANCHISSEMENT - WARNING - no_room_available FROM: None
+2026-04-07 09:23:06,447 - AFFRANCHISSEMENT - WARNING - reservation_not_found FROM: None
+2026-04-07 09:23:06,449 - AFFRANCHISSEMENT - WARNING - reservation_not_found FROM: None
+2026-04-07 09:23:07,410 - AFFRANCHISSEMENT - WARNING - 3 validation errors:
+  {'type': 'missing', 'loc': ('body', 'patient_id'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'entree_prevue'), 'msg': 'Field required', 'input': {}}
+  {'type': 'missing', 'loc': ('body', 'sortie_prevue'), 'msg': 'Field required', 'input': {}}
+
+  File "/Users/cyril/projets/cmv/cmv_chambres/app/routers/chambres.py", line 42, in reserver_chambre
+    POST /api/chambres/{service_id}/reserver FROM: None
+2026-04-07 09:23:07,413 - AFFRANCHISSEMENT - WARNING - 2 validation errors:
+  {'type': 'datetime_from_date_parsing', 'loc': ('body', 'entree_prevue'), 'msg': 'Input should be a valid datetime or date, invalid character in year', 'input': 'not-a-datetime', 'ctx': {'error': 'invalid character in year'}}
+  {'type': 'datetime_from_date_parsing', 'loc': ('body', 'sortie_prevue'), 'msg': 'Input should be a valid datetime or date, invalid character in year', 'input': 'also-not-a-datetime', 'ctx': {'error': 'invalid character in year'}}
+
+  File "/Users/cyril/projets/cmv/cmv_chambres/app/routers/chambres.py", line 42, in reserver_chambre
+    POST /api/chambres/{service_id}/reserver FROM: None
+2026-04-07 09:23:07,415 - AFFRANCHISSEMENT - WARNING - Not authenticated FROM: None
+2026-04-07 09:23:07,418 - AFFRANCHISSEMENT - WARNING - not_authorized FROM: None
+2026-04-07 09:23:07,424 - AFFRANCHISSEMENT - WARNING - no_room_available FROM: None

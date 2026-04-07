@@ -35,7 +35,10 @@ const statusColor = computed(() => {
 
 // Fonction de navigation vers les détails du patient
 const goToPatientDetails = () => {
-  router.push(`/patient/${chambre.reservations[0].patient.ref_patient}`)
+  router.push({
+    name: 'admissions-update',
+    params: { admissionId: chambre.reservations[0].patient.patient_id }
+  })
 }
 </script>
 
@@ -55,11 +58,11 @@ const goToPatientDetails = () => {
       <div class="flex flex-col mt-4">
         <!-- Affichage de l'occupant si la chambre est occupée -->
         <span class="capitalize" v-if="chambre.status === 'occupée'">
-          {{ t('components.chambre.occupant') }}
+          {{ t('components.chambre.occupant') ?? t('app.not_available')}}
           {{
-            chambre.reservations && chambre.reservations.length > 0
-              ? chambre.reservations[0].patient.full_name
-              : ''
+            chambre.reservations && chambre.reservations.length > 0 && chambre.reservations[0].patient
+              ? chambre.reservations[0].patient.full_name 
+              : t("app.not_available")
           }}</span
         >
         <!-- Affichage de la date de sortie prévue (sauf pour les nettoyeurs) -->

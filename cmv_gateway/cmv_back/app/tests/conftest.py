@@ -104,6 +104,18 @@ def user(db_session):
     return user
 
 
+@pytest.fixture(scope="function")
+def populated_db(db_session):
+    """
+    Peuple la base de données de test avec les fixtures complètes.
+    À utiliser en argument des tests nécessitant la base de données entièrement populée.
+    """
+    from app.utils.fixtures import create_fixtures
+
+    create_fixtures(db_session)
+    return
+
+
 @pytest.fixture
 async def auth_cookie(ac, user):
     """

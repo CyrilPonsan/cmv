@@ -2,13 +2,6 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_fixtures(ac):
-    response = await ac.get("/fixtures")
-    assert response.status_code == 200
-    assert response.json() == {"message": "done"}
-
-
-@pytest.mark.asyncio
 async def test_login(ac, user):
     print(f"USER : {user.prenom}")
     response = await ac.post(

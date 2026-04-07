@@ -9,6 +9,8 @@ volumes:
     driver: local
   db_chambres:
     driver: local
+  db_ml:
+    driver: local
   redis:
     driver: local
 
@@ -17,54 +19,69 @@ services:
     image: valkey/valkey:latest
     restart: always
     container_name: redis-server
-    networks:
-      - cmv
     ports:
       - "6379:6379"
+    networks:
+      - cmv
     volumes:
       - redis:/data
 
   db_gateway:
-    image: postgres:latest
+    image: postgres:17
     restart: always
     container_name: db_gateway
+    ports:
+      - "6001:5432"
     volumes:
       - db_gateway:/var/lib/postgresql/data
     networks:
       - cmv
-    ports:
-      - "6001:5432"
     environment:
       POSTGRES_USER: ${GATEWAY_POSTGRES_USER}
       POSTGRES_PASSWORD: ${GATEWAY_POSTGRES_PASSWORD}
       POSTGRES_DB: ${GATEWAY_POSTGRES_DB}
 
   db_patients:
-    image: postgres:latest
+    image: postgres:17
     restart: always
-    container_name: db_patients
+    container_name: db_patients  
+    ports:
+      - "6002:5432"
     volumes:
       - db_patients:/var/lib/postgresql/data
     networks:
       - cmv
-    ports:
-      - "6002:5432"
     environment:
       POSTGRES_USER: ${PATIENTS_POSTGRES_USER}
       POSTGRES_PASSWORD: ${PATIENTS_POSTGRES_PASSWORD}
       POSTGRES_DB: ${PATIENTS_POSTGRES_DB}
 
   db_chambres:
-    image: postgres:latest
+    image: postgres:17
     restart: always
     container_name: db_chambres
+    ports:
+      - "6003:5432"
     volumes:
       - db_chambres:/var/lib/postgresql/data
     networks:
       - cmv
-    ports:
-      - "6003:5432"
     environment:
       POSTGRES_USER: ${CHAMBRES_POSTGRES_USER}
       POSTGRES_PASSWORD: ${CHAMBRES_POSTGRES_PASSWORD}
       POSTGRES_DB: ${CHAMBRES_POSTGRES_DB}
+
+  db_ml:
+    image: postgres:17
+    restart: always
+    container_name: db_ml 
+    ports:
+      - "6004:5432"
+    volumes:
+      - db_ml:/var/lib/postgresql/data
+    networks:
+      - cmv
+    environment:
+      POSTGRES_USER: ${ML_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${ML_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${ML_POSTGRES_DB}

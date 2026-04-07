@@ -1,8 +1,11 @@
 # Import des modules nécessaires
+import logging
 from typing import Annotated
 
 from fastapi import APIRouter, Body, Depends, Request, Response
+from fastapi_limiter.depends import RateLimiter
 from passlib.context import CryptContext
+from redis.exceptions import RedisError
 from sqlalchemy.orm import Session
 
 # Import des dépendances et schémas
@@ -10,6 +13,9 @@ from app.dependancies.db_session import get_db
 from app.schemas.schemas import Message, SuccessWithMessage
 from app.schemas.user import Credentials
 from app.services.auth import get_auth_service
+from app.utils.rate_limiter import custom_callback, custom_identifier
+
+logger = logging.getLogger("CMV_GATEWAY")
 
 # Configuration du contexte de hachage des mots de passe
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -21,7 +27,34 @@ router = APIRouter(
 )
 
 
-@router.post("/login", response_model=SuccessWithMessage)
+async def login_rate_limit(request: Request, response: Response):
+    """Dépendance de rate limiting strict pour le login.
+
+    Applique la limite de 5 req/60s si le limiter est initialisé.
+    En mode dégradé (Valkey indisponible), laisse passer la requête.
+    """
+    from app.utils.rate_limiter import login_limiter
+
+    if login_limiter is not None:
+        checker = RateLimiter(
+            limiter=login_limiter,
+            identifier=custom_identifier,
+            callback=custom_callback,
+        )
+        try:
+            await checker(request, response)
+        except (RedisError, ConnectionError, TimeoutError, OSError) as e:
+            logger.warning(
+                "Rate limiting login temporairement désactivé (Valkey indisponible): %s",
+                e,
+            )
+
+
+@router.post(
+    "/login",
+    response_model=SuccessWithMessage,
+    dependencies=[Depends(login_rate_limit)],
+)
 async def login(
     request: Request,  # Requête HTTP entrante
     response: Response,  # Réponse HTTP à renvoyer
@@ -43,7 +76,7 @@ async def login(
         password=credentials.password,
     )
 
-    return {"success": True, "message": "all good bro!"}
+    return {"success": True, "message": "connected"}
 
 
 @router.post("/logout")

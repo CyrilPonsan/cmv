@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_patients/app/dependancies/auth.py
+# hypothesis_version: 6.151.10
+
+['Bearer', 'WWW-Authenticate', 'api_gateway', 'api_patients', 'auto', 'bcrypt', 'exp', 'not_authorized', 'role', 'source', 'token', 'user_id']

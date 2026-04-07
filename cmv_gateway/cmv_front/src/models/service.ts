@@ -6,8 +6,11 @@
 
 import type Chambre from './chambre'
 
-export default interface Service {
+export interface ServiceListItem {
   id_service: number
   nom: string
+}
+
+export default interface Service extends ServiceListItem {
   chambres: Chambre[]
 }

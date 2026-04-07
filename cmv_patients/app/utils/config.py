@@ -1,24 +1,90 @@
-from dotenv import load_dotenv
-import os
+"""Configuration du microservice Patients avec validation Pydantic."""
 
-# Charge les variables d'environnement depuis le fichier .env
-load_dotenv()
+from typing import Literal
 
-# URL de connexion à la base de données des patients
-DATABASE_URL = os.getenv("PATIENTS_DATABASE_URL")
-# Clé secrète pour la génération des tokens JWT
-SECRET_KEY = os.getenv("SECRET_KEY")
-# Algorithme utilisé pour la génération des tokens JWT
-ALGORITHM = os.getenv("ALGORITHM")
-# Environnement d'exécution (development, production, etc.)
-ENVIRONMENT = os.getenv("ENVIRONMENT")
-# Nom du bucket AWS S3 pour le stockage des documents
-AWS_BUCKET_NAME = os.getenv("AWS_BUCKET_NAME")
-# Identifiant d'accès au compte AWS
-AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
-# Clé secrète d'accès au compte AWS
-AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-# Région AWS où se trouve le bucket S3
-AWS_REGION = os.getenv("AWS_REGION")
-# URL du service de gestion des chambres
-CHAMBRES_SERVICE = os.getenv("CHAMBRES_SERVICE")
+from pydantic import field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Ensemble des valeurs de SECRET_KEY connues comme faibles
+WEAK_SECRETS = {"cle_tres_secrete", "secret", "changez-moi", "password", "123456"}
+
+
+class PatientsSettings(BaseSettings):
+    """Paramètres de configuration du microservice Patients.
+
+    Charge les variables depuis les variables d'environnement système
+    (priorité) puis depuis le fichier .env.
+    """
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=True,
+        extra="ignore",
+    )
+
+    # Base de données — obligatoire
+    PATIENTS_DATABASE_URL: str
+
+    # JWT — SECRET_KEY obligatoire, ALGORITHM avec défaut
+    SECRET_KEY: str
+    CHAMBRES_SECRET_KEY: str
+    ALGORITHM: str = "HS256"
+
+    # Environnement
+    ENVIRONMENT: Literal["dev", "staging", "production", "test"] = "dev"
+
+    # AWS — tous obligatoires
+    AWS_BUCKET_NAME: str
+    AWS_ACCESS_KEY_ID: str
+    AWS_SECRET_ACCESS_KEY: str
+    AWS_REGION: str
+
+    # Service chambres — obligatoire
+    CHAMBRES_SERVICE: str
+
+    @field_validator("PATIENTS_DATABASE_URL")
+    @classmethod
+    def validate_db_url(cls, v: str) -> str:
+        if v == "sqlite:///:memory:":
+            return v
+        if not v.startswith(("postgresql://", "postgresql+asyncpg://")):
+            raise ValueError(
+                "PATIENTS_DATABASE_URL doit être une URL PostgreSQL valide"
+            )
+        return v
+
+    @field_validator("CHAMBRES_SERVICE")
+    @classmethod
+    def validate_service_urls(cls, v: str) -> str:
+        if not v.startswith(("http://", "https://")):
+            raise ValueError("L'URL de service doit commencer par http:// ou https://")
+        return v
+
+    def model_post_init(self, __context) -> None:
+        if self.ENVIRONMENT == "production":
+            self.check_key(self.SECRET_KEY)
+            self.check_key(self.CHAMBRES_SECRET_KEY)
+
+    def check_key(self, key: str) -> bool:
+        if len(key) < 32:
+            raise ValueError("KEY doit avoir au moins 32 caractères en production")
+        if key in WEAK_SECRETS:
+            raise ValueError("KEY utilise une valeur faible connue")
+        return True
+
+
+# Singleton — instancié une seule fois au démarrage
+settings = PatientsSettings()
+
+# Aliases pour la compatibilité avec le code existant
+DATABASE_URL = settings.PATIENTS_DATABASE_URL
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+ENVIRONMENT = settings.ENVIRONMENT
+AWS_BUCKET_NAME = settings.AWS_BUCKET_NAME
+AWS_ACCESS_KEY_ID = settings.AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY = settings.AWS_SECRET_ACCESS_KEY
+AWS_REGION = settings.AWS_REGION
+CHAMBRES_SERVICE = settings.CHAMBRES_SERVICE
+CHAMBRES_SECRET_KEY = settings.CHAMBRES_SECRET_KEY

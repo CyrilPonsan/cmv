@@ -12,10 +12,10 @@ from datetime import timedelta
 
 # Import des modules FastAPI
 from fastapi import HTTPException, Request, Response, status
+from jose import jwt
 
 # Import des modules SQLAlchemy et JWT
 from sqlalchemy.orm import Session
-from jose import jwt
 
 # Import des dépendances internes pour l'authentification
 from app.dependancies.auth import (
@@ -33,9 +33,10 @@ from app.schemas.user import User
 # Import des configurations
 from app.utils.config import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
+    ALGORITHM,
+    ENVIRONMENT,
     REFRESH_TOKEN_EXPIRE_MINUTES,
     SECRET_KEY,
-    ALGORITHM,
 )
 
 # Import du logger personnalisé
@@ -76,7 +77,7 @@ class AuthService:
         self,
         user_id: str,
         response: Response,
-    ) -> dict:
+    ) -> tuple:
         """
         Crée une nouvelle session et génère les tokens d'accès et de rafraîchissement
 
@@ -117,7 +118,7 @@ class AuthService:
                 key=token_type,
                 value=token,
                 httponly=True,  # Protection XSS
-                secure=True,  # Uniquement en HTTPS
+                secure=True if ENVIRONMENT == "prod" else False,  # Uniquement en HTTPS
                 samesite="Lax",  # Protection CSRF
             )
 

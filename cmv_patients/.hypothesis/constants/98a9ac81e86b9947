@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_patients/app/routers/documents.py
+# hypothesis_version: 6.151.10
+
+[b'%PDF', 400, '.pdf', '/create/{patient_id}', '/documents', 'Content-Disposition', 'application/pdf', 'document_created', 'documents', 'message', 'not_pdf', 'not_pdf_extension', 'not_valid_pdf', 'success', 'wb']

@@ -1,14 +1,15 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Body
-from sqlalchemy.orm import Session
-
+from app.dependancies.auth import check_authorization
 from app.dependancies.db_session import get_db
-from app.schemas.reservation import CreateReservation
-from app.services.chambres import get_chambres_service
-from app.schemas.services import ChambreAvailable
+from app.schemas.reservation import CreateReservation, ReservationResponse
 from app.schemas.schemas import SuccessWithMessage
+from app.schemas.services import ChambreAvailable
+from app.schemas.user import InternalPayload
+from app.services.chambres import get_chambres_service
 from app.sql.models import Status
+from fastapi import APIRouter, Body, Depends
+from sqlalchemy.orm import Session
 
 # Création du routeur pour les endpoints liés aux chambres
 router = APIRouter(
@@ -20,6 +21,7 @@ router = APIRouter(
 @router.get("/{service_id}", response_model=ChambreAvailable)
 async def get_available_room(
     service_id: int,
+    payload: Annotated[InternalPayload, Depends(check_authorization)],
     service_chambre=Depends(get_chambres_service),
     db: Session = Depends(get_db),
 ):
@@ -37,10 +39,13 @@ async def get_available_room(
     return await service_chambre.get_available_room(db=db, service_id=service_id)
 
 
-@router.post("/{chambre_id}/reserver", status_code=201)
-async def rerserver_chambre(
-    chambre_id: int,
+@router.post(
+    "/{service_id}/reserver", status_code=201, response_model=ReservationResponse
+)
+async def reserver_chambre(
+    service_id: int,
     data: Annotated[CreateReservation, Body()],
+    payload: Annotated[InternalPayload, Depends(check_authorization)],
     service_chambre=Depends(get_chambres_service),
     db: Session = Depends(get_db),
 ):
@@ -57,27 +62,32 @@ async def rerserver_chambre(
         ReservationResponse: Les détails de la réservation créée
     """
     return await service_chambre.post_reservation(
-        db=db, chambre_id=chambre_id, reservation_data=data
+        db=db, service_id=service_id, reservation_data=data
     )
 
 
 @router.put("/{chambre_id}", response_model=SuccessWithMessage)
 async def update_chambre_status(
     chambre_id: int,
+    # payload: Annotated[InternalPayload, Depends(check_authorization)],
     service_chambre=Depends(get_chambres_service),
     db: Session = Depends(get_db),
 ):
-    await service_chambre.update_chambre_status(db, chambre_id, Status.LIBRE)
-    return {"success": True, "message": "Chambre mise à jour"}
+    chambre = await service_chambre.update_chambre_status(db, chambre_id, Status.LIBRE)
+    return {
+        "success": True,
+        "message": "Chambre mise à jour",
+        "service_id": chambre.service_id,
+    }
 
 
 @router.delete(
-    "/{reservation_id}/{chambre_id}/cancel",
+    "/{reservation_id}/cancel",
     status_code=200,
     response_model=SuccessWithMessage,
 )
 async def cancel_reservation(
-    chambre_id: int,
+    # payload: Annotated[InternalPayload, Depends(check_authorization)],
     reservation_id: int | None = None,
     service_chambre=Depends(get_chambres_service),
     db: Session = Depends(get_db),
@@ -99,5 +109,4 @@ async def cancel_reservation(
     return await service_chambre.cancel_reservation(
         db=db,
         reservation_id=reservation_id,
-        chambre_id=chambre_id,
     )

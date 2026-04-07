@@ -1,10 +1,10 @@
-from datetime import datetime
 import re
+from datetime import datetime
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
-from app.sql.models import Civilite, DocumentType
 from app.schemas.schemas import SuccessWithMessage
+from app.sql.models import Civilite, DocumentType
 
 from .regular_expression import generic_pattern
 
@@ -46,6 +46,8 @@ class Patient(BaseModel):
 
 # Modèle utilisé pour l'affichage de la liste des patients dans un tableau
 class PatientListItem(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     # Identifiant unique du patient
     id_patient: int
     # Civilité du patient (M., Mme, etc.)
@@ -74,9 +76,6 @@ class PatientListItem(BaseModel):
                 f"La propriété '{field.field_name}' contient des caractères non autorisés."
             )
         return value
-
-    class Config:
-        from_attributes = True
 
 
 # Modèle utilisé pour retourner une liste de patients avec le nombre total de patients
@@ -108,6 +107,11 @@ class PatientsParams(BaseModel):
         return value
 
 
+# Modèle Pydantic pour la réponse d'une réservation
+class ReservationResponse(BaseModel):
+    reservation_id: int  # Identifiant de la réservation
+
+
 # Modèle utilisé pour les paramètres de recherche
 class SearchPatientsParams(PatientsParams):
     # Terme de recherche
@@ -125,6 +129,8 @@ class SearchPatientsParams(PatientsParams):
 
 # Modèle utilisé pour retourner un document dans la liste des documents d'un patient
 class DocumentsListItem(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     # Identifiant unique du document
     id_document: int
     # Nom du fichier
@@ -133,9 +139,6 @@ class DocumentsListItem(BaseModel):
     type_document: DocumentType
     # Date de création du document
     created_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 # Modèle utilisé pour la création d'un nouveau patient
@@ -171,14 +174,13 @@ class CreatePatient(BaseModel):
 
 # Modèle utilisé pour retourner les informations détaillées d'un patient
 class DetailPatient(CreatePatient):
+    model_config = ConfigDict(from_attributes=True)
+
     # Identifiant unique du patient
     id_patient: int
     # Liste des documents associés au patient
     documents: list[DocumentsListItem]
     latest_admission: Admission | None = Field(default=None)
-
-    class Config:
-        from_attributes = True
 
 
 # Modèle utilisé pour la création/modification d'un document
@@ -195,3 +197,11 @@ class PostPatientResponse(SuccessWithMessage):
 class PutPatientResponse(SuccessWithMessage):
     # Identifiant unique du patient
     id_patient: int
+
+
+class PatientsNames(BaseModel):
+    patient_id: int
+
+
+class PatientsNamesResponse(PatientsNames):
+    full_name: str

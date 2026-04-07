@@ -1,39 +1,58 @@
 # Import des gestionnaires d'exceptions FastAPI
+from contextlib import asynccontextmanager
+from pathlib import Path
+
+from fastapi import Depends, FastAPI
 from fastapi.exception_handlers import (
     http_exception_handler,
     request_validation_exception_handler,
 )
-from pathlib import Path
-from fastapi import FastAPI, Depends
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.exceptions import RequestValidationError
-from starlette.exceptions import HTTPException as StarletteHTTPException
 from sqlalchemy.orm import Session
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
-
-from .dependancies.db_session import get_db
 from app.middleware.exceptions import ExceptionHandlerMiddleware
 from app.middleware.security_headers import SecurityHeadersMiddleware
+
+from .dependancies.db_session import get_db
 from .routers import api
-from .utils.logging_setup import LoggerSetup
-from .utils.database import engine
 from .sql import models
 from .utils.config import ENVIRONMENT, VALKEY_HOST
+from .utils.database import engine
+from .utils.logging_setup import LoggerSetup
+from .utils.rate_limiter import close_rate_limiter, init_rate_limiter
+from app.utils.config import ENVIRONMENT
 
-# Création des tables dans la base de données
-models.Base.metadata.create_all(bind=engine)
+
+# Les migrations sont gérées par alembic
+if ENVIRONMENT != "production":
+    models.Base.metadata.create_all(bind=engine)
 
 # Initialisation du logger
 logger = LoggerSetup()
 
-print("HELLO WORLD! Starting the application...")
+
 print(f"VALKEY_HOST: {VALKEY_HOST}")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Gestion du cycle de vie de l'application.
+
+    Initialise le rate limiter au démarrage et le ferme à l'arrêt.
+    """
+    await init_rate_limiter()
+    yield
+    await close_rate_limiter()
+
 
 # Création de l'application FastAPI
 app = FastAPI(
     root_path="",  # Set to your proxy path if needed, e.g., "/api"
+    lifespan=lifespan,
 )
 
 # Inclusion des routes de l'API
@@ -42,8 +61,8 @@ app.include_router(api.router)
 # Configuration CORS - Liste des origines autorisées
 origins = [
     "http://localhost:5173",
-    "https://firizgoude.org",  # Add your domain
-    "http://firizgoude.org",  # Add HTTP version too
+    "https://clinique-montvert.fr",  # Add your domain
+    "http://clinique-montvert.fr",  # Add HTTP version too
 ]
 
 # Ajout du middleware CORS avec les paramètres de sécurité
@@ -100,18 +119,3 @@ try:
 except RuntimeError:
     # Message d'erreur si le répertoire de build n'existe pas
     print("No build directory found. Running in development mode.")
-
-
-@app.get("/fixtures")
-def fixtures(db: Session = Depends(get_db)) -> dict:
-    """
-    Endpoint pour exécuter les fixtures de test.
-    Utile pour initialiser la base de données avec des données de test.
-    """
-    if ENVIRONMENT != "test":
-        return {"message": "Fixtures can only be run in test environment."}
-
-    from app.utils.fixtures import create_fixtures
-
-    create_fixtures(db)
-    return {"message": "done"}

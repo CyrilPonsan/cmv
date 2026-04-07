@@ -73,8 +73,8 @@ describe('SidebarComponent', () => {
   // Vérifie que le logo est présent avec les bons attributs
   it('displays logo correctly', () => {
     const logo = wrapper.find('img')
-    expect(logo.attributes('src')).toContain('logo-cmv.webp')
-    expect(logo.attributes('alt')).toBe('logo')
+    expect(logo.attributes('src')).toContain('logo.png')
+    expect(logo.attributes('alt')).toBe('logo de la clinique')
   })
 
   // Vérifie que SidebarAccueil est masqué par défaut (role non défini)
@@ -98,7 +98,7 @@ describe('SidebarComponent', () => {
   it('has correct CSS classes', () => {
     const main = wrapper.find('main')
     expect(main.classes()).toContain('w-64')
-    expect(main.classes()).toContain('sticky')
+    expect(main.classes()).toContain('fixed')
     expect(main.classes()).toContain('bg-surface-900')
   })
 })

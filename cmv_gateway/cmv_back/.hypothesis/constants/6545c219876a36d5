@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/services/ml.py
+# hypothesis_version: 6.151.9
+
+[200, 201, 'Authorization', 'Content-Type', 'X-Forwarded-For', 'X-Real-IP', 'application/json', 'detail', 'server_issue', 'unknown']

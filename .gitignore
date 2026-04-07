@@ -1,4 +1,5 @@
-.env
+# Exclure uniquement le .env racine (les .env des microservices sont des configs de test)
+/.env
 tmp/
 .DS_Store
 cmv_gateway/cmv_back/dist
@@ -12,3 +13,5 @@ cmv_gateway/cmv_front/tmp/
 cmv_patients/tmp/
 cmv_gateway/cmv_back/app/logs/**
 /cmv_chambres/app/logs/**
+materiel/LengthOfStay.csv
+mlflow/

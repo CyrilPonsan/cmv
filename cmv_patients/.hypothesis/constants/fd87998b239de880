@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_patients/app/utils/config.py
+# hypothesis_version: 6.151.10
+
+['.env', '123456', 'CHAMBRES_SERVICE', 'HS256', 'changez-moi', 'cle_tres_secrete', 'dev', 'http://', 'https://', 'ignore', 'password', 'postgresql://', 'production', 'secret', 'sqlite:///:memory:', 'staging', 'test', 'utf-8']

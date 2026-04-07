@@ -11,10 +11,12 @@ from app.routers import api
 from app.sql import models
 from app.utils.database import engine
 from app.utils.logging_setup import LoggerSetup
+from app.utils.config import ENVIRONMENT
 
 
-# Initialisation de la bdd
-models.Base.metadata.create_all(bind=engine)
+# Les migrations sont gérées par alembic
+if ENVIRONMENT != "production":
+    models.Base.metadata.create_all(bind=engine)
 
 # Mise en place des logs
 logger = LoggerSetup()

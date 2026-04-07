@@ -1,39 +1,17 @@
 # Import des modules nécessaires
-from abc import ABC, abstractmethod
+
 from datetime import datetime
+
 from sqlalchemy import and_
-from sqlalchemy.orm import joinedload, Session
+from sqlalchemy.orm import Session, joinedload
+
 from app.sql.models import Chambre, Reservation, Service
-
-
-# Interface abstraite définissant les opérations CRUD pour les services
-class ServiceCrud(ABC):
-    @abstractmethod
-    async def read_all_services(self, db: Session) -> list[Service]:
-        """
-        Méthode abstraite pour récupérer tous les services
-        Args:
-            db (Session): Session de base de données
-        Returns:
-            list[Service]: Liste de tous les services
-        """
-        pass
-
-    @abstractmethod
-    async def get_simple_services_list(self, db: Session) -> list[Service]:
-        """
-        Méthode abstraite pour récupérer une liste épurée de tous les services
-        Args:
-            db (Session): Session de base de données
-        Returns:
-            list[Service]: Liste de tous les services
-        """
-        pass
+from app.schemas.services import ServicesListItem
 
 
 # Implémentation concrète pour PostgreSQL
-class PgServiceRepository(ServiceCrud):
-    async def read_all_services(self, db: Session) -> list[Service]:
+class PgServiceRepository:
+    async def read_all_services(self, db: Session):
         """
         Récupère tous les services depuis la base PostgreSQL avec leurs chambres
         et réservations en cours
@@ -67,8 +45,6 @@ class PgServiceRepository(ServiceCrud):
                         )
                     )
                 )
-                # Chargement des informations du patient pour chaque réservation
-                .joinedload(Reservation.patient)
             )
             # Tri par ID de service
             .order_by(Service.id_service)

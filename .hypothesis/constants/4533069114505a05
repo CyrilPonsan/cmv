@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_patients/app/routers/admin.py
+# hypothesis_version: 6.151.10
+
+['/admin', '/outbox/retry', 'admin', 'saga_engine']

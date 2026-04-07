@@ -10,6 +10,7 @@ import ServiceItem from '@/components/ServiceItem.vue'
 import useChambresList from '@/composables/useChambresList'
 import { AutoComplete } from 'primevue'
 import Button from 'primevue/button'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // Récupération des fonctionnalités du composable useChambresList
@@ -26,6 +27,8 @@ const {
 
 // Composable i18n pour les traductions
 const { t } = useI18n()
+
+const refreshLabeltraduction = computed(() => t('rooms.home.button.refresh-label'))
 </script>
 
 <template>
@@ -43,9 +46,10 @@ const { t } = useI18n()
         <Button
           icon="pi pi-refresh"
           text
-          :aria-label="t('rooms.home.button.refresh-label')"
+          :aria-label="refreshLabeltraduction"
           :loading="isLoading"
           :disabled="isLoading"
+          v-tooltip.bottom="refreshLabeltraduction"
           @:click="getChambres"
         />
       </span>

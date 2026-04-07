@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_chambres/app/services/chambres.py
+# hypothesis_version: 6.151.10
+
+['Réservation annulée', 'chambre', 'chambre_not_found', 'no_room_available']

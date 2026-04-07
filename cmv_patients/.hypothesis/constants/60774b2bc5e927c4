@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_patients/app/sql/models.py
+# hypothesis_version: 6.151.10
+
+['Admission', 'Autre', 'CASCADE', 'Document', 'Madame', 'Monsieur', 'Patient', 'admission', 'admissions', 'completed', 'document', 'documents', 'failed', 'miscellaneous', 'outbox', 'patient', 'patient.id_patient', 'pending']

@@ -1,6 +1,6 @@
 services:
   redis:
-    image: redis:latest
+    image: valkey/valkey:latest
     ports:
       - "6379:6379"
 
@@ -9,10 +9,10 @@ services:
       context: .
     depends_on:
       - redis
+    env_file:
+      - .env.test
     command: pytest -s app/tests/
-    environment:
-      - ENVIRONMENT=test
-      - DATABASE_URL={TEST_DATABASE_URL}
+
     develop:
       watch:
         - path: .

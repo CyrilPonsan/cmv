@@ -17,10 +17,12 @@ from .routers import api
 from .utils.logging_setup import LoggerSetup
 from .utils.database import engine
 from .sql import models
+from app.utils.config import ENVIRONMENT
 
 
-# Création des tables dans la base de données
-models.Base.metadata.create_all(bind=engine)
+# Les migrations sont gérées par alembic
+if ENVIRONMENT != "production":
+    models.Base.metadata.create_all(bind=engine)
 
 # Initialisation du logger
 logger = LoggerSetup()

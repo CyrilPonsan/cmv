@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_patients/app/services/admissions.py
+# hypothesis_version: 6.151.10
+
+[201, 404, 'Authorization', 'X-Forwarded-For', 'X-Real-IP', 'admission_not_found', 'chambre_id', 'entree_prevue', 'no_room_available', 'patient_id', 'reservation_failed', 'reservation_id', 'saga_engine', 'sortie_prevue', 'unknown']

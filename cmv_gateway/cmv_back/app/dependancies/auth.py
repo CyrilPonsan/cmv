@@ -1,23 +1,30 @@
 # Imports des modules standards Python
-from datetime import datetime, timedelta, timezone
 import uuid
-from typing import Optional, Annotated
+from datetime import datetime, timedelta
+from typing import Annotated, Awaitable, Callable, Optional
 
 # Imports des dépendances FastAPI et autres frameworks
-from fastapi import HTTPException, status, Depends, Request
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-from jose import jwt, JWTError
 
 # Imports des modules internes de l'application
 from app.repositories.permissions_crud import PermissionRepository
 from app.repositories.user_crud import PgUserRepository
 from app.schemas.user import User
+
+from ..utils.config import (
+    ALGORITHM,
+    CHAMBRES_SECRET_KEY,
+    ML_SECRET_KEY,
+    PATIENTS_SECRET_KEY,
+    SECRET_KEY,
+)
 from ..utils.logging_setup import LoggerSetup
-from .redis import redis_client
-from ..utils.config import SECRET_KEY, ALGORITHM
 from .db_session import get_db
+from .redis import redis_client
 
 # Initialisation des clients Redis et du logger
 redis = redis_client
@@ -175,13 +182,15 @@ async def get_current_user(
     session_exists = await redis_client.exists(f"session:{session_id}")
     if not session_exists:
         raise not_authenticated_exception
-    user = await PgUserRepository.get_user_with_id(db, user_id)
+    user = await PgUserRepository.get_user_with_id(db, int(user_id))
     if user is None or user.is_active is False:
         raise credentials_exception
     return user
 
 
-def get_dynamic_permissions(action: str, resource: str) -> str:
+def get_dynamic_permissions(
+    action: str, resource: str
+) -> Callable[..., Awaitable[str]]:
     """
     Génère une fonction de vérification des permissions dynamique
     Args:
@@ -205,9 +214,22 @@ def get_dynamic_permissions(action: str, resource: str) -> str:
             "exp": datetime.now() + timedelta(seconds=15),  # Durée de vie courte
             "source": "api_gateway",
         }
-        return jwt.encode(internal_payload, SECRET_KEY or "", algorithm=ALGORITHM or "")
+        secret_key = get_service_secret_key(resource)
+        return jwt.encode(internal_payload, secret_key or "", algorithm=ALGORITHM or "")
 
     return get_permissions
+
+
+def get_service_secret_key(resource: str):
+    match resource:
+        case "patients":
+            return PATIENTS_SECRET_KEY
+        case "documents":
+            return PATIENTS_SECRET_KEY
+        case "chambres":
+            return CHAMBRES_SECRET_KEY
+        case "ml":
+            return ML_SECRET_KEY
 
 
 async def check_permissions(

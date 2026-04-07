@@ -1,0 +1,88 @@
+"""Schema de validation des features pour la prédiction de durée d'hospitalisation."""
+
+from typing import Literal, Optional
+
+from pydantic import BaseModel, Field
+
+
+class PredictionFeatures(BaseModel):
+    """
+    Schema de validation des 22 features pour la prédiction.
+
+    Les features sont divisées en trois catégories:
+    - Genre (binaire)
+    - Comorbidités binaires (0/1)
+    - Variables continues (valeurs positives)
+    """
+
+    # Genre (0=F, 1=M)
+    gender: Literal[0, 1] = 0
+
+    # Comorbidités binaires (0/1)
+    dialysisrenalendstage: Literal[0, 1] = 0
+    asthma: Literal[0, 1] = 0
+    irondef: Literal[0, 1] = 0
+    pneum: Literal[0, 1] = 0
+    substancedependence: Literal[0, 1] = 0
+    psychologicaldisordermajor: Literal[0, 1] = 0
+    depress: Literal[0, 1] = 0
+    psychother: Literal[0, 1] = 0
+    fibrosisandother: Literal[0, 1] = 0
+    malnutrition: Literal[0, 1] = 0
+    hemo: Literal[0, 1] = 0
+
+    # Variables continues (doivent être positives)
+    hematocrit: Optional[float] = Field(default=None, gt=0)
+    neutrophils: Optional[float] = Field(default=None, gt=0)
+    sodium: Optional[float] = Field(default=None, gt=0)
+    glucose: Optional[float] = Field(default=None, gt=0)
+    bloodureanitro: Optional[float] = Field(default=None, gt=0)
+    creatinine: Optional[float] = Field(default=None, gt=0)
+    bmi: Optional[float] = Field(default=None, gt=0)
+    pulse: Optional[int] = Field(default=None, gt=0)
+    respiration: Optional[float] = Field(default=None, gt=0)
+
+    # Autres champs
+    rcount: Optional[int] = Field(default=0, ge=0)  # Nombre de visites précédentes
+    secondarydiagnosisnonicd9: Optional[int] = Field(default=None, ge=0)
+
+    # Facility ID (one-hot encoded)
+    facid_B: Literal[0, 1] = 0
+    facid_C: Literal[0, 1] = 0
+    facid_D: Literal[0, 1] = 0
+    facid_E: Literal[0, 1] = 0
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "gender": 1,
+                    "dialysisrenalendstage": 0,
+                    "asthma": 0,
+                    "irondef": 0,
+                    "pneum": 0,
+                    "substancedependence": 0,
+                    "psychologicaldisordermajor": 0,
+                    "depress": 0,
+                    "psychother": 0,
+                    "fibrosisandother": 0,
+                    "malnutrition": 0,
+                    "hemo": 0,
+                    "hematocrit": 38.5,
+                    "neutrophils": 65.0,
+                    "sodium": 140.0,
+                    "glucose": 100.0,
+                    "bloodureanitro": 15.0,
+                    "creatinine": 1.0,
+                    "bmi": 25.0,
+                    "pulse": 72,
+                    "respiration": 16.0,
+                    "rcount": 0,
+                    "secondarydiagnosisnonicd9": 0,
+                    "facid_B": 0,
+                    "facid_C": 0,
+                    "facid_D": 0,
+                    "facid_E": 0,
+                }
+            ]
+        }
+    }

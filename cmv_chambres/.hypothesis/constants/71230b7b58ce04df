@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_chambres/app/routers/chambres.py
+# hypothesis_version: 6.151.10
+
+[200, 201, '/chambres', '/{chambre_id}', '/{service_id}', 'Chambre mise à jour', 'chambres', 'message', 'success']
