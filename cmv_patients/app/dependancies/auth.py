@@ -5,7 +5,6 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 
 from app.dependancies.db_session import get_db
 from app.schemas.user import InternalPayload
@@ -15,9 +14,6 @@ from ..utils.config import ALGORITHM, SECRET_KEY
 
 # Configuration du schéma OAuth2 avec l'URL du endpoint de token
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-# Configuration du contexte de hachage des mots de passe avec bcrypt
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def check_authorization(token: Annotated[str, Depends(oauth2_scheme)]) -> dict:

@@ -6,7 +6,7 @@ from httpx import AsyncClient, ASGITransport
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
-from passlib.context import CryptContext
+import bcrypt
 
 from app.dependancies.db_session import get_db
 from app.services.patients import PatientsService, get_patients_service
@@ -78,8 +78,7 @@ def user(db_session):
     Crée un utilisateur de test avec un rôle et des permissions.
     Retourne l'utilisateur créé.
     """
-    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    hashed_password = pwd_context.hash("MrToto@123456")
+    hashed_password = bcrypt.hashpw("MrToto@123456".encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
     role = Role(name="home", label="Service Accueil")
     db_session.add(role)

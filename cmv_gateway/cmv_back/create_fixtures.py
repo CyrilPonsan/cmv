@@ -3,7 +3,7 @@ import os
 # Import des modèles nécessaires
 from app.sql.models import Base, Permission, Role, User
 from dotenv import load_dotenv
-from passlib.context import CryptContext
+import bcrypt
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -15,9 +15,6 @@ DATABASE_URL = os.getenv(
     "GATEWAY_DATABASE_URL",
     "postgresql://postgres:cmv_gateway@localhost:6001/cmv_gateway",
 )
-
-# Configuration du hachage de mot de passe
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Configuration de l'engine SQLAlchemy
 engine = create_engine(DATABASE_URL)
@@ -38,7 +35,7 @@ def get_db():
 
 def create_fixtures(db: Session):
     # Hachage du mot de passe par défaut
-    hashed_password = pwd_context.hash("Abcdef@123456")
+    hashed_password = bcrypt.hashpw("Abcdef@123456".encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
     # Création des rôles
     roles = [

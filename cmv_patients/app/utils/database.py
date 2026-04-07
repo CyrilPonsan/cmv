@@ -1,7 +1,6 @@
 # Import des dépendances SQLAlchemy nécessaires
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 # Import des variables d'environnement
 from .config import DATABASE_URL, ENVIRONMENT
@@ -17,6 +16,8 @@ print(f"DATA BASE : {ENVIRONMENT} {DATABASE_URL}")
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Création de la classe de base pour les modèles SQLAlchemy
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
+
 # Récupération des métadonnées de la base
 metadata = Base.metadata
