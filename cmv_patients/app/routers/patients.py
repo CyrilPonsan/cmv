@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Body, Depends, Query, Request
 from sqlalchemy.orm import Session
 
-from app.dependancies.auth import check_authorization
+from app.dependancies.auth import check_authorization, get_permissions
 from app.dependancies.db_session import get_db
 from app.schemas.patients import (
     CreatePatient,
@@ -195,6 +195,7 @@ async def delete_patient(
     request: Request,
     patient_id: int,
     payload: Annotated[InternalPayload, Depends(check_authorization)],
+    internal_payload: Annotated[str, Depends(get_permissions)],
     patients_service=Depends(get_patients_service),
     db: Session = Depends(get_db),
 ):
@@ -203,7 +204,12 @@ async def delete_patient(
         request,
     )
 
-    await patients_service.delete_patient(db=db, patient_id=patient_id)
+    await patients_service.delete_patient(
+        db=db,
+        patient_id=patient_id,
+        internal_payload=internal_payload,
+        request=request,
+    )
     return {"success": True, "message": "patient_deleted"}
 
 

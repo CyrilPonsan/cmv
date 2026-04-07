@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_patients/app/routers/api.py
+# hypothesis_version: 6.151.10
+
+['/api', 'api']

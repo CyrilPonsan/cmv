@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_patients/app/routers/patients.py
+# hypothesis_version: 6.151.10
+
+[201, '/', '/detail/{patient_id}', '/patients', '/patients_names', '/search', '/{patient_id}', 'id_patient', 'message', 'patient_deleted', 'patients', 'success']

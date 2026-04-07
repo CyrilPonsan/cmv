@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_patients/app/services/saga_engine.py
+# hypothesis_version: 6.151.10
+
+[200, 404, 'Authorization', 'X-Forwarded-For', 'X-Real-IP', 'admission_deleted', 'admission_id', 'api_patients', 'cancel_reservation', 'chambres_service_url', 'endpoint', 'exp', 'failures', 'message', 'reservation_id', 'role', 'service', 'source', 'successes', 'unknown', 'user_id']
