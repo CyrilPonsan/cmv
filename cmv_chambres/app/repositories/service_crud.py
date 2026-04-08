@@ -11,8 +11,9 @@ from app.sql.models import Chambre, Reservation, Service
 
 # Implémentation concrète pour PostgreSQL
 class PgServiceRepository:
-    async def read_all_services(self, db: Session):
-    async def read_all_services(self, db: Session, service_id: int):
+    async def read_all_services(
+        self, db: Session, service_id: int
+    ) -> list[ServicesListItem]:
         """
         Récupère tous les services depuis la base PostgreSQL avec leurs chambres
         et réservations en cours

@@ -72,7 +72,6 @@ const postAdmission = (values: Record<string, unknown>) => {
     toast.add({
       severity: 'success',
       summary: 'Admission créée avec succès',
-      detail: `${!data.ambulatoire ? 'Chambre : ' + data.nom_chambre : 'Ambulatoire'}`,
       life: 3000
     })
     router.push(`/patient/${patientId}`)
