@@ -22,7 +22,7 @@ import {
   useToast
 } from 'primevue'
 import { Field, useForm } from 'vee-validate'
-import { computed, onBeforeMount, ref, watch } from 'vue'
+import { onBeforeMount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useServices } from '@/stores/services'
 import { storeToRefs } from 'pinia'
@@ -72,7 +72,6 @@ const postAdmission = (values: Record<string, unknown>) => {
     toast.add({
       severity: 'success',
       summary: 'Admission créée avec succès',
-      detail: `${!data.ambulatoire ? 'Chambre : ' + data.nom_chambre : 'Ambulatoire'}`,
       life: 3000
     })
     router.push(`/patient/${patientId}`)

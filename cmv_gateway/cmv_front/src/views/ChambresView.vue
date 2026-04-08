@@ -50,7 +50,7 @@ const refreshLabeltraduction = computed(() => t('rooms.home.button.refresh-label
           :loading="isLoading"
           :disabled="isLoading"
           v-tooltip.bottom="refreshLabeltraduction"
-          @:click="getChambres"
+          @:click="resetSearchValue"
         />
       </span>
       <!-- Barre de recherche avec autocomplétion -->

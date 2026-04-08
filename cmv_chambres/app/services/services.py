@@ -30,7 +30,9 @@ class ServiceService:
         """
         self.service_repository = service_repository
 
-    async def read_all_services(self, db: Session) -> list[ServicesListItem]:
+    async def read_all_services(
+        self, db: Session, service_id: int
+    ) -> list[ServicesListItem]:
         """Récupère la liste de tous les services avec leurs chambres
 
         Args:
@@ -39,7 +41,9 @@ class ServiceService:
         Returns:
             list[ServicesListItem]: Liste des services avec leurs informations et chambres associées
         """
-        return await self.service_repository.read_all_services(db)
+        return await self.service_repository.read_all_services(
+            db, service_id=service_id
+        )
 
     async def get_simple_services_list(self, db: Session) -> list[ServicesList]:
         """Récupère une liste simplifiée des services disponibles
