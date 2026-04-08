@@ -80,57 +80,54 @@ describe('UseChambresList', () => {
       )
     })
 
-    it('should populate list with data returned from API', async () => {
+    it('should populate list with only the first service (greenit)', async () => {
       simulateGetChambres()
       const { list } = useChambresList()
 
       await new Promise((r) => setTimeout(r, 0))
-      expect(list.value).toEqual(mockServices)
+      expect(list.value).toEqual([mockServices[0]])
     })
 
-    it('should populate suggestions with service names', async () => {
+    it('should populate suggestions with only the first service name (greenit)', async () => {
       simulateGetChambres()
       const { suggestions } = useChambresList()
 
       await new Promise((r) => setTimeout(r, 0))
-      expect(suggestions.value).toEqual(
-        mockServices.map((s) => s.nom)
-      )
+      expect(suggestions.value).toEqual([mockServices[0].nom])
     })
   })
 
   // --- Requirement 3.2: Case-insensitive prefix filtering via search ---
   describe('search (case-insensitive prefix filtering)', () => {
-    it('should filter suggestions by case-insensitive prefix', () => {
+    it('should filter suggestions by case-insensitive prefix (greenit: only first service loaded)', () => {
       simulateGetChambres()
       const { search, suggestions } = useChambresList()
 
       search({ query: 'car' } as any)
 
-      expect(suggestions.value).toEqual(['Cardiologie', 'cardiologie pédiatrique'])
+      // Only the first service is loaded, so only 'Cardiologie' matches
+      expect(suggestions.value).toEqual(['Cardiologie'])
     })
 
-    it('should filter list by case-insensitive prefix', () => {
+    it('should filter list by case-insensitive prefix (greenit: only first service loaded)', () => {
       simulateGetChambres()
       const { search, list } = useChambresList()
 
       search({ query: 'Car' } as any)
 
       expect(list.value).toEqual([
-        { id_service: 1, nom: 'Cardiologie', chambres: [] },
-        { id_service: 3, nom: 'cardiologie pédiatrique', chambres: [] }
+        { id_service: 1, nom: 'Cardiologie', chambres: [] }
       ])
     })
 
-    it('should match uppercase query against lowercase service names', () => {
+    it('should reset list when query does not match the loaded service', () => {
       simulateGetChambres()
       const { search, list } = useChambresList()
 
       search({ query: 'NEURO' } as any)
 
-      expect(list.value).toEqual([
-        { id_service: 4, nom: 'Neurologie', chambres: [] }
-      ])
+      // No match in the single loaded service → resets to initialList
+      expect(list.value).toEqual([mockServices[0]])
     })
   })
 
@@ -142,7 +139,7 @@ describe('UseChambresList', () => {
 
       search({ query: 'zzz_no_match' } as any)
 
-      expect(list.value).toEqual(mockServices)
+      expect(list.value).toEqual([mockServices[0]])
     })
 
     it('should set suggestions to empty when search finds no matches', () => {
@@ -177,16 +174,14 @@ describe('UseChambresList', () => {
       ])
     })
 
-    it('should not match case-insensitively for searchBySelect', () => {
+    it('should return empty when case does not match (greenit: single service)', () => {
       simulateGetChambres()
       const { searchBySelect, list } = useChambresList()
 
-      // 'cardiologie' lowercase should only match the lowercase service
+      // 'cardiologie' lowercase won't match 'Cardiologie' (case-sensitive)
       searchBySelect({ value: 'cardiologie' } as any)
 
-      expect(list.value).toEqual([
-        { id_service: 3, nom: 'cardiologie pédiatrique', chambres: [] }
-      ])
+      expect(list.value).toEqual([])
     })
   })
 
@@ -218,10 +213,10 @@ describe('UseChambresList', () => {
       searchValue.value = ''
       await new Promise((r) => setTimeout(r, 0))
 
-      expect(list.value).toEqual(mockServices)
+      expect(list.value).toEqual([mockServices[0]])
     })
 
-    it('should reset suggestions to all service names when searchValue becomes empty', async () => {
+    it('should reset suggestions to first service name when searchValue becomes empty', async () => {
       simulateGetChambres()
       const { searchBySelect, searchValue, suggestions } = useChambresList()
 
@@ -230,7 +225,7 @@ describe('UseChambresList', () => {
       searchValue.value = ''
       await new Promise((r) => setTimeout(r, 0))
 
-      expect(suggestions.value).toEqual(mockServices.map((s) => s.nom))
+      expect(suggestions.value).toEqual([mockServices[0].nom])
     })
   })
 })
@@ -266,16 +261,16 @@ describe('UseChambresList — Property-based tests', () => {
 
         search({ query } as any)
 
-        const expected = services.filter((s: { nom: string }) =>
+        // greenit: only the first service is loaded into initialList
+        const loaded = [services[0]]
+        const expected = loaded.filter((s: { nom: string }) =>
           s.nom.toLowerCase().startsWith(query.toLowerCase())
         )
 
         if (expected.length > 0) {
-          // When matches exist, list should contain exactly the matching services
           expect(list.value).toEqual(expected)
         } else {
-          // When no matches, list resets to the full initial list
-          expect(list.value).toEqual(services)
+          expect(list.value).toEqual(loaded)
         }
       }),
       { numRuns: 100 }
@@ -291,7 +286,9 @@ describe('UseChambresList — Property-based tests', () => {
 
         searchBySelect({ value } as any)
 
-        const expected = services.filter((s: { nom: string }) => s.nom.startsWith(value))
+        // greenit: only the first service is loaded into initialList
+        const loaded = [services[0]]
+        const expected = loaded.filter((s: { nom: string }) => s.nom.startsWith(value))
         expect(list.value).toEqual(expected)
       }),
       { numRuns: 100 }
