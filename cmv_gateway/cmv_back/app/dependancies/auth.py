@@ -7,7 +7,7 @@ from typing import Annotated, Awaitable, Callable, Optional
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+import bcrypt
 from sqlalchemy.orm import Session
 
 # Imports des modules internes de l'application
@@ -33,10 +33,6 @@ logger = LoggerSetup()
 
 # Configuration de l'authentification OAuth2 pour la gestion des tokens
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-# Configuration du hachage des mots de passe avec bcrypt
-# Permet de sécuriser le stockage des mots de passe
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Liste des endpoints qui ne nécessitent pas d'authentification complète
 # Ces endpoints sont accessibles avec une authentification basique
@@ -67,7 +63,7 @@ def verify_password(plain_password, hashed_password):
     Returns:
         bool: True si les mots de passe correspondent, False sinon
     """
-    return pwd_context.verify(plain_password, hashed_password)
+    return bcrypt.checkpw(plain_password.encode("utf-8"), hashed_password.encode("utf-8"))
 
 
 async def authenticate_user(

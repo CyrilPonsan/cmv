@@ -28,7 +28,7 @@ const { t } = useI18n()
   </section>
 
   <!-- Contenu principal -->
-  <div class="grid grid-cols-1 2xl:grid-cols-2 gap-16 mb-16">
+  <div class="mb-16 gap-x-16 gap-y-8 flex flex-col xl:flex-row">
     <!-- Section du formulaire -->
     <section class="flex justify-center items-start">
       <PatientForm
@@ -40,8 +40,8 @@ const { t } = useI18n()
     </section>
 
     <!-- Section d'avertissement sur les données -->
-    <section class="flex justify-center items-center">
-      <article class="w-5/6 p-4 flex flex-col border border-neutral-200/50 rounded-lg">
+    <section class="flex justify-center items-start">
+      <article class="w-[40rem] p-4 flex flex-col border border-neutral-200/50 rounded-lg">
         <PatientDataDisclaimer />
       </article>
     </section>

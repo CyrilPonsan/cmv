@@ -1,13 +1,9 @@
 # Import des modules nécessaires
 from abc import ABC, abstractmethod
 
-from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from ..sql.models import User
-
-# Configuration du contexte de hachage des mots de passe
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class UserRead(ABC):
@@ -27,8 +23,6 @@ class UserRepository(UserRead):
 
 class PgUserRepository(UserRepository):
     """Implémentation PostgreSQL du repository des utilisateurs"""
-
-    pwd_context = CryptContext
 
     @staticmethod
     async def get_user(db: Session, username: str) -> User:

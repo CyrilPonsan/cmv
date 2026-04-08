@@ -1,4 +1,4 @@
-from passlib.context import CryptContext
+import bcrypt
 from sqlalchemy.orm import Session
 from faker import Faker
 from sqlalchemy import create_engine
@@ -23,8 +23,7 @@ SQLALCHEMY_DATABASE_URL = (
 )
 
 # Configuration du hachage de mot de passe
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-hashed_password = pwd_context.hash("Abcdef@123456")
+hashed_password = bcrypt.hashpw("Abcdef@123456".encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 # Configuration de l'engine SQLAlchemy
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
