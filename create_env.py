@@ -47,7 +47,7 @@ env_configs = {
     },
     # Destiné à la production ou préparation à la production
     "./.env": {
-        "GATEWAY_POSTGRES_URL": "postgresql://postgres:cmv_gateway@db_gateway:5432/cmv_gateway",
+        "GATEWAY_DATABASE_URL": "postgresql://postgres:cmv_gateway@db_gateway:5432/cmv_gateway",
         "PATIENTS_DATABASE_URL": "postgresql://postgres:cmv_patients@db_patients:5432/cmv_patients",
         "CHAMBRES_DATABASE_URL": "postgresql://postgres:cmv_chambres@db_chambres:5432/cmv_chambres",
         "GATEWAY_POSTGRES_USER": "postgres",

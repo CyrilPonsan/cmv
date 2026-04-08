@@ -8,8 +8,8 @@
 // Import des dépendances nécessaires
 import type Admission from '@/models/admission'
 import { Button } from 'primevue'
-import { watchEffect } from 'vue'
 import AdmissionItem from './AdmissionItem.vue'
+import { useI18n } from 'vue-i18n'
 
 // Props du composant
 const { latestAdmission, patientId } = defineProps<{
@@ -17,10 +17,7 @@ const { latestAdmission, patientId } = defineProps<{
   patientId: number // L'ID du patient
 }>()
 
-// Surveillance des changements de l'admission (à des fins de debug)
-watchEffect(() => {
-  console.log(latestAdmission)
-})
+const { t } = useI18n()
 </script>
 
 <template>
@@ -35,15 +32,16 @@ watchEffect(() => {
         icon="pi pi-plus"
         label="Créer une admission"
         variant="outlined"
+        v-show="latestAdmission === null"
       />
-      <!-- Bouton pour accéder à l'historique des admissions (visible uniquement s'il existe au moins une admission) -->
       <Button
-        v-if="latestAdmission !== null"
-        as="router-link"
-        to="/admissions/history"
-        icon="pi pi-history"
-        label="Historique des admissions"
+        icon="pi pi-plus"
+        label="Créer une admission"
         variant="outlined"
+        :disabled="true"
+        v-show="latestAdmission !== null"
+        v-tooltip.bottom="'Une admission existe déjà pour ce patient.'"
+        aria-label="Création d'admission désactivée car une admission est déjà en cours pour ce patient."
       />
     </span>
   </div>

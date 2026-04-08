@@ -1,16 +1,17 @@
-from datetime import datetime
 import enum
+from datetime import datetime
 
 from sqlalchemy import (
     Boolean,
-    ForeignKey,
-    String,
     DateTime,
     Enum,
-    func,
+    ForeignKey,
     Integer,
+    JSON,
+    String,
+    func,
 )
-from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..utils.database import Base
 
@@ -62,15 +63,9 @@ class Admission(Base):
     sortie_prevue_le: Mapped[datetime] = mapped_column(
         DateTime, nullable=True
     )  # Date et heure de sortie prévue
-    ref_chambre: Mapped[int] = mapped_column(
-        Integer, nullable=True
-    )  # Référence de la chambre attribuée
     ref_reservation: Mapped[int] = mapped_column(
         Integer, nullable=True
     )  # Référence de la réservation
-    nom_chambre: Mapped[str] = mapped_column(
-        String, nullable=True
-    )  # Nom de la chambre attribuée
     created_at: Mapped[datetime] = mapped_column(
         DateTime(), server_default=func.now()
     )  # Date de création
@@ -151,3 +146,27 @@ class Patient(Base):
     admissions: Mapped[list["Admission"]] = relationship(
         "Admission", back_populates="patient"
     )
+
+
+class OutboxStatus(enum.Enum):
+    """Enumération des statuts possibles pour une entrée outbox."""
+
+    PENDING = "pending"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
+class OutboxEntry(Base):
+    """Modèle représentant une entrée dans la table outbox pour les compensations échouées."""
+
+    __tablename__ = "outbox"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    compensation_type: Mapped[str] = mapped_column(String, nullable=False)
+    payload: Mapped[dict] = mapped_column(JSON, nullable=False)
+    retry_count: Mapped[int] = mapped_column(Integer, default=0)
+    status: Mapped[OutboxStatus] = mapped_column(
+        Enum(OutboxStatus), default=OutboxStatus.PENDING
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    last_attempted_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)

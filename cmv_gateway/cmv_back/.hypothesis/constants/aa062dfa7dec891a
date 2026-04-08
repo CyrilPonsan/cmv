@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/middleware/security_headers.py
+# hypothesis_version: 6.151.9
+
+[31536000, "'none'", "'self'", "'unsafe-eval'", "'unsafe-inline'", '1; mode=block', '; ', 'Permissions-Policy', 'Referrer-Policy', 'SAMEORIGIN', 'Server', 'X-Download-Options', 'X-Frame-Options', 'X-Powered-By', 'X-XSS-Protection', 'base-uri', 'data:', 'default-src', 'font-src', 'frame-ancestors', 'https:', 'img-src', 'includeSubDomains', 'max-age', 'none', 'noopen', 'nosniff', 'object-src', 'off', 'preload', 'script-src', 'script-src-attr', 'style-src']

@@ -6,7 +6,7 @@
     "unknown_error": "Le serveur est injoignable, si le problème persiste, veuillez contacter l'assistance."
   },
   "app": {
-    "footer": "Projet de formation : toute ressemblance avec une clinique déjà existante ne serait que pure coïncidence.",
+    "footer": "Projet de formation : toute ressemblance avec une clinique ou des personnes existantes ne serait que pure coïncidence.",
     "sidebar": {
       "home": "Accueil",
       "rooms": "Chambres"
@@ -15,7 +15,8 @@
       "home": "Accueil",
       "change_mode": "Changer de mode",
       "logout": "Déconnexion"
-    }
+    },
+    "not_available": "Non disponible"
   },
   "columns": {
     "patientsList": {
@@ -202,7 +203,7 @@
       "title": "Espace administratif",
       "subtitle": "Liste des services et chambres",
       "button": {
-        "refresh-label": "rafraîchir la liste des chambres",
+        "refresh-label": "Rafraîchir la liste des chambres",
         "reset-search-label": "Réinitialiser la recherche de service"
       }
     }

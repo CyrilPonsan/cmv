@@ -46,7 +46,7 @@ const useLazyLoad = <T extends object>(url: string): UseLazyLoad<T> => {
   const http = useHttp()
   const result = ref<UnwrapRef<T>[]>([]) as Ref<UnwrapRef<T>[]>
   const totalRecords = ref<number>(0)
-  let timer: NodeJS.Timeout | null = null
+  let timer: ReturnType<typeof setTimeout> | null = null
   const search = ref<string>('')
 
   // Configuration initiale de l'état de pagination

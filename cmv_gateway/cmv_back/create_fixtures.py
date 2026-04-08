@@ -1,11 +1,11 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
-from passlib.context import CryptContext
 import os
-from dotenv import load_dotenv
 
 # Import des modèles nécessaires
-from app.sql.models import Base, Role, User, Permission
+from app.sql.models import Base, Permission, Role, User
+from dotenv import load_dotenv
+from passlib.context import CryptContext
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session, sessionmaker
 
 # Chargement des variables d'environnement
 load_dotenv()
@@ -18,7 +18,6 @@ DATABASE_URL = os.getenv(
 
 # Configuration du hachage de mot de passe
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-hashed_password = pwd_context.hash("Abcdef@123456")
 
 # Configuration de l'engine SQLAlchemy
 engine = create_engine(DATABASE_URL)
@@ -38,6 +37,9 @@ def get_db():
 
 
 def create_fixtures(db: Session):
+    # Hachage du mot de passe par défaut
+    hashed_password = pwd_context.hash("Abcdef@123456")
+
     # Création des rôles
     roles = [
         {"name": "it", "label": "Service IT"},
@@ -65,6 +67,7 @@ def create_fixtures(db: Session):
     # Création des permissions
     permissions = [
         {"role": nurse_role, "action": "get", "resource": "chambres"},
+        {"role": home_role, "action": "post", "resource": "chambres"},
         {"role": nurse_role, "action": "get", "resource": "services"},
         {"role": home_role, "action": "get", "resource": "patients"},
         {"role": home_role, "action": "get", "resource": "documents"},
@@ -73,6 +76,7 @@ def create_fixtures(db: Session):
         {"role": home_role, "action": "post", "resource": "patients"},
         {"role": home_role, "action": "put", "resource": "patients"},
         {"role": home_role, "action": "delete", "resource": "patients"},
+        {"role": home_role, "action": "post", "resource": "ml"},
     ]
 
     db_permissions = []

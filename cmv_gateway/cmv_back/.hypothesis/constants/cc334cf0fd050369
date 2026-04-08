@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/routers/auth.py
+# hypothesis_version: 6.151.9
+
+['/auth', '/login', '/logout', '/refresh', 'CMV_GATEWAY', 'all good bro!', 'auth', 'auto', 'bcrypt', 'message', 'success']

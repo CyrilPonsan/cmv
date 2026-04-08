@@ -1,0 +1,36 @@
+2026-02-17 14:55:41,873 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-17 14:55:42,144 - CMV_GATEWAY - WARNING - Failed connection attempt using : foo.user@test.fr FROM: None
+2026-02-17 14:55:42,145 - CMV_GATEWAY - WARNING - credentials FROM: None
+2026-02-17 14:55:42,371 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
+2026-02-17 14:55:42,581 - CMV_GATEWAY - WARNING - 1 validation error:
+  {'type': 'value_error', 'loc': ('body', 'username'), 'msg': 'value is not a valid email address: An email address must have an @-sign.', 'input': 'test', 'ctx': {'reason': 'An email address must have an @-sign.'}}
+
+  File "/Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/routers/auth.py", line 24, in login
+    POST /api/auth/login FROM: None
+2026-02-17 14:55:42,780 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
+2026-02-17 14:55:43,165 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-17 14:55:43,182 - CMV_GATEWAY - WARNING - home - 1 - GET - foo FROM: None
+2026-02-17 14:55:43,579 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-17 14:55:43,586 - CMV_GATEWAY - WARNING - home - 1 - GET - foo FROM: None
+2026-02-17 14:55:43,587 - CMV_GATEWAY - WARNING - Not Found FROM: None
+2026-02-17 14:55:43,592 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-02-17 14:55:44,004 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-17 14:55:44,011 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-02-17 16:01:29,003 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-17 16:01:29,201 - CMV_GATEWAY - WARNING - Failed connection attempt using : foo.user@test.fr FROM: None
+2026-02-17 16:01:29,201 - CMV_GATEWAY - WARNING - credentials FROM: None
+2026-02-17 16:01:29,397 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
+2026-02-17 16:01:29,596 - CMV_GATEWAY - WARNING - 1 validation error:
+  {'type': 'value_error', 'loc': ('body', 'username'), 'msg': 'value is not a valid email address: An email address must have an @-sign.', 'input': 'test', 'ctx': {'reason': 'An email address must have an @-sign.'}}
+
+  File "/Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/routers/auth.py", line 24, in login
+    POST /api/auth/login FROM: None
+2026-02-17 16:01:29,792 - CMV_GATEWAY - WARNING - Identifiants incorrects. FROM: None
+2026-02-17 16:01:30,182 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-17 16:01:30,199 - CMV_GATEWAY - WARNING - home - 1 - GET - foo FROM: None
+2026-02-17 16:01:30,581 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-17 16:01:30,588 - CMV_GATEWAY - WARNING - home - 1 - GET - foo FROM: None
+2026-02-17 16:01:30,588 - CMV_GATEWAY - WARNING - Not Found FROM: None
+2026-02-17 16:01:30,592 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-02-17 16:01:30,977 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-02-17 16:01:30,984 - CMV_GATEWAY - WARNING - not_authenticated FROM: None

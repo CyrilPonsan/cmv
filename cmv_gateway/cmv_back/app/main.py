@@ -1,32 +1,59 @@
 # Import des gestionnaires d'exceptions FastAPI
+from contextlib import asynccontextmanager
+from pathlib import Path
+
+from fastapi import Depends, FastAPI
 from fastapi.exception_handlers import (
     http_exception_handler,
     request_validation_exception_handler,
 )
-from pathlib import Path
-from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.exceptions import RequestValidationError
+from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-# Import des middlewares personnalisés
 from app.middleware.exceptions import ExceptionHandlerMiddleware
 from app.middleware.security_headers import SecurityHeadersMiddleware
-from .routers import api
-from .utils.logging_setup import LoggerSetup
-from .utils.database import engine
-from .sql import models
 
-# Création des tables dans la base de données
-models.Base.metadata.create_all(bind=engine)
+from .dependancies.db_session import get_db
+from .routers import api
+from .sql import models
+from .utils.config import ENVIRONMENT, VALKEY_HOST
+from .utils.database import engine
+from .utils.logging_setup import LoggerSetup
+from .utils.rate_limiter import close_rate_limiter, init_rate_limiter
+from app.utils.config import ENVIRONMENT
+
+
+# Les migrations sont gérées par alembic
+if ENVIRONMENT != "production":
+    models.Base.metadata.create_all(bind=engine)
 
 # Initialisation du logger
 logger = LoggerSetup()
 
+
+print(f"VALKEY_HOST: {VALKEY_HOST}")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Gestion du cycle de vie de l'application.
+
+    Initialise le rate limiter au démarrage et le ferme à l'arrêt.
+    """
+    await init_rate_limiter()
+    yield
+    await close_rate_limiter()
+
+
 # Création de l'application FastAPI
-app = FastAPI()
+app = FastAPI(
+    root_path="",  # Set to your proxy path if needed, e.g., "/api"
+    lifespan=lifespan,
+)
 
 # Inclusion des routes de l'API
 app.include_router(api.router)
@@ -34,6 +61,8 @@ app.include_router(api.router)
 # Configuration CORS - Liste des origines autorisées
 origins = [
     "http://localhost:5173",
+    "https://clinique-montvert.fr",  # Add your domain
+    "http://clinique-montvert.fr",  # Add HTTP version too
 ]
 
 # Ajout du middleware CORS avec les paramètres de sécurité

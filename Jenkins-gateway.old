@@ -1,0 +1,172 @@
+pipeline {
+    agent any
+    tools {
+        nodejs 'nodejs'
+    }
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('cmv-dockerhub')
+        IMAGE_GATEWAY = "firizgoude/cmv_gateway"
+        IMAGE_GATEWAY_TAG = "gateway-${env.BUILD_NUMBER}"
+        NPM_CACHE_DIR = "tmp/npm-cache"
+        BRANCH_NAME = "${env.GIT_BRANCH.split('/').last()}"
+        EC2_SERVER = credentials("ec2-host")
+        EC2_USER = credentials("ec2-username")
+        SSH_CREDENTIALS = credentials('cmv-ssh-key')
+        PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin" 
+    }
+
+    stages {
+        stage("Checkout") {
+            steps {
+                checkout scm
+                script {
+                    echo "Current branch is ${BRANCH_NAME}"
+
+                }
+            }
+        }
+
+stage('Check Python') {
+            steps {
+                sh 'echo $PATH'
+                sh 'which python3.12'
+                sh 'python3.12 --version'
+            }
+        }
+        stage('Install Frontend Dependencies') {
+            steps {
+                dir('cmv_gateway/cmv_front') {
+                    sh """
+                    mkdir -p ${NPM_CACHE_DIR}
+                    npm config set cache ${NPM_CACHE_DIR}
+                    npm ci --prefer-offline
+                    """
+                }
+            }
+        }
+        stage('Build Frontend') {
+            steps {
+                dir('cmv_gateway/cmv_front') {
+                    sh 'npm run build'
+                }
+            }
+        }
+        stage('Run Frontend Tests') {
+            steps {
+                dir('cmv_gateway/cmv_front') {
+                    sh 'npm run test:unit'
+                }
+            }
+        }
+        stage('Copy Frontend to Backend') {
+            steps {
+                sh '''
+                # Create static directory in backend if it doesn't exist
+                mkdir -p cmv_gateway/cmv_back/dist
+                
+                # Copy built frontend files to backend static directory
+                cp -r cmv_gateway/cmv_front/dist/* cmv_gateway/cmv_back/dist/
+                '''
+            }
+        }
+        stage('Run Backend Tests') {
+            steps {
+                dir('cmv_gateway/cmv_back') {
+                    script {
+                        sh '''
+                        # Check Docker version
+                        docker --version
+                        
+                        # Use docker compose (without hyphen) instead of docker-compose
+                        echo "Starting Docker containers for tests..."
+                        docker compose -f docker-compose.yml up --build -d
+                        
+                        # Wait for containers to be ready
+                        sleep 5
+                        
+                        # Arrêter et supprimer les services après les tests
+                        echo "Stopping Docker containers..."
+                        docker compose -f docker-compose.yml down
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Deploy to EC2') {
+            steps {
+                script {
+                    def remoteCommands = """
+                        # Create project directory if it doesn't exist
+                        mkdir -p /home/${EC2_USER}/cmv_gateway
+                        
+                        # Create virtual environment if it doesn't exist
+                        if [ ! -d "/home/${EC2_USER}/cmv_gateway/venv" ]; then
+                            python3.12 -m venv /home/${EC2_USER}/cmv_gateway/venv
+                        fi
+                        
+                        # Activate virtual environment
+                        . /home/${EC2_USER}/cmv_gateway/venv/bin/activate
+                        
+                        # Install or update dependencies
+                        pip install -r /home/${EC2_USER}/cmv_gateway/cmv_back/requirements.txt
+                        pip install gunicorn uvicorn
+                        
+                        # Stop existing Gunicorn process if running
+                        pkill -f "gunicorn" || true
+                        
+                        # Start Gunicorn in the background with uvicorn workers for FastAPI
+                        cd /home/${EC2_USER}/cmv_gateway/cmv_back
+                        nohup gunicorn --workers 3 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8001 app.main:app > /home/${EC2_USER}/gunicorn.log 2>&1 &
+                        
+                        # Verify the process is running
+                        sleep 2
+                        ps aux | grep gunicorn
+                    """
+
+                    // Copy backend and frontend files to EC2
+                    sshagent(credentials: ['cmv-ssh-key']) {
+                        sh """
+                            # Create a tar archive of the backend and static files
+                            tar -czf cmv_gateway_deploy.tar.gz -C cmv_gateway cmv_back
+                            
+                            # Copy the archive to EC2
+                            scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR cmv_gateway_deploy.tar.gz ${EC2_USER}@${EC2_SERVER}:/home/${EC2_USER}/
+                            
+                            # Extract the archive on EC2 and run deployment commands
+                            ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR ${EC2_USER}@${EC2_SERVER} << EOF
+                            # Make sure the target directory exists
+                            mkdir -p /home/${EC2_USER}/cmv_gateway
+                            
+                            # Extract to the correct directory
+                            tar -xzf /home/${EC2_USER}/cmv_gateway_deploy.tar.gz -C /home/${EC2_USER}/cmv_gateway
+                            
+                            # Remove the archive
+                            rm /home/${EC2_USER}/cmv_gateway_deploy.tar.gz
+                            
+                            ${remoteCommands}
+EOF
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                node {
+                    // Clean up local files
+                    sh 'rm -f cmv_gateway_deploy.tar.gz || true'
+                }
+            }
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Please check the logs.'
+        }
+    }
+}

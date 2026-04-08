@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_chambres/app/sql/models.py
+# hypothesis_version: 6.151.10
+
+['CASCADE', 'Chambre', 'Chambre.nom', 'Reservation', 'Service', 'chambre', 'chambre.id_chambre', 'chambres', 'libre', 'occupée', 'reservation', 'reservations', 'service', 'service.id_service']

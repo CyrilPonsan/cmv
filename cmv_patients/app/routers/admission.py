@@ -2,15 +2,17 @@
 from typing import Annotated
 
 # Import des dépendances FastAPI
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Body, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
-# Import des services et dépendances personnalisés
-from app.services.admissions import AdmissionService
+from app.dependancies.auth import get_permissions
 from app.dependancies.db_session import get_db
 from app.schemas.patients import CreateAdmission
-from app.services.patients import PatientsService, get_patients_service
+from app.schemas.user import InternalPayload
 
+# Import des services et dépendances personnalisés
+from app.services.admissions import get_admissions_service
+from app.services.patients import get_patients_service
 
 # Création du routeur FastAPI
 router = APIRouter()
@@ -18,8 +20,11 @@ router = APIRouter()
 
 @router.post("/admissions")
 async def create_admission(
+    request: Request,
     data: Annotated[CreateAdmission, Body()],  # Données de l'admission à créer
-    patients_service: PatientsService = Depends(get_patients_service),
+    internal_payload: Annotated[InternalPayload, Depends(get_permissions)],
+    admission_service=Depends(get_admissions_service),
+    patient_service=Depends(get_patients_service),
     db: Session = Depends(get_db),  # Injection de la session de base de données
 ):
     """
@@ -32,4 +37,14 @@ async def create_admission(
     Returns:
         dict: Les détails de l'admission créée
     """
-    return await AdmissionService(db).create_admission(data)
+    existing_patient = await patient_service.detail_patient(db, data.patient_id)
+    if not existing_patient:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="patient_not_found"
+        )
+    if existing_patient.admissions:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="patient_already_admitted"
+        )
+
+    return await admission_service.create_admission(db, data, internal_payload, request)

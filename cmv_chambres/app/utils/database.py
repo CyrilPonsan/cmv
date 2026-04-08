@@ -3,20 +3,21 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Import de l'URL de connexion à la base de données depuis la configuration
+# Import des variables d'environnement
 from .config import DATABASE_URL
 
-# Création du moteur SQLAlchemy si l'URL de la base de données est définie
-if DATABASE_URL:
-    # Initialisation du moteur avec l'URL de connexion
-    engine = create_engine(DATABASE_URL)
+# Configuration de la base de données
 
-    # Configuration de la factory de sessions
-    # autocommit=False : Les transactions doivent être explicitement committées
-    # autoflush=False : Les modifications ne sont pas automatiquement synchronisées avec la BD
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# En production, vérifie que l'URL de la base est définie
+if DATABASE_URL is None:
+    raise ValueError("DATABASE_URL must be set")
+engine = create_engine(DATABASE_URL)
 
-    # Création de la classe de base pour les modèles SQLAlchemy
-    Base = declarative_base()
-    # Récupération des métadonnées de la base
-    metadata = Base.metadata
+
+# Création de la factory de sessions de base de données
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Création de la classe de base pour les modèles SQLAlchemy
+Base = declarative_base()
+# Récupération des métadonnées de la base
+metadata = Base.metadata
