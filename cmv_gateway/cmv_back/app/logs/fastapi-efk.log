@@ -10,3 +10,93 @@
 2026-04-08 08:56:31,747 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
 2026-04-08 09:03:17,294 - CMV_GATEWAY - WARNING - Not Found FROM: None
 2026-04-08 09:08:17,930 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-08 18:09:06,140 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-08 18:09:13,267 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-04-08 18:09:13,311 - CMV_GATEWAY - WARNING - session_not_found FROM: None
+2026-04-08 18:09:14,384 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-04-08 18:09:14,415 - CMV_GATEWAY - WARNING - session_not_found FROM: None
+2026-04-08 18:09:15,738 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-04-08 18:09:15,968 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-08 18:12:20,304 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-04-08 18:12:20,366 - CMV_GATEWAY - WARNING - no_refresh_token FROM: None
+2026-04-08 18:12:24,408 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-04-08 18:15:44,225 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-08 18:24:42,412 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:24:43,616 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:24:44,157 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:24:44,610 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:25:14,605 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:25:15,761 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:25:16,720 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:25:38,197 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:25:39,469 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:25:48,900 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:26:56,416 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:26:59,892 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:27:48,174 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:34:20,378 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:34:21,946 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:34:22,734 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:34:23,138 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:37:06,933 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-08 18:42:45,602 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:42:46,492 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:42:47,261 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:44:58,528 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:45:06,874 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:45:08,201 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:45:11,995 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:45:13,032 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:45:13,664 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:45:14,374 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:45:33,501 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:45:35,665 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:47:09,751 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:47:10,971 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:47:12,106 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:47:59,482 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.
+2026-04-08 18:48:02,682 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-08 18:48:09,625 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:48:10,840 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:48:11,518 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:48:11,938 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:48:12,143 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:48:12,352 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:48:12,577 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:48:35,706 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:56:35,767 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:56:36,660 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:56:37,237 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:56:53,837 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:59:14,654 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:59:15,274 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:59:15,512 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:59:15,713 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:59:15,910 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:59:16,053 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:59:16,219 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 18:59:16,468 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 19:01:36,712 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 19:01:46,940 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 19:01:48,204 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 19:01:49,329 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 19:01:50,346 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 19:01:51,113 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 19:01:52,023 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 19:09:53,175 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 19:09:54,275 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 19:09:54,895 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 19:09:55,178 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 19:09:55,404 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 19:09:55,611 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 19:09:55,847 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 19:09:56,070 - CMV_GATEWAY - WARNING - [{'type': 'int_parsing', 'loc': ['path', 'service_id'], 'msg': 'Input should be a valid integer, unable to parse string as an integer', 'input': '[object PointerEvent]'}] FROM: None
+2026-04-08 19:12:45,966 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-04-08 19:12:45,991 - CMV_GATEWAY - WARNING - session_not_found FROM: None
+2026-04-08 19:12:47,870 - CMV_GATEWAY - WARNING - home connection  FROM: None
+2026-04-08 19:14:40,422 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-08 19:14:43,464 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/44 FROM: None
+2026-04-08 20:31:23,186 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-04-08 20:31:23,205 - CMV_GATEWAY - WARNING - session_not_found FROM: None
+2026-04-08 20:31:23,207 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-04-08 20:31:23,289 - CMV_GATEWAY - WARNING - session_not_found FROM: None

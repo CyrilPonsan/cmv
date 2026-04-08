@@ -5,13 +5,15 @@ from datetime import datetime
 from sqlalchemy import and_
 from sqlalchemy.orm import Session, joinedload
 
-from app.sql.models import Chambre, Reservation, Service
 from app.schemas.services import ServicesListItem
+from app.sql.models import Chambre, Reservation, Service
 
 
 # Implémentation concrète pour PostgreSQL
 class PgServiceRepository:
-    async def read_all_services(self, db: Session):
+    async def read_all_services(
+        self, db: Session, service_id: int
+    ) -> list[ServicesListItem]:
         """
         Récupère tous les services depuis la base PostgreSQL avec leurs chambres
         et réservations en cours
@@ -46,6 +48,7 @@ class PgServiceRepository:
                     )
                 )
             )
+            .filter(Service.id_service == service_id)
             # Tri par ID de service
             .order_by(Service.id_service)
             # Élimination des doublons

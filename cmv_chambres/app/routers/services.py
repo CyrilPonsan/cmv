@@ -33,8 +33,9 @@ async def read_simple_services(
     return await get_service_service().get_simple_services_list(db)
 
 
-@router.get("/", response_model=list[ServicesListItem])
+@router.get("/{service_id}", response_model=list[ServicesListItem])
 async def read_all_services(
+    service_id: int,
     payload: Annotated[InternalPayload, Depends(check_authorization)],
     db: Session = Depends(get_db),
 ):
@@ -47,4 +48,4 @@ async def read_all_services(
     Returns:
         list[ServicesListItem]: Liste des services avec leurs informations
     """
-    return await get_service_service().read_all_services(db)
+    return await get_service_service().read_all_services(db=db, service_id=service_id)
