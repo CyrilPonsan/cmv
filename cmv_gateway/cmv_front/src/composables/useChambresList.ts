@@ -36,7 +36,7 @@ const useChambresList = (): UseChambresList => {
    */
   const getChambres = () => {
     const applyData = (data: Service[]) => {
-      initialList.value = [data[0]]
+      initialList.value = data
     }
     sendRequest(
       {
@@ -80,14 +80,14 @@ const useChambresList = (): UseChambresList => {
 
   // Met à jour la liste affichée et les suggestions quand la liste initiale change
   watchEffect(() => {
-    list.value = [initialList.value[0]]
+    list.value = initialList.value
     suggestions.value = initialList.value.map((service) => service.nom)
   })
 
   // Réinitialise la liste et les suggestions quand la recherche est vidée
   watch(searchValue, (value) => {
     if (value.length === 0) {
-      list.value = [initialList.value[0]]
+      list.value = initialList.value
       suggestions.value = initialList.value.map((service) => service.nom)
     }
   })
