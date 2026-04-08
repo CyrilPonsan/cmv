@@ -93,10 +93,7 @@ const usePatientForm = (fetchPatientData: ((id: number) => void) | null): Patien
     })
   )
 
-  /**
-   * Gère la création d'un nouveau patient
-   * @param {Record<string, unknown>} data - Données du formulaire
-   */
+  //  Gère la création d'un nouveau patient
   const onCreatePatient = (body: Record<string, unknown>) => {
     // Formatage de la date de naissance
     const date = body.date_de_naissance as Date
