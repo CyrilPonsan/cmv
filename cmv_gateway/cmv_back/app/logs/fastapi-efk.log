@@ -59,3 +59,16 @@
 2026-04-09 16:11:52,939 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
 2026-04-09 16:11:55,412 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/53 FROM: None
 2026-04-09 16:12:02,119 - CMV_GATEWAY - DEBUG - All connection attempts failed
+2026-04-09 17:03:44,860 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-09 17:03:55,087 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-09 17:03:58,366 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/44 FROM: None
+2026-04-09 17:04:05,673 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-09 17:04:07,762 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/79 FROM: None
+2026-04-09 17:13:25,569 - CMV_GATEWAY - WARNING - not_authenticated FROM: None
+2026-04-09 17:15:35,653 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-09 17:15:37,464 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/44 FROM: None
+2026-04-09 17:15:39,068 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-09 17:15:40,338 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/79 FROM: None
+2026-04-09 17:53:58,609 - CMV_GATEWAY - DEBUG - 
+2026-04-09 17:53:59,988 - CMV_GATEWAY - DEBUG - 
+2026-04-09 17:54:06,224 - CMV_GATEWAY - INFO - Connexion Redis du rate limiter fermée.

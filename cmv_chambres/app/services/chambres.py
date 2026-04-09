@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.repositories.chambres_crud import PgChambresRepository
 from app.schemas.reservation import CreateReservation, ReservationResponse
 from app.schemas.schemas import SuccessWithMessage
+from app.schemas.services import ChambrePatient
 from app.sql.models import Chambre, Status
 
 
@@ -189,3 +190,17 @@ class ChambresService:
         await self.chambres_repository.cancel_reservation(db, reservation_id)
 
         return SuccessWithMessage(success=True, message="Réservation annulée")
+
+    async def get_chambre_name(
+        self, db: Session, reservation_id: int
+    ) -> ChambrePatient:
+        reservation = await self.chambres_repository.get_reservation_by_id(
+            db=db, reservation_id=reservation_id
+        )
+        if not reservation:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="chambre_not_found",
+            )
+
+        return reservation.chambre

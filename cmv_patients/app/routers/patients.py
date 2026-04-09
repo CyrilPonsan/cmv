@@ -138,6 +138,7 @@ async def read_patient(
     request: Request,
     patient_id: int,
     payload: Annotated[InternalPayload, Depends(check_authorization)],
+    internal_token: str = Depends(get_permissions),
     patients_service=Depends(get_patients_service),
     db: Session = Depends(get_db),
 ):
@@ -161,6 +162,7 @@ async def read_patient(
     return await patients_service.detail_patient(
         db=db,
         patient_id=patient_id,
+        payload=internal_token,
     )
 
 

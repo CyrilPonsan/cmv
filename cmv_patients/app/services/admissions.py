@@ -102,7 +102,7 @@ class AdmissionService:
         data,
         internal_payload: str,
         request,
-    ):
+    ) -> Admission:
         """Clôture une admission via le saga engine."""
         admission = await self.admissions_repository.get_admission_by_id(
             db, data.id_admission
