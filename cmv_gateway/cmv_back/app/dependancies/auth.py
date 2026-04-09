@@ -3,11 +3,12 @@ import uuid
 from datetime import datetime, timedelta
 from typing import Annotated, Awaitable, Callable, Optional
 
+import bcrypt
+
 # Imports des dépendances FastAPI et autres frameworks
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-import bcrypt
 from sqlalchemy.orm import Session
 
 # Imports des modules internes de l'application
@@ -63,7 +64,9 @@ def verify_password(plain_password, hashed_password):
     Returns:
         bool: True si les mots de passe correspondent, False sinon
     """
-    return bcrypt.checkpw(plain_password.encode("utf-8"), hashed_password.encode("utf-8"))
+    return bcrypt.checkpw(
+        plain_password.encode("utf-8"), hashed_password.encode("utf-8")
+    )
 
 
 async def authenticate_user(

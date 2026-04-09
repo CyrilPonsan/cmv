@@ -43,6 +43,20 @@ const closeAdmission = () => {
   )
 }
 
+const delteAdmission = () => {
+  const applyData = (data: { message: string }) => {
+    console.log(data.message)
+    router.push(`/patients/${route.params.patientId}/admissions`)
+  }
+  http.sendRequest(
+    {
+      path: `/patients/admissions/${route.params.admissionId}`,
+      method: 'DELETE'
+    },
+    applyData
+  )
+}
+
 onBeforeMount(() => {
   getAdmission()
 })
@@ -65,7 +79,7 @@ onBeforeMount(() => {
               selectionMode="single"
               view="date"
               :showButtonBar="true"
-              yearRange="1900:2024"
+              yearRange="1900:2050"
               locale="fr"
               iconDisplay="input"
               v-bind="field"
@@ -88,7 +102,7 @@ onBeforeMount(() => {
               selectionMode="single"
               view="date"
               :showButtonBar="true"
-              yearRange="1900:2024"
+              yearRange="1900:2050"
               locale="fr"
               iconDisplay="input"
               v-bind="field"
@@ -130,6 +144,7 @@ onBeforeMount(() => {
         </span>
       </div>
       <span class="w-full flex items-center gap-x-4">
+        <Button fluid label="Supprimer" @click="delteAdmission" />
         <Button fluid label="Annuler" @click="router.back()" severity="warn" />
         <Button
           fluid

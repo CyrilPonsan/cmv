@@ -1,21 +1,34 @@
 # Import des types et annotations nécessaires
 from typing import Annotated
+from venv import logger
 
-# Import des dépendances FastAPI
 from fastapi import APIRouter, Body, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from app.dependancies.auth import get_permissions
 from app.dependancies.db_session import get_db
-from app.schemas.patients import CreateAdmission
+from app.schemas.patients import Admission, CreateAdmission
 from app.schemas.user import InternalPayload
 
 # Import des services et dépendances personnalisés
 from app.services.admissions import get_admissions_service
 from app.services.patients import get_patients_service
 
+# Import des dépendances FastAPI
+
 # Création du routeur FastAPI
 router = APIRouter()
+
+
+@router.get("/admissions/{admission_id}", response_model=Admission)
+async def get_admission_detail(
+    admission_id: int,
+    request: Request,
+    internal_payload: Annotated[InternalPayload, Depends(get_permissions)],
+    admission_service=Depends(get_admissions_service),
+    db: Session = Depends(get_db),
+) -> Admission:
+    return await admission_service.get_admission(db=db, admission_id=admission_id)
 
 
 @router.post("/admissions")
@@ -25,7 +38,7 @@ async def create_admission(
     internal_payload: Annotated[InternalPayload, Depends(get_permissions)],
     admission_service=Depends(get_admissions_service),
     patient_service=Depends(get_patients_service),
-    db: Session = Depends(get_db),  # Injection de la session de base de données
+    db: Session = Depends(get_db),
 ):
     """
     Crée une nouvelle admission pour un patient.
@@ -47,4 +60,24 @@ async def create_admission(
             status_code=status.HTTP_400_BAD_REQUEST, detail="patient_already_admitted"
         )
 
-    return await admission_service.create_admission(db, data, internal_payload, request)
+    return await admission_service.create_admission(
+        db=db, data=data, internal_payload=internal_payload, request=request
+    )
+
+
+@router.put("/admissions")
+async def update_admission(
+    request: Request,
+    admission_id: int,
+    data: Annotated[Admission, Body()],
+    internal_payload: Annotated[InternalPayload, Depends(get_permissions)],
+    admission_service=Depends(get_admissions_service),
+    db: Session = Depends(get_db),
+) -> Admission:
+    return await admission_service.update_admission(
+        db=db,
+        admission_id=admission_id,
+        data=data,
+        internal_payload=internal_payload,
+        request=request,
+    )

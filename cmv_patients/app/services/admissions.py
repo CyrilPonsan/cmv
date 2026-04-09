@@ -1,15 +1,19 @@
 import logging
 
 import httpx
-from fastapi import Depends, HTTPException, status
+from fastapi import HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from app.repositories.admissions_crud import PgAdmissionsRepository
 from app.repositories.outbox_crud import PgOutboxRepository
 from app.schemas.patients import CreateAdmission
+from app.schemas.user import InternalPayload
 from app.services.saga_engine import SagaEngine
 from app.sql.models import Admission
 from app.utils.config import CHAMBRES_SERVICE
+from app.utils.logging_setup import LoggerSetup
+
+logger = LoggerSetup()
 
 
 def get_admissions_repository():
@@ -29,6 +33,14 @@ class AdmissionService:
 
     def __init__(self, admissions_repository: PgAdmissionsRepository):
         self.admissions_repository = admissions_repository
+
+    async def get_admission(self, db: Session, admission_id):
+        admission = await self.admissions_repository.get_admission_by_id(
+            db, admission_id
+        )
+        if not admission:
+            raise HTTPException(status_code=404, detail="not_found")
+        return admission
 
     async def create_admission(
         self,
