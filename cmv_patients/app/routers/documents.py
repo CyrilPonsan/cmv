@@ -8,12 +8,13 @@ from app.dependancies.auth import check_authorization
 from app.dependancies.db_session import get_db
 from app.schemas.schemas import SuccessWithMessage
 from app.schemas.user import InternalPayload
+from app.services.patients import get_patients_service
 from app.sql.models import DocumentType
 from app.utils.logging_setup import LoggerSetup
-from app.services.patients import get_patients_service
 
 # Création du router FastAPI pour les endpoints liés aux documents
 router = APIRouter(prefix="/documents", tags=["documents"])
+
 logger = LoggerSetup()
 
 

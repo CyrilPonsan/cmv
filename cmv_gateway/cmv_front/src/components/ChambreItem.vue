@@ -58,11 +58,13 @@ const goToPatientDetails = () => {
       <div class="flex flex-col mt-4">
         <!-- Affichage de l'occupant si la chambre est occupée -->
         <span class="capitalize" v-if="chambre.status === 'occupée'">
-          {{ t('components.chambre.occupant') ?? t('app.not_available')}}
+          {{ t('components.chambre.occupant') ?? t('app.not_available') }}
           {{
-            chambre.reservations && chambre.reservations.length > 0 && chambre.reservations[0].patient
-              ? chambre.reservations[0].patient.full_name 
-              : t("app.not_available")
+            chambre.reservations &&
+            chambre.reservations.length > 0 &&
+            chambre.reservations[0].patient
+              ? chambre.reservations[0].patient.full_name
+              : t('app.not_available')
           }}</span
         >
         <!-- Affichage de la date de sortie prévue (sauf pour les nettoyeurs) -->
@@ -85,6 +87,7 @@ const goToPatientDetails = () => {
     <template #footer>
       <div class="flex justify-end items-center">
         <Button
+          class="cursor-pointer"
           variant="text"
           icon="pi pi-user"
           :disabled="chambre.status !== 'occupée'"

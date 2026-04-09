@@ -18,3 +18,12 @@ class PgAdmissionsRepository:
         return (
             db.query(Admission).filter(Admission.id_admission == admission_id).first()
         )
+
+    async def close_admission(
+        self, db: Session, admission: Admission, sorti_le
+    ) -> Admission:
+        """Met à jour l'admission pour la clôturer : vide ref_reservation et set sorti_le."""
+        admission.ref_reservation = None
+        admission.sorti_le = sorti_le
+        db.flush()
+        return admission

@@ -4,7 +4,7 @@ from app.dependancies.auth import check_authorization
 from app.dependancies.db_session import get_db
 from app.schemas.reservation import CreateReservation, ReservationResponse
 from app.schemas.schemas import SuccessWithMessage
-from app.schemas.services import ChambreAvailable
+from app.schemas.services import ChambreAvailable, ChambrePatient
 from app.schemas.user import InternalPayload
 from app.services.chambres import get_chambres_service
 from app.sql.models import Status
@@ -16,6 +16,19 @@ router = APIRouter(
     prefix="/chambres",
     tags=["chambres"],
 )
+
+
+@router.get("/reservation/{reservation_id}", response_model=ChambrePatient)
+async def get_chambre_by_id(
+    reservation_id: int,
+    payload: Annotated[InternalPayload, Depends(check_authorization)],
+    service_chambre=Depends(get_chambres_service),
+    db: Session = Depends(get_db),
+):
+    """
+    Récupère une chambre par l'identifiant de sa réservation.
+    """
+    return await service_chambre.get_chambre_name(db=db, reservation_id=reservation_id)
 
 
 @router.get("/{service_id}", response_model=ChambreAvailable)
@@ -79,6 +92,27 @@ async def update_chambre_status(
         "message": "Chambre mise à jour",
         "service_id": chambre.service_id,
     }
+
+
+@router.delete(
+    "/{reservation_id}/close",
+    status_code=200,
+    response_model=SuccessWithMessage,
+)
+async def close_reservation(
+    reservation_id: int,
+    payload: Annotated[InternalPayload, Depends(check_authorization)],
+    service_chambre=Depends(get_chambres_service),
+    db: Session = Depends(get_db),
+):
+    """
+    Clôture une réservation lors de la sortie d'un patient.
+    Supprime la réservation et met la chambre en statut NETTOYAGE.
+    """
+    return await service_chambre.close_reservation(
+        db=db,
+        reservation_id=reservation_id,
+    )
 
 
 @router.delete(

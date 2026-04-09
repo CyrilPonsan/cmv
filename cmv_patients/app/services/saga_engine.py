@@ -33,6 +33,124 @@ class SagaEngine:
         self.logger = logger
         self.http_client = http_client
 
+    async def execute_close_admission(
+        self,
+        db: Session,
+        admission: Admission,
+        headers: dict,
+        sorti_le,
+    ) -> dict:
+        """Orchestre la clôture d'une admission avec saga.
+
+        Étape 1 : Supprimer la réservation côté chambres (status → NETTOYAGE)
+        Étape 2 : Mettre à jour l'admission (vider ref_reservation, setter sorti_le)
+        Étape 3 : Commit atomique
+        """
+        try:
+            # Étape 1 : Clôturer la réservation si non-ambulatoire
+            if not admission.ambulatoire and admission.ref_reservation:
+                close_succeeded = await self._close_reservation(
+                    db, admission, headers
+                )
+                if not close_succeeded:
+                    db.rollback()
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="failed_to_close_reservation",
+                    )
+
+            # Étape 2 : Mettre à jour l'admission (flush, pas commit)
+            await self.admissions_repository.close_admission(
+                db, admission, sorti_le
+            )
+
+            # Étape 3 : Commit atomique
+            db.commit()
+
+            self.logger.info(
+                "Admission %s clôturée avec succès",
+                admission.id_admission,
+            )
+            return {"message": "admission_closed"}
+
+        except HTTPException:
+            raise
+
+        except Exception as e:
+            db.rollback()
+            self.logger.error(
+                "Échec du saga de clôture pour l'admission %s : %s",
+                admission.id_admission,
+                str(e),
+            )
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"close_admission_failed: {str(e)}",
+            )
+
+    async def _close_reservation(
+        self,
+        db: Session,
+        admission: Admission,
+        headers: dict,
+    ) -> bool:
+        """Tente de clôturer la réservation (suppression + NETTOYAGE). Outbox si échec."""
+        endpoint = f"/chambres/{admission.ref_reservation}/close"
+        url = f"{CHAMBRES_SERVICE}{endpoint}"
+
+        http_headers = {
+            "Authorization": headers.get("Authorization", ""),
+            "X-Real-IP": headers.get("X-Real-IP", "unknown"),
+            "X-Forwarded-For": headers.get("X-Forwarded-For", "unknown"),
+        }
+
+        try:
+            response = await self.http_client.delete(url, headers=http_headers)
+
+            if response.status_code in (200, 404):
+                self.logger.info(
+                    "Clôture réservation %s réussie pour admission %s (status=%s)",
+                    admission.ref_reservation,
+                    admission.id_admission,
+                    response.status_code,
+                )
+                return True
+
+            error_msg = (
+                f"HTTP {response.status_code} lors de la clôture "
+                f"de la réservation {admission.ref_reservation}"
+            )
+            self.logger.error(
+                "Clôture réservation %s échouée pour admission %s — %s",
+                admission.ref_reservation,
+                admission.id_admission,
+                error_msg,
+            )
+
+        except (httpx.ConnectError, httpx.TimeoutException, Exception) as exc:
+            error_msg = str(exc)
+            self.logger.error(
+                "Clôture réservation %s échouée pour admission %s — %s",
+                admission.ref_reservation,
+                admission.id_admission,
+                error_msg,
+            )
+
+        # Outbox pour retry
+        outbox_entry = OutboxEntry(
+            compensation_type="close_reservation",
+            payload={
+                "reservation_id": admission.ref_reservation,
+                "admission_id": admission.id_admission,
+                "chambres_service_url": CHAMBRES_SERVICE,
+                "endpoint": endpoint,
+            },
+            retry_count=0,
+        )
+        await self.outbox_repository.create_entry(db, outbox_entry)
+
+        return False
+
     async def execute_delete_admission(
         self,
         db: Session,
