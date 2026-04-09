@@ -24,9 +24,7 @@ const roles = ref(['home', 'nurse'])
 // Computed property pour vérifier si l'utilisateur est connecté
 const isLoggedIn = computed(() => roles.value.includes(userStore.role))
 const style = computed(() => {
-  return !isLoggedIn.value
-    ? 'flex-1 min-w-0 flex flex-col min-h-screen'
-    : 'ml-64 flex-1 min-w-0 flex flex-col min-h-screen'
+  return !isLoggedIn.value ? 'flex-1 min-w-0 flex flex-col' : 'ml-64 flex-1 min-w-0 flex flex-col'
 })
 
 // Surveillance des changements du rôle utilisateur pour la redirection
@@ -64,20 +62,22 @@ onBeforeMount(() => {
 <template>
   <!-- Composant Toast pour les notifications -->
   <Toast />
-  <div class="flex min-w-screen overflow-hidden">
+  <div class="flex min-w-screen overflow-hidden min-h-screen">
     <!-- Barre latérale : toujours dans le flux pour éviter le layout shift -->
     <SidebarComponent :class="isLoggedIn ? '' : 'hidden'" :aria-hidden="!isLoggedIn" />
-    <div :class="style">
-      <!-- Router view pour afficher les différentes pages -->
-      <div class="flex-1">
-        <RouterView />
+    <div class="flex flex-col w-full">
+      <div :class="style">
+        <!-- Router view pour afficher les différentes pages -->
+        <div class="flex-1">
+          <RouterView />
+        </div>
       </div>
+      <!-- Pied de page -->
+      <footer class="h-16 flex justify-center items-center bg-surface-800">
+        <h3 class="text-xs text-primary-500">
+          {{ t('app.footer') }}
+        </h3>
+      </footer>
     </div>
   </div>
-  <!-- Pied de page -->
-  <footer class="z-10 absolute w-full h-16 flex justify-center items-center bg-black">
-    <h3 class="text-xs text-primary-500">
-      {{ t('app.footer') }}
-    </h3>
-  </footer>
 </template>

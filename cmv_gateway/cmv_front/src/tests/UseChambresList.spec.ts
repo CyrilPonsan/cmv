@@ -30,6 +30,30 @@ vi.mock('@/composables/useHttp', () => ({
   })
 }))
 
+// --- Mock services store ---
+const mockServicesList = ref([
+  { id_service: 1, nom: 'Cardiologie' },
+  { id_service: 2, nom: 'Chirurgie' },
+  { id_service: 3, nom: 'cardiologie pédiatrique' },
+  { id_service: 4, nom: 'Neurologie' }
+])
+vi.mock('@/stores/services', () => ({
+  useServices: () => ({
+    servicesList: mockServicesList,
+    servicesOptions: mockServicesList.value.map((s: { nom: string }) => s.nom),
+    fetchServices: vi.fn()
+  })
+}))
+
+// --- Mock pinia storeToRefs ---
+vi.mock('pinia', () => ({
+  storeToRefs: (store: any) => ({
+    servicesList: store.servicesList
+  }),
+  defineStore: vi.fn(),
+  createPinia: vi.fn()
+}))
+
 // --- Mock lifecycle hooks (no-op in test) ---
 vi.mock('vue', async () => {
   const actual = await vi.importActual<typeof import('vue')>('vue')
@@ -42,21 +66,20 @@ vi.mock('vue', async () => {
 
 import useChambresList from '@/composables/useChambresList'
 
-const mockServices = [
-  { id_service: 1, nom: 'Cardiologie', chambres: [] },
-  { id_service: 2, nom: 'Chirurgie', chambres: [] },
-  { id_service: 3, nom: 'cardiologie pédiatrique', chambres: [] },
-  { id_service: 4, nom: 'Neurologie', chambres: [] }
+// Mock data: what the API returns for a given service_id
+const mockServiceResponse = [
+  { id_service: 1, nom: 'Cardiologie', chambres: [{ id_chambre: 1, nom: 'C101', status: 'libre', dernier_nettoyage: '2026-01-01' }] }
 ]
 
 /**
- * Helper: simulate getChambres populating the initial list
- * by invoking the applyData callback passed to sendRequest.
+ * Helper: simulate getChambres populating the list.
+ * The composable now calls /chambres-liste/services/{serviceId}.
+ * This mock intercepts any path matching that pattern and returns the response.
  */
-function simulateGetChambres(services = mockServices) {
+function simulateGetChambres(response = mockServiceResponse) {
   mockSendRequest.mockImplementation((req: any, applyData: (data: any) => void) => {
-    if (req.path === '/chambres-liste/services') {
-      applyData(services)
+    if (req.path && req.path.startsWith('/chambres-liste/services/')) {
+      applyData(response)
     }
   })
 }
@@ -68,40 +91,45 @@ describe('UseChambresList', () => {
     mockSendRequest.mockReset()
   })
 
-  // --- Requirement 3.1: GET call to /chambres/services ---
+  // --- getChambres with serviceId ---
   describe('getChambres', () => {
-    it('should call sendRequest with /chambres/services', () => {
+    it('should call sendRequest with /chambres-liste/services/{serviceId}', () => {
       simulateGetChambres()
-      useChambresList()
+      const { getChambres } = useChambresList()
+
+      getChambres(42)
 
       expect(mockSendRequest).toHaveBeenCalledWith(
-        { path: '/chambres-liste/services' },
+        { path: '/chambres-liste/services/42' },
         expect.any(Function)
       )
     })
 
     it('should populate list with data returned from API', async () => {
       simulateGetChambres()
-      const { list } = useChambresList()
+      const { getChambres, list } = useChambresList()
 
+      getChambres(1)
       await new Promise((r) => setTimeout(r, 0))
-      expect(list.value).toEqual(mockServices)
+
+      expect(list.value).toEqual(mockServiceResponse)
     })
 
-    it('should populate suggestions with service names', async () => {
+    it('should populate suggestions from the services store', async () => {
       simulateGetChambres()
       const { suggestions } = useChambresList()
 
       await new Promise((r) => setTimeout(r, 0))
+
       expect(suggestions.value).toEqual(
-        mockServices.map((s) => s.nom)
+        mockServicesList.value.map((s) => s.nom)
       )
     })
   })
 
-  // --- Requirement 3.2: Case-insensitive prefix filtering via search ---
+  // --- search: filters suggestions from store, filters list locally ---
   describe('search (case-insensitive prefix filtering)', () => {
-    it('should filter suggestions by case-insensitive prefix', () => {
+    it('should filter suggestions from store by case-insensitive prefix', () => {
       simulateGetChambres()
       const { search, suggestions } = useChambresList()
 
@@ -111,9 +139,15 @@ describe('UseChambresList', () => {
     })
 
     it('should filter list by case-insensitive prefix', () => {
-      simulateGetChambres()
-      const { search, list } = useChambresList()
+      const multiResponse = [
+        { id_service: 1, nom: 'Cardiologie', chambres: [] },
+        { id_service: 3, nom: 'cardiologie pédiatrique', chambres: [] }
+      ]
+      simulateGetChambres(multiResponse)
+      const { getChambres, search, list } = useChambresList()
 
+      // Populate list with multiple services
+      getChambres(1)
       search({ query: 'Car' } as any)
 
       expect(list.value).toEqual([
@@ -122,30 +156,19 @@ describe('UseChambresList', () => {
       ])
     })
 
-    it('should match uppercase query against lowercase service names', () => {
+    it('should keep current list when query does not match any loaded service', () => {
       simulateGetChambres()
-      const { search, list } = useChambresList()
+      const { getChambres, search, list } = useChambresList()
 
-      search({ query: 'NEURO' } as any)
-
-      expect(list.value).toEqual([
-        { id_service: 4, nom: 'Neurologie', chambres: [] }
-      ])
-    })
-  })
-
-  // --- Requirement 3.3: Reset list when search finds nothing ---
-  describe('search reset when no results', () => {
-    it('should reset list to initial list when search finds no matches', () => {
-      simulateGetChambres()
-      const { search, list } = useChambresList()
-
+      getChambres(1)
+      const listBefore = [...list.value]
       search({ query: 'zzz_no_match' } as any)
 
-      expect(list.value).toEqual(mockServices)
+      // No match → list stays unchanged
+      expect(list.value).toEqual(listBefore)
     })
 
-    it('should set suggestions to empty when search finds no matches', () => {
+    it('should set suggestions to empty when query does not match any store service', () => {
       simulateGetChambres()
       const { search, suggestions } = useChambresList()
 
@@ -155,7 +178,7 @@ describe('UseChambresList', () => {
     })
   })
 
-  // --- Requirement 3.4: searchBySelect updates searchValue and filters by exact prefix ---
+  // --- searchBySelect: calls getChambres with the matching serviceId ---
   describe('searchBySelect', () => {
     it('should update searchValue with the selected value', () => {
       simulateGetChambres()
@@ -166,31 +189,31 @@ describe('UseChambresList', () => {
       expect(searchValue.value).toBe('Cardiologie')
     })
 
-    it('should filter list by exact (case-sensitive) prefix', () => {
+    it('should call getChambres with the matching service id from store', () => {
       simulateGetChambres()
-      const { searchBySelect, list } = useChambresList()
+      const { searchBySelect } = useChambresList()
 
-      searchBySelect({ value: 'Cardiologie' } as any)
+      mockSendRequest.mockClear()
+      searchBySelect({ value: 'Chirurgie' } as any)
 
-      expect(list.value).toEqual([
-        { id_service: 1, nom: 'Cardiologie', chambres: [] }
-      ])
+      expect(mockSendRequest).toHaveBeenCalledWith(
+        { path: '/chambres-liste/services/2' },
+        expect.any(Function)
+      )
     })
 
-    it('should not match case-insensitively for searchBySelect', () => {
+    it('should not call getChambres if service name not found in store', () => {
       simulateGetChambres()
-      const { searchBySelect, list } = useChambresList()
+      const { searchBySelect } = useChambresList()
 
-      // 'cardiologie' lowercase should only match the lowercase service
-      searchBySelect({ value: 'cardiologie' } as any)
+      mockSendRequest.mockClear()
+      searchBySelect({ value: 'ServiceInexistant' } as any)
 
-      expect(list.value).toEqual([
-        { id_service: 3, nom: 'cardiologie pédiatrique', chambres: [] }
-      ])
+      expect(mockSendRequest).not.toHaveBeenCalled()
     })
   })
 
-  // --- Requirement 3.5: resetSearchValue ---
+  // --- resetSearchValue ---
   describe('resetSearchValue', () => {
     it('should reset searchValue to empty string', () => {
       simulateGetChambres()
@@ -204,48 +227,32 @@ describe('UseChambresList', () => {
     })
   })
 
-  // --- Requirement 3.6: Reset when searchValue is emptied ---
+  // --- Reset when searchValue is emptied ---
   describe('reset when searchValue is emptied', () => {
-    it('should reset list to initial list when searchValue becomes empty', async () => {
+    it('should call getChambres with first store service when searchValue becomes empty', async () => {
       simulateGetChambres()
-      const { searchBySelect, searchValue, list } = useChambresList()
+      const { searchBySelect, searchValue } = useChambresList()
 
-      // Filter first
-      searchBySelect({ value: 'Cardiologie' } as any)
-      expect(list.value.length).toBe(1)
-
-      // Empty searchValue triggers the watcher
+      searchBySelect({ value: 'Chirurgie' } as any)
       searchValue.value = ''
-      await new Promise((r) => setTimeout(r, 0))
 
-      expect(list.value).toEqual(mockServices)
-    })
+      // Wait multiple ticks for the Vue watcher to flush
+      await new Promise((r) => setTimeout(r, 50))
 
-    it('should reset suggestions to all service names when searchValue becomes empty', async () => {
-      simulateGetChambres()
-      const { searchBySelect, searchValue, suggestions } = useChambresList()
-
-      searchBySelect({ value: 'Cardiologie' } as any)
-
-      searchValue.value = ''
-      await new Promise((r) => setTimeout(r, 0))
-
-      expect(suggestions.value).toEqual(mockServices.map((s) => s.nom))
+      // The watcher calls getChambres(servicesList[0].id_service) which is 1
+      const paths = mockSendRequest.mock.calls.map((c: any[]) => c[0].path)
+      expect(paths).toContain('/chambres-liste/services/1')
     })
   })
 })
 
-// Feature: frontend-test-coverage, Property 7: Filtrage par préfixe des services
+// --- Property-based tests ---
 import fc from 'fast-check'
 
-/**
- * Arbitrary: generates a list of mock services with random names.
- */
-const arbServiceList = fc.array(
+const arbStoreServices = fc.array(
   fc.record({
     id_service: fc.integer({ min: 1, max: 1000 }),
-    nom: fc.string({ minLength: 1, maxLength: 30 }),
-    chambres: fc.constant([] as never[])
+    nom: fc.string({ minLength: 1, maxLength: 30 })
   }),
   { minLength: 1, maxLength: 20 }
 )
@@ -258,42 +265,58 @@ describe('UseChambresList — Property-based tests', () => {
   })
 
   // **Validates: Requirements 3.2**
-  it('search: should return only services whose name starts with the query (case-insensitive)', () => {
+  it('search: suggestions should contain only store services whose name starts with the query (case-insensitive)', () => {
     fc.assert(
-      fc.property(arbServiceList, fc.string({ minLength: 1, maxLength: 10 }), (services: { id_service: number; nom: string; chambres: never[] }[], query: string) => {
-        simulateGetChambres(services)
-        const { search, list } = useChambresList()
+      fc.property(
+        arbStoreServices,
+        fc.string({ minLength: 1, maxLength: 10 }),
+        (storeServices, query) => {
+          // Set up the store with generated services
+          mockServicesList.value = storeServices
+          simulateGetChambres([])
+          const { search, suggestions } = useChambresList()
 
-        search({ query } as any)
+          search({ query } as any)
 
-        const expected = services.filter((s: { nom: string }) =>
-          s.nom.toLowerCase().startsWith(query.toLowerCase())
-        )
+          const expected = storeServices
+            .filter((s) => s.nom.toLowerCase().startsWith(query.toLowerCase()))
+            .map((s) => s.nom)
 
-        if (expected.length > 0) {
-          // When matches exist, list should contain exactly the matching services
-          expect(list.value).toEqual(expected)
-        } else {
-          // When no matches, list resets to the full initial list
-          expect(list.value).toEqual(services)
+          expect(suggestions.value).toEqual(expected)
         }
-      }),
+      ),
       { numRuns: 100 }
     )
   })
 
   // **Validates: Requirements 3.4**
-  it('searchBySelect: should return only services whose name starts with the value (case-sensitive)', () => {
+  it('searchBySelect: should call getChambres with the correct serviceId when name matches', () => {
     fc.assert(
-      fc.property(arbServiceList, fc.string({ minLength: 1, maxLength: 10 }), (services: { id_service: number; nom: string; chambres: never[] }[], value: string) => {
-        simulateGetChambres(services)
-        const { searchBySelect, list } = useChambresList()
+      fc.property(
+        arbStoreServices,
+        (storeServices) => {
+          if (storeServices.length === 0) return
 
-        searchBySelect({ value } as any)
+          mockServicesList.value = storeServices
+          simulateGetChambres([])
+          const { searchBySelect } = useChambresList()
 
-        const expected = services.filter((s: { nom: string }) => s.nom.startsWith(value))
-        expect(list.value).toEqual(expected)
-      }),
+          // Pick a random service from the store
+          const target = storeServices[0]
+          mockSendRequest.mockClear()
+          simulateGetChambres([])
+          searchBySelect({ value: target.nom } as any)
+
+          // Should have called with the matching service id
+          const matchingService = storeServices.find((s) => s.nom === target.nom)
+          if (matchingService) {
+            expect(mockSendRequest).toHaveBeenCalledWith(
+              { path: `/chambres-liste/services/${matchingService.id_service}` },
+              expect.any(Function)
+            )
+          }
+        }
+      ),
       { numRuns: 100 }
     )
   })

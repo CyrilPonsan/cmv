@@ -4,7 +4,6 @@ from typing import Annotated
 
 from fastapi import APIRouter, Body, Depends, Request, Response
 from fastapi_limiter.depends import RateLimiter
-from passlib.context import CryptContext
 from redis.exceptions import RedisError
 from sqlalchemy.orm import Session
 
@@ -16,9 +15,6 @@ from app.services.auth import get_auth_service
 from app.utils.rate_limiter import custom_callback, custom_identifier
 
 logger = logging.getLogger("CMV_GATEWAY")
-
-# Configuration du contexte de hachage des mots de passe
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Configuration du routeur d'authentification
 router = APIRouter(
