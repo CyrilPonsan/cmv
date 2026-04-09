@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field
-from pydantic import ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 # Modèle Pydantic pour représenter une réservation
@@ -9,6 +8,7 @@ class Reservation(BaseModel):
     """
     Schéma représentant une réservation de chambre.
     """
+
     model_config = ConfigDict(from_attributes=True)
 
     id_reservation: int
@@ -23,6 +23,7 @@ class ChambreAvailable(BaseModel):
     Schéma représentant une chambre avec ses informations de base.
     Utilisé pour afficher les chambres disponibles.
     """
+
     model_config = ConfigDict(from_attributes=True)
 
     id_chambre: int  # Identifiant unique de la chambre
@@ -44,11 +45,18 @@ class Chambre(ChambreAvailable):
     )  # Liste des réservations associées
 
 
+class ChambrePatient(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id_chambre: int  # Identifiant de la chambre
+    nom: str  # Nom de la chambre
+
+
 class ServicesList(BaseModel):
     """
     Schéma de base pour représenter un service hospitalier.
     Contient les informations minimales d'un service.
     """
+
     model_config = ConfigDict(from_attributes=True)
 
     id_service: int  # Identifiant unique du service

@@ -216,6 +216,15 @@ onBeforeMount(() => {
 })
 
 const onSubmit = handleSubmit((values) => {
+  if (values.ambulatoire === 'Non ambulatoire' && values.services === undefined) {
+    toast.add({
+      severity: 'error',
+      summary: 'Erreur',
+      detail: 'Veuillez sélectionner un service pour une admission non ambulatoire',
+      life: 3000
+    })
+    return
+  }
   postAdmission(values)
 })
 </script>
