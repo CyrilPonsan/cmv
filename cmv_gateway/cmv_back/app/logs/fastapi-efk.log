@@ -41,3 +41,21 @@
 2026-04-09 15:21:21,468 - CMV_GATEWAY - DEBUG - 
 2026-04-09 15:21:23,706 - CMV_GATEWAY - DEBUG - 
 2026-04-09 15:21:28,051 - CMV_GATEWAY - DEBUG - 
+2026-04-09 16:07:49,459 - CMV_GATEWAY - INFO - Rate limiter initialisé avec Valkey (localhost:6379)
+2026-04-09 16:09:43,665 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-09 16:09:45,691 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/44 FROM: None
+2026-04-09 16:09:46,888 - CMV_GATEWAY - WARNING - home - 2 - GET - admissions/25 FROM: None
+2026-04-09 16:09:53,034 - CMV_GATEWAY - WARNING - home - 2 - PUT - admissions/closure FROM: None
+2026-04-09 16:09:53,065 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-09 16:10:09,978 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/44 FROM: None
+2026-04-09 16:10:15,356 - CMV_GATEWAY - WARNING - home - 2 - GET - admissions/25 FROM: None
+2026-04-09 16:10:16,939 - CMV_GATEWAY - WARNING - home - 2 - PUT - admissions/closure FROM: None
+2026-04-09 16:10:16,969 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-09 16:10:20,255 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/44 FROM: None
+2026-04-09 16:11:42,040 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-09 16:11:45,021 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/61 FROM: None
+2026-04-09 16:11:47,393 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-09 16:11:50,996 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/75 FROM: None
+2026-04-09 16:11:52,939 - CMV_GATEWAY - WARNING - home - 2 - GET - patients FROM: None
+2026-04-09 16:11:55,412 - CMV_GATEWAY - WARNING - home - 2 - GET - patients/detail/53 FROM: None
+2026-04-09 16:12:02,119 - CMV_GATEWAY - DEBUG - All connection attempts failed

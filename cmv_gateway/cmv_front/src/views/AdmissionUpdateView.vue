@@ -17,6 +17,8 @@ const ambulatoire = ref<boolean>(true)
 const service = ref<string | null>(null)
 const sortiLe = ref<Date>(new Date())
 
+const admission = ref<Admission | null>(null)
+
 const getAdmission = () => {
   const applyData = (data: Admission) => {
     entreeLe.value = new Date(data.entree_le)
@@ -24,6 +26,7 @@ const getAdmission = () => {
     ambulatoire.value = data.ambulatoire
     service.value = data.ref_chambre
     sortiLe.value = new Date(data.sorti_le ?? Date.now())
+    admission.value = data
   }
   http.sendRequest({ path: `/patients/admissions/${route.params.admissionId}` }, applyData)
 }
@@ -31,22 +34,21 @@ const getAdmission = () => {
 const closeAdmission = () => {
   const applyData = (data: any) => {
     console.log({ data })
-    router.push(`/patients/${route.params.patientId}/close`)
+    router.push('/')
   }
   http.sendRequest(
     {
-      path: `/ml/predict/${route.params.admissionId}`,
+      path: `/patients/admissions/closure`,
       method: 'PUT',
-      body: { sorti_le: sortiLe.value }
+      body: { data: { ...admission.value, sorti_le: sortiLe.value } }
     },
     applyData
   )
 }
 
-const delteAdmission = () => {
+const deleteAdmission = () => {
   const applyData = (data: { message: string }) => {
     console.log(data.message)
-    router.push(`/patients/${route.params.patientId}/admissions`)
   }
   http.sendRequest(
     {
@@ -144,14 +146,14 @@ onBeforeMount(() => {
         </span>
       </div>
       <span class="w-full flex items-center gap-x-4">
-        <Button fluid label="Supprimer" @click="delteAdmission" />
+        <Button fluid label="Supprimer" @click="deleteAdmission" />
         <Button fluid label="Annuler" @click="router.back()" severity="warn" />
         <Button
           fluid
           label="Clôturer l' admission"
           @click="closeAdmission"
           :load="http.isLoading"
-          severity="success"
+          severity="error"
         />
       </span>
     </Form>

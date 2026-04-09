@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 import httpx
 from fastapi import HTTPException, Request, status
@@ -94,6 +95,49 @@ class AdmissionService:
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                     detail=str(e),
                 )
+
+    async def update_admission(
+        self,
+        db: Session,
+        data,
+        internal_payload: str,
+        request,
+    ):
+        """Clôture une admission via le saga engine."""
+        admission = await self.admissions_repository.get_admission_by_id(
+            db, data.id_admission
+        )
+        if not admission:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="admission_not_found"
+            )
+
+        client_ip = request.headers.get("X-Real-IP") or request.headers.get(
+            "X-Forwarded-For", "unknown"
+        )
+        headers = {
+            "Authorization": f"Bearer {internal_payload}",
+            "X-Real-IP": client_ip,
+            "X-Forwarded-For": client_ip,
+        }
+
+        async with httpx.AsyncClient() as http_client:
+            saga_engine = SagaEngine(
+                admissions_repository=self.admissions_repository,
+                outbox_repository=get_outbox_repository(),
+                logger=logging.getLogger("saga_engine"),
+                http_client=http_client,
+            )
+            await saga_engine.execute_close_admission(
+                db=db,
+                admission=admission,
+                headers=headers,
+                sorti_le=data.sorti_le or datetime.now(),
+            )
+
+        # Refresh and return the updated admission
+        db.refresh(admission)
+        return admission
 
     async def delete_admission(
         self, db: Session, admission_id: int, internal_payload: str, request

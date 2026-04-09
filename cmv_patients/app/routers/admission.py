@@ -65,10 +65,9 @@ async def create_admission(
     )
 
 
-@router.put("/admissions")
+@router.put("/admissions/closure")
 async def update_admission(
     request: Request,
-    admission_id: int,
     data: Annotated[Admission, Body()],
     internal_payload: Annotated[InternalPayload, Depends(get_permissions)],
     admission_service=Depends(get_admissions_service),
@@ -76,7 +75,6 @@ async def update_admission(
 ) -> Admission:
     return await admission_service.update_admission(
         db=db,
-        admission_id=admission_id,
         data=data,
         internal_payload=internal_payload,
         request=request,

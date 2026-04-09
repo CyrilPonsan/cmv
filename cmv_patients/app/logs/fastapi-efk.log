@@ -6,3 +6,15 @@
 2026-04-09 13:22:56,708 - CMV_PATIENTS - WARNING - Not Found FROM: unknown
 2026-04-09 13:23:11,024 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 44 FROM: unknown
 2026-04-09 13:23:15,298 - CMV_PATIENTS - WARNING - Not Found FROM: unknown
+2026-04-09 16:09:43,638 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-09 16:09:45,675 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 44 FROM: unknown
+2026-04-09 16:09:53,062 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-09 16:10:09,974 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 44 FROM: unknown
+2026-04-09 16:10:16,964 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-09 16:10:20,251 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 44 FROM: unknown
+2026-04-09 16:11:42,035 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-09 16:11:45,017 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 61 FROM: unknown
+2026-04-09 16:11:47,390 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-09 16:11:50,992 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 75 FROM: unknown
+2026-04-09 16:11:52,936 - CMV_PATIENTS - WARNING - home - 2 - GET - read patients FROM: unknown
+2026-04-09 16:11:55,407 - CMV_PATIENTS - WARNING - home - 2 - GET - read patient 53 FROM: unknown

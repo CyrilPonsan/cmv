@@ -110,6 +110,42 @@ class ChambresService:
             sortie_prevue_le=reservation.sortie_prevue_le,
         )
 
+    async def close_reservation(
+        self, db: Session, reservation_id: int
+    ) -> SuccessWithMessage:
+        """
+        Clôture une réservation : supprime la réservation et met la chambre en NETTOYAGE.
+
+        Utilisé lors de la clôture d'une admission (sortie du patient).
+        Contrairement à cancel_reservation qui libère la chambre, close met
+        la chambre en statut NETTOYAGE.
+        """
+        reservation = await self.chambres_repository.get_reservation_by_id(
+            db=db, reservation_id=reservation_id
+        )
+        if not reservation:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="reservation_not_found",
+            )
+
+        chambre = await self.chambres_repository.get_chambre_by_id(
+            db=db, chambre_id=reservation.chambre.id_chambre
+        )
+        if not chambre:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="chambre_not_found",
+            )
+
+        # Met la chambre en nettoyage (pas libre — le patient vient de sortir)
+        await self.update_chambre_status(db, chambre.id_chambre, Status.NETTOYAGE)
+
+        # Supprime la réservation
+        await self.chambres_repository.cancel_reservation(db, reservation_id)
+
+        return SuccessWithMessage(success=True, message="Réservation clôturée")
+
     async def cancel_reservation(
         self, db: Session, reservation_id: int
     ) -> SuccessWithMessage:

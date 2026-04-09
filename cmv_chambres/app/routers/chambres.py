@@ -82,6 +82,27 @@ async def update_chambre_status(
 
 
 @router.delete(
+    "/{reservation_id}/close",
+    status_code=200,
+    response_model=SuccessWithMessage,
+)
+async def close_reservation(
+    reservation_id: int,
+    payload: Annotated[InternalPayload, Depends(check_authorization)],
+    service_chambre=Depends(get_chambres_service),
+    db: Session = Depends(get_db),
+):
+    """
+    Clôture une réservation lors de la sortie d'un patient.
+    Supprime la réservation et met la chambre en statut NETTOYAGE.
+    """
+    return await service_chambre.close_reservation(
+        db=db,
+        reservation_id=reservation_id,
+    )
+
+
+@router.delete(
     "/{reservation_id}/cancel",
     status_code=200,
     response_model=SuccessWithMessage,
