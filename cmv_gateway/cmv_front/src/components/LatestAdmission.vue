@@ -32,13 +32,14 @@ const { t } = useI18n()
         icon="pi pi-plus"
         label="Créer une admission"
         variant="outlined"
+        v-show="latestAdmission === null"
       />
       <Button
         icon="pi pi-plus"
         label="Créer une admission"
         variant="outlined"
         :disabled="true"
-        v-show="latestAdmission !== null && !latestAdmission.sorti_le"
+        v-show="latestAdmission !== null"
         v-tooltip.bottom="'Une admission existe déjà pour ce patient.'"
         aria-label="Création d'admission désactivée car une admission est déjà en cours pour ce patient."
       />

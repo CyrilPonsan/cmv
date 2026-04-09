@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/services/chambres_liste.py
+# hypothesis_version: 6.151.9
+
+[200, 'Authorization', 'chambres', 'detail', 'patient', 'patient_id', 'ref', 'reservations', 'server_issue']

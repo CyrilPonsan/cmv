@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/services/auth.py
+# hypothesis_version: 6.151.9
+
+[400, 3600, '/', 'Aucun token trouvé', 'Déconnexion réussie', 'Lax', 'Token invalide', 'access_token', 'message', 'no_refresh_token', 'no_session_found', 'not_valid_token', 'prod', 'refresh_token', 'session_id', 'session_not_found', 'sub', 'true']
