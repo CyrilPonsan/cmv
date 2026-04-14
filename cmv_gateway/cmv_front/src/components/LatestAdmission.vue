@@ -32,6 +32,7 @@ const { t } = useI18n()
         icon="pi pi-plus"
         label="Créer une admission"
         variant="outlined"
+        v-show="latestAdmission === null || latestAdmission.sorti_le"
       />
       <Button
         icon="pi pi-plus"
