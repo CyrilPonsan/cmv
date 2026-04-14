@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/dependancies/auth.py
+# hypothesis_version: 6.151.9
+
+[3600, '/api/auth/users/me', 'Bearer', 'WWW-Authenticate', 'access_token', 'api_gateway', 'chambres', 'credentials', 'documents', 'exp', 'ml', 'not_authenticated', 'not_authorized', 'patients', 'role', 'session_id', 'source', 'sub', 'token', 'user_id', 'utf-8']

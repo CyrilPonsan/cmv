@@ -50,13 +50,15 @@ const legend = computed(() => {
       <!-- Colonne des valeurs -->
       <div class="flex flex-1 flex-col gap-y-2">
         <span>{{ admission.ambulatoire ? 'Oui' : 'Non' }}</span>
-        <span class="capitalize" v-if="!admission.ambulatoire">{{ admission.nom_chambre }}</span>
+        <span class="capitalize" v-if="!admission.ambulatoire">{{
+          admission.nom_chambre ?? 'Non disponible'
+        }}</span>
         <span>{{ d(admission.entree_le, 'short') }}</span>
         <span v-if="admission.sortie_prevue_le">{{ d(admission.sortie_prevue_le, 'short') }}</span>
         <span v-if="admission.sorti_le">{{ d(admission.sorti_le, 'short') }}</span>
       </div>
       <div />
-      <div class="flex items-center">
+      <div v-if="legend.startsWith('En')" class="flex items-center">
         <Button
           label="Modifier"
           @click="router.push(`/admissions/update/${admission.id_admission}`)"

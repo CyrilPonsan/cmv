@@ -34,7 +34,8 @@
       "occupant": "Occupant :",
       "occupée": "Occupée",
       "libre": "Libre",
-      "en_maintenance": "En cours de nettoyage",
+      "nettoyage": "Nettoyage",
+      "en cours de nettoyage": "Nettoyage",
       "dernier_nettoyage": "Dernier nettoyage :",
       "sortie_prevue": "Sortie prévue le :",
       "voir_details": "Voir les détails du patient"

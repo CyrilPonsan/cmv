@@ -1,7 +1,9 @@
 import uuid
 from io import BytesIO
+from locale import locale_encoding_alias
 
 import boto3
+import httpx
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -20,6 +22,7 @@ from app.utils.config import (
     AWS_BUCKET_NAME,
     AWS_REGION,
     AWS_SECRET_ACCESS_KEY,
+    CHAMBRES_SERVICE,
 )
 
 
@@ -125,7 +128,7 @@ class PatientsService:
             )
         return result
 
-    async def detail_patient(self, db: Session, patient_id: int):
+    async def detail_patient(self, db: Session, patient_id: int, payload: str):
         """
         Récupère les détails d'un patient spécifique
         Args:
@@ -137,10 +140,56 @@ class PatientsService:
         Returns:
             Patient: Les détails du patient demandé
         """
+
         # Appel au repository pour récupérer les détails d'un patient par son ID
-        return await self.patients_repository.read_patient_by_id(
+        patient = await self.patients_repository.read_patient_by_id(
             db=db, patient_id=patient_id
         )
+        if not patient:
+            raise HTTPException(status_code=404, detail="Patient not found")
+        if patient.admissions and patient.admissions[0].ref_reservation:
+            async with httpx.AsyncClient() as client:
+                try:
+                    response = await client.get(
+                        f"{CHAMBRES_SERVICE}/chambres/reservation/{patient.admissions[0].ref_reservation}",
+                        headers={"Authorization": f"Bearer {payload}"},
+                        follow_redirects=True,
+                    )
+                    if response.status_code != 200:
+                        raise HTTPException(
+                            status_code=response.status_code, detail=response.text
+                        )
+                    data = response.json()
+                    print(f"DATA: {data}")
+
+                    admission = patient.admissions[0]
+                    return {
+                        "id_patient": patient.id_patient,
+                        "civilite": patient.civilite,
+                        "nom": patient.nom,
+                        "prenom": patient.prenom,
+                        "date_de_naissance": patient.date_de_naissance,
+                        "adresse": patient.adresse,
+                        "code_postal": patient.code_postal,
+                        "ville": patient.ville,
+                        "telephone": patient.telephone,
+                        "email": patient.email,
+                        "latest_admission": {
+                            "id_admission": admission.id_admission,
+                            "entree_le": admission.entree_le,
+                            "ambulatoire": admission.ambulatoire,
+                            "sorti_le": admission.sorti_le,
+                            "sortie_prevue_le": admission.sortie_prevue_le,
+                            "nom_chambre": data.get("nom"),
+                        },
+                        "documents": patient.documents,
+                    }
+
+                except httpx.HTTPStatusError as e:
+                    raise HTTPException(
+                        status_code=e.response.status_code, detail=str(e)
+                    )
+        return patient
 
     async def search_patients(
         self,
@@ -351,11 +400,6 @@ class PatientsService:
                 aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
                 region_name=AWS_REGION,
             )
-
-            print("AWS Configuration:")
-            print(f"Bucket: {AWS_BUCKET_NAME}")
-            print(f"Region: {AWS_REGION}")
-            print(f"Access Key ID: {AWS_ACCESS_KEY_ID[:4]}...")
 
             # Convertit les bytes en objet fichier
             file_obj = BytesIO(file_contents)

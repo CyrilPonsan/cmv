@@ -1,0 +1,4 @@
+# file: /Users/cyril/projets/cmv/cmv_gateway/cmv_back/app/services/chambres.py
+# hypothesis_version: 6.151.9
+
+[200, 'Authorization', 'detail', 'server_issue']
